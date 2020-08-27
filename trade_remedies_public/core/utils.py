@@ -4,6 +4,25 @@ from django.http import StreamingHttpResponse
 import re
 
 
+def split_public_documents(documents):
+    templates = []
+    public = []
+    for doc in documents:
+        if doc.get("confidential"):
+            continue
+
+        if doc.get("block_from_public_file"):
+            continue
+
+        if doc.get("is_tra"):
+            templates.append(doc)
+            continue
+
+        public.append(doc)
+
+    return templates, public
+
+
 def deep_index_items_by(items, key):
     """
     Index a list of dicts by a given key.

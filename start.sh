@@ -5,7 +5,7 @@
 
 ARG1=${1-web}
 
-if [ $ARG1 != 'test' ] && [ $ARG1 != 'code' ]
+if [ $ARG1 != 'test' ]
 then
     python trade_remedies_public/manage.py migrate --noinput
 fi
@@ -20,7 +20,4 @@ elif [ $ARG1 = 'test' ]
 then
     pip install coverage
     cd trade_remedies_public && coverage run manage.py test && coverage xml && coverage report
-elif [ $ARG1 = 'code' ]
-then
-    black trade_remedies_public --check # || flake8
 fi

@@ -20,10 +20,16 @@ from trade_remedies_public.constants import (
 )
 from cases.constants import SUBMISSION_TYPE_ASSIGN_TO_CASE
 from core.base import GroupRequiredMixin, BasePublicView
-from core.utils import to_word, deep_index_items_by, proxy_stream_file_download, get
+from core.utils import (
+    to_word,
+    deep_index_items_by,
+    proxy_stream_file_download,
+    get,
+    validate,
+    split_public_documents,
+)
 from core.constants import ALERT_MAP
 from core.validators import user_create_validators
-from core.utils import validate
 from cases.utils import decorate_due_status, decorate_rois
 from cases.constants import CASE_TYPE_REPAYMENT
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
@@ -219,23 +225,20 @@ class PublicCaseView(TemplateView, TradeRemediesAPIClientMixin):
 class PublicSubmissionView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "cases/submissions/public_view.html"
 
-    def name_sort(self, obj):
-        return obj.get("name", "")
+    @staticmethod
+    def get_sort_key_from_document(document):
+        return document.get("name", "")
 
     def get(self, request, case_number, submission_id, *args, **kwargs):
         case = self.trusted_client.get_public_case_record(case_number)
         submission = self.trusted_client.get_submission_public(
             case.get("id"), submission_id, private=False
         )
-        documents = deep_index_items_by(submission["documents"], "is_tra")
-        document_conf_index = deep_index_items_by(documents.get("false", []), "confidential")
 
-        public_docs = list(document_conf_index.get("false", []))
-        public_docs.sort(key=self.name_sort)
-        template_docs = deep_index_items_by(documents.get("true", []), "confidential").get(
-            "false", []
-        )
-        template_docs.sort(key=self.name_sort)
+        template_docs, public_docs = split_public_documents(submission["documents"])
+
+        public_docs.sort(key=self.get_sort_key_from_document)
+        template_docs.sort(key=self.get_sort_key_from_document)
 
         return render(
             request,
