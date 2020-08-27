@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block main_content %}
+{%  block scripts %}{% endblock  %}
+  <div class="breadcrumbs" data-module="track-click">
+    <ol class="">
+      {% block breadcrumb %}
+        <li class="">
+          <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
+        </li>
+          {% if case.id and submission_type_key != 'interest' and submission.type.key != 'interest' %}
+          <li class="">
+            <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/case/{{ case.id }}{% if current_organisation.id %}/organisation/{{ current_organisation.id }}/{% endif %}">Case {{ case.reference|default_if_none:'' }}</a>
+          </li>
+        {% endif %}
+        {% comment %}
+        {# This gives a link to the submission page #}
+        {% if submission_id %}
+          <li class="">
+            <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/case/{{ case.id }}{% if current_organisation.id %}/organisation/{{ current_organisation.id }}{% endif %}/submission/{{ submission_id}}/">{{ submission.type.name }}</a>
+          </li>
+        {% endif %}
+        {% endcomment %}
+      {% endblock %}
+      <li class="">
+        <span>{% block breadcrumb_current %}Submit{% endblock %}</span>
+      </li>
+    </ol>
+  </div>
+  {% include "partials/widgets/error_summary.html" with errors=errors %}
+  {% block form_tag %}{% endblock %}
+
+    {% csrf_token %}
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {% block alert-area %}{% endblock %}
+        {% block header %}
+          <h1 class="heading-xlarge edit-item" data-section="27">
+              <span class="heading-secondary">{% block page_subtitle %}{{submission.type.name}}{% endblock %}</span>
+              {% block page_title %}
+                Submission
+              {% endblock %}
+          </h1>
+        {% endblock %}
+
+        {% block subtype_content %}
+        {% endblock %}
+      </div>
+      <div class="column-one-third">
+        {% include "partials/widgets/org_display_small.html" %}
+        {% include "partials/widgets/help_box.html" %}
+      </div>
+    </div>
+    <div>
+      {% block wide_content %}
+      {% endblock %}
+    </div>
+
+    {% block buttons %}
+    <div class="grid-row">
+      <div class="column-two-thirds">
+        {% comment %}
+        {% with uri='/case/'|addstr:case_id|addstr:"/submission/"|addstr:submission_id|addstr:'/' %}
+          {% button_link uri 'Continue' %}
+        {% endwith %}
+        {% endcomment %}
+        {% block continue_button %}
+        <div class="margin-top-1">
+            <a class="button" href="/case/{{case_id}}/submission/{{submission_id}}/">Continue</a>
+        </div>
+        {% endblock %}
+        <div class="margin-top-1">
+            {% if submission_id and case_id %}
+              <a href="/case/{{case_id}}/submission/{{submission_id}}/">Back to menu</a>
+            {% elif back_url %}
+              <a href="{{back_url}}">Back</a>
+            {% else %}
+              <a href="/dashboard/">Back to menu</a>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+  {% block form_end_tag %}{% endblock %}
+{% endblock %}

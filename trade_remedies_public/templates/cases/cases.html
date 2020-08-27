@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load format_date %}
+
+{% block main_content %}
+  <div class="breadcrumbs" data-module="track-click">
+    <ol>
+      <li class="">
+          <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+      </li>
+      <li class="">
+        <span>Your organisation's cases</span>
+      </li>
+    </ol>
+  </div>
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 class="heading-xlarge">
+        Your organisation's cases
+      </h1>
+    </div>
+  <div class="column-one-third">
+      {% include "partials/widgets/help_box.html" %}
+  </div>
+</div>
+<div class="grid-row">
+  <div class="column-full">
+    <table class="align-top small-font" data-attach="TableSort">
+        <thead>
+          <tr>
+            <th scope="col" class="sort-active">Case</th>
+            <th scope="col">Role</th>
+            <th scope="col">Initiated</th>
+            <th scope="col">Representing</th>
+            <th scope="col">Users</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for key in order %}
+          {% set 'oc' org_cases|_get:key %}
+          <tr>
+            <td><a href="/case/{{oc.0.case.id}}/organisation/{{oc.0.representing.id}}/summary/">{{oc.0.case.reference}}:&nbsp;{{oc.0.case.name |default:'<span class="grey">&lt;Untitled&gt;</span>'}}</a></td>
+            <td>{% if oc.0.roi_sent != None %}TBC{% else %}{{oc.0.role.name}}{% endif %}</td>
+            <td><span class="nobreak">{{oc.0.case.initiated_at|format_date:'%d %b %Y'}}</span></td>
+            <td>{{oc.0.representing.name}}</td>
+            <td>
+              <div>
+                {% for oc_user in oc %}
+                  <a href="/accounts/team/{{oc_user.organisation.id}}/user/{{oc_user.user.id}}/" class="nobreak">{{oc_user.user.name}}</a><br>
+                {% endfor %}
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

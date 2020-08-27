@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% load get_item %}
+
+{% block page_title %}{{case.reference}}: {{case.name}}{% endblock %}
+
+{% block main_content %}
+  {% include "partials/widgets/alert_box.html" %}
+  <div class="breadcrumbs" data-module="track-click">
+    <ol>
+      <li class="">
+          <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard/">Dashboard</a>
+      </li>
+    </ol>
+  </div>
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 class="heading-large">{{case.reference}}: {{case.name |default:'<span class="grey">&lt;Untitled&gt;</span>' }}</h1>
+      <div class="govuk-box-highlight">
+          <h2 class="heading-medium">{{case.stage.public_name|default:case.stage.name}}</h2>
+      </div>
+    </div>
+    <div class="column-one-third">
+      {% include "partials/widgets/org_display_small.html" %}
+      {% include "partials/widgets/help_box.html" %}
+    </div>
+  </div>
+  <div class="grid-row">
+    <div class="column-full">
+    {% include "partials/widgets/tabset.html" with q=tabs %}
+    {% if tab == 'your_file' %}
+      <table class="my-case sortable" data-attach="TableSort">
+        <thead>
+          <tr>
+            <th class="sort-active" scope="col">Updated</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Status</th>
+            <th scope="col">Due</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for submission in submissions %}
+
+            {% if submission.type.id != ex_officio_submission_type %}
+            <tr>
+              <td sortVal="{{submission.updated_at}} ">{{ submission.updated_at|format_date:'%d %b %Y' }}</td>
+              <td>{{ submission.name }}</td>
+              <td>
+                <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">{{ submission.type.name }}</a>
+              </td>
+                <td>
+                  <div class="lozenge {{submission.status_class}}">
+                  <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">
+                   <span>{% if submission.status %}{{ submission.status.public_name|default:submission.status.name }}{% else %}-{% endif %}</span>
+                  </a>
+                </td>
+                <td sortVal="{% if submission.due_at and not submission.status.locking %}{{submission.due_at}}{% endif %}z">
+                <div class="due-date">
+                  {% include "partials/widgets/due_date_status.html" with state=submission show_na=True %}
+                </div>
+              </td>
+              <!--
+                this is a cancel button to delete the submission from the case page if required.
+              <td>{% if submission.status.default %}
+                  <form action="/case/{{submission.case.id}}/submission/{{submission.id}}/remove/" method='post'><button class="link">Cancel</button>{% csrf_token %}</form>
+                  {% endif %}
+              </td>
+              -->
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+    </table>
+    <ul class="margin-top-1">
+      <li>
+        <a class="link" href="/case/{{case.id}}/organisation/{{current_organisation.id}}/submission/create/">Submit evidence</a>
+      </li>
+    </ul>
+  {% elif tab == 'case_record' %}
+    <table class="public-case" data-attach="TableSort">
+        <thead>
+          <tr>
+            <th scope="col">Date</a></th>
+            <th scope="col">Type</th>
+            <th scope="col">Party</th>
+            <th scope="col">Party Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for submission in submissions %}
+            {% if submission.type.id != ex_officio_submission_type %}
+            <tr>
+              <td>{{ submission.issued_at|format_date:'%d %b %Y' }}
+              </td>
+              <td>
+                <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/public/">{{ submission.type.name }}</a>
+              </td>
+              <td>
+                {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
+                  (Withheld by request)
+                {% else %}
+                  {{ submission.organisation.name }}
+                {% endif %}
+              </td>
+              <td>
+                {% if submission.deficiency_notice_params.issue_anonymously != 'yes' %}
+                  {{ submission.organisation_case_role.name }}
+                {% endif %}
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </tbody>
+    </table>
+    {% elif tab == 'case_members' %}
+    <form action="/case/{{case_id}}/organisation/{{current_organisation.id}}/set/primary/" method="post">
+      {% csrf_token %}
+      <table class="public-case" data-attach="TableSort">
+        <thead>
+          <tr>
+            <th scope="col">Name</a></th>
+            <th scope="col">Organisation</th>
+            <th scope="col">Date joined</th>
+            <th scope="col">Primary contact</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for uc in case_users %}
+              <tr>
+                <td>{% if is_org_owner and this_user.organisation.id == uc.user.organisation.id %}<a href="/accounts/team/{{current_organisation.id}}/user/{{uc.user.id}}/edit/">{{ uc.user.name }}</a>{% else %}{{ uc.user.name }}{% endif %}</td>
+                <td>{{ uc.user.organisation.name }}</td>
+                <td>{{ uc.created_at|format_date:'%d %b %Y' }}</td>
+                <td>{% if uc.primary %}Primary contact{% else %}<button class="link" name="contact_id" value="{{uc.user.contact_id}}">Assign primary contact</button>{% endif %}</td>
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,17 @@
+@import "../../govuk_template/static-src/stylesheets/colours/palette";
+@import "../../govuk_template/static-src/stylesheets/colours/organisation";
+@import "application.scss";
+@import "palette.scss";
+@import "general.scss";
+@import "icons.scss";
+@import "conf_nonconf.scss";
+@import "overlays.scss";
+@import "table_sortable";
+@import "tabs.scss";
+/* Page specific */
+@import "dashboard.scss";
+@import "case.scss";
+@import "accounts.scss";
+@import "user_maintenance.scss";
+@import "public_file.scss";
+

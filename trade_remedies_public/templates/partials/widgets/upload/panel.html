@@ -1,0 +1,57 @@
+{% comment %}
+ A single panel - right/left or full width
+ Supports expanded/compact display, recently-uploaded, upload widget, deficient and 'requiring upload' modes
+
+file - document structure
+submission
+side - left or right
+{% endcomment %}
+{% load custom_filters %}
+
+    <div class="{% if one_column %}column-full{% else %}column-one-half{% endif %} {{side|default:'left'}} {% if file.deficient or not file %}{% if parent.type.key != 'loa' %}warning{% endif %}{% endif %} {% if is_empty or new_file_row %} expanded{% endif %} file-panel">
+        {% if file and not file.deficient %}
+            <div class="display-panel">
+                <div class="display-shim">
+                    <div class="display-title">
+                        <div><i class="icon icon-green-tick"></i></div>
+                        <a class="link" href="/case/{{ case_id }}/submission/{{ submission.id }}/document/{{ file.id }}/download/">{{ file.name }}</a>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if parent.type.key == 'loa' %}
+            <div class="display-panel">
+                <div class="display-shim">
+                    <div class="center">
+                        This file will not be made available to the public
+                    </div>
+                </div>
+            </div>
+        {% elif file.deficient or not file %} {# we need a loader #}
+            <div class="display-mode display-panel {% if not file %}no-js-hidden{% endif %}">
+                <div class="display-shim">
+                    <div class="display-title">
+                        {% if file %}
+                            <div><i class="icon icon-black-warning"></i><button class="link upload-activate no-debounce replace-link" value="btn-upload">Replace</button></div>
+                            <a class="link" href="/case/{{ case_id }}/submission/{{ submission.id }}/document/{{ file.id }}/download/">{{ file.name }}</a>
+                        {% else %}
+                            <div><i class="icon icon-black-warning"></i></div>
+                            <button class="link upload-activate no-debounce" value="btn-upload">Upload</button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="upload-mode">
+                <form method="POST" enctype="multipart/form-data" action="/case/{{case_id}}/submission/{{submission.id}}/upload/{% if side == 'right' %}public{% else %}confidential{% endif %}/?__prefix={{case_id}}">
+                    {% csrf_token %}
+                    {% include "partials/widgets/upload/upload_target.html" with single_file=True %}
+                    <input type="hidden" name="parent_id" value="{{ parent.id }}">
+                    <input type="hidden" name="replace_id" value="{{ file.id }}">
+                    <input type="hidden" name="redirect" value="/case/{{case_id}}/submission/{{submission.id}}/upload/{% if public_str %}{{public_str}}/{% endif %}">
+                    {% if submission_document_type %}
+                        <input type="hidden" name="submission_document_type" value="{{submission_document_type}}">
+                    {% endif %}
+                </form>
+            </div>
+        {% endif %}
+    </div>

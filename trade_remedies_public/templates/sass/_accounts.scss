@@ -1,0 +1,31 @@
+/************  Accounts, Registration and login ***********/
+
+.accounts-page {
+  padding-top: 80px;
+  .left-column {
+    border-right: 1px solid $grey-2;
+    .form-control {
+      width: 70%;  // GDS is 50% which is too small in a two column layout
+    }
+  }
+  .right-column {
+    padding-left: 40px;
+    .heading-small {
+      margin-bottom: 2em;
+    }
+  }
+  .heading-large, .heading-small {
+    margin-top:0;
+  }
+}
+.margin-top-minus {
+  margin-top: -20px;
+}
+
+#evidenceOfSubsidy {
+  .panel.panel-border-wide {
+    margin-bottom: -10px;
+    min-height: 4.5em;
+  }
+}
+

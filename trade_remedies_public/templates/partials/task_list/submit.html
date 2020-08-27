@@ -1,0 +1,26 @@
+{% load task_status %}
+
+{# work out whether to display the submit section #}
+{% set 'count_conf' documents.confidential|length %}
+{% if count_conf > 0 %}
+    {% set 'enable_submit' 1 %}
+{% endif %}
+{% if documents.deficient|length > 0 %}
+    {% set 'enable_submit' False %}
+{% endif %}
+
+<li>
+    {% include "./section_heading.html" with section_heading=section_heading|default:'Submit your application' %}
+    <ul class="task-list-items">
+       <li class="task-list-item edit-item">
+            {% if submission.id  and enable_submit %}
+                <a href="/case/{{case_id}}/submission/{{submission.id}}/submit/">Final check and submission</a>
+            {% else %}
+                Final check and submission
+                {% if submission.sent or submission.locking %}
+                    {% task_status 'COMPLETE' %}
+                {% endif %}
+            {% endif %}
+        </li>
+    </ul>
+</li>

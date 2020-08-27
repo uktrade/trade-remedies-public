@@ -1,0 +1,31 @@
+{% load set %}
+
+{% comment %}
+ A single panel - right/left or full width
+ Supports expanded/compact display, recently-uploaded, upload widget, deficient and 'requiring upload' modes
+
+file - document structure
+submission
+side - left or right 
+{% endcomment %}
+
+{% set 'warning' False %}
+{% if file and not file.child or file.deficient or file.child.deficient %}
+	{% if file.type.key != 'loa' %}
+		{% set 'warning' True %}
+    {% endif %}
+{% endif %}
+{# see if this is the last row to be uploaded or updated #}
+
+{% if new_document.id and new_document.id == file.id %}
+    {% set 'new_file_row' True %}
+{% endif %}
+{% if not empty_row and not review_mode %}
+    {% include "partials/widgets/upload/delete_link.html" with file=file %}
+{% endif %}
+<div class="upload-row form-group {% if warning %}warning{% endif %} {% if empty_row %}new-file-uploader{% endif %} {% if is_empty or new_file_row %}expanded{% endif %} {% if new_file_row %}new-row{% endif %}">
+    {% include "partials/widgets/upload/panel.html" with file=file side='left' %}
+    {% if not one_column and not empty_row %}
+        {% include "partials/widgets/upload/panel.html" with file=file.child side='right' parent=file %}
+    {% endif %}
+</div>

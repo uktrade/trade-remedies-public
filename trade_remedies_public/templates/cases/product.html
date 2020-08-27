@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% load back_link %}
+{% load error_message %}
+{% block main_content %}
+
+    <div class="breadcrumbs" data-module="track-click">
+        <ol class="">
+            <li class="">
+              <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
+            </li>
+          <li class="">
+            <span>Apply for a new investigation</span>
+          </li>
+        </ol>
+    </div>
+
+    <div class="grid-row">
+          {% include "partials/widgets/error_summary.html" with errors=errors %}
+        <div class="column-two-thirds">
+
+            <h1 class="heading-xlarge edit-item">
+                <span class="heading-secondary">1. Provide an overvew of the complaint</span>
+                About the product
+            </h1>
+
+            <form action="/case/{{case_id}}/submission/{{submission_id}}/product/{% if product.id %}{{product.id}}/{% endif %}" method="post" class="dd-form">
+                {% csrf_token %}
+                {% if pre_review_applications %}
+                    {% set 'org_role' submission.deficiency_notice_params.organisation_role %}
+                    {% if org_role == 'producer' %}
+                        {% set 'question_label' 'Are the goods that you produce currently subject to trade remedy measures?' %}
+                        {% set 'options' '[{"value":"review","label":"Yes"},{"value":"AD","label":"No"}]' %}
+                        {% radio_element id='case_category' label=question_label value=submission.deficiency_notice_params.case_category  options=options errors=errors %}
+                    {% endif %}
+
+                    {% comment %}
+                    {% elif org_role == 'importer' %}
+                        {% set 'question_label' 'Are you requesting a refund investigation or a review of existing measures?' %}
+                        {% set 'options' '[{"value":"refund","label":"Refund investigation"},{"value":"review","label":"Review of existing measures"}]' %}
+                    {% elif org_role == 'exporter' %}
+                        {% set 'question_label' 'Are you requesting a new exporter review, refund investigation or a review of existing measures?' %}
+                        {% set 'options' '[{"value":"new_exporter","label":"New exporter review"},{"value":"refund","label":"Refund investigation"},{"value":"review","label":"Review of existing measures"}]' %}
+                    {% endif %}
+                    {% endcomment %}
+                {% endif %}
+
+                <div class="form-group {% if errors.product_name %}form-group-error{% endif %}" data-fieldname="industry-sector">
+                    <label class="form-label" for="product-name">
+                        What is the name of your product?
+                    </label>
+                    {% if submission.locked %}
+                        {{product.name}}
+                    {% else %}
+                        {% error_message errors 'product_name' %}
+                        <input type="text" id="product-name" class="form-control" name="product_name" value="{{product.name|default_if_none:''}}"/>
+                    {% endif %}
+                </div>
+                <div class="form-group edit-item type-select {% if errors.sector %}form-group-error{% endif %}" data-fieldname="industry-sector">
+                    <label class="form-label" for="sector">
+                        Which industry sector is this application related to?
+                    </label>
+                    {% if submission.locked %}
+                        {{product.sector.name}}
+                    {% else %}
+                        {% error_message errors 'sector' %}
+                        <select id="sector" class="form-control" name="sector">
+                            <option value="">Please select ...</option>
+                                {% for sector in sectors %}
+                                    <option
+                                      value="{{sector.id}}"
+                                      {% if product.sector.id == sector.id %}selected{% endif %}
+                                    >{{sector.code}}: {{sector.name}}</option>
+                                {% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
+                {% comment removed from the UI for now %}
+                <div class="form-group edit-item type-textArea">
+                    <label class="form-label" for="description">
+                        Which product type is affected?
+                    </label>
+
+                    {% if submission.locked %}
+                        <pre>{{product.description}}</pre>
+                    {% else %}
+                        {% error_message errors 'description' %}
+                        <textarea name="description" class="form-control" rows="10" style="width:100%; height:100%;">{{product.description|default_if_none:''}}</textarea>
+                    {% endif %}
+                </div>
+                {% endcomment %}
+                <div class="form-group {% if errors.hs_code %}form-group-error{% endif %}" >
+                    <label class="form-label" for="hs-code-empty">Commodity codes for the affected goods
+                        <span class="form-hint">
+                            You should supply the most detailed commodity codes available. <br/>
+                            6, 8 or 10 digits are required.
+                            <a href="https://www.gov.uk/trade-tariff" target="_blank">
+                                Look up a code
+                                <i class="icon16 icon-outlink"></i>
+                            </a>
+                            <p></p>
+                        </span>
+                    </label>
+                    {% error_message errors 'hs_code' %}
+                    <div class="hs-code-list list">
+                        {% for hs_code_value in product.hs_codes %}
+                            <div class="product-classification-code margin-bottom-1 template row">
+                                <fieldset>
+                                    <label for="hs-code-{{ hs_code_value.id|default:'empty' }}"><span class="visually-hidden">hs code {{forloop.counter}}</span></label>
+                                    <input id="hs-code-{{ hs_code_value.id|default:'empty' }}" class="form-control margin-bottom-1" type="text" name="hs_code" value="{{hs_code_value.code}}" data-handler="copyValToLink" maxlength="14"/>
+                                    {% if hs_code_value.id %}
+                                        <button
+                                            class="link"
+                                            name="delete"
+                                            value="{{hs_code_value.id}}"
+                                            type="submit">
+                                                <span class="visually-hidden">Delete hs code
+                                                    <span class="replace-with-value">{{hs_code_value.code}}</span>
+                                                </span>Remove
+                                        </button>
+                                    {% endif %}
+                                </fieldset>
+                            </div>
+                            {% empty %}
+                            <div class="product-classification-code margin-bottom-1 template row">
+                                <fieldset>
+                                    <label for="hs-code-empty"><span class="visually-hidden">New hs code</span></label>
+                                    <input id="hs-code-empty" class="form-control" data-handler="copyValToLink" type="text" name="hs_code" value="" maxlength="14"/>
+                                    <a class="button" href="javascript:void(0)" data-handler="deleteRow" >
+                                        <span class="visually-hidden">Delete hs code
+                                            <span class="replace-with-value">
+                                                {{hs_code_value}}
+                                            </span>
+                                        </span> Remove
+                                    </a>
+                                </fieldset>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <span class="error-message"></span>
+                    <button type="submit" class="link" name="btn-action" value="add">
+                            + Add another
+                    </button>
+                    <!-- <a class="link bold" href="?add=1" >&#x2795 Add code</a> -->
+                </div>
+                <div class="button-container">
+                    <button type="submit" class="button margin-bottom-2" name="btn-action" value="142">
+                            Save and continue
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="column-one-third">
+            {% include "partials/widgets/org_display_small.html" %}
+            {% include "partials/widgets/help_box.html" %}
+        </div>
+    </div>
+    {% back_link case_id submission_id %}
+
+{% endblock %}

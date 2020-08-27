@@ -1,0 +1,66 @@
+{% extends "../base_form.html" %}
+
+{% block breadcrumb_current %}Invite 3rd party{% endblock %}
+{% block page_subtitle %}2. Add people to invite{% endblock %}
+{% block page_title  %}Invitees{% endblock %}
+
+{% block subtype_content %}
+<div class="grid-row">
+    <table class="cases" data-attach="TableSort">
+      <thead>
+        <tr>
+          <th class="text">Name</th>
+          <th class="case-name">Email</th>
+          <th class="type">Organisation</th>
+          <th class="applicant">Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for invite in invites %}
+          <tr>
+              <td>{{invite.contact.name}}</td>
+              <td>{{invite.email}}</td>
+              <td>
+                {{invite.contact.organisation.name}}
+              </td>
+              <td></td>
+              <td><a href="/case/invite/{{case.id}}/{{submission.id}}/people/remove/{{invite.id}}/">Remove</a></td>
+          </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+
+    <div class="column-two-thirds">
+        <div id="block-1035" class="form-group edit-item type-select ">
+            <label class="form-label" for="field-1035">Invite</label>
+            {% if submission.locked %}
+                {{invite.name}}
+            {% else %}
+            <label class="form-label" for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{invite.name}}">
+            <label class="form-label" for="email">Email</label>
+            <input type="text" class="form-control" id="email" name="email" autocomplete="off" value="{{invite.email}}">
+
+            <div id="typeAheadWrapper" class="form-group type-text type-typeahead" data-validate=".+->You must provide a company" >
+                <label class="form-label" for="company">UK Company name</label>
+                <input class="form-control form-control-3-4" id="company" type="text" data-mode="company" name="organisation_name" value="{{organisation.name}}" autocomplete="new-password">
+            </div>
+            <div class="form-group type-text" >
+                <label class="form-label" for="company_number">Company number</label>
+                <input class="form-control" id="company_number" type="text" name="companies_house_id" value="{{organisation.companies_house_id}}">
+            </div>
+            <div class="form-group type-text" >
+                <label class="form-label" for="company_number">Address</label>
+                <input class="form-control" id="postal_code" type="hidden" name="organisation_post_code" value="{{organisation.post_code}}">
+                <textarea class="form-control-3-4" rows="5" id="full_address" type="text" name="organisation_address">{{ organisation.address }}</textarea>
+            </div>
+        {% endif %}
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

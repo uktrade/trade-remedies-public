@@ -1,0 +1,88 @@
+{% load error_message %}
+{% load set %}
+
+<script>
+    function onCountryChange(value) {
+        var controller = ($('#typeAheadWrapper')[0] || {})['Typeahead'];
+        if(controller) {
+            controller.enable(value == 'GB')
+        }
+    }
+</script>
+<div {% if representing_value %}class="hidden"{% endif %}>
+    {% radio_element id='representing_value' label='Who are you applying for?' value=representing_value options='[{"value":"own","label":"The organisation I work for"}, {"value":"previous","label":"An organisation I have represented before"}, {"value":"other","label":"A new organisation I have not represented before"}]' errors=errors %}
+</div>
+
+<div id="companyInfo" data-revealedby="representing_value:own" class="company-section own form-group {% if representing_value != 'own' %}hidden{% endif %}">
+    <hr>
+    <label class="form-label">
+        Company name
+    </label>
+        {% for organisation in user.organisations %}
+        <div class="multiple-choice">
+        <input
+            id="org{{forLoop.counter}}"
+            type="radio"
+            name="organisation_id"
+            value="{{organisation.id}}"
+            {% if user.organisations|length == 1  or forloop.counter == 1 %}checked{% endif %}>
+            <label for="org{{forLoop.counter}}">{{organisation.name}}</label>
+        </div>
+    {% endfor %}
+</div>
+<div id="companySelector" data-revealedby="representing_value:previous" class="company-section previous form-group {% if representing_value != 'previous' %}hidden{% endif %}">
+    <hr>
+    <div class="form-group">
+        <label class="form-label">
+            Client organisation name
+        </label>
+        <select class="form-control" name="previous_organisation_id" data-attach="ShowDetails" data-json='{{org_parties|to_json}}' data-targetselector="#org-display">
+            <option value="" disabled="true" selected="true">Please select ...</option>
+            {% for organisation in org_parties %}
+                <option
+                    value="{{organisation.id}}"
+                >{{organisation.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div id="org-display" class="no-js-hidden">
+        <!-- {% text_element id='name' label='Company name' value="" input_classes='form-control-3-4 data-target' read_only=True %}-->
+        <div class="margin-bottom-1">Check the organisation details carefully. If the details do not match those of the organisation you are representing, you should choose the "new organisation option" and add the correct details</div>
+        {% text_element id='companies_house_id' label='Company registration number' value="" hint="If this organisation is not a registered company, enter its postcode (zipcode) instead." input_classes='form-control-3-4 data-target' read_only=True %}
+        {% text_element id='address.address' label='Address' textarea=True input_classes='form-control-3-4 data-target' read_only=True %}
+        {% text_element id='address.postcode' label='Postcode' value="" input_classes='form-control-3-4 data-target' read_only=True %}
+        {% text_element id='address.country' label='Country' value="" input_classes='form-control-3-4 data-target' read_only=True %}
+    </div>
+</div>
+<div id="companyForm" data-revealedby="representing_value:other" class="company-section other form-group edit-item {% if representing_value != 'other' %}hidden{% endif %}" data-fieldname="applicant-company">
+    <hr>
+    {% if submission.locked %}
+        {{submission.organisation.name}}
+    {% else %}
+        {% if countries %}
+        <div id="typeAheadWrapper" class="type-typeahead">
+            <div  class="form-group" >
+                <label class="form-label" for="countrySelector">Country of the company you are representing</label>
+                <select class="form-control" id="countrySelector" name="organisation_country" onChange="onCountryChange(this.value);">
+                    {% for country_code, country_name in countries %}
+                        <option
+                            value="{{country_code}}"
+                            {% if country == country_code %}selected{% endif %}
+                        >{{country_name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% endif %}
+        {% text_element id='organisation_name' label='Name of company you are representing' errors=errors value=organisation_name data_mode='company' input_classes='form-control-3-4' %}
+        {% text_element id='company_number' name="companies_house_id" hint="If this organisation is not a registered company, enter its postcode (zipcode) instead." label='Company number' errors=errors value=companies_house_id %}
+
+        <input class="form-control" id="postal_code" type="hidden" name="organisation_post_code" value="{{organisation_post_code}}">
+        {% text_element id='full_address' name='organisation_address' value=organisation_address label='Address' errors=errors input_classes='form-control-3-4' textarea=True rows=5 %}
+        {% text_element id='vat_number' label='VAT registration number (optional)' errors=errors hint='Fill this in if the company is registered for Value Added Tax.' %}
+        {% text_element id='eori_number' label='EORI number (optional)' errors=errors hint='The company will have an EORI if it has brought goods into the UK or EU.' %}
+        {% text_element id='duns_number' label='DUNS number (optional)' errors=errors hint='The company\'s 9-digit Data Universal Numbering System identifier.' %}
+        {% text_element id='organisation_website' label='Company website (optional)' errors=errors hint='The company\'s main corporate website address.' %}
+
+    {% endif %}
+</div>

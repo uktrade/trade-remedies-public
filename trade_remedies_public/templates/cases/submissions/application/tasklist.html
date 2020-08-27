@@ -1,0 +1,109 @@
+{% extends "../base_tasklist.html" %}
+{% load task_link_toggle %}
+{% load set %}
+
+{% block breadcrumb_current %}Apply{% endblock %}
+
+{% block header %}
+    <h1 class="heading-large edit-item">
+        Apply for a new investigation
+    </h1>
+{% endblock %}
+
+
+{% block submission_received_title %}Application submitted{% endblock %}
+
+{% block submission_received_message %}
+      {% if submission.status.received or submission.status.review %}
+        <p>This application has been submitted{% if submission.status.review %} for review.{% else %}.{% endif %}</p>
+        <p>If you want to report an omission, error or material change contact the <a target="_blank" href="/contact" class="nobreak">{% include "partials/TRID_full_name.html" %}</a>.</p>
+      {% endif %}
+      {% endblock %}
+
+
+{% block tasklist_content %}
+    <li>
+        <div class="edit-item">
+            <h2 class="task-list-section">
+                <span class="task-list-section-number">1. </span>
+                <span class="task-list-section-title">Provide an overview of the complaint</span>
+            </h2>
+        </div>
+        <ul class="task-list-items">
+            {% set 'enable_next' False %}
+            {% if state.status.organisation != 'COMPLETE' %}
+                {% set 'enable_next' True %}
+            {% endif %}
+            <li class="task-list-item edit-item" data-section="27">
+                {% task_link_toggle submission 'company' 'Company Information' enable_next %}
+                {% task_status state.status.organisation %}
+            </li>
+            {% set 'enable_next' False %}
+            {% if state.status.organisation and state.status.product != 'COMPLETE' %}
+                {% set 'enable_next' True %}
+            {% endif %}
+            <li class="task-list-item edit-item" data-section="28">
+                {% task_link_toggle submission 'product' 'About the product' store.enable_next %}
+                {% task_status state.status.product %}
+            </li>
+            {% set 'enable_next' False %}
+            {% if state.status.product == 'COMPLETE' and state.status.source != 'COMPLETE' %}
+                {% set 'enable_next' True %}
+            {% endif %}
+            <li class="task-list-item edit-item" data-section="214">
+                {% task_link_toggle submission 'source' 'Source of the exports' enable_next %}
+                {% task_status state.status.source %}
+            </li>
+        </ul>
+    </li>
+    <li>
+        <div class="edit-item">
+            <h2 class="task-list-section">
+                <span class="task-list-section-number">2. </span>
+                <span class="task-list-section-title">Download forms</span>
+            </h2>
+        </div>
+        <ul class="task-list-items">
+            <li class="task-list-item">
+                {% task_link_toggle submission 'download' 'Download application forms' state.source %}
+                <div class="pull-right">{% download_count documents.caseworker 'Downloaded' '' %}</div>
+            </li>
+            {% if documents.deficiency %}
+            <li class="task-list-item">
+                <a href="/case/{{case.id}}/submission/{{submission.id}}/download/deficiency/">Download deficiency documents</a>
+                <div class="pull-right">{% download_count documents.deficiency 'Downloaded' '' warning=True %}</div>
+            </li>
+            {% endif %}
+        </ul>
+    </li>
+    <li>
+        <div class="edit-item">
+            <h2 class="task-list-section">
+                <span class="task-list-section-number">3. </span>
+                <span class="task-list-section-title">Your application</span>
+            </h2>
+        </div>
+        <ul class="task-list-items">
+            {% compare 'documents_complete' state.status.documents 'COMPLETE' %}
+            {% set 'upload_loa' False %}
+            {% if submission and request.user.organisation.id != submission.organisation.id  %}
+                {% set 'upload_loa' True %}
+            {% endif %}
+            {% include "partials/task_list/upload_confidential_documents.html" with enable=state.source item_only=True confidential_only=True upload_loa=upload_loa %}
+            <li class="task-list-item">
+                {% task_link_toggle submission 'review' 'Request a review of your draft application' documents.confidential|length %}
+                {% if submission.version > 1 %}
+                    {% draft_count submission %}
+                {% elif submission.status.review_ok or submission.received_at %}
+                    {% task_status 'COMPLETE' %}
+                {% endif %}
+            </li>
+        </ul>
+    </li>
+    {% add_number 'section_counter' 1 %}
+    {% include "partials/task_list/upload_non_confidential_documents.html" with enable=documents_complete section_heading='Your non-confidential application' section_counter=4 not_applicable=case.type.meta.confidential_only %}
+    {% include "partials/task_list/review_submit.html" with item_heading_check='Check your application' item_heading_submit="Submit your application" section_counter=5 confidential_only=case.type.meta.confidential_only %}
+{% endblock %}
+
+{% block cancel_button_text %}Cancel application{% endblock  %}
+{% block cancel_button_redirect %}/dashboard/{% endblock  %}

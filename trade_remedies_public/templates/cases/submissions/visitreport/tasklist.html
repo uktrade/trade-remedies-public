@@ -1,0 +1,27 @@
+{% extends "../base_tasklist.html" %}
+
+{% load task_link_toggle %}
+
+{% block breadcrumb_current %}Submit response to visit report{% endblock %}
+{% block page_subtitle %}{% endblock %}
+{% block page_title %}Submit response to visit report{% endblock %}
+
+{% block submission_received_title %}Questionnaire submitted{% endblock %}
+
+{% block submission_received_message %}
+    This questionnaire has been submitted.  You can read your answers at any time but you can’t change them. If you want to report an omission, error or material change contact the <a target="_blank" href="/contact">{% include "partials/TRID_full_name.html" %}</a>.
+{% endblock %}
+
+{% block tasklist_content %}
+
+    {% set 'section_counter' 1 %}
+    {% include "partials/task_list/download_documents.html" with section_heading='Download report' item_heading='Download visit report' %}
+
+    <!-- upload docs section -->
+    {% add_number 'section_counter' 1 %}
+    {% include "partials/task_list/upload_confidential_documents.html" with section_heading='Your response' enable=True %}
+
+    {% add_number 'section_counter' 1 %}
+    {% include "partials/task_list/review_submit.html" with item_heading_check='Check your response' item_heading_submit='Submit your response' enable=documents.respondent %}
+
+{% endblock %}

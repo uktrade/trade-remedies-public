@@ -1,0 +1,14 @@
+{% comment %}
+ Public document list
+ Similar to internal doc list but has links that are available on public file
+{% endcomment %}
+{% load download_link %}
+{% load format_date %}
+{% load set %}
+<ul class="document-list">
+    {% for document in documents %}
+        <li>
+            {% download_link document %}
+        </li>
+    {% endfor %}
+</ul>

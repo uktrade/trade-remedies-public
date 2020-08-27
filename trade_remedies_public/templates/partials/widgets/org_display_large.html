@@ -1,0 +1,5 @@
+{% if org_indicator_type == 1 and current_organisation and not all_organisations %}
+    <div class="organisation-block">
+      You are currently representing {{current_organisation.name|default:'N/A'}}
+    </div>
+{% endif %}

@@ -1,0 +1,314 @@
+/* Styles for confifdential/ non-confidential file upload widget */
+
+.box-alert {
+    display: block;
+    background: $alert-box-background;
+    padding: 15px 20px;
+    border: 3px solid $alert-box-border;
+    &.error {
+      background: $red;
+      border-color: $red;
+      font-weight: bold;
+      color: $white;
+    }
+    &.warning {
+      background: white;
+      border-color: #e40000;
+      padding: 20px 20px 20px 60px;
+      &:before {
+        @include icon(36px);
+        content: '';
+        display: inline-block;
+        position: absolute;
+        margin-left: -45px;
+      }
+    }
+    &.warning.oneline:before {
+      margin-top: -6px;
+    }
+}
+
+/****   Styles for uploader widget ********/
+
+/******** drop target **********/
+.upload-target {
+  padding: 28px;
+  border: 1px dashed #DDDFE1;
+  .center-text {
+    margin-top:10px;
+    font-weight: bold;
+    color: #6A7276;
+    text-align: center;
+    padding: 0 20px;
+
+  }
+  &:before {
+    content:'';
+    background-image: url(images/upload-arrow-light.png);
+    width: 64px;
+    height: 64px;
+    background-size: cover;
+    display:block;
+    margin:auto;
+  }
+  &:after {
+      content:'';
+      background-image: url(images/upload-arrow-dark.png);
+      left:-5000px;
+      position: absolute;
+  }
+  &.drag-over {
+    background: darken($jamie-panel-colour, 3%);
+  }
+  &.drag-over:before {
+    background-image: url(images/upload-arrow-dark.png);
+  }
+  &.drag-bad {
+    background: $red-25;
+    &:after {
+      content: 'You can only drag and drop one file at a time.';
+      position: absolute;
+      top:0;
+      left:0;
+      bottom:0;
+      right:0;
+      background: $red-25;
+      font-weight: bold;
+      padding: 104px 30px;
+      text-align: center;
+    }
+  }
+  button {
+    display:block;
+    margin:10px auto 10px;
+    padding: 7px 40px;
+  }
+}
+
+// IE 11 specific target
+_:-ms-fullscreen, :root { 
+  .upload-target > .center-text {
+    visibility: hidden;
+  }
+}
+
+.upload-indicator {
+  left:20px;
+  right: 20px;
+  position: absolute;
+  margin-top: 20px;
+  text-align: center;
+  display: none;
+}
+
+.uploading {
+  > .upload-indicator {
+    display:block;
+  }
+  > .upload-target {
+    display:none;
+  }
+}
+
+table.file-list .filename {
+  font-weight: bold;
+}
+
+table.file-list a {
+  text-decoration: none;
+}
+
+table.file-list tr td:nth-child(2), table.file-list tr td:nth-child(3) {
+    min-width: 80px;
+}
+
+/* Styles for later conf/non-conf widget */
+
+.conf-nonconf3 {
+  .upload-row {
+    position: relative;
+    background: $jamie-panel-colour;
+    overflow: hidden;
+    transition: height 3s;
+    // dashed separator
+    &:after {
+      content: '';
+      width: 0;
+      display: block;
+      border-right: 6px dashed $grey-2;
+      position: absolute;
+      right: 50%;
+      margin-right: -3px;
+      top: 0;
+      bottom: 0;
+      z-index: 1;
+    }
+    // don't show separator if there is a warning as the border is the separator
+    &.warning:not(.expanded):after {
+      display: none;
+    }
+    .uploader {
+      z-index: 1;
+      display: none;
+      height: 260px;
+      position: relative;
+      background: $jamie-panel-colour;
+      .upload-target {
+        margin: 0;
+        border: none;
+      }
+      .upload-indicator{
+        margin-top: 80px;
+      }
+    }
+    .expanded {
+      .uploader {
+        display: block;
+      }
+      .display-mode {
+        display: none;
+      }
+    }
+    .display-mode, .display-panel {
+      padding: 0;
+      position: relative;
+      z-index: 1;
+    }
+    &.expanded .display-panel {
+      .display-shim {
+        margin: 90px 20px;
+      }
+    }
+    .file-panel {
+      padding: 0;
+      // This pseudo element laid under the display element is used to add a background or border to one side
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 50%;
+      }
+      &.right:after {
+        left: 50%;
+      }
+      &.left:after {
+        left:0;
+      }
+      &.warning:not(.expanded):after{
+        box-shadow: inset 0px 0px 0px 3px black;
+      }
+    }
+    &.new-row .file-panel.expanded:not(.warning):after {
+      background: $alert-box-background;
+    }
+
+    .display-panel .display-shim {
+      margin: 20px;
+      .display-title {
+        text-align: center;
+        word-break: break-all;
+      }
+      button.link {
+        font-weight: bold;
+        text-decoration: none;
+        &.replace-link {
+          position: relative;
+          top: -4px;
+        }
+      }
+    }
+  }
+  // show empty uploader if no files or class set by js
+  .upload-row.new-file-uploader {
+    height: 0px;
+    overflow: hidden;
+    &.expanded, &.is-empty {
+      height: auto;
+    }
+  }
+  &.one-column {
+    // Hide separator in single col mode.
+    .upload-row:after {
+      display: none;
+    }
+    // Also, stretch shim to full width
+    .upload-row .file-panel:after {
+      width: 100%;
+    }
+  }
+
+  &.show-uploader .new-file-uploader {
+    display: block;
+  }
+}
+
+table.file-list .filename {
+  font-weight: bold;
+}
+
+table.file-list a {
+  text-decoration: none;
+}
+
+table.file-list tr td:nth-child(2), table.file-list tr td:nth-child(3) {
+    min-width: 80px;
+}
+// No JS mode
+.uploader > .js-hidden {
+  overflow: hidden;
+  #file-upload {
+    width: auto;
+    max-width:90%;
+    display: block;
+    margin: 100px auto 16px;
+  }
+  button {
+    display:block;
+    margin: 10px auto;
+  }
+}
+
+body:not(.js-enabled) .upload-row.new-file-uploader {
+  height: auto;
+}
+
+body:not(.js-enabled) .conf-nonconf3 {
+  button[value=btn-add-another] {
+    display: none;
+  }
+  input[type=file] {
+    color: black;
+    position: relative;
+    padding: 4px 0px 4px 0;
+    max-width: 100%;
+    border: 2px solid $grey-3;
+    z-index: 1;
+    &:after {
+      content: "Browse...";
+      position: absolute;
+      left: 0px;
+      top: 0;
+      bottom: 0;
+      display: block;
+      z-index: 2;
+      background: white;
+      color: black;
+      padding: 6px 7px;
+      border-right: 2px solid $grey-3;
+      cursor: pointer;
+      width: 97px;
+    }
+  }
+  .no-js-uploader {
+    margin:10px;
+    button[type=submit] {
+      z-index: 1;
+      margin: 10px auto;
+      display: block;
+    }
+  }
+
+}
+

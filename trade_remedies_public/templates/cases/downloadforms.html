@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load back_link %}
+
+{% block main_content %}
+<div class="grid-row">
+    <div class="column">
+
+        {% include 'cases/submissions/'|add:download_template %}
+
+
+    </div>
+
+    <div class="column-third">
+        <div class="community-contact">
+            <p>
+            <!-- <a class="feedback" href="/contact/govuk">Give feedback about this page</a> -->
+            </p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

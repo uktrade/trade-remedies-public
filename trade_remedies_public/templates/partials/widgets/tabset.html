@@ -1,0 +1,9 @@
+<ul class="tabset">
+	{% for tab in q.tabList %}
+		<li class="tab {% if tab.value == q.value %}selected{% endif %}">
+			{% if tab.value != q.value %}<a href="?tab={{ tab.value }}{{ q.urlExt }}" data-tab="{{ tab.value }}">{% else %}<span>{% endif %}
+				{{ tab.label }}{% if tab.sr_text %}<span class="visually-hidden">{{tab.sr_text}}</span>{% endif %}
+			{% if tab.value != q.value %}</a>{% else %}</span>{% endif %}
+		</li>		
+	{% endfor %}
+</ul>

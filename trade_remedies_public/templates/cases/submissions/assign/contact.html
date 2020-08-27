@@ -1,0 +1,67 @@
+{% extends "../base_form.html" %}
+{% load error_message %}
+
+{% block page_subtitle %}2. Contact options{% endblock %}
+{% block page_title %}
+    Set contact options
+{% endblock %}
+
+
+{% block breadcrumb %}
+    <li class="">
+        <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+    </li>
+    <li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
+        <a href="/accounts/team/">Manage your team</a>
+    </li>
+    <li data-track-category="breadcrumbClicked" data-track-action="3"   class="" aria-current="false" >
+        <a href="/accounts/team/{{organisation.id}}/user/{{ assign_user.id }}/">{{ assign_user.name }}</a>
+    </li>
+{% endblock %}
+{% block breadcrumb_current %}Assign a user to a case{% endblock %}
+
+{% block subtype_content %}
+    {% if submission.status.locking %}
+        <h3 class="heading-medium">
+            Add {{assign_user.name}} to a case
+        </h3>
+    {% else %}
+
+        <label class="form-label">
+            {% block submission_main_text %}
+            Select whether to set this user as a primary contact for the case, for your organisation,
+            or keep the primary contact as is.
+            {% endblock %}
+        </label>
+        {% block conf_box %}
+            <!-- {% if submission_id %}
+                <input type="hidden" name="submission_id" value="{{submission_id}}"/>
+            {% endif %} -->
+            {% if representing %}
+                <input type="hidden" name="organisation_id" value="{{representing.id}}"/>
+            {% endif %}
+            <div class="multiple-choice">
+                <input
+                    type="radio"
+                    id="notprimary"
+                    name="is_primary"
+                    value="nochange"
+                    {% if is_primary == 'nochange' %}checked{% endif %}
+                />
+                <label for="notprimary" class="form-label">Do not change the primary contact</label>
+            </div>
+            <div class="multiple-choice">
+                <input
+                    type="radio"
+                    id="primary"
+                    name="is_primary"
+                    value="primary"
+                    {% if is_primary == 'primary' %}checked{% endif %}
+                />
+                <label for="primary" class="form-label">Assign {{u.name}} as the primary contact</label>
+            </div>
+        {% endblock %}
+    {% endif %}
+{% endblock %}
+
+{% block save_button_text %}Save and continue{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "../base_view.html" %}
+{% load a_or_an %}
+
+{% block breadcrumb_current %}Apply for a new investigation{% endblock %}
+
+{% block page_title  %}Application Submitted{% endblock %}
+
+{% block status_block %}
+    {% if submission.status.received or submission.status.review %}
+        <div class="info-summary" role="alert" aria-labelledby="info-block-title" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="info-block-title">
+                Application for {% a_or_an case.type.name %} {{case.type.name|lower}}  submitted {% if submission.status.review %} for review.{% endif %}
+            </h2>
+
+            <p>This application has been submitted{% if submission.status.review %} for review.{% else %}.{% endif %}
+                If you need to make changes to the information you have submitted here, please contact us as soon as possible.
+            </p>
+
+            <div class="table margin-top-1 margin-bottom-1 margin-left-1">
+                <div class="row">
+                    <div class="cell label">Product</div>
+                    <div class="cell">
+                        {% for code in case.product.hs_codes %}
+                            {{code.code}}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="cell label">Country</div>
+                    <div class="cell">
+                        {% for country in case.sources %}
+                            {{country.country}}<br>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% if case.parent %}
+                    <div class="row">
+                        <div class="cell label">Measures arising from</div>
+                        <div class="cell">{{case.parent.reference}}: {{case.parent.name}}</div>
+                    </div>
+                {% endif %}
+            </div>
+
+            <a href="/dashboard">Go to your dashboard</a>
+        </div>
+
+    {% endif %}
+{% endblock %}

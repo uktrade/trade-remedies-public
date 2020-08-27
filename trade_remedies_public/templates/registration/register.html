@@ -1,0 +1,51 @@
+{% extends "registration/account_base.html" %}
+{% load text_element %}
+{% load password_element %}
+
+{% block right_column %}
+<h2 class="heading-small margin-top-1">Already have an account?</h2>
+<a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
+{% endblock %}
+
+{% block page_title %}
+Create an account
+{% endblock %}
+
+{% block form_content %}
+{% if invite and confirm_invited_org == 'true' %}
+<div class="margin-bottom-1">
+  Company Name: {{invite.organisation.name}}
+</div>
+{% endif %}
+  {% if invite and confirm_invited_org == 'true' %}
+    {% text_element id='email' label='Email address' type='email' autocomplete='email' errors=errors hint='You will need this to sign in to your account. We will use this to contact you.' read_only=True %}
+  {% endif %}
+  {% text_element id='name' autocomplete='name' label='Name' errors=errors %}
+  {% if not invite or confirm_invited_org != 'true' %}
+  {% text_element id='email' autocomplete="email" type="email" label='Email address' errors=errors hint='You will need this to sign in to your account. We will use this to contact you. This must be your professional email address, for example yourname@company.com.' read_only=invite_mode %}
+  {% endif %}
+  {% include "registration/_password_entry.html" %}
+  {% text_element id='password_confirm' autocomplete="new-password" label='Confirm password' errors=errors password=True%}
+  {% text_element id='phone' type='tel' autocomplete='tel' label='Mobile phone number (optional)' errors=errors hint="We will send a log in security code to this number. If you do not provide a number, we will email this code to you."%}
+  <div class="form-group">
+    <label class="form-label" for="country">Country<span class="form-hint">The country that your mobile phone is registered in.</span></label>
+    <select id="country" name="country" class="form-control">
+      {% for item in countries %}
+        <option value="{{item.0}}" {% if item.0 == country %}selected{% endif %}>{{item.1}}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group {% if errors.terms %}form-group-error{% endif %}">
+    {% error_message errors key='terms' %}
+    <div class="multiple-choice">
+      <input type="hidden" name="terms-required" value="true">
+      <input type="checkbox" id="terms" name="terms" {% if terms %}checked="checked"{% endif %}data-selector=".button-set button[type=submit]"/>
+      <label for="terms" class="form-label margin-top-minus">I confirm I have read and understood the <a href="/termsofuse-privacypolicy/" target="_blank">terms of use and privacy notice</a> (opens in a new window)</label>
+    </div>
+  </div>
+
+  <div class="button-set margin-bottom-1">
+    <button type="submit"  class="button">Continue</button>
+  </div>
+{% endblock %}

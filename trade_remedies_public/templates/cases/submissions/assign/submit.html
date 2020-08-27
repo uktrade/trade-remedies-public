@@ -1,0 +1,58 @@
+{% extends "../base_submit.html" %}
+{% block breadcrumb_current %}Assign user to case{% endblock %}
+{% block page_subtitle %}5. Submit your request{% endblock %}
+{% block page_title  %}Final check and submission{% endblock %}
+
+{% block breadcrumb %}
+    <li class="">
+        <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+    </li>
+    <li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
+        <a href="/accounts/team/">Manage your team</a>
+    </li>
+    <li data-track-category="breadcrumbClicked" data-track-action="3"   class="" aria-current="false" >
+        <a href="/accounts/team/{{submission.organisation.id}}/user/{{ assign_user.id }}/">{{ assign_user.name }}</a>
+    </li>
+{% endblock %}
+
+{% block submission_main_text %}
+    {% if representing %}
+        <input type="hidden" name="organisation_id" value="{{representing.id}}"/>
+    {% endif %}
+    <p>
+        Once you submit, the following case asignment will be made.
+    </p>
+    <div class="table label-value-list">
+        <div class="row">
+            <div class="cell label">User</div>
+            <div class="cell value">{{assign_user.name}}</div>
+        </div>
+        <div class="row">
+            <div class="cell label">Case</div>
+            <div class="cell value">{% if case.reference %}{{case.reference}}:{% endif %} {{case.name}}</div>
+        </div>
+        <div class="row">
+            <div class="cell label">Representing</div>
+            <div class="cell value">{% if representing %}{{representing.name}}{% else %}{{organisation.name}}{% endif %}</div>
+        </div>
+    </div>
+    <p>
+        {% if primary == 'primary' %}
+            The user will become the primary contact for this case.
+        {% else %}
+            There will be no change to the current primary contact for this case.
+        {% endif %}
+    </p>
+{% endblock %}
+
+{% block conf_box %}
+    <input type="hidden" name="non_conf" value="included-non-conf">
+{% endblock %}
+
+{% block submission_checkbox_label %}
+{% if representing %}
+    I understand my request will need to be authorised and approved by the Trade Remedies Investigation Directorate.
+{% else %}
+    I understand the user will be assiged to the case as soon as this form is submitted.
+{% endif %}
+{% endblock %}

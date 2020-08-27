@@ -1,0 +1,22 @@
+{% load task_link_toggle %}
+<li>
+    {% include "./section_heading.html" with section_heading=section_heading|default:'Upload your documents' %}
+    <ul class="task-list-items">
+        <li class="task-list-item">
+            {% if submission.id and submission.status.default or submission_type.name == 'Ad hoc' %}
+            <a href="/case/{{case_id}}/submission/{%if submission.id %}{{submission.id}}{% else %}{{submission_type_id}}{% endif %}/uploaded/confidential">Upload your confidential documents</a>
+            {% else %}
+                <span>Upload your confidential documents</span>
+            {% endif %}
+            <span class="pull-right">
+                {% upload_count documents.confidential|length documents.deficient|length %}
+            </span>
+        </li>
+        {% if enable_nonconf %}
+            <li class="task-list-item">
+                <a href="/case/{{case_id}}/submission/{%if submission.id %}{{submission.id}}{% else %}{{submission_type_id}}{% endif %}/uploaded/public">Upload your public documents</a>
+                <span class="pull-right">{% upload_count documents.non_confidential|length documents.deficient|length %}</span>
+            </li>
+        {% endif %}
+    </ul>
+</li>

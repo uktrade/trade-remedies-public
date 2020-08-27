@@ -1,0 +1,28 @@
+{% extends "../base_form.html" %}
+{% load text_element %}
+
+{% block breadcrumb_current %}Submit evidence{% endblock %}
+{% block page_subtitle %}1. Tell us about your submission{% endblock %}
+{% block page_title %}About the submission{% endblock %}
+
+{% block subtype_content %}
+	{% with submission_name=submission.name %}
+	    {% text_element id='submission_name' label='Name your submission' errors=errors %}
+	{% endwith %}
+    <div class="form-group">
+        <label class="form-label" for="field-1035">What kind of submission do you want to make?</label>
+        {% if submission.locked %}
+            {{submission_type}}
+        {% else %}
+	        <select class="form-control" id="field-1035" name="submission_type_id">
+	            {% for submission_type_loop in submission_types %}
+	                <option
+	                    value="{{submission_type_loop.id}}"
+	                    {% if submission_type.id == submission_type_loop.id %}selected{% endif %}
+	                >{{submission_type_loop.name}}</option>
+	            {% endfor %}
+	        </select>
+    	{% endif %}
+	</div>
+
+{% endblock %}

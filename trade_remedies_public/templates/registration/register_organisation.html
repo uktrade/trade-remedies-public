@@ -1,0 +1,46 @@
+{% extends "registration/account_base.html" %}
+{% load text_element %}
+
+{% block page_title %}
+Create an account
+{% endblock %}
+
+{% block right_column %}
+<h2 class="heading-small margin-top-1">Already have an account?</h2>
+<a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
+{% endblock %}
+
+{% block form_content %}
+  <h2 class="heading-medium">
+      Your company details
+  </h2>
+  {% set 'read_only' False %}
+  {% if confirm_invited_org == 'true' %}
+    {% set 'read_only' True %}
+  {% endif %}
+  {% text_element id='organisation_name' label='Company name' errors=errors data_mode='company' autocomplete='organization' hint='You are creating an account for this company and you will be the primary contact. This is the company you are directly employed by.' read_only=read_only %}
+  {% text_element id='company_number' name='companies_house_id' label='Registered company number' value=companies_house_id errors=errors hint='If your organisation is not a registered company, enter the postcode (zipcode) of your place of work instead.' %}
+  {% text_element id='full_address' name='organisation_address' label='Registered office address' value=organisation_address errors=errors hint='We will use this to verify your company.' textarea=1 %}
+  {% if uk_company == 'yes' %}
+    <input type="hidden" name="organisation_country" value="GB"/>
+  {% else %}
+      <label class="form-label" for="organisation_country">Country</label>
+      {% if errors.organisation_country %}<span class="error-message" id="organisation_country_error">{{ errors.organisation_country }}</span>{% endif %}
+      <select class="form-control" name="organisation_country" id="organisation_country">
+          <option value="">Please select ...</option>
+          {% for country_code, country_name in countries %}
+              <option
+                  value="{{country_code}}"
+                  {% if organisation_country == country_code %}selected{% endif %}
+              >{{country_name}}</option>
+          {% endfor %}
+      </select>
+  {% endif %}
+
+
+  {% radio_element id='same_contact_address' label='Is your contact address the same as the registered office address?' options='[{"value":"yes","label":"Same as registered office"}, {"value":"no","label":"Different contact address"}]' errors=errors value=same_contact_address %}
+
+  <div class="button-set margin-bottom-1">
+  <button type="submit"  class="button">Continue</button>
+  </div>
+{% endblock %}

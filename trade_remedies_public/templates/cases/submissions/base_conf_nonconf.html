@@ -1,0 +1,79 @@
+{% extends "./submission_base.html" %}
+{% load format_date %}
+{% load link_lookup %}
+
+{% block page_title %}Upload your documents{% endblock %}
+
+{% block alert-area %}
+    {% if message %}
+        <div class="box-alert">
+            <span class="file-count">{{ message }}</span>
+        </div>
+    {% endif %}
+    {% if error %}
+        <div class="box-alert error">
+            <span class="file-count">{{ error }}</span>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block subtype_content %}
+    <div class="form-group edit-item type-label ">
+        <div class="pull-left form-label">
+            {% block label %}
+                <p>To ensure the investigation process is fair and transparent, evidence will be made publicly visible. Each piece of evidence provided here must also have a corresponding non-confidential version for the public file, with personal and commercially sensitive information redacted.</p>
+                <p>Use this page to upload both versions of your submission, pairing the public version next to the private version.</p>
+                <p class="bold">Documents uploaded in the ‘Private documents’ section will remain confidential and won’t be made publicly available. The non-confidential ‘Public versions’ will be made publicly visible.</p>
+                <p><a class="link" target="_blank" href="{% link_lookup 'LINK_GUIDANCE_CONF_NONCONF' %}" >Read more about confidential and non-confidential documents.&nbsp;<i class="icon16 icon-outlink"></i></a></p>
+            {% endblock %}
+        </div>
+    </div>
+    {#  one_column should be set true for single column mode #}
+    {% if case.type.meta.confidential_only %}
+        {% set 'one_column' True %}
+    {% endif %}
+
+    <div class="form-group margin-bottom-1">
+        {% if not one_column %}
+            <div class="column-one-half center bold">Private documents<br>(Confidential)</div>
+            <div class="column-one-half center bold">Public versions<br>(Non-confidential)</div>
+        {% else %}
+            <div class="column-full center bold">Private documents (Confidential)</div>
+        {% endif %}
+    </div>
+    {% set 'documents_list' documents.confidential %}
+    {% if submission_document_type == 'loa' %}
+        {% set 'documents_list' documents.loa %}
+    {% endif %}
+
+    <div class="conf-nonconf3 {% if one_column %} one-column{% endif %}" data-attach="ConfNonconf">
+        {% if documents_list %}
+            <div class="form-group center">
+                <button type="button" class="link margin-top-1" value="btn-add-another" >+ Add more files</button>
+            </div>
+        {% endif %}
+        {% set 'is_empty' documents_list|_not %}
+        {% include "partials/widgets/upload/row.html" with empty_row=True is_empty=is_empty %}
+
+        {% if new_document.id %}
+            {% for file in documents_list %}
+                {% if new_document.id and new_document.id == file.id %}
+                    {% include "partials/widgets/upload/row.html" with file=file new_file_row=True %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% for file in documents_list %}
+            {% if new_document.id != file.id %}
+                {% include "partials/widgets/upload/row.html" with file=file %}
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    {% if not submission.locked %}
+        <div class="form-group edit-item type-label">
+            {% block post_label %}
+            {% endblock %}
+        </div>
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,81 @@
+/************  Case page  *************/
+table.my-case {
+  .due-date {
+    color: $secondary-text-colour;
+    &.soon {
+      color: $text-colour;
+    }
+    i {
+      margin-bottom: -5px;
+    }
+  }
+  .lozenge {
+    margin: 0;
+    width: 100%;
+    font-size: 18px;
+    max-width: 165px;
+    
+    left: 0;
+    right: 0;
+    padding: 2px 8px;
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+  }
+}
+table.case-list {
+  .date-column {
+    width: 120px;
+  }
+}
+.govuk-box-highlight {
+    padding: 1em 1em;
+    display: inline-block;
+    font-size: 24px;
+    background-color: $gds_confirmation_panel;
+    h2 {
+      margin: 0;
+    }
+    a {
+      color: $white;
+      font-weight: bold;
+      text-decoration: underline;
+      &:hover {
+        color: $white;
+        text-decoration: none;
+      }
+    }
+    &.left {
+      text-align: left;
+    }
+    p {
+      margin-bottom: 0.55263em;
+    }
+}
+.table .cell.label {
+  font-weight: bold;
+  text-align: right;
+  padding-right: 25px;
+}
+
+table.review-types {
+  .multiple-choice {
+    margin: 0px -24px 19px 0px !important;
+  }
+  tr.disabled td {
+    color: $grey-1;
+  }
+  tr td {
+    border-bottom: 2px solid $grey-3;
+  }
+  tr:first-child td {
+      border-top: 2px solid $grey-3;
+  }
+}
+
+// On source of exports page in application
+.country-selector > li {
+    border-top: 2px solid $grey-3;
+    padding: 15px 0 6px;
+}

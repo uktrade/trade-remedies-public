@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% load task_status %}
+{% load task_link_toggle %}
+{% load upload_count %}
+{% load draft_count %}
+{% load set %}
+{% load format_date %}
+{% block main_content %}
+
+{% block breadcrumb %}
+    BC BLOCK default
+{% endblock %}
+
+
+{% with bc_current_page="Create" %}
+  {% if submission %}
+    {% set 'bc_current_page' submission.type.name %}
+  {% endif %}
+  {% include "partials/widgets/breadcrumb.html" with bc_case=case bc_submission=submission bc_organisation=submission.organisation %}
+{% endwith %}
+
+<div class="grid-row">
+    <div class="column-full">
+        {% block tasklist_header %}
+        {% endblock %}
+
+
+        {% if submission.deficiency_sent_at %}
+          <h3 class="heading-small">
+            Deficiency Notice ({%format_date submission.deficiency_sent_at '%d %b %Y' %})
+          </h3>
+
+        {% endif %}
+
+        {% if case %}
+
+            <h2 class="heading-large">
+              {{case.reference}}:
+              {{case.name}}
+            </h2>
+
+        {% endif %}
+        {% if submission.locked %}
+            <!-- LOCKED -->
+        {% endif %}
+        <div class="grid-row">
+          <div class="column-two-thirds">
+            <form action="#" method="post" class="dd-form">
+              <input type="hidden" name="instance" value="25">
+              <input type="hidden" name="page" value="142">
+
+                  <div class="form-group edit-item type-review">
+                      <div class="nav">
+                          {% include 'cases/submissions/'|add:tasklist_template %}
+                      </div>
+                  </div>
+                <a href="\dashboard">Back to dashboard</a>
+            </form>
+          </div>
+          {% include "partials/widgets/help_box.html" %}
+        </div>
+        <!-- h2 class="heading-small heading-contents">Contents:</h2>
+              <div class="grid-row">
+                <div class="column-two-thirds">
+                  <ul class="list list-contents">
+                    <li><a href="#alpha-banner">Alpha banner</a></li>
+                    <li><a href="#beta-banner">Beta banner</a></li>
+                    <li><a href="#phase-tags">Phase tags</a></li>
+                    <li><a href="#creating-phase-banners">Creating phase banners</a></li>
+                  </ul>
+                </div>
+              </div -->
+          <div class="column-third">
+            <div class="community-contact">
+              <p>
+                <!-- <a class="feedback" href="/contact/govuk">Give feedback about this page</a> -->
+              </p>
+            </div>
+          </div>
+        </div>
+<!--
+  <h2 class="heading-medium">
+    {% if case_id %}
+      Application for an anti-dumping investigation
+    {% else %}
+      Apply for an anti-dumping investigation
+    {% endif %}
+  </h2>
+  <OL class="list list-number">
+    <LI>Overview of the complaint
+        <OL class="list list-number">
+            <LI><a href="/case/{{case_id}}/company/">Company Information</a> (should enable once case is created)
+              {% if state.company == "COMPLETE" %}
+                <label>Complete</label>
+              {% else %}
+                <label class="label"><b>In progress</b></label>
+              {% endif %}
+            </LI>
+            <LI><a href="/case/{{case_id}}/product/">Product</a> (should enable once case is created)</LI>
+            <LI><a href="/case/{{case_id}}/summary/">Summary of the complaint</a> (should enable once case is created)</LI>
+            <LI><a href="/case/{{case_id}}/source/">Source of the exports</a> (should enable once case is created)</LI>
+        </OL>
+    </LI>
+  </OL>
+
+  <OL class="list list-number">
+    <LI>Complete the application
+        <OL class="list list-number">
+            <LI><a href="/case/{{case_id}}/download/">Download application forms</a></LI>
+            <LI><a href="/case/{{case_id}}/upload/">Upload completed forms</a></LI>
+        </OL>
+    </LI>
+  </OL>
+
+  <OL class="list list-number">
+    <LI>Submission
+        <OL class="list list-number">
+            <LI><a href="/case/{{case_id}}/review/">Submit draft application for review</a></LI>
+            <LI><a href="/case/{{case_id}}/uploadnonconf/">Upload non confiential versions of forms</a></LI>
+            <LI><a href="/case/{{case_id}}/submit/">Submit the application</a></LI>
+        </OL>
+    </LI>
+  </OL>
+-->
+
+{% endblock %}

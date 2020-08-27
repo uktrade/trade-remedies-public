@@ -1,0 +1,9 @@
+{% load set %}
+<div>
+    <h2 class="task-list-section">
+        <span class="task-list-section-number">{{ section_counter }}. </span>
+        <span class="task-list-section-title">{{ section_heading }}</span>
+    </h2>
+    {% set 'section_counter' section_counter|default:1|_plus:'1' %}
+</div>
+

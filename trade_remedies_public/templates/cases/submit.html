@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load back_link %}
+{% block main_content %}
+<div class="grid-row">
+    <div class="column">
+        {% back_link case_id submission_id %}
+
+        <h1 class="heading-xlarge edit-item" data-section="216">
+            <span class="heading-secondary">Submission</span>
+            {% block section_heading %}
+            5. Submit Registration of Interest
+            {% endblock %}
+        </h1>
+
+        {% include 'cases/submissions/'|add:template_name|add:'/submit.html' %}
+
+    </div>
+</div>
+
+{% endblock %}

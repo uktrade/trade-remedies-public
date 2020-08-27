@@ -1,0 +1,13 @@
+{% extends "../base_submit.html" %}
+{% block breadcrumb_current %}Submit evidence{% endblock %}
+{% block page_subtitle %}4. Final check and submit{% endblock %}
+{% block page_title %}Send your submission{% endblock %}
+
+{% block submission_main_text %}
+    <p>Once you submit this form you will not be able to make changes to your submitted information.</p>
+    <p>If you become aware of any errors or omissions please notify the {% include "partials/TRID_full_name.html" %} as quickly as possible.</p>
+{% endblock %}
+
+{% block submission_checkbox_label %}
+    My submission is complete and I am happy for the {% include "partials/TRID_full_name.html" %} to consider it
+{% endblock %}

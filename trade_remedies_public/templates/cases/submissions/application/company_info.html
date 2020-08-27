@@ -1,0 +1,29 @@
+{% extends "../base_form.html" %}
+
+{% block breadcrumb_current %}Apply for a new investigation{% endblock %}
+{% block page_subtitle %}1. Provide an overview of the complaint{% endblock %}
+{% block page_title  %}Company information{% endblock %}
+
+{%  block scripts %}
+{% endblock %}
+
+{% block form_tag %}
+    <form action="{{form_action}}" method="post" class="dd-form">
+{% endblock %}
+
+{% block subtype_content %}
+	<input type="hidden" name="page" value="{{page}}">
+	{% if page == 'role' %}
+		{% include "partials/company_role_form.html" %}
+	{% else %}
+		{% include "partials/company_input_form.html" %}
+    {% endif %}
+{% endblock %}
+
+{% block save_button %}
+	{# The two buttons here allow us to detect non-javascript by the returned value.  Only one of them will be visible #}
+	<button type="submit" class="button {% if not representing_value %} no-js-hidden{% endif %}" name="btn-action" value="savecontinue">Save and continue</button>
+	{% if not representing_value %}
+		<button type="submit" class="button js-hidden" name="btn-action" value="no-js-save">Save and continue</button>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "./submission_base.html" %}
+{% load back_link %}
+
+{% block alert-area %}
+  {% if just_submitted %}
+    <div class="govuk-box-highlight column-full left">
+       <h2 class="heading-large center margin-top-1 margin-bottom-1">{% block feedback-title %}Submission sent{% endblock %}</h2>
+    </div>
+  {% endif %}
+{% endblock %}  
+
+  {% block subtype_content %}
+
+    {% block action_block %}
+    <p class="lede">
+          Submission made by
+          {% if submission.organisation.name %}
+              {{submission.organisation.name}}
+          {% else %}
+              {% include "partials/TRID_full_name.html" %}
+          {% endif %}
+          <br>
+          {{ submission.received_at|format_date:"%d %B %Y" }}
+      </p>
+
+    {% endblock %}
+    {% if submission.sent_at %}
+      <!-- <div class="sent-date">Submitted:<strong>{% format_date submission.sent_at '%d %B %Y' %}</strong></div> -->
+    {% endif %}
+
+    {% block status_block %}
+    {% endblock %}
+
+    {% if documents.respondent %}
+    <div class="grid-row">
+      <div class="column-full">
+
+        {% if documents.confidential|length %}
+          <h3 class="heading-small">
+              {% block confidential_submission_title %}Your confidential submission{% endblock %}
+          </h3>
+          {% include 'partials/widgets/document_list.html' with documents=documents.confidential %}
+        {% endif %}
+        {% if documents.non_confidential|length %}
+          <h3 class="heading-small">
+              Your submission for the public file
+          </h3>
+          {% include 'partials/widgets/document_list.html' with documents=documents.non_confidential %}
+        {% endif %}
+        {% if documents.caseworker|length %}
+          <h3 class="heading-small">
+              Original templates
+          </h3>
+          {% include 'partials/widgets/document_list.html' with documents=documents.caseworker %}
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+  {% endblock %}
+
+  {% block buttons %}
+  <div class="grid-row">
+      {% if not case.id or submission.organisation_case_role.key == 'awaiting_approval' and submission.type.key == 'interest' or submission.type.key == 'assign' %}
+        <div class="column-full margin-top-2">
+          <a href="/dashboard/">Back to dashboard</a>
+        </div>
+      {% else %}
+        <div class="column-full margin-top-2">
+          <a href="/case/{{case.id}}/organisation/{{current_organisation.id}}/">Back to case</a>
+        </div>
+      {% endif %}
+  </div>
+  {% endblock %}

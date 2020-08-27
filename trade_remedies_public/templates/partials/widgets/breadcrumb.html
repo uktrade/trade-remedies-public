@@ -1,0 +1,30 @@
+<div class="breadcrumbs" data-module="track-click">
+    <ol class="">
+        <li class="">
+          <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
+		</li>
+		{% if bc_dashboard_only == None %}
+        <li class="">
+          <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/cases/">My cases</a>
+		</li>
+		{% endif %}
+        {% if bc_case != None %}
+	        <li class="">
+	          <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/case/{{ case.id }}{% if bc_organisation.id %}/organisation/{{ bc_organisation.id }}/{% endif %}">Case {{ case.reference }}</a>
+	        </li>
+		        {% if bc_submission %}
+			        <li class="">
+			          <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/case/{{ case_id }}/submission/{{ submission.id }}">
+			            {% if bc_submission %}
+			                {{bc_submission.type.name}}
+			            {% else %}
+			                Create
+			            {% endif %}</a>
+			        </li>
+			    {% endif %}
+	    {% endif %}
+        <li class="">
+        	<span>{{ bc_current_page }}</span>
+        </li>
+    </ol>
+</div>

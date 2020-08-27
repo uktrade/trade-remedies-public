@@ -1,0 +1,11 @@
+{% extends "../base_conf_nonconf.html" %}
+{% load set %}
+
+{% block breadcrumb_current %}Submit a questionnaire response{% endblock %}
+{% block page_subtitle %}2. Your questionnaire response{% endblock %}
+{% block page_title %}Upload your documents{% endblock %}
+
+{% block label %}
+    <p>Use this page to upload the documents which will make up your questionnaire response.</p>
+    {{block.super}}
+{% endblock %}

@@ -1,0 +1,98 @@
+{% extends '../base_tasklist.html' %}
+{% load task_link_toggle %}
+{% load error_message %}
+{% load task_status %}
+{% load link_lookup %}
+
+
+{% block breadcrumb_current %}Register interest in a case{% endblock %}
+
+{% block breadcrumb %}
+  <li class="">
+    <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
+  </li>
+  <li class="">
+    Case: {{case.reference}}
+  </li>
+{% endblock %}
+
+{% block header %}
+    <h1 class="heading-large">
+        Register your interest in a case
+        <!-- {{submission.status.name}} -->
+    </h1>
+
+    <p class="lede">Before registering interest in a case, <a href="{% link_lookup 'LINK_REGISTRATION_GUIDANCE' %}" target="_blank">read the guidance.&nbsp;<i class="icon16 icon-outlink" title="Opens in a new window"></i></a></p>
+{% endblock %}
+
+{% block submission_received_title %}Interest in case registered{% endblock %}
+
+{% block submission_received_message %}<p>This application has been submitted.</p>
+    <p>If you want to report an omission, error or material change contact the <a target="_blank" href="/contact" class="nobreak">{% include "partials/TRID_full_name.html" %}</a>.</p>
+{{case}}
+{% endblock %}
+
+{% block tasklist_content %}
+    <li>
+        <div class="edit-item" data-section="143">
+            <h2 class="task-list-section">
+                <span class="task-list-section-number">1. </span>
+                <span class="task-list-section-title">Which case are you interested in?</span>
+            </h2>
+        </div>
+        <ul class="task-list-items">
+            <li class="task-list-item edit-item" data-section="27">
+                {% if case %}
+                    {% task_status 'COMPLETE' %}
+                    <div>{{case.reference}}: {{case.name}}</div>
+                {% else %}
+                    <a href="/case/select/?redirect=interest">Select case</a>
+                {% endif %}
+            </li>
+        </ul>
+    </li>
+    <li>
+        <div class="edit-item" data-section="143">
+            <h2 class="task-list-section">
+                <span class="task-list-section-number">2. </span>
+                <span class="task-list-section-title">Which company is registering?</span>
+            </h2>
+        </div>
+        <ul class="task-list-items">
+            <li class="task-list-item edit-item" data-section="27">
+                {% if case %}
+                    {% if submission.organisation.name %}
+                        {{submission.organisation.name}}
+                        {% task_status 'COMPLETE' %}
+                    {% else %}
+                        <a href="/case/interest/{{case_id}}/company/">Company information</a>
+                    {% endif %}
+                {% else %}
+                    Company information
+                {% endif %}
+            </li>
+        </ul>
+    </li>
+
+    {% set 'upload_loa' False %}
+    {% if submission.contact.user.organisation.id != submission.organisation.id %}
+        {% set 'upload_loa' True %}
+    {% endif %}
+
+    {% include "partials/task_list/download_documents.html" with section_heading="Download templates to complete" item_heading="Download registration documents" section_counter=3 %}
+
+    {% include "partials/task_list/upload_confidential_documents.html" with section_heading='Upload completed documents' item_heading="Upload registration documents" section_counter=4 enable=submission upload_loa=upload_loa %}
+
+    {% include "partials/task_list/review_submit.html" with section_counter=5  section_heading='Final check and submit' item_heading_check='Check your registration' item_heading_submit='Submit your registration of interest' %}
+
+{% endblock %}
+
+{% block back_buttons %}
+    <div class="margin-bottom-1">
+    <a href="/dashboard/">Back to dashboard</a>
+    </div>
+{% endblock %}
+{% block cancel_button_text %}Cancel registration{% endblock  %}
+{% block cancel_button_redirect %}/dashboard/{% endblock  %}
+{% comment %}Remove link to case from registration tasklist{% endcomment %}
+{% block back_to_case_button %}{% endblock %}

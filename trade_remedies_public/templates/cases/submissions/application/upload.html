@@ -1,0 +1,27 @@
+{% extends "../base_conf_nonconf.html" %}
+{% load set %}
+
+{% block breadcrumb_current %}Apply for a new investigation{% endblock %}
+{% block page_subtitle %}3. Your application{% endblock %}
+
+{% block page_title  %}Upload application forms{% endblock %}
+
+{% block label %}<p>Use this page to upload all the evidence that makes up your application. This may include commercially sensitive confidential information, but could also include non-sensitive documents.</p>
+    <p class="bold">Documents uploaded in this section will remain confidential and won’t be made publicly available.</p>
+    <p>Each piece of evidence uploaded here must also have a corresponding non-confidential version, with personal and commercially sensitive information redacted. Non-confidential versions will need to be provided at a later stage.
+        <a class="link" href="{% link_lookup 'LINK_GUIDANCE_CONF_NONCONF' %}" target="_blank">Read more about confidential documents&nbsp;<i class="icon16 icon-outlink" title="Opens in a new tab"></i></a>
+    </p>
+{% endblock %}
+
+{% block post_label %}
+    <p>When you have finished uploading documents you can request a review of your draft application in the next step.</p>
+    <p>If changes are recommended by the {% include "partials/TRID_full_name.html" %} caseworkers you can upload replacement documents on this page. You can repeat this process until you are happy to proceed to submitting a final application.</p>
+    {% if error %}
+        {% error_message error %}
+    {% endif %}
+{% endblock %}
+
+{% block subtype_content %}
+	{% set 'one_column' True %}
+	{{ block.super }}
+{% endblock %}

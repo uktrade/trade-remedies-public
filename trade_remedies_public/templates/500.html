@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load format_date %}
+
+{% block main_content %}
+<div class="grid-row">
+  <div class="column-two-thirds">
+      
+    <h1 class="heading-large"><span class="heading-secondary">Error 500</span>
+      <i class="icon icon32 icon-amber-warning"></i>Server error
+    </h1>
+      <p>Something went wrong on our server. Here are some things you can try:</p>
+      <ul class="list list-bullet double-spaced">
+        <li>If you entered a web address, please check that it was correct.</li>
+        <li>Use your browser's back button and check the link that you clicked.</li>
+        <li>If you clicked a link that brought you to this page, please let us know using the contact details on the right.</li>
+        <li>Return to the <a class="link" href="/dashboard/">Trade Remedies service start page.</a></li>      </ul>
+  </div>
+
+  <div class="column-one-third">
+      {% include "partials/widgets/help_box.html" %}
+  </div>
+</div>
+{% endblock %}

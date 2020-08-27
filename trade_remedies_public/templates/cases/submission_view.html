@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load task_status %}
+{% load task_link_toggle %}
+{% load upload_count %}
+{% load draft_count %}
+{% load set %}
+{% load format_date %}
+{% block main_content %}
+
+{% with bc_current_page="Create" %}
+  {% if submission %}
+    {% set 'bc_current_page' submission.type.name %}
+  {% endif %}
+  {% include "partials/widgets/breadcrumb.html" with bc_case=case bc_submission=submission bc_organisation=submission.organisation %}
+{% endwith %}
+{% if case %}
+    <h2 class="heading-medium">
+      Case No. {{case.reference}}:
+      {{case.name}}
+    </h2>
+{% endif %}
+<div class="grid-row">
+    <div class="column">
+        {% block view_header %}
+        {% endblock %}
+
+
+                {% include 'cases/submissions/'|add:tasklist_template %}
+
+        {% include "partials/widgets/help_box.html" %}
+    <div class="button-set margin-bottom-1 column-full">
+        <a href="\dashboard">Back to dashboard</a>
+    </div>
+
+
+    </div>
+</div>
+{% endblock %}

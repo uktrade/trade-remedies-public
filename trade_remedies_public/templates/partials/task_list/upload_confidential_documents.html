@@ -1,0 +1,50 @@
+{% load task_link_toggle %}
+{% load set %}
+{% if not item_only %}
+<li>
+    {% include "./section_heading.html" with section_heading=section_heading|default:'Your submission' %}
+    <ul class="task-list-items">
+{% endif %}
+        {% if upload_loa  %}
+            <li class="task-list-item">
+                {% if enable %}
+                    <a href="/case/{{case_id}}/submission/{{submission.id}}/upload/loa/">{{ item_loa_heading|default:'Upload letter of authority'}}</a>
+                    <span class="pull-right">
+                        {% set 'count_loa' documents.loa|length %}
+                        {% set 'progress' documents.loa_deficient|length %}
+                        {% if count_loa != '0' %}
+                            {% upload_count count_loa None progress %}
+                        {% endif %}
+                    </span>
+                {% else %}
+                    <span>Upload letter of authority</span>
+                {% endif %}
+            </li>
+        {% endif %}
+        <li class="task-list-item">
+            {% if submission and enable %}
+                <a href="/case/{{case_id}}/submission/{{submission.id}}/upload/">{{ item_heading|default:'Upload your documents'}}</a>
+            {% else %}
+                <span>{{ item_heading|default:'Upload your documents'}}</span>
+            {% endif %}
+            <span class="pull-right">
+                {% set 'count_conf' documents.confidential|length %}
+                {% set 'count_non' documents.non_confidential|length %}
+                {% set 'count_all' count_conf|_plus:count_non %}
+                {% set 'progress' documents.deficient|length %}
+                {% if confidential_only %}
+                    {% set 'count_all' count_conf %} {# we only want to show the cout of conf docs #}
+                {% else %}
+                    {% if count_conf != count_non %}
+                        {% set 'progress' 1 %}
+                    {% endif %}
+                {% endif %}
+                {% if count_all != '0' %}
+                    {% upload_count count_all None progress %}
+                {% endif %}
+            </span>
+        </li>
+{% if not item_only %}
+    </ul>
+</li>
+{% endif %}

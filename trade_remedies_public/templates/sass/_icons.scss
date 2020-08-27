@@ -1,0 +1,293 @@
+/*********   Icons  **********/
+
+@mixin icon($width) {
+    background-size: $width $width*40;
+    background-image: url(images/sprite@2x.png);
+    display: inline-block;
+    width: $width;
+    height: $width;
+    &.icon-amber-warning {
+      background-position: 0px 0px-$width*27;
+    }
+    margin-bottom: -$width/12;
+}
+
+.icon {
+  @include icon(24px);
+  &.icon-blank {
+    background-position: 0px 36px;
+  }
+  &.icon-pen {
+    background-position: 0px -480px;
+  }
+  &.icon-down {
+    background-position: 0px -45px;
+  }
+  &.icon-tick {
+    background-position: 0px -384px;
+  }
+  &.icon-noentry {
+    background-position: 0px -336px;
+  }
+  &.icon-cross {
+    background-position: 0px -144px;
+  }
+  &.icon-bin {
+    background-position: 0px -408px;
+  }
+  &.icon-amber-warning {
+    background-position: 0px -648px;
+  }
+  &.icon-outlink {
+    background-position: 0px -312px;
+  }
+  &.icon-green-tick {
+    background-position: 0px -696px;
+  }
+  &.icon-black-warning {
+    background-position: 0px -745px;
+  }
+  &.text-align {
+      position: relative;
+      top: 4px;
+  }
+  &.correct { /* pull icon down a bit so it aligns with text */
+      margin-bottom: -4px;
+  }
+  &.icon32 {
+    width:32px;
+    height:32px;
+    background-size: 32px 960px;
+    margin: 0px 10px -3px 0;
+
+    &.icon-amber-warning {
+      background-position: 0px -864px;
+    }
+  }
+}
+.icon16 {
+  @include icon(16px);
+
+  &.icon-outlink {
+    background-position: 0px -208px;
+  }
+}
+
+
+
+/********** Notices **********/
+.notice {
+  min-height:60px;
+  div.text {
+    margin-left: 70px;
+  }
+  .icon {
+    width: 60px;
+    height: 60px;
+    background-size: 60px 1620px;
+    background-image: url('images/TRSprite2x.png');
+    top: -7px;
+    left: 0;
+    margin-top: 0;
+  }
+  .icon-alert {
+    background-position: 0px 0px;
+  }
+  .icon-breadcrumb {
+    background-position: 0px -58px;
+  }
+  .icon-expand {
+    background-position: 0px -122px;
+  }
+  .icon-right-expand {
+    background-position: 0px -180px;
+  }
+  .icon-left-expand {
+    background-position: 0px -240px;
+  }
+  .icon-close {
+    background-position: 0px -300px;
+  }
+  .icon-settings {
+    background-position: 0px -360px;
+  }
+  .icon-column-view {
+    background-position: 0px -420px;
+  }
+  .icon-document {
+    background-position: 0px -480px;
+  }
+  .icon-filter {
+    background-position: 0px -538px;
+  }
+  .icon-flag {
+    background-position: 0px -600px;
+  }
+  .icon-grid-view {
+    background-position: 0px -660px;
+  }
+  .icon-new-tab {
+    background-position: 0px -720px;
+  }
+  .icon-restricted-case {
+    background-position: 0px -780px;
+  }
+  .icon-search {
+    background-position: 0px -840px;
+  }
+  .icon-checkmark {
+    background-position: 0px -900px;
+  }
+  .icon-bin {
+    background-position: 0px -960px;
+  }
+  .icon-zoom {
+    background-position: 0px -1020px;
+  }
+  .icon-calendar {
+    background-position: 0px -1080px;
+  }
+  .icon-edit {
+    background-position: 0px -1140px;
+  }
+  .icon-archive {
+    background-position: 0px -1200px;
+  }
+  .icon-view {
+    background-position: 0px -1260px;
+  }
+  .icon-left-expand-grey {
+    background-position: 0px -1320px;
+  }
+  .icon-right-expand-grey {
+    background-position: 0px -1380px;
+  }
+  .icon-infospot {
+    background-position: 0px -1440px;
+  }
+  .icon-add {
+    background-position: 0px -1500px;
+  }
+  .icon-amber-warning {
+    background-position: 0px -1562px;
+  }
+  .block-text, strong {
+    margin-left: 1em;
+    padding-left: 65px;
+    display: block;
+  }
+}
+
+.notice.small{
+  .icon {
+    width: 18px;
+    height: 18px;
+    background-size: 18px 486px;
+    top:3px;
+  }
+  .icon-alert {
+    background-position: 0px 0px;
+  }
+  .icon-breadcrumb {
+    background-position: 0px -18px;
+  }
+  .icon-expand {
+    background-position: 0px -36px;
+  }
+  .icon-right-expand {
+    background-position: 0px -54px;
+  }
+  .icon-left-expand {
+    background-position: 0px -72px;
+  }
+  .icon-close {
+    background-position: 0px -90px;
+  }
+  .icon-settings {
+    background-position: 0px -108px;
+  }
+  .icon-column-view {
+    background-position: 0px -126px;
+  }
+  .icon-document {
+    background-position: 0px -144px;
+  }
+  .icon-filter {
+    background-position: 0px -162px;
+  }
+  .icon-flag {
+    background-position: 0px -180px;
+  }
+  .icon-grid-view {
+    background-position: 0px -198px;
+  }
+  .icon-new-tab {
+    background-position: 0px -216px;
+  }
+  .icon-restricted-case {
+    background-position: 0px -234px;
+  }
+  .icon-search {
+    background-position: 0px -252px;
+  }
+  .icon-checkmark {
+    background-position: 0px -270px;
+  }
+  .icon-bin {
+    background-position: 0px -288px;
+  }
+  .icon-zoom {
+    background-position: 0px -306px;
+  }
+  .icon-calendar {
+    background-position: 0px -324px;
+  }
+  .icon-edit {
+    background-position: 0px -342px;
+  }
+  .icon-archive {
+    background-position: 0px -360px;
+  }
+  .icon-view {
+    background-position: 0px -378px;
+  }
+  .icon-left-expand-grey {
+    background-position: 0px -396px;
+  }
+  .icon-right-expand-grey {
+    background-position: 0px -414px;
+  }
+  .icon-infospot {
+    background-position: 0px -432px;
+  }
+  .icon-add {
+    background-position: 0px -450px;
+  }
+  .icon-amber-warning {
+    background-position: 0px -468px;
+  }
+}
+
+/**********   File icons   **********/
+.icon-file {
+  width: 40px;
+  height: 46px;
+  background-size: 40px 465px;
+  background-image: url('images/file-icons.png');
+  display: block;
+}
+.icon-file.doc {
+  background-position: 0px -46px;
+}
+.icon-file.img {
+  background-position: 0px -92px;
+}
+.icon-file.pdf {
+  background-position: 0px -138px;
+}
+.icon-file.xls {
+  background-position: 0px -184px;
+}
+.icon-file.zip {
+  background-position: 0px -230px;
+}

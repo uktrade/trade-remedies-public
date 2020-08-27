@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load format_date %}
+{% block main_content %}
+  <div class="breadcrumbs" data-module="track-click">
+    <ol>
+      <li class="">
+        <a data-track-category="breadcrumbClicked" aria-current="false" href="{% link_lookup 'LINK_TRA_CASELIST' %}">Trade remedies</a>
+      </li>
+      <li class="">
+        <a data-track-category="breadcrumbClicked" aria-current="false" href="\public\cases\">Active cases</a>
+      </li>
+      <li class="">
+          <a data-track-category="breadcrumbClicked" aria-current="false" href="/public/case/{{case.reference}}/">Case {{case.reference}} public file</a>
+      </li>
+      <li>
+        {{submission.type.name}}
+      </li>
+    </ol>
+  </div>
+  <div class="grid-row">
+    <div class="column-two-thirds">
+      <h1 class="heading-xlarge">
+        <span class="heading-secondary">{{case.reference}}: {{case.name}}</span>{{submission.type.name}}
+      </h1>
+      {% include 'cases/submissions/public_view_inner.html' %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "../base_conf_nonconf.html" %}
+{% load set %}
+{% load error_message %}
+
+{% block breadcrumb_current %}Register your interest in a case{% endblock %}
+{% block page_subtitle %}4. Upload completed documents{% endblock %}
+{% block page_title  %}Upload registration documents{% endblock %}
+
+{% block label %}
+    <p>Confidential documents will be used to assess your registration to the case.</p>
+    <p>Non-confidential versions of each document will be published to the public file.</p>
+    {% if error %}
+        {% error_message error %}
+    {% endif %}
+{% endblock %}
+
+{% block subtype_content %}
+	{{ block.super }}
+{% endblock %}
+
+
+

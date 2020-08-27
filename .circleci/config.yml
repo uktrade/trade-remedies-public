@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/python:3.6.6
+    steps:
+      - setup_remote_docker
+      - run:
+          name: Install Docker Compose
+          command: |
+            curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+            chmod +x ~/docker-compose
+            sudo mv ~/docker-compose /usr/local/bin/docker-compose
+      - checkout  
+      - run:
+          command: make docker-test
+      - run:
+          command: make docker-code-style
+
+  prettier:
+    docker: 
+      - image: 'circleci/node:latest'
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - npm-dependencies-{{ checksum "package-lock.json" }}
+      - run:
+          name: Restore npm dependencies
+          command: npm ci
+      - run:
+          name: Run prettier
+          command: |
+            npm run prettier
+      - save_cache:
+          paths:
+            - node_modules
+          key: npm-dependencies-{{ checksum "package-lock.json" }}
+  
+workflows:
+  version: 2
+  run_tests:
+    jobs:
+      - test
+      - prettier

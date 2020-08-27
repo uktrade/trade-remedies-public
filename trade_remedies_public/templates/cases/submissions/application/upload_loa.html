@@ -1,0 +1,21 @@
+{% extends "../base_conf_nonconf.html" %}
+{% load set %}
+
+{% block breadcrumb_current %}Apply for a new investigation{% endblock %}
+{% block page_subtitle %}4. Upload completed documents{% endblock %}
+
+{% block page_title  %}Upload letter of authority{% endblock %}
+
+{% block label %}
+    <p>Upload your completed letter of authority form.</p>
+{% endblock %}
+
+{% block subtype_content %}
+	{% set 'one_column' True %}
+	{{ block.super }}
+{% endblock %}
+
+{% block post-comment %}
+{% endblock %}
+
+

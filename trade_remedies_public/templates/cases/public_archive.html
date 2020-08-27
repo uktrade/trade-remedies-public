@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load format_date %}
+{% block main_content %}
+  <div class="breadcrumbs" data-module="track-click">
+    <ol>
+      <li class="">
+        <a data-track-category="breadcrumbClicked" aria-current="false" href="{% link_lookup 'LINK_TRA_CASELIST' %}">Trade remedies</a>
+      </li>
+      <li class="">
+          Archived cases
+      </li>
+    </ol>
+  </div>
+  <div class="grid-row">
+    <div class="column-full">
+      <h1 class="heading-large inverse-header margin-top-0"><span class="heading-secondary">Trade Remedies Investigation Directorate</span>Completed investigations</h1>
+    </div>
+    <div class="column-full">
+      <p>This page contains a list of completed investigations. <a href="/public/cases/">See current investigations here</a>
+    </div>
+  </div>
+  <div class="grid-row">
+    <div class="column-full margin-top-1">
+      <h1 class="heading-medium">Archived cases</h1>
+      <table data-attach="TableSort">
+        <thead>
+          <tr>
+            <th scope="col" class="sort-active asc">Initiated</th>
+            <th scope="col">Commodity</th>
+            <th scope="col">Country</th>
+            <th scope="col">Case type</th>
+            <th scope="col">Case</th>
+            <th scope="col">Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for case in cases %}
+          <tr>
+            <td class="nobreak" sortVal="{{ case.initiated_at }} ">{{case.initiated_at|format_date:'%d %b %Y'}}</td>
+            <td>{{case.state.COMMODITY_NAME.value}}</td>
+            <td>{{case.state.COUNTRY.value}}</td>
+            <td>{{case.type.name}}</td>
+            <td title="{{case.name}}"><a href="/public/case/{{case.reference}}/">{{case.reference}}:{{case.name |default:'<span class="grey">&lt;Untitled&gt;</span>'}}</a></td>
+            <td class="nobreak" sortVal="{{ case.state.LAST_PUBLICATION }} ">{{case.state.LAST_PUBLICATION|format_date:'%d %b %Y'}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="column-full margin-top-2">
+      <a class="link" href="/public/cases/">Active cases</a>
+    </div>
+  </div>
+{% endblock %}

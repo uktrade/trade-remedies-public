@@ -1,0 +1,27 @@
+<div class="uploader no-js-hidden">
+    <div class="upload-target">
+        <div class="center-text">
+            <div>Drag and drop your document here</div>
+            <div>or</div>
+        </div>
+        <label for="file-upload">
+            <button type="button" data-attach="Upload" class="file-upload button button-blue">Select a file</button>
+        </label>
+    </div>
+    <div class="upload-indicator">
+            <div class="margin-bottom-1 processing-message">Processing &hellip;</div>
+        {% if single_file %}
+            <div class="margin-bottom-1 loading-message">Loading &hellip;</div>
+        {% else %}
+            <div class="heading-medium loading-message">Uploading <span class="document-count number-circle large"></span> document<span class="document-s">s</span></div>
+        {% endif %}
+        <div class="progress-bar"><div></div></div>
+    </div>
+
+</div>
+<div class="js-hidden no-js-uploader">
+    <div class="file-input-container">
+        <input id="file-upload" type="file" name="file" {% if not single_file %}multiple="multiple"{% endif %}/>
+    </div>
+    <button type="submit" class="button button-blue">Save file</button>
+</div>

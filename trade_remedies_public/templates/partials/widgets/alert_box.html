@@ -1,0 +1,8 @@
+{% load alert_message %}
+
+{% alert_message %}
+{% if error_message %}
+	<div class="box-alert error">
+		{{ error_message }}
+	</div>
+{% endif %}

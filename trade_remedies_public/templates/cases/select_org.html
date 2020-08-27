@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block main_content %}
+
+    <h1 class="heading-medium">Select Organisation</h1>
+    You are representing multiple organisations in this case.
+    Please select the organisation you'd like to act on behalf on now.
+    <form method="POST" action="/organisation/set/">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{next}}"/>
+        {% for organisation in organisations %}
+            <div class="multiple-choice">
+            <input
+                id="org{{forloop.counter}}"
+                type="radio"
+                name="organisation_id"
+                value="{{organisation.id}}"
+                {% if user.organisations|length == 1  or forLoop.counter == 0 %}checked{% endif %}>
+                <label for="org{{forloop.counter}}">{{organisation.name}}</label>
+            </div>
+        {% endfor %}
+        <div class="grid-row">
+            <div class="column-full">
+                <button type="submit" class="button margin-top-2">Select</button>
+            </div>
+        </div>
+    </form>
+
+{% endblock %}

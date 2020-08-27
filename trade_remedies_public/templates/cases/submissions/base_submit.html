@@ -1,0 +1,44 @@
+{% extends "./base_form.html" %}
+{% load error_message %}
+
+{% block page_title %}
+    Submit final application
+{% endblock %}
+
+{% block subtype_content %}
+    {% if submission.status.locking %}
+        <h3 class="heading-medium">
+            You have submitted this application and it is now locked.
+            If you want to send us additional documents, please submit them separately.
+        </h3>
+    {% else %}
+
+            <label class="form-label">
+                {% block submission_main_text %}Once you submit this form you will not be able to make changes to your submitted information.
+                If you become aware of any errors or omissions please notify the {% include "partials/TRID_full_name.html" %} as quickly as possible.{% endblock %}
+            </label>
+            {% block conf_box %}
+                {% if not case.type.meta.confidential_only %}
+                    <div class="form-group {% if errors.non_conf %}form-group-error{% endif %}">
+                        {% error_message errors 'non_conf' %}
+                        <div class="multiple-choice">
+                            <input id="non_conf_field" type="checkbox" name="non_conf" value="included-non-conf" {% if non_conf %}checked="checked"{% endif %}>
+                            <label for="non_conf_field">{% block submission_confbox_label %}I have included non-confidential versions of my commercially sensitive files and understand that they will be available on the public file.{% endblock %}</label>
+                        </div>
+                    </div>
+                {% else %}
+                    <input type="hidden" name="non_conf" value="included-non-conf">
+                {% endif %}
+            {% endblock %}
+        <div class="form-group {% if errors.confirm %}form-group-error{% endif %}">
+            {% error_message errors 'confirm' %}
+            <div class="multiple-choice">
+                <input type="checkbox" name="confirm" value="application_complete" {% if confirm %}checked="checked"{% endif %}>
+                <label for="field-1051-2">{% block submission_checkbox_label %}My questionnaire is complete and I am happy for the {% include "partials/TRID_full_name.html" %} to consider it for investigation.{% endblock %}</label>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block save_button_text %}Submit{% endblock %}
+

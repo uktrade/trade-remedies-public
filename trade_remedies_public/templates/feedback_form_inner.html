@@ -1,0 +1,25 @@
+{% load feedback_element %}
+
+<div id="feedback-form" class="column-full">
+    {% if not full_page %}
+        <button class="link close-link dlg-close">Close X</button> 
+    {% endif %}
+    <h1 class="heading-large">
+       {{form.name}}
+    </h1>
+    <form action="/feedback/{{form.key}}/{% if placement_id %}placement/{{placement_id}}/{% endif %}" method="post">
+        {% if not full_page %}
+            <input type="hidden" name="inner" value="true">
+        {% endif %}
+        {% csrf_token %}
+        {% for element in form.elements %}
+            {% feedback_element element %}
+        {% endfor %}
+        <div class="feedback-form-button">
+            <button type="submit" class="button">Send feedback</button>
+            {% if not full_page %}
+                <button type="button" class="button button-grey dlg-close pull-right">Cancel</button>
+            {% endif %}
+        </div>
+    </form>
+</div>

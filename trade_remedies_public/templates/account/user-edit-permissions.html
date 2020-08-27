@@ -1,0 +1,44 @@
+{% extends "account/user-edit-base.html" %}
+{% load error_message %}
+{% load text_element %}
+{% load password_element %}
+
+{% block task_name1 %}
+	{% if create_mode %}	
+		Invite a colleague
+	{% else %}
+		User permissions
+	{% endif %}
+{% endblock %}
+{% block task_name2 %}
+	User permissions
+{% endblock %}
+{% block form_content %}
+<div class="form-group">
+ 	<label for="email" class="form-label">Manage how the user will interact with the trade remedies system</label>
+	{% set 'security_group' user_record.group %} 	
+ 	{% if user_record.organisation.role.security_group %}
+		{% set 'security_group' user_record.organisation.role.security_group %}
+	{% endif %}
+  	{% for group in groups %}
+		<div class="multiple-choice">
+			<input
+				type="radio"
+				id="role_{{forloop.counter}}"
+				name="group"
+				value="{{group.0}}"
+				{% if group.0 == security_group %}checked{% endif %}
+			/>
+			{% set 'perm_name' 'Regular user with access to selected cases only' %}
+			{% if group.0 == 'Organisation Owner' %}
+				{% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
+			{% endif %}
+	  		<label for="role_{{forloop.counter}}" class="form-label">{{ perm_name }}</label>
+		</div>
+	{% endfor %}
+	{% if create_mode and not user_record.wizard_complete %}
+		<input type="hidden" name="redirect" value="cases/">
+	{% endif %}
+</div>	
+
+{% endblock %}

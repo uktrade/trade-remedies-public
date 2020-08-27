@@ -1,0 +1,38 @@
+{% load download_count %}
+
+<li>
+    {% include "./section_heading.html" with section_heading=section_heading|default:'Download forms and notices' %}
+    <ul class="task-list-items">
+        {% if disabled %}
+            <li class="task-list-item edit-item">
+                Not applicable
+            </li>
+        {% else %}
+            {% if documents.caseworker|length > 0 %}
+                <li class="task-list-item edit-item">
+                    {% if submission.id %}
+                        <a href="/case/{{case_id}}/submission/{{submission.id}}/download/">
+                            {{ item_heading|default:'Download forms' }}
+                        </a>
+                        <span class="pull-right">{% download_count documents.caseworker 'Downloaded' ''  %}</span>
+                    {% else %}
+                        Download forms and notices
+                    {% endif %}
+                </li>
+            {% endif %}
+            {% if documents.deficiency|length > 0 %}
+                <li class="task-list-item edit-item">
+                    <a href="/case/{{case_id}}/submission/{{submission.id}}/download/deficiency/">
+                        Download deficiency notices
+                    </a>
+                    <span class="pull-right">{% download_count documents.deficiency 'Downloaded' '' warning=True %}</span>
+                </li>
+            {% endif %}
+            {% if documents.caseworker|length == 0 and documents.deficiency|length == 0 %}
+                <li class="task-list-item edit-item">
+                    Nothing to download
+                </li>
+            {% endif %}
+        {% endif %}
+    </ul>
+</li>

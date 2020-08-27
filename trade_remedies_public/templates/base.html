@@ -1,0 +1,118 @@
+{% extends "govuk_template.html" %}
+{% load static %}
+{% load govuk_template_base %}
+{% load analytics %}
+
+{% block cookie_message %}
+  {% if not cookie_policy_set %}
+  <div id="global-cookie-message">
+    <div class="govuk-width-container">
+      <div class="grid-row">
+        <div class="column-two-thirds">
+          <form action="/cookies/" method="POST">
+            <div class="cookie-banner__message">
+              <span class="heading-medium">Tell us whether you accept cookies</span>
+              <p class="body">We use <a class="link" href="/cookies/">cookies to collect information</a> about how you use GOV.UK. We use this information to make the website work as well as possible and improve government services.</p>
+            </div>
+            <div class="buttons">
+              {% csrf_token %}
+              <input type="hidden" name="accept_gi" value="on">
+              <input type="hidden" name="redirect_url" value="{{ request.path }}">
+              <button class="button" type="submit" data-accept-cookies="true" data-track-category="cookieBanner" data-track-action="Cookie banner accepted">Accept all cookies</button>
+              <a class="button" role="button" href="/cookies/?url={{ request.path }}">Set cookie preferences</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {% if cookie_policy_updated %}
+    <div id="cookie-update-banner" class="govuk-width-container no-js-hidden">
+        You’ve set your cookie preferences. You can <a class="link" href="/cookies/?url={{ request.path }}" data-module="track-click" data-track-category="cookieBanner" data-track-action="Cookie banner settings clicked from confirmation">change your cookie settings</a> at any time.
+        <button class="button margin-left-1" data-hide-cookie-banner="true" data-module="track-click" data-track-category="cookieBanner" data-track-action="Hide cookie banner" data-attach="hideButton" data-selector="#cookie-update-banner">Hide</button>
+    </div>
+  {% endif %}
+
+{% endblock %}
+
+{% block content %}
+  {{ block.super }}
+  {% block feedback_section %}
+    <div class="feedback-section">
+      <a class="link" target="_blank" data-attach="ModalForm" data-url="/feedback/TR-FEEDBACK/placement/FOOTER/inner/" href="/feedback/TR-FEEDBACK/placement/FOOTER/">Give feedback</a>
+    </div>
+  {% endblock %}
+{% endblock %}
+
+{% block page_title %}Trade remedies{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <link href="{% static 'stylesheets/main.css' %}" media="screen" rel="stylesheet" />
+  {% analytics %}
+  <script type="text/javascript" src="{% static 'javascripts/vendor/jquery-1.11.3.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'javascripts/vendor/require.js' %}"></script>
+  <script type="text/javascript" src="{% static 'javascripts/vendor/underscore-min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'javascripts/main.js' %}"></script>
+
+  <script type="text/javascript">
+    window.dit = window.dit || {};
+    window.dit.jsBase = "{% static 'javascripts' %}";
+    window.dit.csrfToken = "{{ csrf_token }}";
+
+    function setOrganisation(organisationId) {
+      var url;
+      if (organisationId && organisationId.length > 0) {
+        url = '/organisation/set/' + organisationId + '/?next={{request.path}}';
+      } else {
+        url = '/organisation/set/?next={{request.path}}';
+      }
+      document.location.replace(url)
+    }
+  </script>
+{% endblock %}
+
+{% block body_start %}
+    {% analytics body=True %}
+{% endblock %}
+
+{% block proposition %}
+  <a href="{{ service_settings.header_link_url|default:'/' }}" id="proposition-name">
+    Trade Remedies
+  </a>
+  <div class="proposition-controls">
+    {{user.name}}
+    {% if authenticated and not within_2fa and not within_verify %}
+     | <a href="/accounts/info/">Account details</a> <!--{{user.name}}--> | <a href="/accounts/logout/">Logout</a>
+    {% elif authenticated and within_2fa or within_verify %}
+    | <a href="/accounts/logout/">Cancel and Logout</a>
+     {% endif %}
+  </div>
+{% endblock %}
+
+{% block inner_content %}
+    {% if public_notice %}
+        <div class="box-alert warning oneline" >{{public_notice}}</div>
+    {% endif %}
+
+  {% include "partials/widgets/org_display_large.html" %}
+
+  {% block main_content %}
+  {% endblock %}
+
+{% endblock %}
+
+{% block footer_support_links %}
+    <ul>
+        <!--<li><a href="/contactus/">Contact</a></li>-->
+        <li><a href="/termsofuse-privacypolicy/" target="_blank" title="Opens in a new tab">Privacy</a></li>
+        <li><a href="/cookies/?url={{ request.path }}">Cookies</a></li>
+        <li><a href="/accessibilitystatement/" target="_blank" title="Opens in a new tab">Accessibility</a></li>
+        <li>[version: {{version.api}}/{{version.ui}}]</li>
+    </ul>
+{% endblock %}

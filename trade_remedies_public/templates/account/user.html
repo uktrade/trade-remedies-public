@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load error_message %}
+{% load text_element %}
+{% load password_element %}
+{% load get_item %}
+{% load alert_message %}
+
+{% block main_content %}
+<div class="grid-row">
+  	<div class="column-two-thirds">
+		<div class="breadcrumbs" data-module="track-click">
+		    <ol>
+				<li class="">
+					<a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+				</li>
+				<li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
+					{% if self_details %}
+						<a href="/accounts/info/">Account details</a>
+					{% else %}
+						<a href="/accounts/team/">Manage your team</a>
+					{% endif %}
+				</li>
+				<li data-track-category="breadcrumbClicked" data-track-action="3"   class="" aria-current="false" >
+					{{ page_title }}
+				</li>
+		    </ol>
+		</div>
+		{% include "partials/widgets/error_summary.html" with errors=errors %}
+		{% alert_message %}
+		<h2 class="heading-large">{{ page_title }}</h2>
+		<div class="sections">
+			<div class="edit-section">
+				{% if not invitation_id %}
+					<a class="pull-right" href="{{base_url}}contact/?edit=1">Edit</a>
+				{% endif %}
+				{% include "partials/widgets/key_value_row.html" with key="Name" value=user_record.name %}
+				{% include "partials/widgets/key_value_row.html" with key="Email address" value=user_record.email %}
+				{% include "partials/widgets/key_value_row.html" with key="Mobile phone" value=user_record.phone %}
+				{% include "partials/widgets/key_value_row.html" with key="Address" value=user_record.address %}
+				{% include "partials/widgets/key_value_row.html" with key="Country" value=user_record.country.name %}
+			</div>
+			<div class="edit-section">
+				{% if not self and not invitation_id %}
+					<a class="pull-right" href="{{base_url}}status/?edit=1{{invitation_param}}">Edit</a>
+				{% endif %}
+
+				{% if not user_record.active %}
+					{% set 'status' 'De-activated' %}
+				{% else %}
+					{% set 'status' 'Active' %}
+				{% endif %}
+
+				{% if not user_record.organisation.role %}
+					{% set 'status' status|addstr:' (Invitation pending)' %}
+				{% elif not user_record.organisation.role.confirmed %}
+					{% set 'status' status|addstr:' (Invitation sent)' %}
+				{% endif %}
+
+
+				{% include "partials/widgets/key_value_row.html" with key="Status" value=status %}
+			</div>
+			<div class="edit-section">
+				{% include "partials/widgets/key_value_row.html" with key="User type" value='Direct employee of your organisation' %}
+			</div>
+			<div class="edit-section">
+				{% if is_owner and not self and not invitation_id %}
+					<a class="pull-right" href="{{base_url}}permissions/?edit=1{{invitation_param}}">Edit</a>
+				{% endif %}
+				{% set 'security_group' user_record.group %}
+			 	{% if user_record.organisation.role.security_group %}
+					{% set 'security_group' user_record.organisation.role.security_group %}
+				{% endif %}
+				{% set 'perm_name' 'No security group' %}
+				{% if security_group == 'Organisation User' %}
+					{% set 'perm_name' 'Regular user with access to selected cases only' %}
+				{% endif %}
+				{% if security_group == 'Organisation Owner' %}
+					{% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
+				{% endif %}
+				{% include "partials/widgets/key_value_row.html" with key="Permissions" value=perm_name %}
+			</div>
+			{% if user_record.id %}
+				<div class="edit-section">
+					{% if is_owner and not invitation_id %}
+						<a class="pull-right" href="{{base_url}}cases/?edit=1{{invitation_param}}">Edit</a>
+					{% endif %}
+					<div class="key-value"><span class="key">Cases</span>
+						<div class="value">
+							{% if not cases %}
+								<span>No cases assigned</span>
+							{% endif %}
+							<ul class="case-list">
+								{% for case in cases %}
+									<li>
+										{{case.case.name}}
+										<div class="sub-list">
+										{% for organisation in case.organisations %}
+											{{organisation.name}}<br>
+										{% endfor %}
+										</div>
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+		</div>
+		{% if not user_record.id %}
+			<form action='/accounts/team/{{organisation_id}}/user/{% if user_record.id %}{{user_record.id}}/{% endif %}' method='post' {% if invitation_id %}data-attach="ConfirmPost"{% endif %}>
+			<span class="hidden confirmation-message">Are you sure you want to re-send this invitation?</span>
+			<span class="hidden confirmation-title">Confirm re-send</span>
+
+			{% csrf_token %}
+			{% if not invitation_id %}
+				<p class="margin-top-1">Submitting this form will send an email to the person detailed above and grant them access to your trade remedies system.</p>
+			    <div class="form-group {% if errors.review %}form-group-error{% endif %}">
+			        {% error_message errors 'review' %}
+			        <div class="multiple-choice submit-widget">
+			            <input type="hidden" name="review" value="required"> {% comment %} An error is given if this is not overriden {% endcomment %}
+			            <input class="pull-left" id="terms" name="review" type="checkbox" value="1">
+			            <label class="form-label">
+			                The information is correct and I am happy to send the invitation
+			            </label>
+			        </div>
+			    </div>
+				<div>
+					<a class="button button-grey pull-right" href="/accounts/team/">Cancel</a>
+					<button class="button button" type="submit" value="create"  name="btn-value">Send invitation</button>
+				</div>
+			{% else %}
+				<div class="form-group margin-top-1">
+					<a class="button button-grey pull-right" href="/accounts/team/">Cancel</a>
+					<button class="button button no-debounce" type="submit" value="create"  name="btn-value">Re-send invitation</button>
+				</div>
+			{% endif %}
+		</form>
+		{% else %}
+			<div>
+				<a class="link pull-left margin-top-1" href="/accounts/team/">Back</a>
+			</div>
+		{% endif %}
+	</div>
+	<div class="column-one-third">
+	{% include "partials/widgets/org_display_small.html" %}
+	{% include "partials/widgets/help_box.html" %}
+	</div>
+</div>
+
+{% endblock %}

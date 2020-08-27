@@ -1,0 +1,25 @@
+{% extends "account/user-edit-base.html" %}
+{% load text_element %}
+
+{% block task_name1 %}
+	{% if create_mode %}	
+		Invite a colleague
+	{% else %}
+		Edit status
+	{% endif %}
+{% endblock %}
+{% block task_name2 %}
+	Edit status
+{% endblock %}
+
+{% block form_content %}
+	{% set 'value' 'no'%}
+	{% if user_record.active %}
+		{% set 'value' 'yes'%}
+	{% endif %}
+	{% radio_element id='active' label='Use this form to change the user\'s status.' options='[{"value":"yes","label":"Active"}, {"value":"no","label":"Inactive"}]' errors=errors value=value %}
+
+	{% if create_mode and not user_record.wizard_complete %}
+		<input type="hidden" name="redirect" value="permissions/">
+	{% endif %}
+{% endblock %}

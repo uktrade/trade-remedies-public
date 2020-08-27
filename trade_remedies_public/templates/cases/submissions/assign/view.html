@@ -1,0 +1,41 @@
+{% extends "../base_view.html" %}
+
+{% block breadcrumb %}
+    <li class="">
+        <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+    </li>
+    <li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
+        <a href="/accounts/team/">Manage your team</a>
+    </li>
+    <li data-track-category="breadcrumbClicked" data-track-action="3"   class="" aria-current="false" >
+        <a href="/accounts/team/{{organisation.id}}/user/{{ assign_user.id }}/">{{ assign_user.name }}</a>
+    </li>
+{% endblock %}
+{% block breadcrumb_current %}Assign a user to a case{% endblock %}
+
+{% block page_subtitle %}Your user assignment request{% endblock %}
+{% block page_title  %}Invite submitted{% endblock %}
+
+    {% block action_block %}
+        {% if case %}
+            <div>
+                You have requested to assign a user to :<br>
+                <strong >{% if case.reference %}{{case.reference}}: {% endif %}{{case.name}}</strong>
+            </div>
+        {% endif %}
+    {% endblock %}
+
+{% block status_block %}
+    {% if submission.status.sufficient %}
+    This invitiation was accepted.
+    {% endif %}
+
+{% endblock %}
+
+  {% block buttons %}
+  <div class="grid-row">
+    <div class="column-full margin-top-2">
+        <a href="/accounts/team/{{organisation.id}}/user/{{ assign_user.id }}/">back</a>
+    </div>
+  </div>
+  {% endblock %}

@@ -1,0 +1,83 @@
+{% comment %}
+This is the central section of the public file view of a submission
+It's used in both the public file, and the customer's public file view
+{% endcomment %}
+
+{% load format_date %}
+
+   {% if submission.type.key in 'public,questionnaire' %}
+    <div class="lede">
+      <h2 class="heading-large">
+        {{ submission.name|default:'Description' }}
+      </h2>
+      {% if submission.description %}
+        <p>
+          {{ submission.description|linebreaks }}
+        </p>
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class="border-top border-bottom margin-bottom-1">
+        <div>Published: {{ submission.received_at|_or:submission.sent_at|format_date:"%d %B %Y" }}</div>
+        <div>From:
+          {% if  submission.organisation_name %}
+            {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
+              <span>(withheld by request)</span>
+            {% else %}
+              {{submission.organisation_name}}
+              {% if submission.organisation_case_role.name %}
+                &nbsp;
+                ({{submission.organisation_case_role.name}}..)
+              {% endif %}
+            {% endif %}
+          {% else %}
+              {% include "partials/TRID_full_name.html" %}
+          {% endif %}
+        </div>
+    </div>
+
+  <div></div>
+  {% if documents.non_confidential|length or documents.tra_non_confidential|length %}
+    <div class="grid-row">
+      <div class="column-full">
+        <h3 class="heading-small">
+            Submitted documents
+        </h3>
+        {% include 'partials/widgets/public_document_list.html' with documents=documents.tra_non_confidential submission_id=submission.id all_downloadable=True %}
+        {% include 'partials/widgets/public_document_list.html' with documents=documents.non_confidential submission_id=submission.id all_downloadable=True %}
+      </div>
+    </div>
+
+  {% endif %}
+  {% if submission.url %}
+    <div class="grid-row">
+      <div class="column-full">
+        <div class="html-link">
+          <a  class="row" href="{{submission.url}}">
+              <div class="cell">
+                <img src="/static/stylesheets/images/pub-cover-html.png"/>
+              </div>
+              <div class="cell padded">
+                <span class="filename">{{submission.name|default:submission.url}}</span>
+              </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  {% if documents.template|length %}
+    <div class="grid-row">
+      <div class="column-full">
+        <h3 class="heading-small">
+          {% if type.key == 'public' %}
+            {% include "partials/TRID_abbreviation.html" %} published documents
+          {% elif type.key == "questionnaire" %}
+            Original templates
+          {% else %}
+            {% include "partials/TRID_abbreviation.html" %} documents
+          {% endif %}
+        </h3>
+        {% include 'partials/widgets/public_document_list.html' with documents=documents.template submission_id=submission.id all_downloadable=True %}
+      </div>
+    </div>
+  {% endif %}

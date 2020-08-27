@@ -1,0 +1,5 @@
+{% if org_indicator_type == 2 and current_organisation and not all_organisations %}
+    <div class="organisation-block-small">
+      {{current_organisation.name|default:'N/A'}}
+    </div>
+{% endif %}

@@ -1,0 +1,46 @@
+{% extends "./submission_base.html" %}
+{% load confidential %}
+{% load set %}
+
+{% block page_title %}
+    {% if deficiency %}
+        Download deficiency notices
+    {% else %}
+        Download forms
+    {% endif %}
+{% endblock %}
+
+{% block subtype_content %}
+    {% set 'previous_id' submission.version|_or:'0'|_plus:'-1' %}
+    <div class="form-group type-label">
+        <div class="pull-left form-label">
+            {% block download_message %}
+                <p>Download and complete the forms below.</p>
+                <p>You will need to upload the completed forms along with any other supporting evidence in the next step.</p>
+            {% endblock %}
+        </div>
+    </div>
+    <div class="form-group edit-item type-filedownload ">
+        <table class="file-list">
+            <thead>
+                <tr><th>File name</th><th>Size</th></tr>
+            </thead>
+            <tbody>
+                {% for document in documents %}
+                    <tr>
+                        <td>
+                            <span class="filename">
+                                <a href="/case/{{case_id}}/submission/{{document.submission_id|default:submission_id}}/document/{{document.id}}/download/">
+                                    {{document.name}}
+                                </a>  <!-- {% confidential document.confidential %} -->
+                            </span>
+                        </td>
+                        <td>
+                            <span class="nobreak">{{document.size | filesizeformat}}</span>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

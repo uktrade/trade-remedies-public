@@ -1,0 +1,84 @@
+{% extends "./submission_base.html" %}
+{% load task_status %}
+{% load task_link_toggle %}
+{% load upload_count %}
+{% load draft_count %}
+{% load set %}
+{% load format_date %}
+
+
+{% block tasklist_header %}
+{% endblock %}
+
+{% block breadcrumb %}
+  <li class="">
+    <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
+  </li>
+  <li class="">
+    {% if case_id %}
+      <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/case/{{case_id}}/">Case: {{case.reference}}</a>
+    {% else %}
+      Case
+    {% endif %}
+  </li>
+{% endblock %}
+
+{% block subtype_content %}
+  {% block tasklist_guidance %}{% endblock %}
+  {% set 'confidential_only' False %}
+  {% if case.type.meta.confidential_only %}
+      {% set 'confidential_only' True %}
+  {% endif %}
+
+  {% if submission.status.deficiency_notice  %}
+    <div class="box-alert warning">
+        Deficiency Notice {% if submission.previous_version.deficiency_sent_at %} ({%format_date submission.previous_version.deficiency_sent_at '%d %b %Y' %}) {% endif %}
+      <div>Your last submission was insufficient to proceed.</div>
+    </div>
+  {% endif %}
+
+  {% if case %}
+      <div class="heading-medium">
+      <span class="heading-secondary">Case: {{case.reference}}</span>
+        {{case.name}}
+      </div>
+  {% endif %}
+  <!-- {% if submission.locked %} LOCKED {% endif %} -->
+  <div class="nav">
+    <ol class="task-list">
+      {% block tasklist_content %}
+      {% endblock %}
+    </ol>
+  </div>
+{% endblock %}
+
+{% block buttons %}
+
+    {% block back_buttons %}
+      {% if case_id %}
+        <div class="margin-bottom-1">
+          <a href="/case/{{case_id}}/">Back to case</a>
+        </div>
+      {% endif %}
+      <div class="margin-bottom-1">
+        <a href="/dashboard/">Back to dashboard</a>
+      </div>
+  {% endblock %}
+
+  {% if submission.status.draft and submission.type.key != 'questionnaire' %}
+    <div class="margin-top-1">
+      <form data-attach="ConfirmPost" action="/case/{{submission.case.id}}/submission/{{submission.id}}/remove/" method='post'>
+        <input type="hidden" name="redirect" value="{% block cancel_button_redirect  %}/case/{{submission.case.id}}/{% endblock %}">
+        <div class="confirmation-title hidden">
+          Cancel submission
+        </div>
+        <div class="confirmation-message hidden">
+          <p>Are you sure?</p>
+          <p>This will delete your unfinished submission and remove any documents you have already uploaded.</p>
+        </div>
+        <button class="button no-debounce">{% block cancel_button_text %}Cancel submission{% endblock  %}</button>
+        {% csrf_token %}
+      </form>
+    </div>
+  {% endif %}
+{% endblock %}

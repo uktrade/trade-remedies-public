@@ -1,0 +1,50 @@
+.inverse-header {
+  background: $govuk-blue;
+  color: white;
+  padding: 30px;
+  .heading-secondary {
+    color: $grey-4;
+  }
+}
+.download-link {
+	// a big file link with icon
+	float: left;
+	clear: both;
+	margin: 6px 0;
+	a:focus {
+		background: inherit;
+		float: left;
+	}
+	img, i {
+		position: absolute;
+	}
+/* This is in case we want to drive the title directly
+	i > span {
+		position: absolute;
+		background: blue;
+		display: block;
+		left: 0;
+		top: 23px;
+		color: white;
+		padding: 1px 3px 0px;
+		font-style: normal;
+		font-weight: bold;
+		font-size: 11px;
+	}
+*/
+	img {
+		border: 1px solid $grey-3;
+	}
+	span.filename {
+		float: left;
+		margin:10px 10px 10px 60px;
+		font-size: 18px;
+		word-break: break-all;
+	}
+}
+.html-link {
+	img {
+		border: 1px solid $grey-3;
+	}
+}
+

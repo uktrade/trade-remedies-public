@@ -1,0 +1,53 @@
+{% extends "../base_tasklist.html" %}
+{% load task_link_toggle %}
+{% load error_message %}
+{% load set %}
+{% load add_number %}
+
+{% block breadcrumb_current %}Submit evidence{% endblock %}
+{% block page_subtitle %}{% endblock %}
+{% block page_title %}Submit evidence{% endblock %}
+{% block tasklist_guidance %}
+<p>Use this form only if you want to submit additional evidence, request a hearing or respond to a Notice.</p>
+{% endblock %}
+
+{% block tasklist_content %}
+    {% set 'section_counter' 0 %}
+    <li>
+        <div class="edit-item">
+            <h2 class="task-list-section">
+                {% add_number 'section_counter' 1 %}
+                <span class="task-list-section-number">{{ section_counter }}. </span>
+                <span class="task-list-section-title">Tell us about your submission</span>
+            </h2>
+        </div>
+        <ul class="task-list-items">
+            <li class="task-list-item">
+                {% if submission %}
+                    {% with '/case/'|addstr:case_id|addstr:'/submission/'|addstr:submission.id|addstr:'/meta/' as link %}
+                        {% task_link_toggle submission 'meta' 'About the submission' True link %}
+                    {% endwith %}
+                    {% task_status submission.name True %}
+                {% else %}
+                    {% with '/case/'|addstr:case_id|addstr:'/submission/'|addstr:submission_type_id|addstr:'/meta/' as link %}
+                        {% task_link_toggle submission 'meta' 'About the submission' True link %}
+                    {% endwith %}
+                {% endif %}
+            </li>
+        </ul>
+    </li>
+
+    <!-- Download documents section -->
+    {% if documents.caseworker|length or documents.deficiency|length %}
+        {% add_number 'section_counter' 1 %}
+        {% include "partials/task_list/download_documents.html" with section_counter=section_counter %}
+    {% endif %}
+
+    <!-- upload docs section -->
+    {% add_number 'section_counter' 1 %}
+    {% include "partials/task_list/upload_confidential_documents.html" with enable=submission %}
+
+    {% add_number 'section_counter' 1 %}
+    {% include "partials/task_list/review_submit.html" %}
+
+{% endblock %}

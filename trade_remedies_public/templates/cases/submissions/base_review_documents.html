@@ -1,0 +1,62 @@
+{% extends "./base_form.html" %}
+{% load format_date %}
+
+{% block page_title %}Check your submission{% endblock %}
+
+{% block form_tag %}<form action="{{form_action}}" method="post" enctype="multipart/form-data" class="dd-form">{% endblock %}
+
+{% block subtype_content %}
+{% endblock %}
+{% block wide_content %}
+{% set 'docs_incomplete' False %}
+{% if case.type.meta.confidential_only %}
+    {% set 'one_column' True %}
+    {% if documents.confidential|length == 0 %}
+        {% set 'docs_incomplete' True %}
+    {% endif %}
+{% elif documents.confidential|length == 0 or documents.non_confidential|length != documents.confidential|length %}
+    {% set 'docs_incomplete' True %}
+{% endif %}
+
+
+<div class="form-group margin-bottom-1 margin-top-1">
+    {% if one_column %}
+        <div class="column-full center bold">Private documents</div>
+    {% else %}
+        <div class="column-one-half center bold">Private documents</div>
+        <div class="column-one-half center bold">Public versions</div>
+    {% endif %}
+</div>
+
+<div class="form-group document-upload-list conf-nonconf3">
+    {% for file in documents.loa %}
+        {% include "partials/widgets/upload/row.html" with file=file review_mode=True %}
+    {% endfor %}
+
+    {% for file in documents.confidential %}
+        {% include "partials/widgets/upload/row.html" with file=file review_mode=True %}
+    {% endfor %}
+</div>
+{% if submission.doc_reviewed_at %}
+    <div class="notice form-group">
+        <i class="icon icon-infospot"></i><div class="text">Documents reviewed at {% format_date submission.doc_reviewed_at %}</div>
+    </div>
+{% else %}
+    <div class="form-group margin-top-2 {% if errors|_get:'documents_reviewed' %}form-group-error{% endif %}">
+        {% if errors|_get:'documents_reviewed' %}
+            <span class="error-message" id="documents_reviewed_error">{{ errors|_get:'documents_reviewed' }}</span>
+        {% endif %}
+        {% if store.docs_incomplete %}
+            <div class="margin-top-1"><i class="icon icon-amber-warning correct margin-right-1"></i>You need to upload a non-confidential or redacted document for each confidential document submitted</div>
+        {% endif %}
+        <div class="multiple-choice">
+            <input id="field-1051-1" type="checkbox" name="documents_reviewed" value="reviewed" {% if submission.doc_reviewed_at %}checked{% endif %}
+            {% if store.docs_incomplete %} disabled="disabled"{% endif %} >
+            <label for="field-1051-1">
+                {% block submission_confbox_label %}
+                    I have checked that my documents have been entered correctly
+                {% endblock %}</label>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load text_element %}
+{% load password_element %}
+
+{% block main_content %}
+{% include "partials/widgets/error_summary.html" with errors=errors message='Please correct the following errors'  %}
+<div class="accounts-page">
+  <div class="column-two-thirds">
+    <h1 class="heading-large">
+      {% block page_title %}
+        Complete your account details for {{organisation.name}}
+      {% endblock %}
+    </h1>
+    {% if errors.lockdown %}
+      {{ errors.lockdown }}
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="step" value="0"/>
+        <input type="hidden" name="code" value="{{code|default_if_none:''}}"/>
+        <input type="hidden" name="case_id" value="{{case_id|default_if_none:''}}"/>
+
+        You have been invited by {{invite.created_by.name}} to join the {{organisation.name}} account and participate in Trade Remedy cases.
+
+        {% text_element id='name' label='Name' errors=errors value=invite.meta.name %}
+        <div class="form-group">
+          <label class="form-label" for="country">Country</label>
+          <select id="country" name="country" class="form-control">
+            {% for item in countries %}
+              <option value="{{item.0}}" {% if item.0 == invite.country_code %}selected{% endif %}>{{item.1}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% text_element id='email' type="email" label='Email address' read_only=True value=invite.meta.email errors=errors hint='You will need this to sign in to your account. We will use this to contact you. This must be your professional email address, for example yourname@company.com.'%}
+        {% include "registration/_password_entry.html" %}
+        {% text_element id='password_confirm' label='Confirm password' errors=errors password=True%}
+        {% text_element id='phone' type='tel' autocomplete='tel' label='Mobile phone number' value=invite.meta.phone errors=errors hint="We will send a log in security code to this number. If you do not provide a number, we will email this code to you."%}
+
+        <div class="form-group {% if errors.terms %}form-group-error{% endif %}">
+          {% error_message errors key='terms' %}
+          <div class="multiple-choice">
+            <input type="hidden" name="terms" value="">
+            <input type="checkbox" id="terms" name="terms" {% if terms %}checked="checked"{% endif %} data-selector=".button-set button[type=submit]"/>
+            <label for="terms" class="form-label margin-top-minus">I confirm I have read and understood the <a href="/termsofuse-privacypolicy/" target="_blank">terms of use and privacy notice</a> (opens in a new window)</label>
+          </div>
+        </div>
+
+        <div class="button-set margin-bottom-1">
+          <button type="submit"  class="button">Continue</button>
+        </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

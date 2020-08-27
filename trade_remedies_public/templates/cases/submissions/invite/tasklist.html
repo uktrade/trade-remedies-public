@@ -1,0 +1,71 @@
+{% extends '../base_tasklist.html' %}
+{% load task_link_toggle %}
+{% load error_message %}
+{% load task_status %}
+
+{% block breadcrumb_current %}Invite a 3rd party{% endblock %}
+
+{% block header %}
+    <h1 class="heading-large">
+        Invite a 3rd party
+    </h1>
+
+    <p class="lede">Invite 3rd parties to participate in a case on behalf of {{organisation.name}}</p>
+{% endblock %}
+
+{% block submission_received_title %}3rd party invited{% endblock %}
+
+{% block submission_received_message %}<p>This application has been submitted.</p>
+    <p>If you want to report an omission, error or material change contact the <a target="_blank" href="/contact" class="nobreak">{% include "partials/TRID_full_name.html" %}</a>.</p>
+{% endblock %}
+
+{% block tasklist_content %}
+    <li>
+        <div class="edit-item" data-section="143">
+            <h2 class="task-list-section">
+                <span class="task-list-section-number">1. </span>
+                <span class="task-list-section-title">Which case are you interested in?</span>
+            </h2>
+        </div>
+        <ul class="task-list-items">
+            <li class="task-list-item edit-item" data-section="27">
+                {% if case %}
+                    {% task_status 'COMPLETE' %}
+                    <div>{{case.reference}}: {{case.name}}</div>
+                {% else %}
+                    <a href="/case/select/?redirect=invite_top">Select case</a>
+                {% endif %}
+            </li>
+        </ul>
+    </li>
+    <li>
+        <div class="edit-item" data-section="143">
+            <h2 class="task-list-section">
+                <span class="task-list-section-number">2. </span>
+                <span class="task-list-section-title">Tell us who you are inviting</span>
+            </h2>
+        </div>
+        <ul class="task-list-items">
+            <li class="task-list-item edit-item" data-section="27">
+                {% if case %}
+                    <a href="/case/invite/{{case.id}}/{% if submission %}{{submission.id}}/{% endif %}people/">Add Invitees</a>
+                    {% if invites|length > 0 %}
+                        {% count_display invites|length 'Invites' '' %}
+                    {% endif %}
+                {% else %}
+                    Add Invitees
+                {% endif %}
+            </li>
+        </ul>
+    </li>
+
+    {% include "partials/task_list/download_documents.html" with item_heading="Download Letter of Authority" section_counter=3 %}
+
+    {% include "partials/task_list/upload_confidential_documents.html" with section_heading='Upload forms' item_heading="Upload Letter of Authority" section_counter=4 enable=True %}
+
+    {% include "partials/task_list/submit.html" with section_counter=5 section_heading='Submit your invitation request'%}
+
+{% endblock %}
+
+{% block cancel_button_text %}Cancel invititation{% endblock  %}
+{% block cancel_button_redirect %}/dashboard/{% endblock  %}

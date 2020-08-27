@@ -1,0 +1,47 @@
+/************  Dashboard Case list  *************/
+.dashboard-case-list {
+  overflow: hidden;
+  li {
+    margin-bottom: 1em;
+    float: left;
+    clear: both;
+    > a, span {
+      display: table-cell;
+    }
+
+  }
+
+  .aggregate-status .number-circle:before {
+    margin-top: 0px;
+  }
+}
+.aggregate-status {
+  display: table-cell;
+  white-space: nowrap;
+  margin-top: 2px;  
+  .number-circle {
+    display: inline-block;
+    margin-right: 0.3em;
+    &:before {
+      background-color: $todo-count-red;
+      margin-top: 1px;
+    }
+  }
+  > i {
+    display: inline-block;
+    margin: 0px 0 -6px 2px;
+  }
+  > span.due-date {
+    margin-left: 3px;
+    display: inline-block;
+    font-size: smaller;
+    color: $secondary-text-colour;
+    &.soon {
+      font-weight: bold;
+    }
+  }
+}
+
+.welcome-user-widget {
+  padding: 30px 0 0px 0;
+}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load back_link %}
+{% block main_content %}
+<script>
+function confirmRemoveDocument(url) {
+    if (confirm('Are you sure you want to remove this document?')) {
+        document.location.replace(url);
+    }
+}
+</script>
+<div class="grid-row">
+    <div class="column-full">
+
+        {% include 'cases/submissions/'|add:upload_template %}
+
+    </div>
+    <div class="column-third">
+        <div class="community-contact">
+          <p>
+            <!-- <a class="feedback" href="/contact/govuk">Give feedback about this page</a> -->
+          </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

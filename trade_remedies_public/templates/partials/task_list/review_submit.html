@@ -1,0 +1,34 @@
+{% load task_status %}
+{% load task_link_toggle %}
+{# work out whether to display the review/check section #}
+{% set 'count_conf' documents.confidential|length %}
+{% set 'count_non' documents.non_confidential|length %}
+{% set 'count_all' count_conf|_plus:count_non %}
+{% set 'count_loa' documents.loa|length %}
+{% if count_conf == count_non or confidential_only %}
+    {% set 'enable_review' 1 %}
+{% endif %}
+{% if count_conf == 0 %}
+    {% set 'enable_review' False %}
+{% endif %}
+{% if documents.deficient|length > 0 %}
+    {% set 'enable_review' False %}
+{% endif %}
+{% if documents.loa_deficient|length > 0 %}
+    {% set 'enable_review' False %}
+{% endif %}
+{% if upload_loa and count_loa == 0 %}
+     {% set 'enable_review' False %}
+{% endif %}
+<li>
+    {% include "./section_heading.html" with section_heading=section_heading|default:'Final check and submit' %}
+    <ul class="task-list-items">
+        <li class="task-list-item">
+            {% task_link_toggle submission 'review_documents' item_heading_check|default:'Check your submission' enable_review %}
+            {% task_status submission.doc_reviewed_at True %}
+        </li>
+        <li class="task-list-item">
+            {% task_link_toggle submission 'submit' item_heading_submit|default:'Send your submission' submission.doc_reviewed_at %}
+        </li>
+    </ul>
+</li>
