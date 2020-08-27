@@ -17,13 +17,6 @@ help:
 		@echo -e "$(COLOUR_YELLOW)make docker-cli-connect$(COLOUR_NONE) : Start a new terminal session in a running cli container "
 		@echo -e "$(COLOUR_YELLOW)make build-docker-cli$(COLOUR_NONE) : Rebuild the dockerized environment for development"
 
-
-docker-code-style:
-		docker-compose -f docker-compose-test.yml -p trade-remedies-public-code rm --force
-		docker-compose -f docker-compose-test.yml -p trade-remedies-public-code run test-trade-remedies-code
-		docker-compose -f docker-compose-test.yml -p trade-remedies-public-code stop
-		docker-compose -f docker-compose-test.yml -p trade-remedies-public-code rm --force
-
 docker-test:
 		docker-compose -f docker-compose-test.yml -p trade-remedies-public-test rm --force
 		docker-compose -f docker-compose-test.yml -p trade-remedies-public-test run test-trade-remedies-public
@@ -39,3 +32,9 @@ docker-cli-connect:
 
 build-docker-cli:
 		docker-compose -f docker-compose.yml build cli
+
+black:
+		docker run -it --rm -v pub-requirements:/usr/local -v "$(CURDIR):/app" python sh -c "cd /app && pip install -r requirements-dev.txt && black trade_remedies_public --check"
+
+flake8:
+		docker run -it --rm -v pub-requirements:/usr/local -v "$(CURDIR):/app" python sh -c "cd /app && pip install -r requirements-dev.txt && flake8 --count"

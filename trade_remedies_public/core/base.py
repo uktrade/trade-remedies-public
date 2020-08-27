@@ -245,16 +245,22 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
                 self.case_id, self.submission_id, request_for_organisation_id=request_for
             )
             documents = sub_documents.get("documents", [])
+
         submission_documents = deep_index_items_by(documents, "type/key")
         submissions_from_public = submission_documents.get("respondent", [])
+
         document_conf_index = deep_index_items_by(submissions_from_public, "confidential")
+
         caseworker_conf_index = deep_index_items_by(
             submission_documents.get("caseworker", []), "confidential"
         )
+
         document_deficient_index = deep_index_items_by(submissions_from_public, "deficient")
         loa_deficient_index = deep_index_items_by(submission_documents.get("loa", []), "deficient")
+
         # Get the deficiency documents from the parent if applicable
         parent_deficiency_documents = []
+
         if self.submission and self.submission.get("previous_version"):
             _def_docs = self._client.get_submission_documents(
                 self.case_id, self.submission["previous_version"]["id"]
@@ -266,7 +272,11 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
             "deficiency": parent_deficiency_documents,
             "issued": [doc for doc in documents if doc.get("issued")],
             "confidential": document_conf_index.get("true", []),
-            "non_confidential": document_conf_index.get("false", []),
+            "non_confidential": [
+                doc
+                for doc in (document_conf_index.get("false", []))
+                if not doc["block_from_public_file"]
+            ],
             "tra_non_confidential": caseworker_conf_index.get("false", []),
             "deficient": document_deficient_index.get("true", []),
             "loa_deficient": loa_deficient_index.get("true", []),

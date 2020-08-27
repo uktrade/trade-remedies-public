@@ -3,13 +3,6 @@ services:
   redis:
     image: redis:alpine
     container_name: redis-test
-  test-trade-remedies-code:
-    build: .
-    env_file:
-      - test.env
-    depends_on:
-      - redis
-    entrypoint: dockerize -wait tcp://redis:6379 -timeout 120s /opt/traderemedies/public/start.sh code
   test-trade-remedies-public:
     build: .
     env_file:
