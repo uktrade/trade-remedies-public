@@ -1,6 +1,6 @@
 {
   "name": "trade-remedies-public",
-  "version": "1.0.0",
+  "version": "1.5.3",
   "description": "Public-facing UI for the Trade Remedies system",
   "main": "index.js",
   "private": true,
