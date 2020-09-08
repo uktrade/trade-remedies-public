@@ -1,4 +1,5 @@
 import json
+import logging
 from django.utils import timezone
 from trade_remedies_client.client import Client
 from django_countries import countries
@@ -12,6 +13,8 @@ from cases.constants import (
 
 SUBMISSION_TYPE_HELPERS = {}
 
+logger = logging.getLogger(__name__)
+
 
 class BaseSubmissionHelper:
     """
@@ -22,6 +25,7 @@ class BaseSubmissionHelper:
     type_ids = None
 
     def __init__(self, submission, user, view=None, case_id=None):
+        logger.debug(self.__class__.__name__)
         self.case_id = case_id
         self.submission = submission
         self.case = submission["case"] if submission else None
@@ -101,8 +105,8 @@ class AssignUserSubmission(BaseSubmissionHelper):
             )
             context["primary"] = (
                 self.submission.get("deficiency_notice_params", {})
-                .get("assign_user", {})
-                .get("contact_status")
+                    .get("assign_user", {})
+                    .get("contact_status")
             )
             context["is_primary"] = context["primary"]
             context["assign_user"] = self.submission["contact"]["user"]
@@ -112,7 +116,7 @@ class AssignUserSubmission(BaseSubmissionHelper):
             )
             context["has_documents"] = has_documents
             context["enable_submit"] = context["primary"] and (
-                context["representing"]["id"] == self.user.organisation["id"] or has_documents
+                    context["representing"]["id"] == self.user.organisation["id"] or has_documents
             )
             context["organisation"] = context.get("current_organisation")
             if self.view:
@@ -143,8 +147,8 @@ class AssignUserSubmission(BaseSubmissionHelper):
         if self.submission:
             current_primary_state = (
                 self.submission.get("deficiency_notice_params", {})
-                .get("assign_user", {})
-                .get("contact_status")
+                    .get("assign_user", {})
+                    .get("contact_status")
             )
             if is_primary is not None and is_primary != current_primary_state:
                 deficiency_notice_params = self.submission.get("deficiency_notice_params", {})
@@ -185,18 +189,20 @@ class AssignUserSubmission(BaseSubmissionHelper):
         Returns an overriden redirect url if the assignment was successful.
         """
         user_organisation_id = (
-            get(self.submission, "contact/organisation/id")
-            or get(self.submission, "contact/user/organisation/id")
-            or get(self.user.organisation, "id")
+                get(self.submission, "contact/organisation/id")
+                or get(self.submission, "contact/user/organisation/id")
+                or get(self.user.organisation, "id")
         )
+
         user_id = get(self.submission, "contact/user/id")
+
         if get(self.submission, "organisation/id") == user_organisation_id:
             # make the case assignment.
             is_primary = (
-                self.submission.get("deficiency_notice_params", {})
-                .get("assign_user", {})
-                .get("contact_status")
-                == "primary"
+                    self.submission.get("deficiency_notice_params", {})
+                    .get("assign_user", {})
+                    .get("contact_status")
+                    == "primary"
             )
             self.client.assign_user_to_case(
                 user_organisation_id=user_organisation_id,
@@ -207,6 +213,7 @@ class AssignUserSubmission(BaseSubmissionHelper):
             )
             self.client.set_submission_state(self.case["id"], self.submission["id"], "sufficient")
             return f"/accounts/team/{user_organisation_id}/user/{user_id}/?alert=user-assigned"
+
         return f"/accounts/team/{user_organisation_id}/user/{user_id}/?alert=user-assigned-req"
 
 
@@ -216,7 +223,7 @@ class RegisterInterestSubmission(BaseSubmissionHelper):
     def get_context(self, base_context=None):
         context = base_context or {}
         context.update(
-            {"case_id": self.case_id, "countries": countries, "country": "GB", "representing": "",}
+            {"case_id": self.case_id, "countries": countries, "country": "GB", "representing": "", }
         )
         return context
 
@@ -240,6 +247,7 @@ class RegisterInterestSubmission(BaseSubmissionHelper):
         """
         On submission of reg-interest submission, set the case role
         """
+        logger.debug(f"RegisterInterestSubmission.on_submit")
         case_id = self.case["id"]
         submission_id = self.submission["id"]
         current_role_id = self.submission.get("organisation_case_role", {}).get("id")

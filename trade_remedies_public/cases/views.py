@@ -1,5 +1,7 @@
 import json
 import datetime
+import logging
+
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -49,6 +51,9 @@ from trade_remedies_public.constants import (
 
 from core.validators import company_form_validators, review_form_validators
 import dpath
+
+logger = logging.getLogger(__name__)
+
 
 TASKLIST_BY_CASE_ROLE = {
     ROLE_APPLICANT: "application",
@@ -189,6 +194,7 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         *args,
         **kwargs,
     ):
+        logger.debug("TaskListView.get")
         public = public_str == "public"
         just_submitted = public_str == "submitted"
         state = {}
@@ -212,11 +218,13 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             and int(self.case.get("type", {}).get("id")) in ALL_COUNTRY_CASE_TYPES
         ):
             state["source"] = True
+
         # This is the user's submission if he's representing the company, or created it
         not_own_org_submission = not global_submission and not (
             request.user.is_representing(submission_org_id, request)
             or request.user.id == self.submission["created_by"]["id"]
         )
+
         if public or not_own_org_submission or self.submission.get("status", {}).get("locking"):
             if public or not_own_org_submission:
                 template_name = f"cases/submissions/{tasklist_template}/view_public.html"
@@ -224,6 +232,9 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 template_name = f"cases/submissions/{tasklist_template}/view.html"
         else:
             template_name = f"cases/submissions/{tasklist_template}/tasklist.html"
+
+        logger.debug(f"template {template_name}")
+
         _context = {
             "all_organisations": True
             if not self.organisation
@@ -242,10 +253,13 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             "public": public,
             "just_submitted": just_submitted,
         }
+
         _submission_context = self.get_submission_context(base_context=_context)
+
         # temp hack to support assign submission
         if _context.get("all_documents"):
             _context["documents"] = _context["all_documents"]
+
         return render(request, template_name, _submission_context)
 
 
@@ -1069,6 +1083,7 @@ class SubmitApplicationView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
     case_page = True
 
     def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
+        logger.debug("SubmitApplicationView.get")
         case = self._client.get_case(case_id=case_id)
         organisation_id = request.session.get("organisation_id")
         submission = self._client.get_submission_public(case_id, submission_id, organisation_id)
@@ -1091,12 +1106,17 @@ class SubmitApplicationView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
         return render(request, template_name, context)
 
     def post(self, request, case_id=None, submission_id=None, *args, **kwargs):
+        logger.debug("SubmitApplicationView.post")
         errors = {}
+
         if not request.POST.get("confirm"):
             errors["confirm"] = "You must confirm your authority"
+
         if not request.POST.get("non_conf"):
             errors["non_conf"] = "You must include non-confidential documents"
+
         if errors:
+            logger.debug(errors)
             return self.get(request, case_id, submission_id, errors=errors)
 
         self._client.set_submission_status_public(case_id, submission_id, status_context="received")

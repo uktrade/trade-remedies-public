@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     "feedback",
 ]
 
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -75,6 +76,14 @@ MIDDLEWARE = [
     "trade_remedies_public.middleware.CacheControlMiddleware",
     "trade_remedies_public.middleware.HoldingPageMiddleware",
 ]
+
+if DEBUG:
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
+
+    INTERNAL_IPS = [
+        '127.0.0.1',
+    ]
 
 # Add basic authentication if configured
 basic_auth_user = os.environ.get("BASIC_AUTH_USER")
@@ -228,13 +237,11 @@ RAVEN_CONFIG = {
 
 
 if not DEBUG:
-    # Sentry logging
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
         "root": {
             "level": "WARNING",
-            # 'handlers': ['sentry'],
         },
         "formatters": {
             "verbose": {
@@ -243,21 +250,10 @@ if not DEBUG:
             },
         },
         "handlers": {
-            # 'sentry': {
-            #     'level': 'WARNING',
-            #     'class': (
-            #         'raven.contrib.django.raven_compat.handlers.SentryHandler'
-            #     ),
-            # },
             "console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose"}
         },
         "loggers": {
             "django.db.backends": {"level": "ERROR", "handlers": ["console"], "propagate": False,},
-            # 'raven': {
-            #     'level': 'DEBUG',
-            #     'handlers': ['console'],
-            #     'propagate': False,
-            # },
             "sentry.errors": {"level": "DEBUG", "handlers": ["console"], "propagate": False,},
         },
     }

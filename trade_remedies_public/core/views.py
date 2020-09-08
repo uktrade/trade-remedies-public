@@ -1,4 +1,5 @@
 import os
+import logging
 import pytz
 import json
 import dpath
@@ -37,6 +38,7 @@ from trade_remedies_client.exceptions import APIException
 
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
+logger = logging.getLogger(__name__)
 
 
 class TradeRemediesBaseView(TemplateView):
