@@ -17,6 +17,13 @@ help:
 		@echo -e "$(COLOUR_YELLOW)make docker-cli-connect$(COLOUR_NONE) : Start a new terminal session in a running cli container "
 		@echo -e "$(COLOUR_YELLOW)make build-docker-cli$(COLOUR_NONE) : Rebuild the dockerized environment for development"
 
+		@echo -e "$(COLOUR_YELLOW)make prettier$(COLOUR_NONE) : Check sass files using prettier"
+		@echo -e "$(COLOUR_YELLOW)make flake8$(COLOUR_NONE) : Check python files using flake8"
+		@echo -e "$(COLOUR_YELLOW)make black$(COLOUR_NONE) : Check python files using black"
+
+prettier:
+		docker run -it --rm -v node_modules:/app/node_modules -v "$(CURDIR):/app" node sh -c 'cd /app && npm i && npx prettier --check "trade_remedies_public/templates/**/*.{scss,js}"'
+
 docker-test:
 		docker-compose -f docker-compose-test.yml -p trade-remedies-public-test rm --force
 		docker-compose -f docker-compose-test.yml -p trade-remedies-public-test run test-trade-remedies-public
