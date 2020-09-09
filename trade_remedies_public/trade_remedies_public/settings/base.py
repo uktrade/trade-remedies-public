@@ -82,7 +82,7 @@ if DEBUG:
     MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
     INTERNAL_IPS = [
-        '127.0.0.1',
+        "127.0.0.1",
     ]
 
 # Add basic authentication if configured
@@ -240,9 +240,7 @@ if not DEBUG:
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
-        "root": {
-            "level": "WARNING",
-        },
+        "root": {"level": "WARNING",},
         "formatters": {
             "verbose": {
                 "format": "%(levelname)s %(asctime)s %(module)s "
