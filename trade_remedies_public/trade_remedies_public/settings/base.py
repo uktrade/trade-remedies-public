@@ -18,7 +18,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 root = environ.Path(__file__) - 4
 env = environ.Env(DEBUG=(bool, False),)
-environ.Env.read_env(f"{root}/local.env")
+environ.Env.read_env()
 
 sentry_sdk.init(
     dsn=os.environ.get("SENTRY_DSN"),
@@ -104,7 +104,10 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "trade_remedies_public.wsgi.application"
+
+WSGI_APPLICATION = 'trade_remedies_public.wsgi.application'
+
+#WSGI_APPLICATION = "trade_remedies_public.wsgi.application"
 
 
 # Database
@@ -142,12 +145,18 @@ USE_L10N = True
 
 USE_TZ = True
 
-redis_base_uri = json.loads(os.environ.get("VCAP_SERVICES"))["redis"][0]["credentials"]["uri"]
-redis_uri = redis_base_uri + "/" + os.environ.get("REDIS_DATABASE_NUMBER")
+_VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
+
+# Redis
+if 'redis' in _VCAP_SERVICES:
+    REDIS_BASE_URL = _VCAP_SERVICES['redis'][0]['credentials']['uri']
+else:
+    REDIS_BASE_URL = os.getenv('REDIS_BASE_URL')
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": redis_uri,
+        "LOCATION": REDIS_BASE_URL,
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient",},
     },
 }

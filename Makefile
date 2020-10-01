@@ -38,3 +38,34 @@ black:
 
 flake8:
 		docker run -it --rm -v pub-requirements:/usr/local -v "$(CURDIR):/app" python sh -c "cd /app && pip install -r requirements-dev.txt && flake8 --count"
+
+build:
+	docker-compose build
+
+up:
+	docker-compose up
+
+down:
+	docker-compose down
+
+all-requirements:
+	pip-compile --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --output-file requirements/dev.txt requirements.in/dev.in --exclude /app/trade_remedies_client/trade-remedies-client-0.1.tar.gz
+	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
+
+dev-requirements:
+	pip-compile --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --output-file requirements/dev.txt requirements.in/dev.in --exclude /app/trade_remedies_client/trade-remedies-client-0.1.tar.gz
+
+prod-requirements:
+	pip-compile --output-file requirements/base.txt requirements.in/base.in
+	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
+
+bash:
+	docker-compose run --rm client bash
+
+migrations:
+	docker-compose run --rm client python manage.py makemigrations
+
+migrate:
+	docker-compose run --rm client python manage.py migrate
