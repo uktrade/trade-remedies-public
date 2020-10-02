@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+import sys
 import json
 import os
 import environ
@@ -42,7 +42,6 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
 
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
-
 
 # Application definition
 
@@ -219,7 +218,8 @@ COUNTRIES_OVERRIDE = {
 
 APPEND_SLASH = True
 STATIC_URL = "/static/"
-STATIC_ROOT = "/home/vcap/app/static"
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'static')) 
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "govuk_template", "static"),
     os.path.join(BASE_DIR, "..", "templates", "static"),
@@ -234,7 +234,6 @@ RAVEN_CONFIG = {
     "dsn": os.environ.get("SENTRY_DSN"),
     "environment": os.environ.get("SENTRY_ENVIRONMENT"),
 }
-
 
 if not DEBUG:
     # Sentry logging
@@ -269,4 +268,18 @@ if not DEBUG:
             # },
             "sentry.errors": {"level": "DEBUG", "handlers": ["console"], "propagate": False,},
         },
+    }
+else:
+    LOGGING = {
+        'version': 1,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+                'stream': sys.stdout,
+            }
+        },
+        'root': {
+            'handlers': ['console'],
+            'level': 'INFO'
+        }
     }

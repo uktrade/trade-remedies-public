@@ -120,3 +120,6 @@ local.env
 tags
 node_modules
 .idea
+
+# Static
+trade_remedies_public/static/
