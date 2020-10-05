@@ -271,22 +271,23 @@ if not DEBUG:
     }
 else:
     LOGGING = {
-        'version': 1,
-        'disable_existing_loggers': False,
+        "version": 1,
+        "disable_existing_loggers": False,
         'handlers': {
-            'console': {
+            'stdout': {
                 'class': 'logging.StreamHandler',
+                'stream': sys.stdout,
             },
         },
         'root': {
-            'handlers': ['console'],
-            'level': 'WARNING',
+            'handlers': ['stdout'],
+            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
         },
         'loggers': {
             'django': {
-                'handlers': ['console'],
+                'handlers': ['stdout', ],
                 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-                'propagate': False,
+                'propagate': True,
             },
         },
     }
