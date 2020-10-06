@@ -89,6 +89,14 @@ cf set-env traderemediespublic DJANGO_SECRET_KEY 'changeme'
 cf push
 ```
 
+## Front end
+Make changes to the files in trade_remedies_public/templates/static
+
+In the orchestration report run 
+```
+make front-end 
+```
+
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -111,6 +119,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://blog.clueful.com.au/"><img src="https://avatars0.githubusercontent.com/u/309976?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Brendan Quinn</b></sub></a><br /><a href="https://github.com/uktrade/trade-remedies-public/commits?author=bquinn" title="Code">💻</a></td>
   </tr>
 </table>
+
+
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
