@@ -30,14 +30,6 @@ If you are not sure what to use for one of the values above, ask a colleague or 
 
 This project should be run using the Trade Remedies orchestration project available at: https://github.com/uktrade/trade-remedies-docker
 
-## Front end
-Make changes to the files in trade_remedies_public/templates/static
-
-In the orchestration report run 
-```
-make front-end 
-```
-
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
