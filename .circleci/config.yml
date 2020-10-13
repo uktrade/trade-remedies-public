@@ -5,7 +5,7 @@ jobs:
       - image: circleci/python:3.6.12
         environment:
           DATABASE_URL: sqlite:///trade_remedies_public/db.sqlite3
-          DJANGO_SETTINGS_MODULE: config.settings.ci
+          DJANGO_SETTINGS_MODULE: trade_remedies_public.settings.local
           SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
     steps:
