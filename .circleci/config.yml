@@ -27,6 +27,7 @@ jobs:
           name: Run tests
           command: |
             . venv/bin/activate
+            cd trade_remedies_public
             python manage.py test
       - run:
           name: Run black
