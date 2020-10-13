@@ -2,17 +2,12 @@ version: 2.1
 jobs:
   python_steps:
     docker:
-      - image: circleci/python:3.6.10
+      - image: circleci/python:3.6.12
         environment:
-          DATABASE_URL: psql://ubuntu@localhost:5432/trade_remedies
+          DATABASE_URL: sqlite:///trade_remedies_public/trade_remedies_public/db.sqlite3
           DJANGO_SETTINGS_MODULE: config.settings.ci
           SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
-      - image: circleci/postgres:9.6.5-alpine-ram
-        environment:
-          POSTGRES_USER: ubuntu
-          POSTGRES_DB: trade_remedies
-          POSTGRES_PASSWORD: ""
     steps:
       - checkout
       - restore_cache:
@@ -28,20 +23,20 @@ jobs:
           paths:
             - "venv"
       - run:
-          name: Collect static
-          command: |
-            . venv/bin/activate
-            python manage.py collectstatic --noinput
-      - run:
           name: Run tests
           command: |
             . venv/bin/activate
             python manage.py test
       - run:
+          name: Run black
+          command: |
+            . venv/bin/activate
+            # black trade_remedies_api --check
+      - run:
           name: Run Flake8
           command: |
             . venv/bin/activate
-            python -m flake8
+            # python -m flake8
   front_end:
     docker: 
       - image: 'circleci/node:latest'

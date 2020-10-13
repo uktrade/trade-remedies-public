@@ -104,9 +104,7 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'trade_remedies_public.wsgi.application'
-
-#WSGI_APPLICATION = "trade_remedies_public.wsgi.application"
+WSGI_APPLICATION = "trade_remedies_public.wsgi.application"
 
 
 # Database
@@ -148,7 +146,7 @@ _VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
 
 # Redis
 if 'redis' in _VCAP_SERVICES:
-    REDIS_BASE_URL = _VCAP_SERVICES['redis'][0]['credentials']['uri']
+    REDIS_BASE_URL = f"{_VCAP_SERVICES['redis'][0]['credentials']['uri']}/2"
 else:
     REDIS_BASE_URL = os.getenv('REDIS_BASE_URL')
 
