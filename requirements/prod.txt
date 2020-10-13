@@ -4,13 +4,10 @@
 #
 #    pip-compile --output-file=requirements/prod.txt requirements.in/prod.in
 #
-appnope==0.1.0            # via ipython
-backcall==0.2.0           # via ipython
 boto3==1.11.14            # via -r requirements.in/base.in, s3chunkuploader
 botocore==1.14.17         # via boto3, s3transfer
 certifi==2020.6.20        # via requests, sentry-sdk
 chardet==3.0.4            # via requests
-decorator==4.4.2          # via ipython
 django-basicauth==0.5.2   # via -r requirements.in/base.in
 django-countries==5.4     # via -r requirements.in/base.in
 django-environ==0.4.5     # via -r requirements.in/base.in
@@ -29,17 +26,8 @@ gevent==1.4.0             # via -r requirements.in/prod.in
 greenlet==0.4.17          # via gevent
 gunicorn==20.0.4          # via -r requirements.in/prod.in
 idna==2.10                # via requests
-ipython-genutils==0.2.0   # via traitlets
-ipython==7.3.0            # via -r requirements.in/base.in
-jedi==0.17.2              # via ipython
 jmespath==0.10.0          # via boto3, botocore
-parso==0.7.1              # via jedi
-pexpect==4.8.0            # via ipython
-pickleshare==0.7.5        # via ipython
-prompt-toolkit==2.0.10    # via ipython
 psycopg2-binary==2.8.6    # via feed-gov-back
-ptyprocess==0.6.0         # via pexpect
-pygments==2.7.1           # via ipython
 python-dateutil==2.8.1    # via botocore
 pytz==2020.1              # via -r requirements.in/base.in, django, django-timezone-field
 redis==3.2.0              # via -r requirements.in/base.in, django-redis
@@ -47,11 +35,9 @@ requests==2.24.0          # via -r requirements.in/base.in
 s3chunkuploader==0.10     # via -r requirements.in/base.in
 s3transfer==0.3.3         # via boto3
 sentry-sdk==0.13.1        # via -r requirements.in/base.in
-six==1.15.0               # via django-extensions, prompt-toolkit, python-dateutil
+six==1.15.0               # via django-extensions, python-dateutil
 sqlparse==0.3.1           # via django
-traitlets==5.0.4          # via ipython
 urllib3==1.25.10          # via botocore, requests, sentry-sdk
-wcwidth==0.2.5            # via prompt-toolkit
 werkzeug==0.15.5          # via -r requirements.in/base.in
 whitenoise==3.3.1         # via -r requirements.in/base.in
 
