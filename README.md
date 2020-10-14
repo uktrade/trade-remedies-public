@@ -21,7 +21,7 @@ Populate the following environment variables in the local.env file:
 | ------------- | ------------- | ------------- |
 | `S3_BUCKET_NAME` | Yes | S3 bucket name of bucket used for local dev |
 | `S3_STORAGE_KEY`  | Yes | AWS access key ID |
-| `S3_STORAGE_SECRET`  | AWS secret access key | |
+| `S3_STORAGE_SECRET`  | Yes | AWS secret access key | |
 | `AWS_REGION`  | Yes | Change if different from "eu-west" |
 
 If you are not sure what to use for one of the values above, ask a colleague or contact the SRE team.
@@ -29,6 +29,14 @@ If you are not sure what to use for one of the values above, ask a colleague or 
 #### Running the project
 
 This project should be run using the Trade Remedies orchestration project available at: https://github.com/uktrade/trade-remedies-docker
+
+## Compiling requirements
+
+We use pip-compile from https://github.com/jazzband/pip-tools to manage pip dependencies. This runs from the make file when generating requirements:
+
+Run `make all-requirements`
+
+This needs to be run from the host machine as it does not run in a container.
 
 ## Contributors ✨
 

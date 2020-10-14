@@ -19,8 +19,6 @@ jobs:
             pip install trade_remedies_client/trade-remedies-client-0.1.tar.gz
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
-          paths:
-            - "venv"
       - run:
           name: Run tests
           command: |

@@ -144,6 +144,12 @@ USE_TZ = True
 
 _VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
 
+# Trade remedies uses different redis database numbers
+# Public Django cache - 2
+# Caseworker Django cache - 1
+# API Django cache - 0
+# API Celery - 2 TODO find out if this should be a different value to public
+
 # Redis
 if 'redis' in _VCAP_SERVICES:
     REDIS_BASE_URL = f"{_VCAP_SERVICES['redis'][0]['credentials']['uri']}/2"
