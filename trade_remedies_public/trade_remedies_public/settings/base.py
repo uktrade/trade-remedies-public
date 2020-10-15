@@ -142,19 +142,19 @@ USE_L10N = True
 
 USE_TZ = True
 
-_VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
+_VCAP_SERVICES = env.json("VCAP_SERVICES", default={})
 
 # Trade remedies uses different redis database numbers
 # Public Django cache - 2
 # Caseworker Django cache - 1
 # API Django cache - 0
-# API Celery - 2 TODO find out if this should be a different value to public
+#  API Celery - 2 TODO find out if this should be a different value to public
 
 # Redis
-if 'redis' in _VCAP_SERVICES:
+if "redis" in _VCAP_SERVICES:
     REDIS_BASE_URL = f"{_VCAP_SERVICES['redis'][0]['credentials']['uri']}/2"
 else:
-    REDIS_BASE_URL = os.getenv('REDIS_BASE_URL')
+    REDIS_BASE_URL = os.getenv("REDIS_BASE_URL")
 
 CACHES = {
     "default": {
@@ -222,7 +222,7 @@ COUNTRIES_OVERRIDE = {
 
 APPEND_SLASH = True
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'static')) 
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", "static"))
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "govuk_template", "static"),
@@ -277,21 +277,13 @@ else:
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
-        'handlers': {
-            'stdout': {
-                'class': 'logging.StreamHandler',
-                'stream': sys.stdout,
-            },
-        },
-        'root': {
-            'handlers': ['stdout'],
-            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
-        },
-        'loggers': {
-            'django': {
-                'handlers': ['stdout', ],
-                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-                'propagate': True,
+        "handlers": {"stdout": {"class": "logging.StreamHandler", "stream": sys.stdout,},},
+        "root": {"handlers": ["stdout"], "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),},
+        "loggers": {
+            "django": {
+                "handlers": ["stdout",],
+                "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+                "propagate": True,
             },
         },
     }
