@@ -9,8 +9,6 @@ from django.utils import timezone
 from django.urls import reverse
 
 from core.base import GroupRequiredMixin, BasePublicView
-from core.views import TradeRemediesBaseView
-from django.template.loader import select_template
 from cases.constants import (
     SUBMISSION_TYPE_EX_OFFICIO,
     CASE_DOCUMENT_TYPE_PRESAMPLING_QUESTIONNAIRE,
@@ -22,12 +20,12 @@ from cases.constants import (
     CASE_ROLE_AWAITING_APPROVAL,
 )
 from core.constants import ALERT_MAP
-from cases.submissions import SUBMISSION_TYPE_HELPERS
-from cases.utils import decorate_due_status, decorate_rois, get_org_parties
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
-from .utils import (
+from cases.utils import (
     decorate_due_status,
+    decorate_rois,
+    get_org_parties,
     decorate_submission_updated,
     validate_hs_code,
     structure_documents,
@@ -377,7 +375,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             },
         )
 
-    def post(self, request, case_id=None, submission_id=None, *args, **kwargs):
+    def post(self, request, case_id=None, submission_id=None, *args, **kwargs):  # noqa: C901
 
         page = request.POST.get("page")
         if page == "role":
@@ -413,7 +411,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             enable_review_process = self._client.get_system_boolean("PRE_REVIEW_APPLICATIONS")
             if self.submission_type_key == "application" and enable_review_process:
                 request.session.modified = True
-                return redirect(f"/case/company/?page=role")
+                return redirect("/case/company/?page=role")
             else:
                 params["representing"] = params.get("representing_value")
                 try:
@@ -493,7 +491,7 @@ class ProductView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 elif code:
                     valid_codes = True
         if not valid_codes:
-            errors["hs_code"] = get(errors, "hs_code") or f"You must provide at least one HS code"
+            errors["hs_code"] = get(errors, "hs_code") or "You must provide at least one HS code"
         json_data = get(self.submission, "deficiency_notice_params") or {}
         json_data["case_category"] = request.POST.get("case_category")
         self._client.update_submission(
@@ -599,7 +597,7 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 },
             )
 
-    def post(
+    def post(   # noqa: C901
         self, request, case_id=None, submission_id=None, export_source_id=None, *args, **kwargs
     ):
 
@@ -1155,7 +1153,7 @@ class DocumentDownloadStreamView(
             raise APIException("Invalid request parameters")
         document = client.get_document(document_id, case_id, submission_id)
 
-        if document.get("safe") != True:
+        if document.get("safe") is not True:
             return render(request, "file_scan.html", {"document": document})
         document_stream = client.get_document_download_stream(
             document_id=document_id, submission_id=submission_id, organisation_id=organisation_id
