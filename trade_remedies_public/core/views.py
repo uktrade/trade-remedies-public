@@ -1,7 +1,6 @@
 import os
 import pytz
 import json
-import dpath
 from requests.exceptions import HTTPError
 from django.views.generic import View, TemplateView
 from django.shortcuts import render, redirect
@@ -13,12 +12,10 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django_countries import countries
 from django.http import HttpResponseNotFound, HttpResponse
-from django.db import transaction
 from trade_remedies_public.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
 )
-from cases.constants import SUBMISSION_TYPE_ASSIGN_TO_CASE
 from core.base import GroupRequiredMixin, BasePublicView
 from core.utils import (
     to_word,
@@ -119,7 +116,8 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
                         locked_until = result.get("locked_until")
                         locked_for_seconds = result.get("locked_for_seconds")
                 except Exception:
-                    twofactor_error = f"We could not send the code to your phone ({request.user.phone}). Please select to use email delivery of the access code."
+                    twofactor_error = f"We could not send the code to your phone ({request.user.phone}). " \
+                                      f"Please select to use email delivery of the access code."
                     result = "An error occured"
             return render(
                 request,
@@ -450,7 +448,7 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             "invitation": invitation,
         }
 
-    def get(
+    def get(   # noqa: C901
         self,
         request,
         user_id=None,
@@ -552,7 +550,7 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 "organisation_id": organisation_id,
                 "user_record": user,
                 "invitation_id": invitation_id,
-                #'invites': invites,
+                # 'invites': invites,
                 "countries": countries,
                 "groups": client.get_public_security_groups(),
                 "timezones": pytz.common_timezones,
@@ -568,7 +566,7 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             },
         )
 
-    def post(
+    def post(  # noqa: C901
         self,
         request,
         user_id=None,
@@ -664,7 +662,7 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                         request, user_id=user_id, organisation_id=organisation_id, data=data
                     )
 
-                return redirect(f"/accounts/team/?alert=added-employee")
+                return redirect("/accounts/team/?alert=added-employee")
 
         try:
             user = client.get_user(user_id, organisation_id)
@@ -736,7 +734,7 @@ class AssignUserToCaseView(LoginRequiredMixin, BasePublicView):
             case_id, organisation_id = case_org_id.split(":")
         elif case_org_selection:
             return redirect(
-                f"/case/select/organisation/for/{user_id}/?redirect=assign_user_to_case|user_id={user_id}&alert=no-selection"
+                f"/case/select/organisation/for/{user_id}/?redirect=assign_user_to_case|user_id={user_id}&alert=no-selection"  # noqa: E501
             )
         submission = self.on_submission_update(
             {

@@ -101,7 +101,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
             },
         )
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):    # noqa: C901
         email = request.POST.get("email")
         password = request.POST.get("password")
         code = request.POST.get("code")
@@ -166,7 +166,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
             if case_id and code:
                 return redirect(f"/accounts/login/{code}/{case_id}/?error")
             else:
-                return redirect(f"/accounts/login/?error")
+                return redirect("/accounts/login/?error")
 
 
 class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
