@@ -13,5 +13,5 @@ def count_display(count, prefix=None, postfix=None):
     prefix = prefix or ""
     postfix = postfix or ""
     if count:
-        output = f"""<div class="task-upload">{prefix} <span class="uploaded-count number-circle larger">{count}</span> {postfix}</div>"""
+        output = f"""<div class="task-upload">{prefix} <span class="uploaded-count number-circle larger">{count}</span> {postfix}</div>"""     # noqa: E501
     return mark_safe(output)

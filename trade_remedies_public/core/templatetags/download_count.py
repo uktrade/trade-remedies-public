@@ -19,7 +19,7 @@ def download_count(documents, prefix=None, postfix=None, warning=None):
     prefix = prefix if prefix is not None else "Downloaded"
     postfix = postfix if postfix is not None else ""
     if count:
-        output = f"""<div class="task-upload">{prefix} <span class="uploaded-count number-circle larger">{count}</span> {postfix}</div>"""
+        output = f"""<div class="task-upload">{prefix} <span class="uploaded-count number-circle larger">{count}</span> {postfix}</div>"""   # noqa: E501
     if warning and count < len(documents):
-        output += f"""<i class="icon icon-warning pull-right"><span class="visually-hidden">strong alert</span></i>"""
+        output += """<i class="icon icon-warning pull-right"><span class="visually-hidden">strong alert</span></i>"""
     return mark_safe(output)
