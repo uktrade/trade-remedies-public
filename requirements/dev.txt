@@ -72,7 +72,7 @@ sentry-sdk==0.13.1        # via -r requirements.in/base.in
 six==1.15.0               # via django-extensions, packaging, prompt-toolkit, python-dateutil
 sqlparse==0.3.1           # via django
 toml==0.10.1              # via black, pytest
-git+git://github.com/uktrade/trade-remedies-client.git@1.5  # via -r requirements.in/base.in
+git+git://github.com/uktrade/trade-remedies-client.git  # via -r requirements.in/base.in
 traitlets==4.2.0          # via -r requirements.in/dev.in, ipython
 typed-ast==1.4.1          # via black
 typing-extensions==3.7.4.3  # via black

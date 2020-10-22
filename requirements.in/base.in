@@ -1,4 +1,4 @@
-git+git://github.com/uktrade/trade-remedies-client.git@1.5
+git+git://github.com/uktrade/trade-remedies-client.git
 boto3==1.11.14
 django-basicauth==0.5.2
 django-countries==5.4
