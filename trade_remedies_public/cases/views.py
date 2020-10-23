@@ -9,6 +9,7 @@ from django.http import HttpResponse
 from django_countries import countries
 from django.utils import timezone
 from django.urls import reverse
+from django.conf import settings
 
 from core.base import GroupRequiredMixin, BasePublicView
 from core.views import TradeRemediesBaseView
@@ -1167,8 +1168,8 @@ class DocumentDownloadStreamView(
                 logger.warning(
                     "Document is marked as not safe and cannot be "
                     "downloaded - do you need to set up anti-virus "
-                    "infrastructure? You can also manually mark"
-                    "the document as safe using the Django admin site"
+                    "infrastructure? You can also manually mark "
+                    "the document as safe using the Django admin site "
                     "if developing locally."
                 )
             return render(request, "file_scan.html", {"document": document})
