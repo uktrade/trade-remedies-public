@@ -22,7 +22,7 @@ Populate the following environment variables in the local.env file:
 | `S3_BUCKET_NAME` | Yes | S3 bucket name of bucket used for local dev |
 | `S3_STORAGE_KEY`  | Yes | AWS access key ID |
 | `S3_STORAGE_SECRET`  | Yes | AWS secret access key | |
-| `AWS_REGION`  | Yes | Change if different from "eu-west" |
+| `AWS_REGION`  | Yes | Change if different from "eu-west-2" |
 
 If you are not sure what to use for one of the values above, ask a colleague or contact the SRE team.
 
