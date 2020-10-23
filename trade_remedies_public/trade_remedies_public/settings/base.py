@@ -181,7 +181,7 @@ LOGOUT_REDIRECT_URL = "/"
 AUTO_LOGIN = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-API_BASE_URL = os.environ.get("API_BASE_URL", "http://localhost:8000")
+API_BASE_URL = os.environ.get("API_BASE_URL", "http://api:8000")
 API_PREFIX = "api/v1"
 API_URL = f"{API_BASE_URL}/{API_PREFIX}"
 TRUSTED_USER_TOKEN = os.environ.get("HEALTH_CHECK_TOKEN")
@@ -282,6 +282,9 @@ else:
                 'class': 'logging.StreamHandler',
                 'stream': sys.stdout,
             },
+            'null': {
+                'class': 'logging.NullHandler',
+            },
         },
         'root': {
             'handlers': ['stdout'],
@@ -292,6 +295,10 @@ else:
                 'handlers': ['stdout', ],
                 'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
                 'propagate': True,
+            },
+            'django.server': {
+                'handlers': ['null'],
+                'propagate': False,
             },
         },
     }

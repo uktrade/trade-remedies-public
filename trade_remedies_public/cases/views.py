@@ -1,3 +1,5 @@
+import logging
+
 import json
 import datetime
 from django.shortcuts import render, redirect
@@ -49,6 +51,10 @@ from trade_remedies_public.constants import (
 
 from core.validators import company_form_validators, review_form_validators
 import dpath
+
+
+logger = logging.getLogger(__name__)
+
 
 TASKLIST_BY_CASE_ROLE = {
     ROLE_APPLICANT: "application",
@@ -1138,6 +1144,7 @@ class DocumentDownloadView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             case_id=case_id, submission_id=submission_id
         )
         organisation_id = submission["organisation"]["id"]
+
         document = self._client.get_document_download_url(document_id, submission_id=submission_id)
         return redirect(document.get("download_url"))
 
@@ -1156,10 +1163,20 @@ class DocumentDownloadStreamView(
         document = client.get_document(document_id, case_id, submission_id)
 
         if document.get("safe") != True:
+            if settings.DEBUG:
+                logger.warning(
+                    "Document is marked as not safe and cannot be "
+                    "downloaded - do you need to set up anti-virus "
+                    "infrastructure? You can also manually mark"
+                    "the document as safe using the Django admin site"
+                    "if developing locally."
+                )
             return render(request, "file_scan.html", {"document": document})
+
         document_stream = client.get_document_download_stream(
             document_id=document_id, submission_id=submission_id, organisation_id=organisation_id
         )
+
         return proxy_stream_file_download(document_stream, document["name"])
 
 
