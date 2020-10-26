@@ -24,7 +24,7 @@ It's used in both the public file, and the customer's public file view
             {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
               <span>(withheld by request)</span>
             {% else %}
-              {{submission.organisation_name}}
+            {{ submission.organisation.name|default:submission.organisation_name }}
               {% if submission.organisation_case_role.name %}
                 &nbsp;
                 ({{submission.organisation_case_role.name}}..)
