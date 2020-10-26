@@ -1,6 +1,5 @@
 [flake8]
 exclude = */migrations/*,__pycache__,manage.py,env/*,venv/*,.venv/*,node_modules/*
-# added F401 (imported but unused) to the ignore list because there are too many of them and they are not such a bad error
 # added F841 (local variable  assigned to but never used) again too many.
 # added E722 do not use bare 'except'
 ignore = D100,D104,D106,D200,D203,D205,D400,D401,W503,W504,E704,E231,F841,E722
