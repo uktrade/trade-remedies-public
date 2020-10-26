@@ -212,7 +212,9 @@ MAX_UPLOAD_SIZE = 2 * (1024 * 1024 * 1024)
 AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = os.environ.get("S3_STORAGE_KEY")
 AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = os.environ.get("S3_STORAGE_SECRET")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
-AWS_REGION = AWS_S3_REGION_NAME = os.environ.get("AWS_REGION", "eu-west-1") # "eu-west-1" looks like a legacy setting, TODO investigate if used in prod
+AWS_REGION = AWS_S3_REGION_NAME = os.environ.get(
+    "AWS_REGION", "eu-west-1"
+)  # "eu-west-1" looks like a legacy setting, TODO investigate if used in prod
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_ENCRYPTION = True
 AWS_DEFAULT_ACL = None
@@ -304,8 +306,8 @@ else:
                 "class": "logging.StreamHandler",
                 "stream": sys.stdout,
             },
-            'null': {
-                'class': 'logging.NullHandler',
+            "null": {
+                "class": "logging.NullHandler",
             },
         },
         "root": {
@@ -320,9 +322,9 @@ else:
                 "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
                 "propagate": True,
             },
-            'django.server': {
-                'handlers': ['null'],
-                'propagate': False,
+            "django.server": {
+                "handlers": ["null"],
+                "propagate": False,
             },
         },
     }
