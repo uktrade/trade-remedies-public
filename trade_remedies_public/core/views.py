@@ -116,8 +116,10 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
                         locked_until = result.get("locked_until")
                         locked_for_seconds = result.get("locked_for_seconds")
                 except Exception:
-                    twofactor_error = f"We could not send the code to your phone ({request.user.phone}). " \
-                                      f"Please select to use email delivery of the access code."
+                    twofactor_error = (
+                        f"We could not send the code to your phone ({request.user.phone}). "
+                        f"Please select to use email delivery of the access code."
+                    )
                     result = "An error occured"
             return render(
                 request,
@@ -190,7 +192,11 @@ class PublicCaseListView(TemplateView, TradeRemediesAPIClientMixin):
         return render(
             request,
             template_name,
-            {"cases": cases, "notices": notices, "show_archive_link": archived_count > 0,},
+            {
+                "cases": cases,
+                "notices": notices,
+                "show_archive_link": archived_count > 0,
+            },
         )
 
 
@@ -259,7 +265,8 @@ class PublicDownloadView(TemplateView, TradeRemediesAPIClientMixin):
         # submission = self.trusted_client.get_submission_public(case.get('id'), submission_id, private=False)
         document = self.trusted_client.get_document(document_id, case.get("id"), submission_id)
         document_stream = self.trusted_client.get_document_download_stream(
-            document_id=document_id, submission_id=submission_id,
+            document_id=document_id,
+            submission_id=submission_id,
         )
         return proxy_stream_file_download(document_stream, document["name"])
 
@@ -276,7 +283,11 @@ class InvitationView(TemplateView, TradeRemediesAPIClientMixin):
         return render(
             request,
             self.template_name,
-            {"code": code, "case_id": case_id, "invitation": invitation,},
+            {
+                "code": code,
+                "case_id": case_id,
+                "invitation": invitation,
+            },
         )
 
 
@@ -359,7 +370,12 @@ class SetOrganisationView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClie
         redirect_to = request.GET.get("next")
         organisations = self.client(request.user).get_user_case_organisations(case_id)
         return render(
-            request, self.template_name, {"organisations": organisations, "next": redirect_to,}
+            request,
+            self.template_name,
+            {
+                "organisations": organisations,
+                "next": redirect_to,
+            },
         )
 
     def post(self, request, organisation_id=None, *args, **kwargs):
@@ -448,7 +464,7 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             "invitation": invitation,
         }
 
-    def get(   # noqa: C901
+    def get(  # noqa: C901
         self,
         request,
         user_id=None,

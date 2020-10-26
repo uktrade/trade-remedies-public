@@ -67,7 +67,11 @@ class LoginChoiceView(BaseRegisterView):
         return render(
             request,
             self.template_name,
-            {"code": code, "case_id": case_id, "errors": request.session.get("errors", None),},
+            {
+                "code": code,
+                "case_id": case_id,
+                "errors": request.session.get("errors", None),
+            },
         )
 
 
@@ -101,7 +105,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
             },
         )
 
-    def post(self, request, *args, **kwargs):    # noqa: C901
+    def post(self, request, *args, **kwargs):  # noqa: C901
         email = request.POST.get("email")
         password = request.POST.get("password")
         code = request.POST.get("code")
@@ -454,7 +458,11 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
         return render(
             request,
             "registration/reset_password.html",
-            {"invalid_code": not code_valid, "code": code, "error": error_message,},
+            {
+                "invalid_code": not code_valid,
+                "code": code,
+                "error": error_message,
+            },
         )
 
     def post(self, request, code, *args, **kwargs):
@@ -491,7 +499,10 @@ class CookieSettingsView(BaseRegisterView):
         return render(
             request,
             "registration/cookies.html",
-            {"cookie_policy": cookie_policy, "redirect_url": redirect_url,},
+            {
+                "cookie_policy": cookie_policy,
+                "redirect_url": redirect_url,
+            },
         )
 
     def post(self, request, *args, **kwargs):

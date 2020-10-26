@@ -96,7 +96,12 @@ class CaseOrganisationSelectView(
         redirect_to = request.GET.get("next")
         organisations = self.client(request.user).get_user_case_organisations(case_id)
         return render(
-            request, self.template_name, {"organisations": organisations, "next": redirect_to,}
+            request,
+            self.template_name,
+            {
+                "organisations": organisations,
+                "next": redirect_to,
+            },
         )
 
 
@@ -597,7 +602,7 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 },
             )
 
-    def post(   # noqa: C901
+    def post(  # noqa: C901
         self, request, case_id=None, submission_id=None, export_source_id=None, *args, **kwargs
     ):
 

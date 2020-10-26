@@ -283,7 +283,9 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
             "loa": submission_documents.get("loa", []),
         }
 
-    def clear_docs_reviewed(self,):
+    def clear_docs_reviewed(
+        self,
+    ):
         # If the submission has the docs reviewed flag set, clear it.
         if self.submission and self.submission.get("doc_reviewed_at"):
             response = self._client.update_submission_public(

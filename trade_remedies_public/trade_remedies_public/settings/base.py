@@ -17,7 +17,9 @@ import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
 root = environ.Path(__file__) - 4
-env = environ.Env(DEBUG=(bool, False),)
+env = environ.Env(
+    DEBUG=(bool, False),
+)
 environ.Env.read_env()
 
 sentry_sdk.init(
@@ -85,7 +87,9 @@ ROOT_URLCONF = "trade_remedies_public.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "..", "templates"),],
+        "DIRS": [
+            os.path.join(BASE_DIR, "..", "templates"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -122,10 +126,18 @@ DATABASES = {
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",},
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+    },
 ]
 
 
@@ -160,7 +172,9 @@ CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": REDIS_BASE_URL,
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient",},
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     },
 }
 
@@ -264,24 +278,42 @@ if not DEBUG:
             "console": {"level": "DEBUG", "class": "logging.StreamHandler", "formatter": "verbose"}
         },
         "loggers": {
-            "django.db.backends": {"level": "ERROR", "handlers": ["console"], "propagate": False,},
+            "django.db.backends": {
+                "level": "ERROR",
+                "handlers": ["console"],
+                "propagate": False,
+            },
             # 'raven': {
             #     'level': 'DEBUG',
             #     'handlers': ['console'],
             #     'propagate': False,
             # },
-            "sentry.errors": {"level": "DEBUG", "handlers": ["console"], "propagate": False,},
+            "sentry.errors": {
+                "level": "DEBUG",
+                "handlers": ["console"],
+                "propagate": False,
+            },
         },
     }
 else:
     LOGGING = {
         "version": 1,
         "disable_existing_loggers": False,
-        "handlers": {"stdout": {"class": "logging.StreamHandler", "stream": sys.stdout,},},
-        "root": {"handlers": ["stdout"], "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),},
+        "handlers": {
+            "stdout": {
+                "class": "logging.StreamHandler",
+                "stream": sys.stdout,
+            },
+        },
+        "root": {
+            "handlers": ["stdout"],
+            "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
+        },
         "loggers": {
             "django": {
-                "handlers": ["stdout",],
+                "handlers": [
+                    "stdout",
+                ],
                 "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
                 "propagate": True,
             },

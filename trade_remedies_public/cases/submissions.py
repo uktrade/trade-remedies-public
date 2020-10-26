@@ -216,7 +216,12 @@ class RegisterInterestSubmission(BaseSubmissionHelper):
     def get_context(self, base_context=None):
         context = base_context or {}
         context.update(
-            {"case_id": self.case_id, "countries": countries, "country": "GB", "representing": "",}
+            {
+                "case_id": self.case_id,
+                "countries": countries,
+                "country": "GB",
+                "representing": "",
+            }
         )
         return context
 

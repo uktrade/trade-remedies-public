@@ -15,23 +15,31 @@ jobs:
       - run:
           name: Install Python deps
           command: |
+            python3 -m venv venv
+            . venv/bin/activate
             pip install -r requirements/dev.txt
-            pip install trade_remedies_client/trade-remedies-client-0.1.tar.gz
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          paths:
+            - "venv"
       - run:
           name: Run tests
           command: |
+            . venv/bin/activate
             cd trade_remedies_public
             python manage.py test
       - run:
           name: Run black
           command: |
-            # black trade_remedies_api --check
+            . venv/bin/activate
+            cd trade_remedies_public
+            black . --check
       - run:
           name: Run Flake8
           command: |
-            # python -m flake8
+            . venv/bin/activate
+            cd trade_remedies_public
+            python -m flake8
   front_end:
     docker: 
       - image: 'circleci/node:latest'

@@ -15,5 +15,5 @@ def upload_count(count, second_count=None, deficient_count=0):
     if (second_count is not None and second_count != count) or (int(deficient_count) != 0):
         in_progress = "in-progress"
     if count:
-        output = f"""<div class="task-upload {in_progress}">Files uploaded <span class="uploaded-count number-circle larger">{count}</span></div>"""   # noqa: E501
+        output = f"""<div class="task-upload {in_progress}">Files uploaded <span class="uploaded-count number-circle larger">{count}</span></div>"""  # noqa: E501
     return mark_safe(output)
