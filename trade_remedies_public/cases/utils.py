@@ -58,7 +58,8 @@ def decorate_submission_updated(submission):
 def decorate_rois(interests, date_warnings=None):
     """
     A utility for dashboard rendering
-    Given a list of registrations of interest, we consolidate into cases with a list of organisations beneath.
+    Given a list of registrations of interest,
+    we consolidate into cases with a list of organisations beneath.
     The cases and all orgs within are decorated with a count and latest due-date.
     """
     interest_cases = {}

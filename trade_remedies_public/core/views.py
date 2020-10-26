@@ -262,7 +262,8 @@ class PublicDownloadView(TemplateView, TradeRemediesAPIClientMixin):
 
     def get(self, request, case_number, submission_id, document_id, *args, **kwargs):
         case = self.trusted_client.get_public_case_record(case_number)
-        # submission = self.trusted_client.get_submission_public(case.get('id'), submission_id, private=False)
+        # submission = self.trusted_client.get_submission_public(case.get('id'),
+        # submission_id, private=False)
         document = self.trusted_client.get_document(document_id, case.get("id"), submission_id)
         document_stream = self.trusted_client.get_document_download_stream(
             document_id=document_id,
@@ -810,7 +811,7 @@ class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemed
                     "name", assign_user["organisation"]["name"]
                 ),
                 "application": None,
-                "form_action": f"/accounts/team/assign/{user_id}/case/{case_id}/submission/{submission_id}/",
+                "form_action": f"/accounts/team/assign/{user_id}/case/{case_id}/submission/{submission_id}/",  # noqa: E501
             },
         )
 

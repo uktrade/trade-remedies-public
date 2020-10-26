@@ -18,7 +18,8 @@ class TestPasswordValidation(TestCase):
         ("2_$h0rT", False, "Too short (minimum 8 characters)"),
         ("L0ng£nuf", False, "Long enough (pound is not a special character)"),
         ("L0ng$nuf", True, "Long enough (minimum 8 characters)"),
-        # Allow extremely long passwords. Guidance is to have no max (design-system.service.gov.uk/patterns/passwords/)
+        # Allow extremely long passwords.
+        # Guidance is to have no max (design-system.service.gov.uk/patterns/passwords/)
         (
             "MyR£4lly$ecure_Pa$sw0rD".zfill(1000 - len("MyR£4lly$ecure_Pa$sw0rD")),
             True,

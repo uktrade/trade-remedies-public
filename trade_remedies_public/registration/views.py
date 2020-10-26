@@ -157,7 +157,8 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
                             detail = exc.response.json().get("detail")
                         except Exception:
                             detail = """You have entered an incorrect email address or password.
-                                        Please try again or click on the Forgotten password link below."""
+                                        Please try again or click on the
+                                        Forgotten password link below."""
                     else:
                         response = exc.response.json()
                         detail = response.get("detail")
@@ -375,7 +376,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
         {
             "key": "organisation_website",
             "message": "Your website should be a complete, valid URL.",
-            "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+            "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",  # noqa: E501
         },
     ]
 

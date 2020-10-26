@@ -1,9 +1,7 @@
 import json
-import datetime
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
 from django_countries import countries
 from django.utils import timezone
 from django.urls import reverse
@@ -397,7 +395,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             request.session["organisation_id"] = organisation["id"]
             request.session.modified = True
             return redirect(
-                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"
+                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"  # noqa: E501
             )
         else:
             representing_value = request.POST.get("representing_value")
@@ -430,7 +428,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             request.session["organisation_id"] = organisation["id"]
             request.session.modified = True
             return redirect(
-                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"
+                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"  # noqa: E501
             )
 
 
@@ -543,7 +541,8 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         *args,
         **kwargs,
     ):
-        # We need to work out if the user needs to select a case (for reviews, new exporter or refunds)
+        # We need to work out if the user needs to select a case
+        # (for reviews, new exporter or refunds)
         # If so, we will need a case list.
         # If not, just have the original source page
         case_category = get(self.submission, "deficiency_notice_params/case_category")
@@ -941,7 +940,8 @@ class RemoveDocumentView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView)
         redirect_path = request.POST.get("redirect")
         self.populate_objects(request, case_id, None, submission_id)
         self.clear_docs_reviewed()
-        # organisation_id = this.submission.get('organisation', {}).get('id') or request.session['organisation_id']
+        # organisation_id = this.submission.get('organisation', {}).get('id')
+        # or request.session['organisation_id']
         if case_id and submission_id and document_id:
             response = self._client.remove_document(
                 organisation_id=self.organisation_id,
@@ -1062,7 +1062,7 @@ class ReviewDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
             return redirect(f"/case/{case_id}/submission/{submission_id}/")
         else:
             errors = {
-                "documents_reviewed": "You must check the box to indicate that you have reviewed the documents."
+                "documents_reviewed": "You must check the box to indicate that you have reviewed the documents."  # noqa: E501
             }
             return self.get(request, case_id=case_id, submission_id=submission_id, errors=errors)
 
@@ -1397,5 +1397,5 @@ class SetPrimaryContactView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
             contact_id=contact_id, organisation_id=organisation_id, case_id=case_id
         )
         return redirect(
-            f"/case/{case_id}/?tab=case_members&organisation_id={organisation_id}&alert=primary-contact-updated"
+            f"/case/{case_id}/?tab=case_members&organisation_id={organisation_id}&alert=primary-contact-updated"  # noqa: E501
         )

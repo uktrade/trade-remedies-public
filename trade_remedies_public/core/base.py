@@ -24,7 +24,8 @@ class GroupRequiredMixin(AccessMixin):
         """
         if self.groups_required is None:
             raise ImproperlyConfigured(
-                "{0} is missing the groups_required attribute. Define {0}.groups_required, or override "
+                "{0} is missing the groups_required attribute. "
+                "Define {0}.groups_required, or override "
                 "{0}.get_groups_required().".format(self.__class__.__name__)
             )
         if isinstance(self.groups_required, str):
@@ -50,7 +51,8 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
     """
     Base view for Case driven views.
     The request is set up with the case record and evaluated against any provided organisation id.
-    If one is not provided, and the case has one organisation in the context of this user, it is used.
+    If one is not provided,
+    and the case has one organisation in the context of this user, it is used.
     otherwise, if the case has multiple organisations in the context of this user, the user will be
     redirected to an organisation selection page and returned to the original request's URI.
     If no organisation is determined, or the user is not allowed access the request will fail.

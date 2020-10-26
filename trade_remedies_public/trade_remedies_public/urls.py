@@ -44,7 +44,7 @@ urlpatterns = [
         name="public_submission",
     ),
     path(
-        "public/case/<str:case_number>/submission/<uuid:submission_id>/document/<uuid:document_id>/",
+        "public/case/<str:case_number>/submission/<uuid:submission_id>/document/<uuid:document_id>/",  # noqa: E501
         core_views.PublicDownloadView.as_view(),
         name="public_document_download",
     ),
@@ -209,7 +209,7 @@ urlpatterns = [
         name="assign_user_to_case_contact",
     ),
     path(
-        "accounts/team/assign/<uuid:user_id>/case/<uuid:case_id>/submission/<uuid:submission_id>/contact/",
+        "accounts/team/assign/<uuid:user_id>/case/<uuid:case_id>/submission/<uuid:submission_id>/contact/",  # noqa: E501
         core_views.AssignUserToCaseContactView.as_view(),
         name="assign_user_to_case_contact_inv",
     ),

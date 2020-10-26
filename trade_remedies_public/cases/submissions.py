@@ -78,7 +78,8 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
         context = base_context or {}
         if self.submission:
             invites = self.client.get_third_party_invites(case_id, self.submission["id"])
-            # case_documents = self.client.get_case_documents(case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
+            # case_documents =
+            # self.client.get_case_documents(case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
             # documents = [cd['document'] for cd in case_documents]
         context["invites"] = invites
         # context['case_documents'] = documents

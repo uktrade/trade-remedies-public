@@ -16,7 +16,7 @@ company_form_validators = [
     {
         "key": "organisation_website",
         "message": "Your website should be a complete, valid URL.",
-        "re": "^((?:http(s)?:\\/\\/|)[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+        "re": "^((?:http(s)?:\\/\\/|)[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",  # noqa: E501
     },
 ]
 
@@ -39,7 +39,7 @@ registration_validators = [
     {"key": "password", "message": "Password must include at least one digit", "re": "(?=.*[0-9])"},
     {
         "key": "password",
-        "message": "Password must include at least one special character (!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~])",
+        "message": "Password must include at least one special character (!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~])",  # noqa: E501
         "re": "(?=.*[!\"$%&'#()*+,-./:;<=>?@[\\\\\\]^_`{|}~])"
         # 're': '(?=.*[^a-zA-Z0-9\\s])'
     },
