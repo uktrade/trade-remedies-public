@@ -4,8 +4,6 @@ from trade_remedies_client.client import Client
 from django_countries import countries
 from core.utils import get
 from cases.constants import (
-    CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION,
-    CASE_DOCUMENT_TYPE_PRESAMPLING_QUESTIONNAIRE,
     SUBMISSION_TYPE_ASSIGN_TO_CASE,
     CASE_ROLE_PREPARING,
 )

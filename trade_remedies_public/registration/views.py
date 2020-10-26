@@ -1,5 +1,4 @@
 import json
-import base64
 import re
 from django.conf import settings
 from django.shortcuts import render, redirect
@@ -8,11 +7,14 @@ from django.views.generic import TemplateView
 from core.models import TransientUser
 from django.contrib.auth import logout
 from django_countries import countries
-from core.utils import validate, pluck, get, set_cookie
+from core.utils import (
+    validate,
+    get,
+    set_cookie,
+)
 from core.constants import ALERT_MAP
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from core.validators import (
-    company_form_validators,
     registration_validators,
     base_registration_validators,
 )

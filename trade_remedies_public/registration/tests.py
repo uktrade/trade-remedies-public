@@ -3,7 +3,6 @@ from django.test import TestCase
 # from registration.views import RegisterView
 from core.utils import validate
 from core.validators import (
-    company_form_validators,
     registration_validators,
     base_registration_validators,
 )

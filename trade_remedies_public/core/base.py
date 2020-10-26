@@ -1,4 +1,3 @@
-from django.shortcuts import redirect
 from django.contrib.auth.mixins import AccessMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.views.generic import TemplateView

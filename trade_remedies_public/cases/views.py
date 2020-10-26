@@ -9,20 +9,17 @@ from django.urls import reverse
 from core.base import GroupRequiredMixin, BasePublicView
 from cases.constants import (
     SUBMISSION_TYPE_EX_OFFICIO,
-    CASE_DOCUMENT_TYPE_PRESAMPLING_QUESTIONNAIRE,
     SUBMISSION_TYPE_ALL_ORGANISATIONS,
     SUBMISSION_TYPE_ADHOC,
     DIRECTION_BOTH,
     DIRECTION_PUBLIC_TO_TRA,
     ALL_COUNTRY_CASE_TYPES,
-    CASE_ROLE_AWAITING_APPROVAL,
 )
 from core.constants import ALERT_MAP
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 from cases.utils import (
     decorate_due_status,
-    decorate_rois,
     get_org_parties,
     decorate_submission_updated,
     validate_hs_code,

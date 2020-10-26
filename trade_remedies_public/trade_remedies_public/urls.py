@@ -13,14 +13,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-import os
-from django.contrib import admin
-from django.urls import include, path, re_path
+from django.urls import (
+    include,
+    path,
+)
 from core import views as core_views
 from registration import views as register_views
 from cases.views import CasesView
-from django.conf import settings
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 urlpatterns = [
     path("", core_views.HomeView.as_view(), name="initial"),
