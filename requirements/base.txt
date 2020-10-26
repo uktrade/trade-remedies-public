@@ -35,7 +35,7 @@ s3transfer==0.3.3         # via boto3
 sentry-sdk==0.13.1        # via -r requirements.in/base.in
 six==1.15.0               # via django-extensions, python-dateutil
 sqlparse==0.3.1           # via django
-git+git://github.com/uktrade/trade-remedies-client.git@1.5  # via -r requirements.in/base.in
+git+git://github.com/uktrade/trade-remedies-client.git  # via -r requirements.in/base.in
 urllib3==1.25.10          # via botocore, requests, sentry-sdk
 werkzeug==0.15.5          # via -r requirements.in/base.in
 whitenoise==3.3.1         # via -r requirements.in/base.in
