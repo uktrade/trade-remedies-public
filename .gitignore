@@ -81,6 +81,7 @@ celerybeat-schedule
 
 # dotenv
 .env
+.local.env
 
 # virtualenv
 .venv
@@ -119,3 +120,6 @@ local.env
 tags
 node_modules
 .idea
+
+# static
+trade_remedies_public/static/

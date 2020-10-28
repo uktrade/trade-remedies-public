@@ -10,6 +10,9 @@ def analytics(context, body=False):
     Usage:
         {% analytics %}
     """
+    if settings.DEBUG:
+        return ""
+
     output = []
     cookie_policy = context.get("cookie_policy") or {}
     if cookie_policy.get("accept_gi") == "on":

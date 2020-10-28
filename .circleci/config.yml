@@ -1,50 +1,44 @@
-version: 2
+version: 2.1
 jobs:
-  code_quality:
+  python_steps:
     docker:
-      - image: circleci/python:3.6.6
+      - image: circleci/python:3.6.12
+        environment:
+          DATABASE_URL: sqlite:///trade_remedies_public/db.sqlite3
+          DJANGO_SETTINGS_MODULE: trade_remedies_public.settings.local
+          DJANGO_SECRET_KEY: used_for_testing
+          ALLOWED_HOSTS: "*"
     steps:
       - checkout
       - restore_cache:
-          keys:
-            - pip-dependencies-{{ checksum "requirements-dev.txt" }}
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
       - run:
-          name: Create virtualenv and install dependencies
+          name: Install Python deps
           command: |
-              python3 -m venv env
-              . env/bin/activate
-              pip install -r requirements-dev.txt
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -r requirements/dev.txt
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            cd trade_remedies_public
+            python manage.py test
       - run:
           name: Run black
           command: |
-            source env/bin/activate
-            black trade_remedies_public --check
+            . venv/bin/activate
+            # black trade_remedies_api --check
       - run:
-          name: flake8
+          name: Run Flake8
           command: |
-            source env/bin/activate
-            echo "this is where we run flake8"
-            # flake8 --count
-      - save_cache:
-          paths:
-            - env
-          key: pip-dependencies-{{ checksum "requirements-dev.txt" }}  
-  test:
-    docker:
-      - image: circleci/python:3.6.6
-    steps:
-      - setup_remote_docker
-      - run:
-          name: Install Docker Compose
-          command: |
-            curl -L https://github.com/docker/compose/releases/download/1.23.2/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
-            chmod +x ~/docker-compose
-            sudo mv ~/docker-compose /usr/local/bin/docker-compose
-      - checkout  
-      - run:
-          command: make docker-test
-
-  prettier:
+            . venv/bin/activate
+            # python -m flake8
+  front_end:
     docker: 
       - image: 'circleci/node:latest'
     steps:
@@ -63,11 +57,10 @@ jobs:
           paths:
             - node_modules
           key: npm-dependencies-{{ checksum "package-lock.json" }}
-  
+          
 workflows:
   version: 2
   run_tests:
     jobs:
-      - test
-      - code_quality      
-      - prettier
+      - python_steps
+      - front_end
