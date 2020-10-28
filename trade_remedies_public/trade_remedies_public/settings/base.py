@@ -20,6 +20,7 @@ root = environ.Path(__file__) - 4
 env = environ.Env(
     DEBUG=(bool, False),
 )
+
 environ.Env.read_env()
 
 sentry_sdk.init(
@@ -325,6 +326,35 @@ else:
             "django.server": {
                 "handlers": ["null"],
                 "propagate": False,
+            },
+        },
+    }
+else:
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        'handlers': {
+            'stdout': {
+                'class': 'logging.StreamHandler',
+                'stream': sys.stdout,
+            },
+            'null': {
+                'class': 'logging.NullHandler',
+            },
+        },
+        'root': {
+            'handlers': ['stdout'],
+            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['stdout', ],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                'propagate': True,
+            },
+            'django.server': {
+                'handlers': ['null'],
+                'propagate': False,
             },
         },
     }
