@@ -667,16 +667,35 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             target_contact = client.lookup_contacts(request.POST['email'])  # ("mickey@mouse.com")
             print( "contactResult = " + str(target_contact) )
             # print( "user=" + str( contact[0]['user_id'] ) )
-            target_organisation_id = target_contact[0]['organisation_id']
-            user["user"].update({'organisation_id': target_organisation_id})
-            print( str(user) )
+            if len(target_contact)==0:
+                print("couldn't find a third party contact with that email...")
+                # NB this code is a copy of the code below
 
-            target_user_id = target_contact[0]['user_id']
-            print( "org_target=" + str( target_organisation_id ) ) 
-            print( "org_self=" + str( request.user.organisations[0]["id"] ) )
-            redirect_url = f"/accounts/team/assign/{target_user_id}/"
-            print("hello 331...")
-            return redirect( redirect_url )
+                # to create a user, set the data pack to be sent next, to the session stashed data
+                # pack case_spec into a json strucure to preserve the data
+                if user["user"].get("case_spec"):
+                    user["user"]["case_spec"] = json.dumps(user["user"]["case_spec"])
+                try:
+                    response = client.create_and_invite_user(
+                        organisation_id=organisation_id,
+                        data=user["user"],
+                        invitation_id=request.session.get("invitation", {}).get("id"),
+                    )
+                except Exception:
+                    return self.get(
+                        request, user_id=user_id, organisation_id=organisation_id, data=data
+                    )
+            else:
+                target_organisation_id = target_contact[0]['organisation_id']
+                user["user"].update({'organisation_id': target_organisation_id})
+                print( str(user) )
+
+                target_user_id = target_contact[0]['user_id']
+                print( "org_target=" + str( target_organisation_id ) ) 
+                print( "org_self=" + str( request.user.organisations[0]["id"] ) )
+                redirect_url = f"/accounts/team/assign/{target_user_id}/"
+                print("hello 331...")
+                return redirect( redirect_url )
 
         print("hello 31...")
         if not user_id:
