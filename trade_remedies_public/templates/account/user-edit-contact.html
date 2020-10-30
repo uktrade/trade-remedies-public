@@ -105,7 +105,10 @@
 			   {% if group.0 == 'Organisation Owner' %}
 				   {% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
 			   {% endif %}
-				 <label for="role_{{forloop.counter}}" class="form-label">{{ perm_name }}</label>
+			   {% if group.0 == 'Third Party User' %}
+			   	   {% set 'perm_name' 'Regular user who is representing your organisation on this case - Lawyer, Trade Body' %}
+			   {% endif %}
+				<label for="role_{{forloop.counter}}" class="form-label">{{ perm_name }}</label>
 		   </div>
 	   {% endfor %}
    </div>
