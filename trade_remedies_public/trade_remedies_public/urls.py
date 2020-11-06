@@ -184,6 +184,16 @@ urlpatterns = [
         name="assign_user_to_case",
     ),
     path(
+        "accounts/team/inviteThirdParty/<uuid:assign_user_id>/<str:assign_user_name>/<uuid:own_user_id>/ownOrganisation/<uuid:own_organisation_id>/case/<uuid:case_id>/submission/<uuid:submission_id>/",
+        core_views.InviteThirdPartyUserToCaseView.as_view(),
+        name="assign_third_party_to_case",
+    ),
+    path(
+        "accounts/team/inviteThirdParty/<uuid:assign_user_id>/<str:assign_user_name>/<uuid:own_user_id>/<uuid:own_organisation_id>/",
+        core_views.InviteThirdPartyUserToCaseView.as_view(),
+        name="assign_third_party_to_case",
+    ),
+   path(
         "accounts/team/assign/<uuid:user_id>/submission/<uuid:submission_id>/",
         core_views.AssignUserToCaseView.as_view(),
         name="assign_user_to_case_sub",
@@ -204,6 +214,11 @@ urlpatterns = [
         name="assign_user_to_specific_case_sub",
     ),
     path(
+        "accounts/team/invite/<uuid:assign_user_id>/<str:assign_user_name>/ownUser/<uuid:own_user_id>/ownOrganisation/<uuid:own_organisation_id>/case/<uuid:case_id>/submission/<uuid:submission_id>/primary/<str:is_primary>/contact/",
+        core_views.InviteThirdPartyUserToCaseView.as_view(),
+        name="assign_third_party_user_to_specific_case_sub",
+    ),
+    path(
         "accounts/team/assign/<uuid:user_id>/case/<uuid:case_id>/contact/",
         core_views.AssignUserToCaseContactView.as_view(),
         name="assign_user_to_case_contact",
@@ -212,6 +227,16 @@ urlpatterns = [
         "accounts/team/assign/<uuid:user_id>/case/<uuid:case_id>/submission/<uuid:submission_id>/contact/",
         core_views.AssignUserToCaseContactView.as_view(),
         name="assign_user_to_case_contact_inv",
+    ),
+    path(
+        "accounts/team/inviteThirdParty/<uuid:assign_user_id>/<str:assign_user_name>/<uuid:user_id>/case/<uuid:case_id>/contact/",
+        core_views.AssignThirdPartyToCaseContactView.as_view(),
+        name="assign_third_party_to_case_contact",
+    ),
+    path(
+        "accounts/team/assignThirdParty/<uuid:assign_user_id>/<str:assign_user_name>/ownUser/<uuid:own_user_id>/ownOrganisation/<uuid:own_organisation_id>/case/<uuid:case_id>/submission/<uuid:submission_id>/contact/",
+        core_views.AssignThirdPartyToCaseContactView.as_view(),
+        name="assign_third_party_to_case_contact_inv",
     ),
     path("dashboard/", core_views.DashboardView.as_view(), name="dashboard"),
     path("stub/", core_views.StubView.as_view(), name="stub"),

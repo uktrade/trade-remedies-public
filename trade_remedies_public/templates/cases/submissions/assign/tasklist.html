@@ -46,7 +46,9 @@
                         <span>Representing {{representing.name}}</span>
                     {% endif %}
                 {% else %}
-                    <a href="/case/select/organisation/for/{{assign_user.id}}/?redirect=assign_user_to_case|user_id={{assign_user.id}}">Select case</a>
+                    <!-- <a href="/case/select/organisation/for/{{assign_user.id}}/?redirect=assign_user_to_case|user_id={{assign_user.id}}">Select case</a>  -->
+                    <!-- <a href="/case/select/organisation/for/{{user.id}}/{{ assign_user.id }}/{{ assign_user.name }}/?redirect=assign_user_to_case|user_id={{assign_user.id}}">Select case</a>  -->
+                    <a href="/case/select/organisation/for/{{ assign_user.id }}/{{ assign_user.name }}/{{user.id}}/?redirect=/accounts/team/inviteThirdParty/{{assign_user.id}}/{{assign_user.name}}/{{user.id}}/{{organisation.id}}/">Select case</a>
                 {% endif %}
             </li>
         </ul>
@@ -67,9 +69,10 @@
                 {% endif %}
                 {% if case %}
                     {% if representing %}
-                        <a href="/accounts/team/assign/{{assign_user.id}}/case/{{case_id}}/submission/{{submission_id}}/contact/">Set contact options</a>
+                        <a href="/accounts/team/assignThirdParty/{{assign_user.id}}/{{assign_user.name}}/ownUser/{{user.id}}/ownOrganisation/{{organisation.id}}/case/{{case_id}}/submission/{{submission_id}}/contact/">Set contact options</a>
                     {% else %}
-                        <a href="/accounts/team/assign/{{assign_user.id}}/case/{{case_id}}/contact/">Set contact options</a>
+                        <!--<a href="/accounts/team/assign/{{assign_user.id}}/case/{{case_id}}/contact/">Set contact options</a>-->
+                        <a href="/accounts/team/assignThirdParty/{{user.id}}/{{assign_user.name}}/{{assign_user.id}}/case/{{case_id}}/contact/">Set contact options</a>
                     {% endif %}
                 {% else %}
                     <div>Set contact options</div>
@@ -96,10 +99,10 @@
            <li class="task-list-item edit-item">
                 {% if enable_submit %}
                     {% if representing %}
-                        <a href="/case/{{case.id}}/submission/{{submission_id}}/submit/">Final check and submission</a>
-                        <!-- <a href="/accounts/team/assign/{{assign_user.id}}/case/{{case.id}}/contact/{{primary}}/submission/{{submission_id}}/">Final check and submission</a> -->
+                        <!--<a href="/case/{{case.id}}/submission/{{submission_id}}/submit/">Final check and submission</a> -->
+                        <a href="/accounts/team/assign/{{assign_user.id}}/case/{{case.id}}/contact/{{primary}}/submission/{{submission_id}}/">Final check and submission</a>
                     {% else %}
-                        <a href="/accounts/team/assign/{{assign_user.id}}/case/{{case.id}}/contact/{{primary}}/">Final check and submission</a>
+                        <a href="/accounts/team/invite/{{assign_user.id}}/case/{{case.id}}/contact/{{primary}}/">Final check and submission</a>
                     {% endif %}
                 {% else %}
                     Final check and submission

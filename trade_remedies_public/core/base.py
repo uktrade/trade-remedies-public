@@ -11,6 +11,8 @@ from core.utils import deep_index_items_by
 from cases.submissions import SUBMISSION_TYPE_HELPERS
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
+import logging
+logging.basicConfig(level=logging.INFO)
 
 class GroupRequiredMixin(AccessMixin):
     """Verify that the current user is a member of a group."""
@@ -67,6 +69,9 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
     submission_type_key = None
 
     def dispatch(self, *args, **kwargs):
+        print("___logger___") 
+        logging.info("BasePublicView:dispatch2...")
+        print("___logger___")
         if self.request.user.is_authenticated:
             token = self.request.user.token
             # if a case/org id combo is passed, unpack it first
@@ -84,6 +89,8 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
             self.submission_id = kwargs.get("submission_id") or self.request.GET.get(
                 "submission_id"
             )
+            logging.info( str(kwargs) )
+
             self.case = {}
             self.submission = {}
             self.organisation = {}
@@ -92,17 +99,28 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
             self.organisation_id = self.get_organisation_id(
                 self.request, organisation_id=organisation_id
             )
+            logging.info(  "LOGGING: A"  )
             if self.case_id:
+                logging.info(  "LOGGING: B"  )
+                logging.info(  str( self.case_id)  )
                 self.case = self._client.get_case(case_id=self.case_id)
+                logging.info(  str( self.case)  )
+                logging.info(  str( self.submission_id)  )
                 if self.submission_id:
+                    logging.info(  "LOGGING: C"  )
                     self.submission = self._client.get_submission_public(
                         case_id=self.case_id, submission_id=self.submission_id
                     )
+                    logging.info( str( self.submission ) )
                     self.submission_type_key = self.submission["type"]["key"]
             # if a submission type key is set, load a helper if applicable
+            logging.info( "LOGGING: 1" )
             if self.submission_type_key:
+                logging.info( "LOGGING: 2" )
                 SubmissionHelper = SUBMISSION_TYPE_HELPERS.get(self.submission_type_key)
+                logging.info( "LOGGING: 3" )
                 if SubmissionHelper:
+                    logging.info( "LOGGING: 4" )
                     self.submission_helper = SubmissionHelper(
                         submission=self.submission,
                         user=self.request.user,
@@ -138,13 +156,21 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
         return (None, None, None, None)
 
     def on_submission_update(self, params):
+        logging.info( "LOGGING: BasePublicView:on_submission_update" + str(params)  )
         if self.submission_helper:
+            logging.info( "LOGGING: self.submission_helper:" + str( self.submission_helper ) )
             return self.submission_helper.on_update(**params)
+        else:
+            logging.info( "LOGGING: self.submission_helper is False")
         return None
 
     def on_submission_submit(self):
+        logging.info( "LOGGING: BasePublicView:on_submission_submit"  )
         if self.submission_helper:
+            logging.info( "LOGGING: self.submission_helper:" + str( self.submission_helper ) )
             return self.submission_helper.on_submit()
+        else:
+            logging.info( "LOGGING: self.submission_helper is False")
         return None
 
     def get_submit_urls(self, key=None, **kwargs):

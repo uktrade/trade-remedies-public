@@ -2,6 +2,7 @@ import os
 import pytz
 import json
 import dpath
+import pprint as pp
 from requests.exceptions import HTTPError
 from django.views.generic import View, TemplateView
 from django.shortcuts import render, redirect
@@ -36,6 +37,7 @@ from cases.constants import CASE_TYPE_REPAYMENT
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 
+import logging
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -383,6 +385,9 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
     template_name = "account/team.html"
 
     def get(self, request, *args, **kwargs):
+        print( "TeamView:get" )
+        pp.pprint(request)
+
         organisation_id = request.session.get("organisation_id")
         users = []
         pending_assignments = []
@@ -394,10 +399,31 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
             pending_assignments = client.get_pending_user_case_assignments(
                 request.user.organisation["id"]
             )
+            #print( "pending_assignments:")
+            #pp.pprint( pending_assignments )
+
             users = client.get_team_users()
+
+            #print( "client.get_team_users:")
+            #pp.pprint( users )
+
             _user_emails = [user["email"] for user in users]
+
+            #print( "_user_emails:")
+            #pp.pprint( _user_emails )
+
             _invites = client.get_user_invitations()
+
+            #print( "_invites:")
+            #pp.pprint( _invites )
+
             pending_invites = [invite for invite in _invites if invite["email"] not in _user_emails]
+
+            #print( "pending_invites:")
+            #pp.pprint( pending_invites )
+
+
+        #print( "render account/team.html")
         return render(
             request,
             self.template_name,
@@ -413,6 +439,7 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
 
 class UserInviteView(TemplateView, TradeRemediesAPIClientMixin):
     def get(self, request, invitation_id, *args, **kwargs):
+        print( "UserInviteView:get" )
         invite = self.client(request.user).get_invite_details(invitation_id)
         case_spec = invite.get("meta", {}).get("case_spec", [])
         case_spec_index = deep_index_items_by(case_spec, "id")
@@ -580,30 +607,16 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         *args,
         **kwargs,
     ):
-        print( "TeamUserView:post..." )
-        print( str(request) )
-        print( str(user_id) )
-        print( str(organisation_id) )
-        print( str(args) )
-        print( str(kwargs) )
-        print( request.POST['email'] )
-        print( request.POST['name'] )
-        print( str( request.POST ) )
-
         client = self.client(request.user)
         if section == "delete":
             delete_response = client.delete_pending_invite(invitation_id, organisation_id)
             return redirect("/accounts/team/?alert=invite-deleted")
 
-        print( str(user_id) )
         if self.self_details and not user_id:
-            print( "getting user details")
             user_id = request.user.id
         elif request.session.get("create-user", {}).get("user", {}).get("id") and not user_id:
-            print("creating user...")
             user_id = request.session["create-user"]["user"]["id"]
         organisation_id = organisation_id or request.user.organisations[0]["id"]
-        print("redirect 1...")
         redirect_url = (
             request.POST.get("redirect") or f"/accounts/team/{organisation_id}/user/{user_id}/"
             if user_id
@@ -612,7 +625,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         data = {
             "organisation_id": organisation_id,
         }
-        print("hello 1...")
         data.update(request.POST.dict())
         if data.get("active"):
             data["active"] = data["active"] == "yes"
@@ -633,7 +645,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                     data=data,
                 )
 
-        print("hello 2...")
         # Check that the confirm box is checked
         if request.POST.get("review") == "required":
             return self.get(
@@ -645,11 +656,9 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 data=data,
             )
 
-        print("hello 3...")
         case_ids = request.POST.getlist("case_id")
         all_cases = request.POST.getlist("all_cases") or []
         if all_cases:
-
             case_spec = []
             for case_id in case_ids:
                 primary = request.POST.get(case_id + "_is_primary")
@@ -661,16 +670,13 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         user = request.session.get("create-user") or {"user": {}, "invitation": {}}
         user["user"].update(data)
         if user["user"]["group"] == "Third Party User":
+            print( "Third Party User...", flush=True)
             user_id = request.user.id
             client = self.client(request.user)
-            print( str( user["user"] ) )
             target_contact = client.lookup_contacts(request.POST['email'])  # ("mickey@mouse.com")
-            print( "contactResult = " + str(target_contact) )
-            # print( "user=" + str( contact[0]['user_id'] ) )
             if len(target_contact)==0:
-                print("couldn't find a third party contact with that email...")
+                print("couldn't find a third party contact with that email...", flush=True)
                 # NB this code is a copy of the code below
-
                 # to create a user, set the data pack to be sent next, to the session stashed data
                 # pack case_spec into a json strucure to preserve the data
                 if user["user"].get("case_spec"):
@@ -681,42 +687,34 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                         data=user["user"],
                         invitation_id=request.session.get("invitation", {}).get("id"),
                     )
-                except Exception:
+                    target_user_id = response['invite']['contact']['id']
+                    target_user_name = response['invite']['contact']['name']
+                except Exception as ex:
                     return self.get(
                         request, user_id=user_id, organisation_id=organisation_id, data=data
                     )
+
+                redirect_url = f"/accounts/team/inviteThirdParty/{target_user_id}/{target_user_name}/{user_id}/{organisation_id}/"
+                return redirect( redirect_url )
             else:
                 target_organisation_id = target_contact[0]['organisation_id']
                 user["user"].update({'organisation_id': target_organisation_id})
-                print( str(user) )
-
-                target_user_id = target_contact[0]['user_id']
-                print( "org_target=" + str( target_organisation_id ) ) 
-                print( "org_self=" + str( request.user.organisations[0]["id"] ) )
-                redirect_url = f"/accounts/team/assign/{target_user_id}/"
-                print("hello 331...")
+                target_user_id = target_contact[0]['id']
+                redirect_url = f"/accounts/team/inviteThirdParty/{target_user_id}/"
                 return redirect( redirect_url )
 
-        print("hello 31...")
         if not user_id:
             # In create mode, stash in the session
-            print("hello 32...")
             user = request.session.get("create-user") or {"user": {}, "invitation": {}}
-            print( str(user) )
             user["user"].update(data)
-            print( str(user) )
             request.session["create-user"] = user
             request.session.modified = True
-            print("hello 33...")
             if not request.POST.get("btn-value") == "create":
                 print("hello 34...")
                 # if we are in the forward create path,
                 redirect_url = f"/accounts/team/{organisation_id}/user/"
-                print( redirect_url )
-                print(request.POST.get("redirect") )
                 return redirect(request.POST.get("redirect") or redirect_url)
             else:
-                print("hello 35...")
                 # to create a user, set the data pack to be sent next, to the session stashed data
                 # pack case_spec into a json strucure to preserve the data
                 if user["user"].get("case_spec"):
@@ -741,9 +739,22 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         print("hello 4...")
         try:
             user = client.get_user(user_id, organisation_id)
+            #print("user")
+            #pp.pprint(user)
+
             data.setdefault("active", user["active"])
             response = client.update_create_team_user(organisation_id, data, user_id)
+            
+            print( "reponse")
+            pp.pprint( response )
+
+            #response['id'] = user_id
+            #response['email'] = None
+
             request.session["create-user"] = response
+
+            #print( "self.self_details" )
+            #pp.pprint( self.self_details )
             if not self.self_details:
                 redirect_url = f"/accounts/team/{organisation_id}/user/{user_id}/edit/"
             else:
@@ -829,7 +840,6 @@ class AssignUserToCaseView(LoginRequiredMixin, BasePublicView):
             return redirect(f"{redirect_url}?alert=user_unassigned")
         return redirect(f"/case/{self.case_id}/submission/{submission['id']}/")
 
-
 class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemediesAPIClientMixin):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER]
     template_name = "cases/submissions/assign/contact.html"
@@ -875,6 +885,178 @@ class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemed
                 ),
                 "application": None,
                 "form_action": f"/accounts/team/assign/{user_id}/case/{case_id}/submission/{submission_id}/",
+            },
+        )
+
+class InviteThirdPartyUserToCaseView(LoginRequiredMixin, BasePublicView):
+    groups_required = [SECURITY_GROUP_THIRD_PARTY_USER]
+    template_name = "cases/submissions/assign/tasklist.html"
+    submission_type_key = "invite"
+    remove = None
+
+    def get(self, request, assign_user_id, assign_user_name, own_user_id, own_organisation_id, case_id=None, submission_id=None, is_primary=None, **kwargs):
+        documents = []
+        invite = None
+        user_id = request.GET.get("user_id")
+        representing = {'id': user_id}  # None
+        errors = kwargs.get("errors") or request.GET.get("errors")
+        assign_user = dict()
+        assign_user['id'] = assign_user_id
+        assign_user['name'] = assign_user_name
+        own_organisation = dict()
+        own_organisation['id'] = own_organisation_id
+        user = dict()
+        user['id'] = request.user.id
+
+        logging.info( user_id )
+        logging.info( own_user_id )
+        logging.info( assign_user_id )  
+        logging.info( assign_user_name )
+        logging.info( str(kwargs) )
+
+        #submission = self.on_submission_update(
+        #    {
+        #        "primary": is_primary,
+        #        "organisation_id": organisation_id,
+        #        "representing_id": representing_id,
+        #        "user_id": user_id,
+        #        "remove": self.remove,
+        #    }
+        #)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "errors": kwargs.get("errors"),
+                "enable_submit": self.case and (not representing or self.submission),
+                # "user_id": user_id,
+                "user": user,
+                "assign_user": assign_user,
+                "representing": representing,
+                "current_page_name": "Assign user to case",
+                "all_organisations": True,
+                "case_id": self.case_id,
+                "case": self.case,
+                "submission": self.submission,
+                "submission_id": self.submission["id"] if self.submission else None,
+                "invite": invite,
+                "organisation": own_organisation,
+                # "organisation_name": own_organisation.get("name"),
+                "documents": documents,
+                "application": None,
+                "primary": is_primary,
+                "representing_third_party": representing,
+                **self.get_submission_context(),
+            },
+        )
+
+    def post(self, request, assign_user_id, assign_user_name, own_user_id, own_organisation_id,
+                case_id=None, submission_id=None, *args, **kwargs):
+        representing_id = request.POST.get("representing_id")
+        organisation_id = request.POST.get("organisation_id")
+        case_org_id = request.POST.get("case_org_id")
+        case_org_selection = request.POST.get("case_org_selection")
+        is_primary = request.POST.get("is_primary")
+        redirect_url = request.POST.get("redirect")
+        logging.info( "InviteThirdPartyUserToCaseView:post:is_primary: " + str( is_primary ) )
+
+
+        if case_org_id:
+            case_id, organisation_id = case_org_id.split(":")
+        elif case_org_selection:
+            return redirect(
+                f"/case/select/organisation/for/{assign_user_id}/?redirect=assign_user_to_case|user_id={assign_user_id}&alert=no-selection"
+            )
+        print("self.on_submission_update")
+        submission = self.on_submission_update(
+            {
+                "primary": is_primary,
+                "organisation_id": organisation_id,
+                "representing_id": representing_id,
+                "own_user_id": own_user_id,
+                "assign_user_id": assign_user_id,
+                "remove": self.remove,
+            }
+        )
+        print( submission, flush=True )
+        if self.remove:
+            return redirect(f"{redirect_url}?alert=user_unassigned")
+        ###return redirect(f"/case/{self.case_id}/submission/{submission['id']}/")
+        return redirect(f"/accounts/team/invite/{assign_user_id}/{assign_user_name}/ownUser/{own_user_id}/ownOrganisation/{own_organisation_id}/case/{case_id}/submission/{submission['id']}/primary/{is_primary}/contact/")
+
+
+
+
+class AssignThirdPartyToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemediesAPIClientMixin):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER]
+    template_name = "cases/submissions/assign/contact.html"
+    submission_type_key = "invite"
+
+    def get(self, request, assign_user_id, assign_user_name, own_user_id, own_organisation_id, case_id, submission_id=None, **kwargs):
+        submission = None
+        representing = None
+        primary = True
+
+
+        user_id = own_user_id
+        
+        
+        
+        organisation_id = own_organisation_id or request.GET.get("organisation_id")
+        #assign_user = self._client.get_user(
+        #    user_id=user_id, organisation_id=request.user.organisation["id"]
+        #)
+
+
+        old_assign_user = self._client.get_user(
+            user_id=own_user_id, organisation_id=request.user.organisation["id"]
+        )
+        assign_user = dict()
+        assign_user['id'] = assign_user_id
+        assign_user['name'] = assign_user_name
+
+        if self.submission:
+            primary = (
+                self.submission.get("deficiency_notice_params", {})
+                .get("assign_user", {})
+                .get("contact_status")
+            )
+            representing = self.submission["organisation"]
+            submission_id = self.submission["id"]
+        elif organisation_id and organisation_id != assign_user.get("organisation", {}).get("id"):
+            representing = self._client.get_organisation(organisation_id)
+        else:
+            organisation_id = assign_user["organisation"]["id"]
+
+
+        logging.info( "AssignThirdPartyToCaseContactView:get:primary: " + str( primary ) )
+
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "errors": kwargs.get("errors"),
+                "is_primary": primary,
+                "user_id": assign_user_id, # own_user_id,
+                "assign_user": assign_user,
+                "representing": representing,
+                "current_page_name": "Assign third party to case",
+                "all_organisations": True,
+                "case_id": case_id,
+                "case": self.case,
+                "submission": self.submission,
+                "submission_id": self.submission["id"] if self.submission else None,
+                "organisation": self.organisation or old_assign_user["organisation"],
+                #"organisation_name": self.organisation.get(
+                #    "name", assign_user["organisation"]["name"]
+                #),
+                "application": None,
+
+                #"form_action": f"/accounts/team/invite/{assign_user_id}/{assign_user_name}/case/{case_id}/submission/{submission_id}/",
+                #"form_action": f"/accounts/team/inviteThirdParty/{assign_user_id}/{assign_user_name}/{own_user_id}/case/{case_id}/contact/",
+                "form_action": f"/accounts/team/inviteThirdParty/{assign_user_id}/{assign_user_name}/{own_user_id}/ownOrganisation/{own_organisation_id}/case/{case_id}/submission/{submission_id}/",
             },
         )
 

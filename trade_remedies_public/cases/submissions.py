@@ -7,11 +7,14 @@ from cases.constants import (
     CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION,
     CASE_DOCUMENT_TYPE_PRESAMPLING_QUESTIONNAIRE,
     SUBMISSION_TYPE_ASSIGN_TO_CASE,
+    SUBMISSION_TYPE_INVITE_3RD_PARTY,
     CASE_ROLE_PREPARING,
 )
 
-SUBMISSION_TYPE_HELPERS = {}
+import logging
+logging.basicConfig(level=logging.INFO)
 
+SUBMISSION_TYPE_HELPERS = {}
 
 class BaseSubmissionHelper:
     """
@@ -73,19 +76,121 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
 
     def get_context(self, base_context=None):
         invites = []
-        # documents = []
-        case_id = self.case["id"]
+        documents = []
+        logging.info("InviteThirdPartySubmission:get_context")
         context = base_context or {}
-        if self.submission:
-            invites = self.client.get_third_party_invites(case_id, self.submission["id"])
-            # case_documents = self.client.get_case_documents(case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
-            # documents = [cd['document'] for cd in case_documents]
-        context["invites"] = invites
-        # context['case_documents'] = documents
-        # if 'documents' in context:
-        #     context['documents']['caseworker'] += documents
+        if self.case:
+            case_id = self.case["id"]
+            if self.submission:
+                invites = self.client.get_third_party_invites(case_id, self.submission["id"])
+                case_documents = self.client.get_case_documents(case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
+                # logging.info( "case_documents: " + str( case_documents ) )
+                documents = [cd for cd in case_documents]
+            context["invites"] = invites
+            context['case_documents'] = documents
+            if 'documents' in context:
+                logging.info("InviteThirdPartySubmission:loading up the context")
+                context['documents']['caseworker'] += documents
+            else:
+                logging.info("InviteThirdPartySubmission:lacking the context entry for docs")
+                context['documents'] = dict()
+                context['documents']['caseworker'] = documents
         return context
 
+    def on_update(self, **kwargs):
+        """
+        Handles updates or creation of a submission
+        Returns the submission.
+        """
+        print( "InviteThirdPartySubmission:on_update")
+        # print("InviteThirdPartySubmission: on_update")
+        response = None
+        is_primary = kwargs.get("primary")
+        organisation_id = kwargs.get("organisation_id")
+        representing_id = kwargs.get("representing_id")
+        # contact_id = kwargs.get("contact_id")
+        own_user_id = kwargs.get("own_user_id")
+        assign_user_id = kwargs.get("assign_user_id")
+        remove = kwargs.get("remove")
+        own_organisation = self.user.organisation
+        representing_third_party = representing_id and representing_id != own_organisation["id"]
+        #assign_user = self.client.get_user(user_id=own_user_id, organisation_id=own_organisation["id"])
+        if remove:
+            self.client.remove_user_from_case(
+                organisation_id, own_user_id, self.case_id, representing_id
+            )
+            return None
+        if self.submission:
+            current_primary_state = (
+                self.submission.get("deficiency_notice_params", {})
+                .get("assign_user", {})
+                .get("contact_status")
+            )
+            if is_primary is not None and is_primary != current_primary_state:
+                deficiency_notice_params = self.submission.get("deficiency_notice_params", {})
+                deficiency_notice_params["assign_user"] = {"contact_status": kwargs["primary"]}
+                response = self.client.update_submission(
+                    case_id=self.case["id"],
+                    submission_id=self.submission["id"],
+                    **{"deficiency_notice_params": json.dumps(deficiency_notice_params)},
+                )
+        else:
+            #if organisation_id != assign_user.get("organisation", {}).get("id"):
+            #    representing = self.client.get_organisation(organisation_id)
+            #else:
+            #    representing = own_organisation
+            representing = own_organisation
+            exists = self.client.submission_type_exists_for_case(
+                self.case_id, representing["id"], SUBMISSION_TYPE_INVITE_3RD_PARTY
+            )
+            if exists.get("exists"):
+                self.submission = exists["submission"]
+            else:
+                response = self.client.create_submission(
+                    case_id=self.case_id,
+                    organisation_id=representing["id"],
+                    submission_type=SUBMISSION_TYPE_INVITE_3RD_PARTY,
+                    # contact_id=assign_user["contact"]["id"],
+                    name="Assign user to case",
+                    deficiency_notice_params=json.dumps(
+                        {"assign_user": {"contact_status": is_primary}}
+                    ),
+                )
+                self.submission = response.get("submission")
+        return self.submission
+
+    def on_submit(self, **kwargs):
+        """
+        Triggered when user assignment is submitted. If the assignment is to own case,
+        the user will be assigned.
+        Returns an overriden redirect url if the assignment was successful.
+        """
+        logging.info( "InviteThirdPartySubmission: on_submit")
+
+        user_organisation_id = (
+            get(self.submission, "contact/organisation/id")
+            or get(self.submission, "contact/user/organisation/id")
+            or get(self.user.organisation, "id")
+        )
+        user_id = get(self.submission, "contact/user/id")
+        if get(self.submission, "organisation/id") == user_organisation_id:
+            # make the case assignment.
+            is_primary = (
+                self.submission.get("deficiency_notice_params", {})
+                .get("assign_user", {})
+                .get("contact_status")
+                == "primary"
+            )
+            self.client.assign_user_to_case(
+                user_organisation_id=user_organisation_id,
+                representing_id=get(self.submission, "organisation/id"),
+                user_id=user_id,
+                case_id=self.case["id"],
+                primary=is_primary,
+            )
+            self.client.set_submission_state(self.case["id"], self.submission["id"], "sufficient")
+            return f"/accounts/team/{user_organisation_id}/user/{user_id}/?alert=user-assigned"
+        return f"/accounts/team/{user_organisation_id}/user/{user_id}/?alert=user-assigned-req"
 
 class AssignUserSubmission(BaseSubmissionHelper):
     type_ids = []
@@ -126,6 +231,8 @@ class AssignUserSubmission(BaseSubmissionHelper):
         Handles updates or creation of a submission
         Returns the submission.
         """
+        logging.info( "AssignUserSubmission:on_update" )
+        logging.info( str(kwargs) )
         response = None
         is_primary = kwargs.get("primary")
         organisation_id = kwargs.get("organisation_id")
@@ -180,10 +287,12 @@ class AssignUserSubmission(BaseSubmissionHelper):
 
     def on_submit(self, **kwargs):
         """
-        Triggered when user assignment is submitted. If the assignment is to own case,
-        the user will be assigned.
-        Returns an overriden redirect url if the assignment was successful.
+        #Triggered when user assignment is submitted. If the assignment is to own case,
+        #the user will be assigned.
+        #Returns an overriden redirect url if the assignment was successful.
         """
+        logging.info( "AssignUserSubmission: on_submit")
+
         user_organisation_id = (
             get(self.submission, "contact/organisation/id")
             or get(self.submission, "contact/user/organisation/id")
@@ -298,3 +407,10 @@ SUBMISSION_TYPE_HELPERS["invite"] = InviteThirdPartySubmission
 SUBMISSION_TYPE_HELPERS["assign"] = AssignUserSubmission
 SUBMISSION_TYPE_HELPERS["interest"] = RegisterInterestSubmission
 SUBMISSION_TYPE_HELPERS["application"] = ApplicationSubmission
+
+#SUBMISSION_TYPE_HELPERS = { "invite": InviteThirdPartySubmission,
+#                            "assign": AssignUserSubmission,
+#                            "interest": RegisterInterestSubmission,
+#                            "application": ApplicationSubmission }
+
+

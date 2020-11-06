@@ -58,7 +58,7 @@ urlpatterns = [
         name="select_organisation_cases",
     ),
     path(
-        "select/organisation/for/<uuid:for_user_id>/",
+        "select/organisation/for/<uuid:assign_user_id>/<str:assign_user_name>/<uuid:own_user_id>/",
         case_views.SelectOrganisationCaseView.as_view(),
         name="select_organisation_cases_for_user",
     ),

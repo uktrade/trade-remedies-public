@@ -1098,6 +1098,7 @@ class SubmitApplicationView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
         return render(request, template_name, context)
 
     def post(self, request, case_id=None, submission_id=None, *args, **kwargs):
+        logger.info( "SubmitApplicationView:post" )
         errors = {}
         if not request.POST.get("confirm"):
             errors["confirm"] = "You must confirm your authority"
@@ -1108,6 +1109,7 @@ class SubmitApplicationView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
 
         self._client.set_submission_status_public(case_id, submission_id, status_context="received")
         # trigger the on_submit event handler for this submission's helper, if applicable
+        logger.info( "SubmitApplicationView:self.on_submission_submit()" )
         redirect_url = self.on_submission_submit()
         # If user does not have access to case (eg registration of interest),
         # don't go to the case, but the dashboard instead
@@ -1264,11 +1266,11 @@ class SelectOrganisationCaseView(
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "cases/select_org_case.html"
 
-    def get(self, request, for_user_id=None, *args, **kwargs):
+    def get(self, request, assign_user_id, assign_user_name, own_user_id, for_user_id=None, *args, **kwargs):
         interests = request.GET.get("interests", "true") == "true"
         for_user = for_user_id or request.GET.get("for")
-        redirect_key, redirect_kwargs = parse_redirect_params(request.GET.get("redirect"))
-        redirect_url = reverse(redirect_key, kwargs=redirect_kwargs)
+        # redirect_key, redirect_kwargs = parse_redirect_params(request.GET.get("redirect"))
+        redirect_url = request.GET.get("redirect")  # reverse(redirect_key, kwargs=redirect_kwargs)  # 
         organisation_id = request.user.organisation["id"]
         user_case_ids = {}
         client = self.client(request.user)
@@ -1292,16 +1294,25 @@ class SelectOrganisationCaseView(
                         "organisation": interest.get("organisation"),
                     }
                 )
+        assign_user = dict()
+        assign_user['id'] = assign_user_id
+        assign_user['name'] = assign_user_name
+
+        own_user = dict()
+        own_user['id'] = own_user_id
+
         return render(
             request,
             self.template_name,
             {
                 "cases": cases,
-                "user_case_ids": user_case_ids,
+                "user_case_ids": {}, # user_case_ids,
                 "redirect": redirect_url,
                 "assign_user": assign_user,
+                "own_user": own_user,
                 "organisation_id": organisation_id,
-                "back_url": f"/accounts/team/assign/{for_user}/",
+                # "back_url": f"/accounts/team/assign/{for_user}/",
+                "back_url": f"/accounts/team/invite/{own_user_id}/",
             },
         )
 
