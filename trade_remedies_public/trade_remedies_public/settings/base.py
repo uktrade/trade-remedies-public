@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-
+import sys
 import json
 import os
 import environ
@@ -18,7 +18,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 
 root = environ.Path(__file__) - 4
 env = environ.Env(DEBUG=(bool, False),)
-environ.Env.read_env(f"{root}/local.env")
+environ.Env.read_env()
 
 sentry_sdk.init(
     dsn=os.environ.get("SENTRY_DSN"),
@@ -42,7 +42,6 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
 
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
-
 
 # Application definition
 
@@ -104,6 +103,7 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = "trade_remedies_public.wsgi.application"
 
 
@@ -142,12 +142,24 @@ USE_L10N = True
 
 USE_TZ = True
 
-redis_base_uri = json.loads(os.environ.get("VCAP_SERVICES"))["redis"][0]["credentials"]["uri"]
-redis_uri = redis_base_uri + "/" + os.environ.get("REDIS_DATABASE_NUMBER")
+_VCAP_SERVICES = env.json('VCAP_SERVICES', default={})
+
+# Trade remedies uses different redis database numbers
+# Public Django cache - 2
+# Caseworker Django cache - 1
+# API Django cache - 0
+# API Celery - 2 TODO find out if this should be a different value to public
+
+# Redis
+if 'redis' in _VCAP_SERVICES:
+    REDIS_BASE_URL = f"{_VCAP_SERVICES['redis'][0]['credentials']['uri']}/2"
+else:
+    REDIS_BASE_URL = os.getenv('REDIS_BASE_URL')
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": redis_uri,
+        "LOCATION": REDIS_BASE_URL,
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient",},
     },
 }
@@ -169,7 +181,7 @@ LOGOUT_REDIRECT_URL = "/"
 AUTO_LOGIN = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-API_BASE_URL = os.environ.get("API_BASE_URL", "http://localhost:8000")
+API_BASE_URL = os.environ.get("API_BASE_URL", "http://api:8000")
 API_PREFIX = "api/v1"
 API_URL = f"{API_BASE_URL}/{API_PREFIX}"
 TRUSTED_USER_TOKEN = os.environ.get("HEALTH_CHECK_TOKEN")
@@ -186,7 +198,7 @@ MAX_UPLOAD_SIZE = 2 * (1024 * 1024 * 1024)
 AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = os.environ.get("S3_STORAGE_KEY")
 AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = os.environ.get("S3_STORAGE_SECRET")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
-AWS_REGION = AWS_S3_REGION_NAME = os.environ.get("AWS_REGION", "eu-west-1")
+AWS_REGION = AWS_S3_REGION_NAME = os.environ.get("AWS_REGION", "eu-west-1") # "eu-west-1" looks like a legacy setting, TODO investigate if used in prod
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_ENCRYPTION = True
 AWS_DEFAULT_ACL = None
@@ -210,7 +222,8 @@ COUNTRIES_OVERRIDE = {
 
 APPEND_SLASH = True
 STATIC_URL = "/static/"
-STATIC_ROOT = "/home/vcap/app/static"
+STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, '..', 'static')) 
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "govuk_template", "static"),
     os.path.join(BASE_DIR, "..", "templates", "static"),
@@ -225,7 +238,6 @@ RAVEN_CONFIG = {
     "dsn": os.environ.get("SENTRY_DSN"),
     "environment": os.environ.get("SENTRY_ENVIRONMENT"),
 }
-
 
 if not DEBUG:
     # Sentry logging
@@ -259,5 +271,34 @@ if not DEBUG:
             #     'propagate': False,
             # },
             "sentry.errors": {"level": "DEBUG", "handlers": ["console"], "propagate": False,},
+        },
+    }
+else:
+    LOGGING = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        'handlers': {
+            'stdout': {
+                'class': 'logging.StreamHandler',
+                'stream': sys.stdout,
+            },
+            'null': {
+                'class': 'logging.NullHandler',
+            },
+        },
+        'root': {
+            'handlers': ['stdout'],
+            'level': os.getenv('ROOT_LOG_LEVEL', 'INFO'),
+        },
+        'loggers': {
+            'django': {
+                'handlers': ['stdout', ],
+                'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+                'propagate': True,
+            },
+            'django.server': {
+                'handlers': ['null'],
+                'propagate': False,
+            },
         },
     }
