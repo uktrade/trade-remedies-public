@@ -147,6 +147,7 @@ urlpatterns = [
     path("accounts/team/", core_views.TeamView.as_view(), name="team_view"),
     path("accounts/team/user/", core_views.TeamUserView.as_view(), name="new_user"),
     path("accounts/team/user/<uuid:user_id>/", core_views.TeamUserView.as_view(), name="user_view"),
+    # path("accounts/team/inviteThirdParty/<uuid:user_id>/", core_views.TeamUserView.as_view(), name="user_view"),
     path(
         "accounts/team/<uuid:organisation_id>/user/",
         core_views.TeamUserView.as_view(),

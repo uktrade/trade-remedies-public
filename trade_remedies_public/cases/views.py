@@ -1075,7 +1075,7 @@ class SubmitApplicationView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     case_page = True
 
-    def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
+    def get(self, request, invited_user_id, case_id=None, submission_id=None, *args, **kwargs):
         case = self._client.get_case(case_id=case_id)
         organisation_id = request.session.get("organisation_id")
         submission = self._client.get_submission_public(case_id, submission_id, organisation_id)
@@ -1089,6 +1089,7 @@ class SubmitApplicationView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
             "submission_id": submission_id,
             "org_indicator_type": self.org_indicator_type,
             "errors": errors,
+            "invited_user_id": invited_user_id,
             **self.get_submission_context(),
         }
         if errors:
@@ -1110,7 +1111,7 @@ class SubmitApplicationView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
         self._client.set_submission_status_public(case_id, submission_id, status_context="received")
         # trigger the on_submit event handler for this submission's helper, if applicable
         logger.info( "SubmitApplicationView:self.on_submission_submit()" )
-        redirect_url = self.on_submission_submit()
+        redirect_url = self.on_submission_submit( { 'invited_user_id': kwargs['invited_user_id'] } ) 
         # If user does not have access to case (eg registration of interest),
         # don't go to the case, but the dashboard instead
         if redirect_url:

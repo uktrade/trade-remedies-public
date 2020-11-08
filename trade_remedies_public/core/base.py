@@ -164,11 +164,11 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
             logging.info( "LOGGING: self.submission_helper is False")
         return None
 
-    def on_submission_submit(self):
+    def on_submission_submit(self, params):
         logging.info( "LOGGING: BasePublicView:on_submission_submit"  )
         if self.submission_helper:
             logging.info( "LOGGING: self.submission_helper:" + str( self.submission_helper ) )
-            return self.submission_helper.on_submit()
+            return self.submission_helper.on_submit(**params)
         else:
             logging.info( "LOGGING: self.submission_helper is False")
         return None

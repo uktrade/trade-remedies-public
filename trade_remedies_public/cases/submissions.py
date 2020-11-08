@@ -166,13 +166,30 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
         Returns an overriden redirect url if the assignment was successful.
         """
         logging.info( "InviteThirdPartySubmission: on_submit")
+        logging.info(kwargs)
 
         user_organisation_id = (
             get(self.submission, "contact/organisation/id")
             or get(self.submission, "contact/user/organisation/id")
             or get(self.user.organisation, "id")
         )
-        user_id = get(self.submission, "contact/user/id")
+        logging.info( user_organisation_id )
+
+        invited_user_id = kwargs.get( 'invited_user_id' )
+
+        self.client.assign_user_to_case(
+                user_organisation_id=user_organisation_id,
+                representing_id=get(self.submission, "organisation/id"),
+                user_id=invited_user_id,
+                case_id=self.case["id"],
+                primary=is_primary,
+        )
+        self.client.set_submission_state(self.case["id"], self.submission["id"], "sufficient")
+        logging.info( "return /accounts/team/{user_organisation_id}/user/{invited_user_id}/?alert=user-assigned-req" )
+        return f"/accounts/team/{user_organisation_id}/user/{invited_user_id}/?alert=user-assigned-req"
+
+
+        '''
         if get(self.submission, "organisation/id") == user_organisation_id:
             # make the case assignment.
             is_primary = (
@@ -181,6 +198,7 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
                 .get("contact_status")
                 == "primary"
             )
+            logging.info( is_primary )
             self.client.assign_user_to_case(
                 user_organisation_id=user_organisation_id,
                 representing_id=get(self.submission, "organisation/id"),
@@ -189,8 +207,12 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
                 primary=is_primary,
             )
             self.client.set_submission_state(self.case["id"], self.submission["id"], "sufficient")
+            logging.info( "return /accounts/team/{user_organisation_id}/user/{user_id}/?alert=user-assigned-req" )
             return f"/accounts/team/{user_organisation_id}/user/{user_id}/?alert=user-assigned"
-        return f"/accounts/team/{user_organisation_id}/user/{user_id}/?alert=user-assigned-req"
+        else:
+            logging.info( "return /accounts/team/{user_organisation_id}/user/{user_id}/?alert=user-assigned-req" )
+            return f"/accounts/team/{user_organisation_id}/user/{user_id}/?alert=user-assigned-req"
+        '''
 
 class AssignUserSubmission(BaseSubmissionHelper):
     type_ids = []

@@ -385,8 +385,8 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
     template_name = "account/team.html"
 
     def get(self, request, *args, **kwargs):
-        print( "TeamView:get" )
-        pp.pprint(request)
+        logging.info( "TeamView:get" )
+        logging.info(str(request))
 
         organisation_id = request.session.get("organisation_id")
         users = []
@@ -399,7 +399,7 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
             pending_assignments = client.get_pending_user_case_assignments(
                 request.user.organisation["id"]
             )
-            #print( "pending_assignments:")
+            logging.info(  "pending_assignments:")
             #pp.pprint( pending_assignments )
 
             users = client.get_team_users()
@@ -502,16 +502,22 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             section = "contact"
         else:
             base_url = f"/accounts/team/{organisation_id}/user/"
+        gotcha = False
         if user_id:
-            user = client.get_user(user_id=user_id, organisation_id=organisation_id)
-            user_cases = client.get_user_cases(request_for=user_id)
-            user["case_ids"] = [case["id"] for case in user_cases]
-            user["case_index"] = {case["id"]: case["primary"] for case in user_cases}
-            request.session["create-user"] = {"user": user}
-        elif invitation_id:
-            invite = client.get_invite_details(invitation_id)
-            case_spec = invite.get("meta", {}).get("case_spec", [])
-            user = self.init_data(invite).get("user")
+            try:
+                user = client.get_user(user_id=user_id, organisation_id=organisation_id)
+                user_cases = client.get_user_cases(request_for=user_id)
+                user["case_ids"] = [case["id"] for case in user_cases]
+                user["case_index"] = {case["id"]: case["primary"] for case in user_cases}
+                request.session["create-user"] = {"user": user}
+            except Exception as e:
+                logging.info( "Yippee: caught exception")
+                gotcha = True
+        if gotcha or not user_id:
+            if invitation_id:
+                invite = client.get_invite_details(invitation_id)
+                case_spec = invite.get("meta", {}).get("case_spec", [])
+                user = self.init_data(invite).get("user")
         if section == "create" or not request.session.get("create-user", {}).get("user"):
             request.session["create-user"] = self.init_data(invite, user, case_spec)
             if section != "edit":
@@ -670,17 +676,19 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         user = request.session.get("create-user") or {"user": {}, "invitation": {}}
         user["user"].update(data)
         if user["user"]["group"] == "Third Party User":
-            print( "Third Party User...", flush=True)
+            logging.info( "Third Party User...")
             user_id = request.user.id
             client = self.client(request.user)
-            target_contact = client.lookup_contacts(request.POST['email'])  # ("mickey@mouse.com")
-            if len(target_contact)==0:
-                print("couldn't find a third party contact with that email...", flush=True)
+
+            #logging.info( "email to look up:" + str( request.POST.get('email') ) )
+            #target_contact = client.lookup_contacts(request.POST.get('email') )  # ("mickey@mouse.com")
+            if True:  #len(target_contact)==0:
+                logging.info("couldn't find a third party contact with that email...")
                 # NB this code is a copy of the code below
                 # to create a user, set the data pack to be sent next, to the session stashed data
                 # pack case_spec into a json strucure to preserve the data
-                if user["user"].get("case_spec"):
-                    user["user"]["case_spec"] = json.dumps(user["user"]["case_spec"])
+                logging.info( "userDataStructure: " + str(user) )
+                # user["user"]["case_spec"] = json.dumps(user["user"]["case_spec"])
                 try:
                     response = client.create_and_invite_user(
                         organisation_id=organisation_id,
@@ -690,16 +698,18 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                     target_user_id = response['invite']['contact']['id']
                     target_user_name = response['invite']['contact']['name']
                 except Exception as ex:
+                    logging.info( "Exception caught: " + str(ex) )
                     return self.get(
                         request, user_id=user_id, organisation_id=organisation_id, data=data
                     )
-
                 redirect_url = f"/accounts/team/inviteThirdParty/{target_user_id}/{target_user_name}/{user_id}/{organisation_id}/"
+                # redirect_url = f"/accounts/team/"
                 return redirect( redirect_url )
             else:
                 target_organisation_id = target_contact[0]['organisation_id']
                 user["user"].update({'organisation_id': target_organisation_id})
-                target_user_id = target_contact[0]['id']
+                # target_user_id = target_contact[0]['id']
+                target_user_id = response['invite']['contact']['id']
                 redirect_url = f"/accounts/team/inviteThirdParty/{target_user_id}/"
                 return redirect( redirect_url )
 

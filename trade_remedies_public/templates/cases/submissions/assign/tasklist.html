@@ -98,12 +98,15 @@
         <ul class="task-list-items">
            <li class="task-list-item edit-item">
                 {% if enable_submit %}
+                    <a href="/case/{{case.id}}/invitedUser/{{assign_user.id}}/submission/{{submission_id}}/submit/">Final check and submission</a>
+                <!--
+                    <a href="/accounts/team/invite/{{assign_user.id}}/case/{{case.id}}/contact/{{primary}}/">Final check and submission</a>
                     {% if representing %}
-                        <!--<a href="/case/{{case.id}}/submission/{{submission_id}}/submit/">Final check and submission</a> -->
-                        <a href="/accounts/team/assign/{{assign_user.id}}/case/{{case.id}}/contact/{{primary}}/submission/{{submission_id}}/">Final check and submission</a>
-                    {% else %}
+                        <a href="/case/{{case.id}}/invitedUser/{{assign_user.id}}/submission/{{submission_id}}/submit/">Final check and submission</a>
+                        {% else %}
                         <a href="/accounts/team/invite/{{assign_user.id}}/case/{{case.id}}/contact/{{primary}}/">Final check and submission</a>
                     {% endif %}
+                    -->
                 {% else %}
                     Final check and submission
                     {% if submission.sent or submission.locking %}

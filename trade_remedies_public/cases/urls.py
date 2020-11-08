@@ -4,6 +4,17 @@ from cases import views as case_views
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
+
+
+    path(
+        "<uuid:case_id>/submission/<uuid:submission_id>/submit/",
+        case_views.SubmitApplicationView.as_view(),
+        name="submit",
+    ),
+
+
+
+
     # interest in a case
     path(
         "interest/",
@@ -206,7 +217,7 @@ urlpatterns = [
     ),
     # Submit
     path(
-        "<uuid:case_id>/submission/<uuid:submission_id>/submit/",
+        "<uuid:case_id>/invitedUser/<uuid:invited_user_id>/submission/<uuid:submission_id>/submit/",
         case_views.SubmitApplicationView.as_view(),
         name="submit",
     ),
@@ -232,4 +243,7 @@ urlpatterns = [
         case_views.CaseSummaryView.as_view(),
         name="case_summary",
     ),
+
+
+
 ]
