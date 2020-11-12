@@ -177,6 +177,12 @@ urlpatterns = [
         core_views.TeamUserView.as_view(),
         name="user_view",
     ),
+    path(
+        "accounts/team/<uuid:organisation_id>/inviteThirdParty/",
+        core_views.InviteThirdPartyView.as_view(),
+        name="user_view",
+    ),
+
     # User assignment to cases
     path(
         "accounts/team/assign/<uuid:user_id>/",

@@ -115,15 +115,19 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
     reset_current_organisation = True
 
     def get(self, request, *args, **kwargs):
+        logging.info("CasesView:get...")
         all_cases = request.user.has_perm("can_view_all_org_cases")
+        logging.info( str(all_cases)  )
         archived = request.GET.get("archived", "false") == "true"
         request.session["organisation_id"] = None
         request.session.modified = True
         client = self.client(request.user)
         user_org_cases = client.get_user_cases(archived=archived, outer=True)
+        logging.info( str(user_org_cases) )
         all_interests = client.get_registration_of_interest(all_interests=all_cases)
         # splice inerests onto cases
         for interest in all_interests:
+            logging.info( str(interest) )
             user_org_cases.append(
                 {
                     "user": interest.get("created_by"),
@@ -133,6 +137,7 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
                     "roi_sent": (interest.get("status") or {}).get("sent"),
                 }
             )
+        logging.info( str( user_org_cases ) )
         org_cases = {}
         for uoc in user_org_cases:
             ref = dpath.util.get(uoc, "case/id") + ":" + dpath.util.get(uoc, "representing/id")
@@ -1402,6 +1407,66 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
         response = self._client.remove_third_party_invite(case_id, submission_id, invite_id)
         return redirect("/case/invite/{case_id}/{submission_id}/people/")
 
+class CaseInviteThirdPartyPeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER]
+    template_name = "cases/submissions/inviteThirdParty/invites.html"
+
+    def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
+        invites = [{"name": "", "email": ""}]
+        submission_documents = []
+        if self.submission:
+            invites = self._client.get_third_party_invites(case_id, self.submission["id"])
+            submission_documents = self.get_submission_documents()
+        return render(
+            request,
+            self.template_name,
+            {
+                "errors": kwargs.get("errors"),
+                "current_page_name": "Invite 3rd party",
+                "all_organisations": True,
+                "case_id": self.case_id,
+                "submission_id": self.submission_id,
+                "case": self.case,
+                "submission": self.submission,
+                "organisation": self.organisation,
+                "organisation_name": self.organisation.get("name"),
+                "documents": submission_documents,
+                "application": request.session["application"],
+                "invites": invites,
+            },
+        )
+
+    def post(self, request, case_id, submission_id=None, *args, **kwargs):
+        data = {
+            "name": request.POST.get("name"),
+            "email": request.POST.get("email"),
+            "organisation_name": request.POST.get("organisation_name"),
+            "companies_house_id": request.POST.get("companies_house_id"),
+            "address": request.POST.get("organisation_address"),
+            "invite_id": request.POST.get("invite_id"),
+        }
+        if not data["name"] or not data["email"]:
+            if submission_id:
+                return redirect(f"/case/invite/{case_id}/{submission_id}/")
+            return redirect(f"/case/invite/{case_id}/")
+        user_organisation = request.user.organisation
+        response = self._client.third_party_invite(
+            case_id=case_id,
+            organisation_id=request.user.organisation["id"],
+            submission_id=submission_id,
+            invite_params=data,
+        )
+        if not submission_id and response.get("submission"):
+            submission_id = response.get("submission", {}).get("id")
+
+        #if submission_id:
+        #    return redirect(f"/case/{case_id}/submission/{submission_id}/people/")
+
+        return redirect(f"/case/inviteThirdParty/{case_id}/")
+
+    def delete(self, request, case_id, submission_id, invite_id, *args, **kwargs):
+        response = self._client.remove_third_party_invite(case_id, submission_id, invite_id)
+        return redirect("/case/inviteThirdParty/{case_id}/{submission_id}/people/")
 
 class SetPrimaryContactView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER]

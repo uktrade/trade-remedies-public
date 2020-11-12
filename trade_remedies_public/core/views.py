@@ -35,6 +35,7 @@ from cases.constants import CASE_TYPE_REPAYMENT
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 
+import logging
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -685,6 +686,138 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 request, user_id, errors=response.get("response", {}).get("error"), data=data
             )
         return redirect(redirect_url or f"/accounts/team/{organisation_id}/user/{user_id}/")
+
+
+
+class InviteThirdPartyView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin):
+    template_name = "cases/Submissions/thirdPartyInvite/inviteThirdParty.html"
+    submission_type_key = "invite"
+
+    self_details = False
+
+    def init_data(self, invitation=None, user=None, case_spec=None):
+        invitation = invitation or {}
+        user = user or {}
+        case_spec = case_spec or invitation.get("meta", {}).get("case_spec", []) or []
+        if isinstance(case_spec, str):
+            case_spec = json.loads(case_spec)
+        case_spec_index = {case["case"]: case["primary"] for case in case_spec}
+        return {
+            "user": {
+                "email": invitation.get("email", ""),
+                "case_index": case_spec_index,
+                **invitation.get("meta", {}),
+                **user,
+            },
+         }
+
+    def get(
+        self,
+        request,
+        inviting_organisation_id=None,
+        *args,
+        **kwargs,
+    ):
+        documents = dict()
+        documents['caseworker'] = "rhubarb.doc"
+
+        logging.info( "InviteThirdPartyView:get..." )
+        return render(
+            request,
+            self.template_name,
+            {
+                "inviting_organisation_id": inviting_organisation_id,
+                "documents": documents,
+            },
+        )
+
+    """
+    def post(
+        self,
+        request,
+        user_id=None,
+        organisation_id=None,
+        section=None,
+        invitation_id=None,
+        *args,
+        **kwargs,
+    ):
+        logger.info( "InviteThirdPartyView:post..." )
+        client = self.client(request.user)
+        if section == "delete":
+            delete_response = client.delete_pending_invite(invitation_id, organisation_id)
+            return redirect("/accounts/team/?alert=invite-deleted")
+
+        if self.self_details and not user_id:
+            user_id = request.user.id
+        elif request.session.get("create-user", {}).get("user", {}).get("id") and not user_id:
+            user_id = request.session["create-user"]["user"]["id"]
+        organisation_id = organisation_id or request.user.organisations[0]["id"]
+        redirect_url = (
+            request.POST.get("redirect") or f"/accounts/team/{organisation_id}/user/{user_id}/"
+            if user_id
+            else f"/accounts/team/{organisation_id}/user/"
+        )
+        data = {
+            "organisation_id": organisation_id,
+        }
+        data.update(request.POST.dict())
+        if data.get("active"):
+            data["active"] = data["active"] == "yes"
+        if request.POST.get("section") == "contact":
+            _validator = user_create_validators
+            if not self.self_details and not user_id:
+                _validator = user_create_validators + [
+                    {"key": "group", "message": "You must select a security group", "re": ".+"}
+                ]
+            errors = validate(data, _validator)
+            if errors:
+                return self.get(
+                    request,
+                    user_id=user_id,
+                    organisation_id=organisation_id,
+                    section=request.POST.get("section"),
+                    errors=errors,
+                    data=data,
+                )
+
+        # Check that the confirm box is checked
+        if request.POST.get("review") == "required":
+            return self.get(
+                request,
+                user_id=user_id,
+                organisation_id=organisation_id,
+                section=request.POST.get("section"),
+                errors={"review": "You must check the confirmation box"},
+                data=data,
+            )
+
+        representing_id = request.POST.get("representing_id")
+        organisation_id = request.POST.get("organisation_id")
+        case_org_id = request.POST.get("case_org_id")
+        case_org_selection = request.POST.get("case_org_selection")
+        is_primary = request.POST.get("is_primary")
+        redirect_url = request.POST.get("redirect")
+        if case_org_id:
+            case_id, organisation_id = case_org_id.split(":")
+        elif case_org_selection:
+            return redirect(
+                f"/case/select/organisation/for/{user_id}/?redirect=assign_user_to_case|user_id={user_id}&alert=no-selection"
+            )
+
+        logger.info( "calling: InviteThirdPartyView:on_submission_update")
+        submission = self.on_submission_update(
+            {
+                "primary": is_primary,
+                "organisation_id": organisation_id,
+                "representing_id": representing_id,
+                "user_id": user_id,
+                "invited_user_id": 12345,
+                "remove": self.remove,
+            }
+        )
+        return redirect(f"/case/{self.case_id}/submission/{submission['id']}/")
+    """
 
 
 class AssignUserToCaseView(LoginRequiredMixin, BasePublicView):

@@ -39,6 +39,11 @@ urlpatterns = [
         name="invite_people",
     ),
     path(
+        "inviteThirdParty/<uuid:case_id>/people/",
+        case_views.CaseInviteThirdPartyPeopleView.as_view(),
+        name="invite_people",
+    ),
+    path(
         "invite/<uuid:case_id>/<uuid:submission_id>/people/",
         case_views.CaseInvitePeopleView.as_view(),
         name="invite_people_sub",

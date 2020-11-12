@@ -13,6 +13,8 @@ from cases.constants import (
 SUBMISSION_TYPE_HELPERS = {}
 
 
+import logging
+
 class BaseSubmissionHelper:
     """
     A base class for submission helpers.
@@ -73,18 +75,80 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
 
     def get_context(self, base_context=None):
         invites = []
-        # documents = []
+        documents = []
         case_id = self.case["id"]
         context = base_context or {}
         if self.submission:
             invites = self.client.get_third_party_invites(case_id, self.submission["id"])
-            # case_documents = self.client.get_case_documents(case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
-            # documents = [cd['document'] for cd in case_documents]
+            #case_documents = self.client.get_case_documents(case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
+            #documents = case_documents # [cd['document'] for cd in case_documents]
         context["invites"] = invites
-        # context['case_documents'] = documents
-        # if 'documents' in context:
+        #context['case_documents'] = documents
+        #if 'documents' in context:
         #     context['documents']['caseworker'] += documents
+        context['documents'] = dict()
+        context['documents']['caseworker'] = [ 'rhubarb.doc']
+        context["has_documents"] = True
+        if self.view:
+            documents = self.view.get_submission_documents() # (request_for_sub_org=True)
+            context["all_documents"] = documents
+            context["documents"] = documents.get("caseworker", [])
         return context
+
+    def on_submit(self, **kwargs):
+        """
+        On submission of reg-interest submission, set the case role
+        """
+
+        logging.info( "InviteThirdPartySubmission:on_submit")
+        case_id = self.case["id"]
+        submission_id = self.submission["id"]
+        current_role_id = self.submission.get("organisation_case_role", {}).get("id")
+
+        logging.info( case_id )
+        logging.info( submission_id )
+        logging.info( current_role_id )
+
+        if True:   # not current_role_id or current_role_id in (CASE_ROLE_PREPARING,):
+            logging.info( "InviteThirdPartySubmission:on_submit - self.client.set_organisation_case_role")
+            response = self.client.set_organisation_case_role(
+                case_id=case_id,
+                organisation_id=self.submission["organisation"]["id"],
+                role_key="awaiting_approval",
+            )
+            logging.info( str(response) )
+        else:
+            logging.info( "InviteThirdPartySubmission:on_submit - condition False ")
+
+        user_organisation_id = (
+            get(self.submission, "contact/organisation/id")
+            or get(self.submission, "contact/user/organisation/id")
+            or get(self.user.organisation, "id")
+        )
+        user_id = get(self.submission, "contact/user/id")
+        if True:  # get(self.submission, "organisation/id") == user_organisation_id:
+            # make the case assignment.
+            #is_primary = (
+            #    self.submission.get("deficiency_notice_params", {})
+            #    .get("assign_user", {})
+            #    .get("contact_status")
+            #    == "primary"
+            #)
+            logging.info( "self.client.assign_user_to_case" )
+            is_primary = False
+            return_value = self.client.assign_user_to_case(
+                user_organisation_id=user_organisation_id,
+                representing_id=get(self.submission, "organisation/id"),
+                user_id=user_id,
+                case_id=self.case["id"],
+                primary=is_primary,
+            )
+            # logging.info( str( return_value ) ) 
+            return_value = self.client.set_submission_state(self.case["id"], self.submission["id"], "sufficient")
+            # logging.info( str( return_value ) ) 
+
+        logging.info( "InviteThirdPartySubmission:on_submit - returning")
+        return f"/case/{case_id}/submission/{submission_id}/submitted/"
 
 
 class AssignUserSubmission(BaseSubmissionHelper):
