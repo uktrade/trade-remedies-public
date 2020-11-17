@@ -1,5 +1,6 @@
 {% extends "./submission_base.html" %}
 {% load back_link %}
+{% load organisation_name %}
 
 {% block alert-area %}
   {% if just_submitted %}
@@ -17,7 +18,7 @@
           {% if submission.organisation.name %}
               {{submission.organisation.name}}
           {% else %}
-              {% include "partials/TRID_full_name.html" %}
+              {% organisation_name %}
           {% endif %}
           <br>
           {{ submission.received_at|format_date:"%d %B %Y" }}

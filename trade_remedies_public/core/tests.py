@@ -1,5 +1,6 @@
 from django.test import TestCase
 from core.utils import split_public_documents
+from django.conf import settings
 
 
 class TestPublicDocumentSplitting(TestCase):
@@ -29,7 +30,11 @@ class TestPublicDocumentSplitting(TestCase):
                 "virus_scanned_at": "2020-05-14T10:16:40+0000",
                 "parent_id": None,
                 "checksum": "207b2135a75c97ed4c16368868d66cfd-1",
-                "type": {"id": 1, "name": "TRID Document", "key": "caseworker"},
+                "type": {
+                    "id": 1,
+                    "name": settings.ORGANISATION_INITIALISM + " Document",
+                    "key": "caseworker",
+                },
                 "downloads": 1,
                 "deficient": False,
                 "sufficient": False,

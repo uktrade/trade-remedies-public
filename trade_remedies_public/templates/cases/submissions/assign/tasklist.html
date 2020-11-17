@@ -2,6 +2,7 @@
 {% load task_link_toggle %}
 {% load error_message %}
 {% load task_status %}
+{% load organisation_name %}
 
 {% block breadcrumb %}
     <li class="">
@@ -26,7 +27,7 @@
 {% block submission_received_title %}Assign {{assign_user.name}} to case{% endblock %}
 
 {% block submission_received_message %}<p>This application has been submitted.</p>
-    <p>If you want to report an omission, error or material change contact the <a target="_blank" href="/contact" class="nobreak">{% include "partials/TRID_full_name.html" %}</a>.</p>
+    <p>If you want to report an omission, error or material change contact the <a target="_blank" href="/contact" class="nobreak">{% organisation_name %}</a>.</p>
 {% endblock %}
 
 {% block tasklist_content %}

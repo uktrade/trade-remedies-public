@@ -1,4 +1,5 @@
 {% extends "../base_tasklist.html" %}
+{% load organisation_name %}
 
 {% load task_link_toggle %}
 
@@ -9,7 +10,7 @@
 {% block submission_received_title %}Questionnaire submitted{% endblock %}
 
 {% block submission_received_message %}
-    This questionnaire has been submitted.  You can read your answers at any time but you can’t change them. If you want to report an omission, error or material change contact the <a target="_blank" href="/contact">{% include "partials/TRID_full_name.html" %}</a>.
+    This questionnaire has been submitted.  You can read your answers at any time but you can’t change them. If you want to report an omission, error or material change contact the <a target="_blank" href="/contact">{% organisation_name %}</a>.
 {% endblock %}
 
 {% block tasklist_content %}

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load link_lookup %}
 {% load format_date %}
+{% load organisation_name %}
 {% block main_content %}
   <div class="breadcrumbs" data-module="track-click">
     <ol>
@@ -14,10 +15,10 @@
   </div>
   <div class="grid-row">
     <div class="column-full">
-      <h1 class="heading-large inverse-header margin-top-0"><span class="heading-secondary">Trade Remedies Investigation Directorate</span>Investigations currently in progress</h1>
+      <h1 class="heading-large inverse-header margin-top-0"><span class="heading-secondary">{% organisation_name %}</span>Investigations currently in progress</h1>
     </div>
     <div class="column-full">
-      <p>The Trade Remedies Investigation Directorate investigates claims that dumped and subsidised imports have injured UK industry.</p>
+      <p>The {% organisation_name %} investigates claims that dumped and subsidised imports have injured UK industry.</p>
       <p>This page contains a list of our currently active investigations. Link through to each case to see non-confidential versions of documents submitted by registered participants in the case.</p>
       <p>If you want to contribute to a case, you will need to <a href="/dashboard/">sign in or create an account with the Trade Remedies service</a>.</p>
       <p><a class="link" href="{% link_lookup 'LINK_HELP_BOX_GUIDANCE' %}" target='_blank'>You can find out more about trade remedy investigations here.&nbsp;<i class="icon16 icon-outlink"></i></a></p>
