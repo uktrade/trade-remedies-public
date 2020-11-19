@@ -1,7 +1,7 @@
 -r base.in
 
 ipython==7.10
-traitlets==4.2
+traitlets==5.0.5
 black
 flake8
 coverage
