@@ -18,7 +18,8 @@ It's used in both the public file, and the customer's public file view
     </div>
     {% endif %}
     <div class="border-top border-bottom margin-bottom-1">
-        <div>Published: {{ submission.received_at|_or:submission.sent_at|format_date:"%d %B %Y" }}</div>
+        <div>Received: {{ submission.received_at|_or:submission.sent_at|format_date:"%d %B %Y" }}</div>
+        <div>Issued: {{ submission.issued_at|format_date:"%d %B %Y" }}</div>
         <div>From:
           {% if  submission.organisation_name %}
             {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
