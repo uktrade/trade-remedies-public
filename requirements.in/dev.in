@@ -1,11 +1,13 @@
 -r base.in
 
-ipython==7.10
-traitlets==4.3.3
+behave-django==1.4.0
 black
-flake8
 coverage
+flake8
+ipython==7.10
 pytest
 pytest-cov
 pytest-django
 pytest-xdist
+selenium==3.141.0
+traitlets==4.3.3
