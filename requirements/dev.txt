@@ -41,7 +41,7 @@ idna==2.10                # via requests
 importlib-metadata==2.0.0  # via flake8, pluggy, pytest
 iniconfig==1.0.1          # via pytest
 ipython-genutils==0.2.0   # via traitlets
-ipython==7.10             # via -r requirements.in/dev.in
+ipython==7.12             # via -r requirements.in/dev.in
 jedi==0.17.2              # via ipython
 jmespath==0.10.0          # via boto3, botocore
 mccabe==0.6.1             # via flake8
