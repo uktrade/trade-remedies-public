@@ -24,7 +24,7 @@ def assert_on_page(context, expected_url_name, **kwargs):
     """Assert current url is the expected url."""
     page_url = context.browser.current_url.split("?")[0]
     expected_url = context.get_url(expected_url_name, **kwargs)
-    assert expected_url == page_url, f'expecting url to be {expected_url} but got {page_url}'
+    assert expected_url == page_url, f"expecting url to be {expected_url} but got {page_url}"
 
 
 def find_element_by_text(context, text, element_type="*"):

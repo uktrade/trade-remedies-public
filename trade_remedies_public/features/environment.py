@@ -11,7 +11,7 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
-CAPTURE_PATH = '/app/test-reports/bdd-screenshots/'
+CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
 
 
 def before_scenario(context, scenario):  # no-qa
@@ -29,7 +29,7 @@ def configure(context):
         browser = DesiredCapabilities.FIREFOX
 
     context.browser = webdriver.Remote(
-        command_executor=f'http://{settings.SELENIUM_HUB_HOST}:4444/wd/hub',
+        command_executor=f"http://{settings.SELENIUM_HUB_HOST}:4444/wd/hub",
         desired_capabilities=browser,
     )
     context.browser.implicitly_wait(5)
@@ -41,9 +41,9 @@ def before_feature(context, feature):  # no-qa
 
 
 def after_step(context, step):
-    if step.status == 'failed':
+    if step.status == "failed":
         assert context.browser.save_screenshot(
-            f'{CAPTURE_PATH}{context.timestamp}-{context.scenario.name}-{step.name}.png'
+            f"{CAPTURE_PATH}{context.timestamp}-{context.scenario.name}-{step.name}.png"
         )
 
 
