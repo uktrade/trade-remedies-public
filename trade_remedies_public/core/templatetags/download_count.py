@@ -11,7 +11,8 @@ def download_count(documents, prefix=None, postfix=None, warning=None):
     """
     count = 0
     for document in documents:
-        # We count the number of documents that have been downloaded, not the total numner of downloads
+        # We count the number of documents that have been downloaded,
+        # not the total numner of downloads
         if document.get("downloads", 0) > 0:
             count = count + 1
 
@@ -19,7 +20,7 @@ def download_count(documents, prefix=None, postfix=None, warning=None):
     prefix = prefix if prefix is not None else "Downloaded"
     postfix = postfix if postfix is not None else ""
     if count:
-        output = f"""<div class="task-upload">{prefix} <span class="uploaded-count number-circle larger">{count}</span> {postfix}</div>"""
+        output = f"""<div class="task-upload">{prefix} <span class="uploaded-count number-circle larger">{count}</span> {postfix}</div>"""  # noqa: E501
     if warning and count < len(documents):
-        output += f"""<i class="icon icon-warning pull-right"><span class="visually-hidden">strong alert</span></i>"""
+        output += """<i class="icon icon-warning pull-right"><span class="visually-hidden">strong alert</span></i>"""  # noqa: E501
     return mark_safe(output)

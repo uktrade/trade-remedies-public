@@ -2,7 +2,6 @@ import logging
 from core.templatetags import register
 from django.utils.safestring import mark_safe
 from trade_remedies_client.client import Client
-from django.conf import settings
 
 logger = logging.getLogger(__name__)
 

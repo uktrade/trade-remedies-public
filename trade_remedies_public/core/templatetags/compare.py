@@ -1,5 +1,4 @@
 from core.templatetags import register
-from django.utils.safestring import mark_safe
 
 """
 Template tag to compare two values and set the result as a boolean named context variable

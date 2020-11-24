@@ -1,4 +1,4 @@
-from .base import * # NOQA
+from .base import *  # noqa: F403,  F401
 
 INSTALLED_APPS += [  # noqa
     "behave_django",

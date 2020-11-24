@@ -20,7 +20,7 @@ def radio_element(
     Show a set of radio buttons
     The 'options' parameter should be a json string (as this can be handled within templates)
     usage
-    {% radio_element id='yesno' label='Is it da or nyet?' options='[{"value":"yes". "label":"Da"}, {"value":"no". "label":"Nyet"} ]' %}
+    {% radio_element id='yesno' label='Is it da or nyet?' options='[{"value":"yes". "label":"Da"}, {"value":"no". "label":"Nyet"} ]' %}    # noqa: E501
     """
     name = name or id
     options = json.loads(options)
@@ -35,13 +35,13 @@ def radio_element(
     output.append(f'<label class="form-label" for="{ id }">{ label }')
     if hint:
         output.append(f'<span class="form-hint">{ hint }</span>')
-    output.append(f"</label>")
+    output.append("</label>")
     if name and errors and name in errors:
         message = errors[name]
         output.append(f'<span class="error-message" id="{ name }_error">{ message }</span>')
     output.append('<div class="indent">')
     for num, option in enumerate(options, start=1):
-        output.append(f'<div class="multiple-choice">')
+        output.append('<div class="multiple-choice">')
         option_value = option.get("value")
         option_label = option.get("label")
         checked = 'checked="checked"' if option_value == value else ""
@@ -54,6 +54,6 @@ def radio_element(
         output.append(
             f'<label for="{ id }-{ option_value }" class="form-label">{ option_label }</label>'
         )
-        output.append(f"</div>")
+        output.append("</div>")
     output.append("</div></div>")
     return mark_safe("".join(output))
