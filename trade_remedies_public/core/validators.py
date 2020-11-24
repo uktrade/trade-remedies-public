@@ -1,5 +1,5 @@
 #  RFC 2822 validator
-email_validator = "(?:[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[\\w-]*[\\w]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])$"
+email_validator = "(?:[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*\")@(?:(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[\\w-]*[\\w]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\\])$"  # noqa: E501
 
 review_form_validators = [
     {"key": "reference_case", "message": "You must select a case", "re": ".+"},
@@ -16,7 +16,7 @@ company_form_validators = [
     {
         "key": "organisation_website",
         "message": "Your website should be a complete, valid URL.",
-        "re": "^((?:http(s)?:\\/\\/|)[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+        "re": "^((?:http(s)?:\\/\\/|)[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",  # noqa: E501
     },
 ]
 
@@ -39,15 +39,15 @@ registration_validators = [
     {"key": "password", "message": "Password must include at least one digit", "re": "(?=.*[0-9])"},
     {
         "key": "password",
-        "message": "Password must include at least one special character (!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~])",
+        "message": "Password must include at least one special character (!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~])",  # noqa: E501
         "re": "(?=.*[!\"$%&'#()*+,-./:;<=>?@[\\\\\\]^_`{|}~])"
-        #'re': '(?=.*[^a-zA-Z0-9\\s])'
+        # 're': '(?=.*[^a-zA-Z0-9\\s])'
     },
     {"key": "password_confirm", "message": "You must provide a password confirmation", "re": ".+"},
     {
         "key": "phone",
         "message": "Your phone number is invalid",
-        "re": "^([0|\\+[0-9\s]{1,5})?([0-9\s]{4,13})?$",
+        "re": "^([0|\\+[0-9\s]{1,5})?([0-9\s]{4,13})?$",  # noqa: W605
     },
     {"key": "terms", "message": "You must agree to the terms and conditions", "re": ".+"},
 ]
@@ -66,6 +66,6 @@ user_create_validators = [
     {
         "key": "phone",
         "message": "This phone number is invalid",
-        "re": "^([0|\\+[0-9\s]{1,5})?([0-9\s]{4,13})?$",
+        "re": "^([0|\\+[0-9\s]{1,5})?([0-9\s]{4,13})?$",  # noqa: W605
     },
 ]

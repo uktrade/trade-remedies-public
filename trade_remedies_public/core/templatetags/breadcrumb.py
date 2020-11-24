@@ -11,6 +11,6 @@ Usage:
 @register.simple_tag
 def breadcrumb(title, link):
     output = '<li class="">'
-    output += f"""<a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="{ link }">{ title }</a>"""
+    output += f"""<a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="{ link }">{ title }</a>"""  # noqa: E501
     output += "</li>"
     return mark_safe(output)

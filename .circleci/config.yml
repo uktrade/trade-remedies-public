@@ -32,12 +32,14 @@ jobs:
           name: Run black
           command: |
             . venv/bin/activate
-            # black trade_remedies_api --check
+            cd trade_remedies_public
+            black . --check
       - run:
           name: Run Flake8
           command: |
             . venv/bin/activate
-            # python -m flake8
+            cd trade_remedies_public
+            python -m flake8
   front_end:
     docker: 
       - image: 'circleci/node:latest'
