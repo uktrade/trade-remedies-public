@@ -9,6 +9,9 @@ appdirs==1.4.4            # via black
 appnope==0.1.0            # via ipython
 attrs==20.2.0             # via pytest
 backcall==0.2.0           # via ipython
+beautifulsoup4==4.9.3     # via behave-django
+behave-django==1.4.0      # via -r requirements.in/dev.in
+behave==1.2.6             # via behave-django
 black==20.8b1             # via -r requirements.in/dev.in
 boto3==1.11.14            # via -r requirements.in/base.in, s3chunkuploader
 botocore==1.14.17         # via boto3, s3transfer
@@ -35,14 +38,17 @@ execnet==1.7.1            # via pytest-xdist
 feed-gov-back==0.4        # via -r requirements.in/base.in
 flake8==3.8.3             # via -r requirements.in/dev.in
 idna==2.10                # via requests
+importlib-metadata==2.0.0  # via flake8, pluggy, pytest
 iniconfig==1.0.1          # via pytest
 ipython-genutils==0.2.0   # via traitlets
-ipython==7.10             # via -r requirements.in/dev.in
+ipython==7.12             # via -r requirements.in/dev.in
 jedi==0.17.2              # via ipython
 jmespath==0.10.0          # via boto3, botocore
 mccabe==0.6.1             # via flake8
 mypy-extensions==0.4.3    # via black
 packaging==20.4           # via pytest
+parse-type==0.5.2         # via behave
+parse==1.18.0             # via behave, parse-type
 parso==0.7.1              # via jedi
 pathspec==0.8.0           # via black
 pexpect==4.8.0            # via ipython
@@ -68,18 +74,21 @@ regex==2020.9.27          # via black
 requests==2.24.0          # via -r requirements.in/base.in, trade-remedies-client
 s3chunkuploader==0.10     # via -r requirements.in/base.in
 s3transfer==0.3.3         # via boto3
+selenium==3.141.0         # via -r requirements.in/dev.in
 sentry-sdk==0.13.1        # via -r requirements.in/base.in
-six==1.15.0               # via django-extensions, packaging, prompt-toolkit, python-dateutil, traitlets
+six==1.15.0               # via behave, django-extensions, packaging, parse-type, prompt-toolkit, python-dateutil, traitlets
+soupsieve==2.0.1          # via beautifulsoup4
 sqlparse==0.3.1           # via django
 toml==0.10.1              # via black, pytest
 git+git://github.com/uktrade/trade-remedies-client.git  # via -r requirements.in/base.in
 traitlets==4.3.3          # via -r requirements.in/dev.in, ipython
 typed-ast==1.4.1          # via black
 typing-extensions==3.7.4.3  # via black
-urllib3==1.25.10          # via botocore, requests, sentry-sdk
+urllib3==1.25.10          # via botocore, requests, selenium, sentry-sdk
 wcwidth==0.2.5            # via prompt-toolkit
 werkzeug==0.15.5          # via -r requirements.in/base.in
 whitenoise==3.3.1         # via -r requirements.in/base.in
+zipp==3.4.0               # via importlib-metadata
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
