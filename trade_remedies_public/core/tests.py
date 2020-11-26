@@ -32,7 +32,7 @@ class TestPublicDocumentSplitting(TestCase):
                 "checksum": "207b2135a75c97ed4c16368868d66cfd-1",
                 "type": {
                     "id": 1,
-                    "name": settings.ORGANISATION_INITIALISM + " Document",
+                    "name": f"{settings.ORGANISATION_INITIALISM} Document",
                     "key": "caseworker",
                 },
                 "downloads": 1,
