@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% load organisation_name %}
+{% load organisation_initialism %}
+
 
 {% block main_content %}
   <div class="terms-and-conditions-page">
@@ -7,11 +10,11 @@
         Trade Remedies Digital Service Terms of Use and Privacy Notice
       </h1>
       <h2 class="heading-medium">Introduction</h2>
-      <p>The terms of use and privacy notice (“Notice”) describes the handling of data, including personal data, collected and used by the {% include "partials/TRID_abbreviation.html" %}. This includes communications to the {% include "partials/TRID_abbreviation.html" %} whether in electronic format, paper format or by telephone. By personal data, we mean any information relating to an identified or identifiable natural person.</p>
+      <p>The terms of use and privacy notice (“Notice”) describes the handling of data, including personal data, collected and used by the {% organisation_initialism %}. This includes communications to the {% organisation_initialism %} whether in electronic format, paper format or by telephone. By personal data, we mean any information relating to an identified or identifiable natural person.</p>
       <p>The purpose of this Notice is to inform people what information is collected about them, by whichever means; how this information is used; if it is disclosed and ways in which we protect their privacy.</p>
-      <p>This Notice only relates to data that the {% include "partials/TRID_abbreviation.html" %} collects and processes. We are not responsible for external organisations that may link to the {% include "partials/TRID_abbreviation.html" %}’s web pages. For more information concerning external agencies and stakeholders please visit the relevant privacy statement on their own web pages.</p>
+      <p>This Notice only relates to data that the {% organisation_initialism %} collects and processes. We are not responsible for external organisations that may link to the {% organisation_initialism %}’s web pages. For more information concerning external agencies and stakeholders please visit the relevant privacy statement on their own web pages.</p>
 
-      <h2 class="heading-medium">Why the {% include "partials/TRID_full_name.html" %} needs to collect and process information</h2>
+      <h2 class="heading-medium">Why the {% organisation_name %} needs to collect and process information</h2>
       <p>We only collect, use and share personal data where the law says we can. This is:</p>
 
       <ul class="list list-bullet">
@@ -23,14 +26,14 @@
       </ul>
       <p>If you have given us your consent to collect, use or share your personal data, you may withdraw your consent at any time by contacting us. Withdrawing your consent will not affect the validity of how we have collected, used or shared your personal data up to that point</p>
       <h2 class="heading-medium">Legal basis for processing information</h2>
-      <p>The {% include "partials/TRID_abbreviation.html" %} may need to collect, process and/ or share information in order to:</p>
+      <p>The {% organisation_initialism %} may need to collect, process and/ or share information in order to:</p>
       <ol class="list list-number">
         <li>Carry out its functions relating to import duty conferred by, Schedule 4 of the Taxation (Cross-border Trade) Act 2018 (“Customs Act”) relating to dumping and foreign subsidies causing injury to UK industry, and functions relating to increased imports causing serious injury to UK producers conferred by Schedule 5 of the Customs Act.</li>
         <li>Provide the Secretary of State with such, advice, support and assistance as the Secretary of State requests [under the Trade Bill] in connection with:
           <ul class="list list-bullet">          
             <li>The conduct of an international trade dispute</li>
             <li>Functions of the Secretary of State relating to trade, and</li>
-            <li>Functions of the {% include "partials/TRID_abbreviation.html" %}</li>
+            <li>Functions of the {% organisation_initialism %}</li>
           </ul>
         </li>
         <li>Provision of such advice, support and assistance [under the Trade Bill] as it considers appropriate in relation to international trade, and trade remedies.</li>
@@ -68,13 +71,13 @@
       <ul class="list list-bullet">
         <li>visitors to our websites.</li>
         <li>people who use our general information services, e.g. who subscribe to our RSS feeds, e-newsletters, social media sites, email alerts or request a publication from us.</li>
-        <li>people who engage with the {% include "partials/TRID_abbreviation.html" %}, or whose data we are provided with, as part of our carrying out of our functions and related organisational activities.</li>
+        <li>people who engage with the {% organisation_initialism %}, or whose data we are provided with, as part of our carrying out of our functions and related organisational activities.</li>
         <li>people who contact us in relation to information requests, complaints and general queries.</li>
         <li>job applicants and our current and former employees.</li>
       </ul>
 
       <p>Sometimes we collect your personal data directly from you, but sometimes we collect it from third parties. Where we collect personal data from third parties, it may be from organisations like survey companies, or those traders operating in sectors of the market that we are investigating.</p>
-      <p class="heading-medium">Third parties the {% include "partials/TRID_abbreviation.html" %} obtains personal data from include but are not limited to:</p>
+      <p class="heading-medium">Third parties the {% organisation_initialism %} obtains personal data from include but are not limited to:</p>
       <ul class="list list-bullet">
         <li>other government departments, public bodies or executive agencies</li>
         <li>foreign governments or authorities</li>
@@ -104,13 +107,13 @@
         <li>A password (so you can access your case in the future)</li>
         <li>Mobile phone number (for signing into the service – on sign in to the service a code will be sent to the registered mobile to verify the user’s identity)</li>
       </ol>
-      <p>When completing an application you need to provide the information the {% include "partials/TRID_full_name.html" %} needs to assess you have a trade remedies case. The information you need to provide will depend in which capacity you are involved in the case.</p>
+      <p>When completing an application you need to provide the information the {% organisation_name %} needs to assess you have a trade remedies case. The information you need to provide will depend in which capacity you are involved in the case.</p>
 
 
       <h3 class="heading-small">Data we capture</h3>
-      <p>The information you provide through our [Trade Remedies Digital Service] is securely stored by the {% include "partials/TRID_full_name.html" %} via the [Trade Remedies Digital Service].</p>
-      <p>Once you submit confidential information in an investigation you will not be able to access it through the Trade Remedies Digital Service. The information will be sent to the {% include "partials/TRID_full_name.html" %} where it will be held securely.</p>
-      <p>You can access all non-confidential documents you provide through the Trade Remedies Digital Service when signed in and at periods throughout an investigation when the non-confidential documents will also be issued to the public case file on [the {% include "partials/TRID_abbreviation.html" %}’s website].</p>
+      <p>The information you provide through our [Trade Remedies Digital Service] is securely stored by the {% organisation_name %} via the [Trade Remedies Digital Service].</p>
+      <p>Once you submit confidential information in an investigation you will not be able to access it through the Trade Remedies Digital Service. The information will be sent to the {% organisation_name %} where it will be held securely.</p>
+      <p>You can access all non-confidential documents you provide through the Trade Remedies Digital Service when signed in and at periods throughout an investigation when the non-confidential documents will also be issued to the public case file on [the {% organisation_initialism %}’s website].</p>
 
 
       <h3 class="heading-small">Confidentiality of data received by us in trade investigations</h3>
@@ -125,10 +128,10 @@
       <p>We may receive information about you from HMRC for the purpose of facilitating the exercise of our functions relating to trade. Where we receive such information, we will not use the information for purposes other than in relation with these functions, or further disclose such information without the consent of HMRC.</p>
 
       <h3 class="heading-small">Retaining your data</h3>
-      <p>The {% include "partials/TRID_full_name.html" %} will retain the data you provide for the duration of the case and for the duration of any measures enforced.</p>
-      <p>{% include "partials/TRID_full_name.html" %} will retain the data you provide beyond the life span of a measure for audit purposes.</p>
-      <p>During the period in which you compile the documents into a submission, the {% include "partials/TRID_abbreviation.html" %} will not have access to the documents in their system – but they will be held in the system’s database so you do not have to complete a submission in one session.</p>
-      <p>Once you have submitted documents to the {% include "partials/TRID_abbreviation.html" %} for consideration, they will be kept as part of the auditable record of the case.</p>
+      <p>The {% organisation_name %} will retain the data you provide for the duration of the case and for the duration of any measures enforced.</p>
+      <p>{% organisation_name %} will retain the data you provide beyond the life span of a measure for audit purposes.</p>
+      <p>During the period in which you compile the documents into a submission, the {% organisation_initialism %} will not have access to the documents in their system – but they will be held in the system’s database so you do not have to complete a submission in one session.</p>
+      <p>Once you have submitted documents to the {% organisation_initialism %} for consideration, they will be kept as part of the auditable record of the case.</p>
 
       <h2 class="heading-medium">Your legal rights in relation to personal data</h2>
       <h3 class="heading-small">Right to be informed about how personal data is used</h3>
@@ -250,22 +253,22 @@
 
       <p>You also have the right to ask a Court to consider whether we have dealt properly with your request.</p>
 
-      <h3 class="heading-small">How to make a Freedom of Information request to the {% include "partials/TRID_abbreviation.html" %}</h3>
-      <p>The Freedom of Information Act 2000 provides a right of access to a wide range of information held by public authorities, including the {% include "partials/TRID_abbreviation.html" %}.  The purpose is to promote greater openness and accountability.</p>
+      <h3 class="heading-small">How to make a Freedom of Information request to the {% organisation_initialism %}</h3>
+      <p>The Freedom of Information Act 2000 provides a right of access to a wide range of information held by public authorities, including the {% organisation_initialism %}.  The purpose is to promote greater openness and accountability.</p>
 
       <h3 class="heading-small">Our duty to you</h3>
       <p>The Freedom of Information (FOI) Act 2000 requires us to:</p>
       <ul class="list list-bullet">
-          <li>Provide information to you about the {% include "partials/TRID_abbreviation.html" %} through a publication scheme</li>
+          <li>Provide information to you about the {% organisation_initialism %} through a publication scheme</li>
           <li>Provide a guide to this information</li>
           <li>Respond appropriately to requests for information</li>
       </ul>
 
-      <h3 class="heading-small">Before you request information from the {% include "partials/TRID_abbreviation.html" %}</h3>
+      <h3 class="heading-small">Before you request information from the {% organisation_initialism %}</h3>
       <p>Check whether the information you seek is already available. We publish information on our website and you may well find the answer to your question is already on the website. We have a publication scheme setting out what information we currently release or expect to release.</p>
 
       <h3 class="heading-small">Who can request information?</h3>
-      <p>Anyone, anywhere in the world, can make a FOI request to the {% include "partials/TRID_abbreviation.html" %}.</p>
+      <p>Anyone, anywhere in the world, can make a FOI request to the {% organisation_initialism %}.</p>
 
       <h3 class="heading-small">What can I request?</h3>
       <p>You can seek any recorded information that you think we may hold. If the information is environmental, we will respond according to the Environmental Information Regulations (EIR) 2004.</p>
