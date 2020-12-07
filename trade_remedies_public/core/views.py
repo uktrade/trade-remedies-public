@@ -15,6 +15,7 @@ from django.http import HttpResponseNotFound, HttpResponse
 from trade_remedies_public.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
+    SECURITY_GROUP_THIRD_PARTY_USER,
 )
 from core.base import GroupRequiredMixin, BasePublicView
 from core.utils import (
@@ -593,6 +594,9 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         *args,
         **kwargs,
     ):
+        if request.POST.get('group') == SECURITY_GROUP_THIRD_PARTY_USER:
+            return redirect(f"/case/invite")
+
         client = self.client(request.user)
         if section == "delete":
             delete_response = client.delete_pending_invite(invitation_id, organisation_id)
