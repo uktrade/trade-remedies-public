@@ -806,7 +806,6 @@ class ApplicationFormsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
                 "download_template": f"{template_grp}/download.html",
                 "documents": documents,
                 "org_indicator_type": self.org_indicator_type,
-                # **self.get_submission_context(),
             },
         )
 
@@ -1375,7 +1374,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
                 "documents": submission_documents,
                 "application": request.session["application"],
                 "invitee": invitee,
-                "invite": invitee['contact'] if invitee else None, ## NEEDS WORK template needs ORG
+                "invite": invitee['contact'] if invitee else None,
             },
         )
 
@@ -1390,9 +1389,8 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
         }
         if not data["name"] or not data["email"]:
             if submission_id:
-                return redirect(f"/case/invite/{case_id}/submission/{submission_id}/")  # HERE!!!!?
+                return redirect(f"/case/invite/{case_id}/submission/{submission_id}/")
             return redirect(f"/case/invite/{case_id}/")
-        user_organisation = request.user.organisation                                   # HERE
         response = self._client.third_party_invite(
             case_id=case_id,
             organisation_id=request.user.organisation["id"],
@@ -1403,9 +1401,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             submission_id = response.get("submission", {}).get("id")
 
         if submission_id:
-            # return redirect(f"/case/invite/{case_id}/submission/{submission_id}/people/")
             return redirect(f"/case/invite/{case_id}/submission/{submission_id}")
-        # LOG - failed to get submission from API
         return redirect(f"/case/invite/{case_id}/")
 
     def delete(self, request, case_id, submission_id, invite_id, *args, **kwargs):
