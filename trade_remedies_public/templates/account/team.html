@@ -1,15 +1,18 @@
 {% extends "base.html" %}
-{% load to_json %}
 {% load alert_message %}
+{% load to_json %}
+{% load set %}
 
 {% block main_content %}
+
 <div class="grid-row">
   <div class="column-two-thirds">
 
     <div class="breadcrumbs" data-module="track-click">
       <ol>
         <li class="">
-            <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+            <a data-track-category="breadcrumbClicked" data-track-action="1" class=""
+               aria-current="false" href="{% url 'dashboard' %}">Dashboard</a>
         </li>
         <li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
           Manage your team
@@ -20,14 +23,13 @@
     {% load alert_message %}
     <h1 class="heading-large">Manage your team</h1>
 
-    <p>
-      From here, you can:
+    <p>From here, you can:</p>
       <ul class="list-bullet indent">
         <li>invite colleagues to your account</li>
         <li>assign or remove case access</li>
         <li>deactivate accounts</li>
       </ul>
-    </p>
+    <p></p>
     <p>An invited colleague needs to set up their account before being added to cases.</p>
 
   </div>
@@ -192,7 +194,7 @@
       <a class="button margin-top-1" href="/accounts/team/{{user.organisation.id}}/user/create/">Invite colleague</a>
 
       <div class="margin-top-1">
-        <a class="link" href="/dashboard/">Back</a>
+          <a class="link" href="{% url 'dashboard' %}">Back</a>
       </div>
 
     </div>
