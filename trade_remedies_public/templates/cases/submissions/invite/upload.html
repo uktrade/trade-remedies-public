@@ -1,4 +1,4 @@
-{% extends "../base_conf_nonconf.html" %}
+{% extends "cases/submissions/base_conf_nonconf.html" %}
 {% load set %}
 
 {% block breadcrumb_current %}Invite a 3rd party{% endblock %}
@@ -12,5 +12,25 @@
 	{{ block.super }}
 {% endblock %}
 
-
-
+{% block buttons %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% block continue_button %}
+                <div class="margin-top-1">
+                    <a class="button"
+                       href="/case/invite/{{case_id}}/submission/{{submission_id}}/">Continue</a>
+                </div>
+            {% endblock %}
+            <div class="margin-top-1">
+                {% if submission_id and case_id %}
+                    <a href="/case/invite/{{case_id}}/submission/{{submission_id}}/">Back to
+                        menu</a>
+                {% elif back_url %}
+                    <a href="{{back_url}}">Back</a>
+                {% else %}
+                    <a href="/dashboard/">Back to menu</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

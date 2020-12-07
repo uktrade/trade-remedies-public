@@ -1,4 +1,4 @@
-{% extends "../base_view.html" %}
+{% extends "cases/submissions/base_view.html" %}
 
 {% block breadcrumb_current %}Invite a 3rd party{% endblock %}
 {% block page_subtitle %}Your 3rd party invitation{% endblock %}
@@ -15,7 +15,7 @@
 
 {% block status_block %}
     {% if submission.status.sufficient %}
-    This invitiation was accepted.
+    This invitation was accepted.
     {% endif %}
 
     The following were sent invitations to join your view of this case:
