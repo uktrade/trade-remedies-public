@@ -1346,37 +1346,6 @@ class CaseInviteView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             },
         )
 
-    # def post(self, request, user_id=None, organisation_id=None, section=None,
-    #          invitation_id=None, *args, **kwargs):
-    #     import logging
-    #     log = logging.getLogger(__name__)
-    #     log.info(f'>>>> request: {request}')
-    #     log.info(f'>>>> user_id: {user_id}')
-    #     log.info(f'>>>> organisation_id: {organisation_id}')
-    #     log.info(f'>>>> section: {section}')
-    #     log.info(f'>>>> invitation_id: {invitation_id}')
-    #     for key, value in request.POST.items():
-    #         log.info(f'>>>> {key}: {value}')
-    #     return "HI"
-    #     # return render(
-    #     #     request,
-    #     #     self.template_name,
-    #     #     {
-    #     #         "errors": kwargs.get("errors"),
-    #     #         "current_page_name": "Invite 3rd party",
-    #     #         "all_organisations": True,
-    #     #         "case_id": self.case_id,
-    #     #         "submission_id": self.submission_id,
-    #     #         "case": self.case,
-    #     #         "submission": self.submission,
-    #     #         # "invites": invites,
-    #     #         "organisation": request.user.organisation,
-    #     #         "organisation_name": self.organisation.get("name"),
-    #     #         # "documents": documents,
-    #     #         "application": request.session["application"],
-    #     #     },
-    #     # )
-
 
 class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER]
