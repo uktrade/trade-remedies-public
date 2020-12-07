@@ -786,6 +786,7 @@ class ApplicationFormsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
         self.setup_request(request, case_id=case_id)
         submission = self._client.get_submission_public(case_id, submission_id)
         organisation_id = submission["organisation"]["id"]
+        case = submission.get("case")
         template_grp = submission["type"]["key"]
         submission_docs = self.get_submission_documents(request_for_sub_org=True)
         documents = submission_docs.get(document_type, [])
@@ -796,6 +797,7 @@ class ApplicationFormsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             template_name,
             {
                 "case_id": case_id,
+                "case": case,
                 "organisation_id": organisation_id,
                 "submission_id": submission_id,
                 "submission": submission["previous_version"]
@@ -804,7 +806,7 @@ class ApplicationFormsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
                 "download_template": f"{template_grp}/download.html",
                 "documents": documents,
                 "org_indicator_type": self.org_indicator_type,
-                **self.get_submission_context(),
+                # **self.get_submission_context(),
             },
         )
 
@@ -1316,10 +1318,13 @@ class CaseInviteView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     template_name = "cases/submissions/invite/tasklist.html"
 
     def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
-        invites = []
+        invites = invitee_name = []
         documents = []
         if self.submission:
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
+            if invites:
+                invitee = invites[0]
+                invitee_name = invitee['contact']['name']
             documents = self.get_submission_documents()
         return render(
             request,
@@ -1334,11 +1339,43 @@ class CaseInviteView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 "submission": self.submission,
                 "invites": invites,
                 "organisation": request.user.organisation,
-                "organisation_name": self.organisation.get("name"),
+                "organisation_name": request.user.organisation.get("name", "unknown"),
                 "documents": documents,
                 "application": request.session["application"],
+                "invitee_name": invitee_name,
             },
         )
+
+    # def post(self, request, user_id=None, organisation_id=None, section=None,
+    #          invitation_id=None, *args, **kwargs):
+    #     import logging
+    #     log = logging.getLogger(__name__)
+    #     log.info(f'>>>> request: {request}')
+    #     log.info(f'>>>> user_id: {user_id}')
+    #     log.info(f'>>>> organisation_id: {organisation_id}')
+    #     log.info(f'>>>> section: {section}')
+    #     log.info(f'>>>> invitation_id: {invitation_id}')
+    #     for key, value in request.POST.items():
+    #         log.info(f'>>>> {key}: {value}')
+    #     return "HI"
+    #     # return render(
+    #     #     request,
+    #     #     self.template_name,
+    #     #     {
+    #     #         "errors": kwargs.get("errors"),
+    #     #         "current_page_name": "Invite 3rd party",
+    #     #         "all_organisations": True,
+    #     #         "case_id": self.case_id,
+    #     #         "submission_id": self.submission_id,
+    #     #         "case": self.case,
+    #     #         "submission": self.submission,
+    #     #         # "invites": invites,
+    #     #         "organisation": request.user.organisation,
+    #     #         "organisation_name": self.organisation.get("name"),
+    #     #         # "documents": documents,
+    #     #         "application": request.session["application"],
+    #     #     },
+    #     # )
 
 
 class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
@@ -1346,10 +1383,11 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
     template_name = "cases/submissions/invite/invites.html"
 
     def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
-        invites = [{"name": "", "email": ""}]
+        invitee = invitee_name = None
         submission_documents = []
         if self.submission:
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
+            invitee = invites[0] if invites else None
             submission_documents = self.get_submission_documents()
         return render(
             request,
@@ -1357,16 +1395,18 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             {
                 "errors": kwargs.get("errors"),
                 "current_page_name": "Invite 3rd party",
+                "submission_type_key": "invite",
                 "all_organisations": True,
                 "case_id": self.case_id,
                 "submission_id": self.submission_id,
                 "case": self.case,
                 "submission": self.submission,
-                "organisation": self.organisation,
-                "organisation_name": self.organisation.get("name"),
+                "organisation": request.user.organisation,
+                "organisation_name": request.user.organisation.get("name", "unknown"),
                 "documents": submission_documents,
                 "application": request.session["application"],
-                "invites": invites,
+                "invitee": invitee,
+                "invite": invitee['contact'] if invitee else None, ## NEEDS WORK template needs ORG
             },
         )
 
@@ -1381,9 +1421,9 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
         }
         if not data["name"] or not data["email"]:
             if submission_id:
-                return redirect(f"/case/invite/{case_id}/{submission_id}/")
+                return redirect(f"/case/invite/{case_id}/submission/{submission_id}/")  # HERE!!!!?
             return redirect(f"/case/invite/{case_id}/")
-        user_organisation = request.user.organisation
+        user_organisation = request.user.organisation                                   # HERE
         response = self._client.third_party_invite(
             case_id=case_id,
             organisation_id=request.user.organisation["id"],
@@ -1394,8 +1434,9 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             submission_id = response.get("submission", {}).get("id")
 
         if submission_id:
-            return redirect(f"/case/{case_id}/submission/{submission_id}/people/")
-
+            # return redirect(f"/case/invite/{case_id}/submission/{submission_id}/people/")
+            return redirect(f"/case/invite/{case_id}/submission/{submission_id}")
+        # LOG - failed to get submission from API
         return redirect(f"/case/invite/{case_id}/")
 
     def delete(self, request, case_id, submission_id, invite_id, *args, **kwargs):
