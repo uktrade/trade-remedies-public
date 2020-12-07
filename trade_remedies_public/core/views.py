@@ -595,7 +595,7 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         **kwargs,
     ):
         if request.POST.get("group") == SECURITY_GROUP_THIRD_PARTY_USER:
-            return redirect(f"/case/invite")
+            return redirect("/case/invite")
 
         client = self.client(request.user)
         if section == "delete":

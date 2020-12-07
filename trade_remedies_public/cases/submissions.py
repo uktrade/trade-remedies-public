@@ -6,7 +6,6 @@ from core.utils import get
 from cases.constants import (
     CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION,
     SUBMISSION_TYPE_ASSIGN_TO_CASE,
-    SUBMISSION_TYPE_INVITE_3RD_PARTY,
     CASE_ROLE_PREPARING,
 )
 
