@@ -594,7 +594,7 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         *args,
         **kwargs,
     ):
-        if request.POST.get('group') == SECURITY_GROUP_THIRD_PARTY_USER:
+        if request.POST.get("group") == SECURITY_GROUP_THIRD_PARTY_USER:
             return redirect(f"/case/invite")
 
         client = self.client(request.user)

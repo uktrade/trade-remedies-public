@@ -77,17 +77,17 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
         invites = []
         documents = []
         if self.submission:
-            invites = self.client.get_third_party_invites(self.case_id,
-                                                          self.submission["id"])
+            invites = self.client.get_third_party_invites(self.case_id, self.submission["id"])
             case_documents = self.client.get_case_documents(
-                self.case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
+                self.case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION
+            )
             documents = [doc for doc in case_documents]
         context["invites"] = invites
         context["case_documents"] = documents
-        if 'documents' in context:
-            context['documents']['caseworker'] += documents
+        if "documents" in context:
+            context["documents"]["caseworker"] += documents
         else:
-            context['documents'] = {"caseworker": documents}
+            context["documents"] = {"caseworker": documents}
         return context
 
     def on_submit(self, **kwargs):

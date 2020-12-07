@@ -1323,7 +1323,7 @@ class CaseInviteView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
             if invites:
                 invitee = invites[0]
-                invitee_name = invitee['contact']['name']
+                invitee_name = invitee["contact"]["name"]
             documents = self.get_submission_documents()
         return render(
             request,
@@ -1374,7 +1374,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
                 "documents": submission_documents,
                 "application": request.session["application"],
                 "invitee": invitee,
-                "invite": invitee['contact'] if invitee else None,
+                "invite": invitee["contact"] if invitee else None,
             },
         )
 
