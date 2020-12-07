@@ -1,6 +1,7 @@
 {% extends "../base_tasklist.html" %}
 {% load task_link_toggle %}
 {% load set %}
+{% load organisation_name %}
 
 {% block breadcrumb_current %}Apply{% endblock %}
 
@@ -16,7 +17,7 @@
 {% block submission_received_message %}
       {% if submission.status.received or submission.status.review %}
         <p>This application has been submitted{% if submission.status.review %} for review.{% else %}.{% endif %}</p>
-        <p>If you want to report an omission, error or material change contact the <a target="_blank" href="/contact" class="nobreak">{% include "partials/TRID_full_name.html" %}</a>.</p>
+        <p>If you want to report an omission, error or material change contact the <a target="_blank" href="/contact" class="nobreak">{% organisation_name %}</a>.</p>
       {% endif %}
       {% endblock %}
 

@@ -1,4 +1,5 @@
 {% extends "../base_submit.html" %}
+{% load organisation_name %}
 
 {% block breadcrumb_current %}Apply for a new investigation{% endblock %}
 {% block page_subtitle %}5. Final check and submit{% endblock %}
@@ -7,9 +8,9 @@
 
 {% block submission_main_text %}
     <p>Once you submit this form you will not be able to make changes to your submitted information.</p>
-    <p>If you become aware of any errors or omissions please notify the {% include "partials/TRID_full_name.html" %} as quickly as possible.</p>
+    <p>If you become aware of any errors or omissions please notify the {% organisation_name %} as quickly as possible.</p>
 {% endblock %}
 
 {% block submission_checkbox_label %}
-    I have completed my application and I am happy for the {% include "partials/TRID_full_name.html" %} to consider it
+    I have completed my application and I am happy for the {% organisation_name %} to consider it
 {% endblock %}

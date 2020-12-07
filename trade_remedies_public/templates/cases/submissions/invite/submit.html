@@ -1,10 +1,11 @@
 {% extends "cases/submissions/base_submit.html" %}
+{% load organisation_name %}
 {% block breadcrumb_current %}Invite a 3rd Party{% endblock %}
 {% block page_subtitle %}5. Submit your request to invite a 3rd party{% endblock %}
 {% block page_title  %}Final check and submission{% endblock %}
 
 {% block submission_main_text %}
-    <p>Once you submit this form you will not be able to make changes to your submitted information. If you become aware of any errors or omissions please notify the {% include "partials/TRID_full_name.html" %} as quickly as possible.</p>
+    <p>Once you submit this form you will not be able to make changes to your submitted information. If you become aware of any errors or omissions please notify the {% organisation_name %} as quickly as possible.</p>
     <p>The information contained within your request to invite 3rd parties to the case will be considered to be confidential and will not be shared with third parties.</p>
 {% endblock %}
 
@@ -13,6 +14,6 @@
 {% endblock %}
 
 {% block submission_checkbox_label %}
-    I have completed my request to invite 3rd parties to the case and I am happy for the {% include "partials/TRID_full_name.html" %} to consider it
+    I have completed my request to invite 3rd parties to the case and I am happy for the {% organisation_name %} to consider it
 {% endblock %}
 
