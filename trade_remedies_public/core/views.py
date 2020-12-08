@@ -633,8 +633,10 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             if user_id
             else f"/accounts/team/{organisation_id}/user/"
         )
+        user_group = request.user.groups[0] if request.user.groups else None
         data = {
             "organisation_id": organisation_id,
+            "group": user_group,
         }
         data.update(request.POST.dict())
         if data.get("active"):
