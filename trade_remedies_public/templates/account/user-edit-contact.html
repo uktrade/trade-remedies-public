@@ -38,7 +38,7 @@
 			{% endif %}
 		{% endif %}
 	</div>
-    {% if not user_record.id %}
+    {% if not user_record.email %}
         {% if errors.group %}<span class="error-message" id="group_error">{{ errors.group }}</span>{% endif %}
         <div class="form-group">
             <label for="email" class="form-label">How will the user interact with the trade remedies system?</label>
