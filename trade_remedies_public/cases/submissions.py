@@ -69,7 +69,7 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
     type_ids = []
 
     def get_context(self, base_context=None):
-        context = super().get_context()
+        context = super().get_context(base_context)
         if not self.case:
             return context
 
