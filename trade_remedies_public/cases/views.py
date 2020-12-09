@@ -1317,7 +1317,8 @@ class CaseInviteView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     template_name = "cases/submissions/invite/tasklist.html"
 
     def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
-        invites = invitee_name = []
+        invites = []
+        invitee_name = None
         documents = []
         if self.submission:
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
