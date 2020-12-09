@@ -1397,9 +1397,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             invites = self._client.get_third_party_invites(case_id, submission_id)
             for invite in invites:
                 _ = self._client.remove_third_party_invite(
-                    invite["case"]["id"],
-                    invite["submission"]["id"],
-                    invite["id"]
+                    invite["case"]["id"], invite["submission"]["id"], invite["id"]
                 )
         response = self._client.third_party_invite(
             case_id=case_id,

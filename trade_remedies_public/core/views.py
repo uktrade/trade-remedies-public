@@ -417,20 +417,15 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
             # Get any 3rd party invites
             organisation = request.user.organisation
             if organisation:
-                pending_submissions = client.get_organisation_invite_submissions(
-                    organisation["id"]
-                )
+                pending_submissions = client.get_organisation_invite_submissions(organisation["id"])
                 for submission in pending_submissions:
                     case_id = submission["case"]["id"]
                     submission_id = submission["id"]
                     submission_invites = client.get_third_party_invites(
-                        case_id=case_id,
-                        submission_id=submission_id
+                        case_id=case_id, submission_id=submission_id
                     )
                     for submission_invite in submission_invites:
-                        submission_invite["locked"] = submission.get(
-                            "locked", True
-                        )
+                        submission_invite["locked"] = submission.get("locked", True)
                     pending_third_party_invites += submission_invites
 
         return render(
