@@ -3,7 +3,7 @@
 
 {% block breadcrumb %}
     <li class="">
-        <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
+        <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="{% url 'dashboard' %}">Dashboard</a>
     </li>
     <li data-track-category="breadcrumbClicked" data-track-action="2" class="" aria-current="false" >
         <a data-track-category="breadcrumbClicked" aria-current="false" href="/case/{{case_id}}">Case {{case.reference|default_if_none:''}}</a>
@@ -36,7 +36,7 @@
                 {% elif back_url %}
                     <a href="{{back_url}}">Back</a>
                 {% else %}
-                    <a href="/dashboard/">Back to menu</a>
+                    <a href="{% url 'dashboard' %}">Back to menu</a>
                 {% endif %}
             </div>
         </div>

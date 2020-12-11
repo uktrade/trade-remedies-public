@@ -1396,7 +1396,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
         if submission_id:
             invites = self._client.get_third_party_invites(case_id, submission_id)
             for invite in invites:
-                _ = self._client.remove_third_party_invite(
+                self._client.remove_third_party_invite(
                     invite["case"]["id"], invite["submission"]["id"], invite["id"]
                 )
         response = self._client.third_party_invite(
@@ -1413,7 +1413,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
         return redirect(f"/case/invite/{case_id}/")
 
     def delete(self, request, case_id, submission_id, invite_id, *args, **kwargs):
-        _ = self._client.remove_third_party_invite(case_id, submission_id, invite_id)
+        self._client.remove_third_party_invite(case_id, submission_id, invite_id)
         return redirect(f"/case/invite/{case_id}/{submission_id}/people/")
 
 
