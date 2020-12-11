@@ -28,7 +28,7 @@
                 {% elif back_url %}
                     <a href="{{back_url}}">Back</a>
                 {% else %}
-                    <a href="/dashboard/">Back to menu</a>
+                    <a href="{% url 'dashboard' %}">Back to menu</a>
                 {% endif %}
             </div>
         </div>
