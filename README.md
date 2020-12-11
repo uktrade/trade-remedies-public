@@ -40,7 +40,7 @@ Behavioural testing is provided by Behave Django - https://github.com/behave/beh
 
 from the Trade Remedies orchestration project directory.
 
-You can make test objects available for BDD testing by creating views that create them in the 'api_test' app in the API project.
+You can make test objects available for BDD testing by creating views that create them in the 'api_test' app in the API (https://github.com/uktrade/trade-remedies-api) project.
 
 For more information on the setup of BDD tests see the readme at https://github.com/uktrade/trade-remedies-docker
 
