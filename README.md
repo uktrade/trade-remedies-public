@@ -34,7 +34,7 @@ This project should be run using the Trade Remedies orchestration project availa
 
 ## BDD testing
 
-Behavioural testing is provided by Behave Django - https://github.com/behave/behave-django and can be triggered by running:
+Behavioural testing is provided by [Behave Django](https://github.com/behave/behave-django) and can be triggered by running:
 
 `make bdd`
 
