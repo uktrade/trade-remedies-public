@@ -4,11 +4,10 @@ from trade_remedies_client.client import Client
 from django_countries import countries
 from core.utils import get
 from cases.constants import (
+    CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION,
     SUBMISSION_TYPE_ASSIGN_TO_CASE,
     CASE_ROLE_PREPARING,
 )
-
-SUBMISSION_TYPE_HELPERS = {}
 
 
 class BaseSubmissionHelper:
@@ -70,19 +69,24 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
     type_ids = []
 
     def get_context(self, base_context=None):
+        context = super().get_context(base_context)
+        if not self.case:
+            return context
+
         invites = []
-        # documents = []
-        case_id = self.case["id"]
-        context = base_context or {}
+        documents = []
         if self.submission:
-            invites = self.client.get_third_party_invites(case_id, self.submission["id"])
-            # case_documents =
-            # self.client.get_case_documents(case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
-            # documents = [cd['document'] for cd in case_documents]
+            invites = self.client.get_third_party_invites(self.case_id, self.submission["id"])
+            case_documents = self.client.get_case_documents(
+                self.case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION
+            )
+            documents = [doc for doc in case_documents]
         context["invites"] = invites
-        # context['case_documents'] = documents
-        # if 'documents' in context:
-        #     context['documents']['caseworker'] += documents
+        context["case_documents"] = documents
+        if "documents" in context:
+            context["documents"]["caseworker"] += documents
+        else:
+            context["documents"] = {"caseworker": documents}
         return context
 
 
@@ -298,7 +302,9 @@ class ApplicationSubmission(BaseSubmissionHelper):
         return f"/case/{self.case['id']}/submission/{self.submission['id']}/submitted/"
 
 
-SUBMISSION_TYPE_HELPERS["invite"] = InviteThirdPartySubmission
-SUBMISSION_TYPE_HELPERS["assign"] = AssignUserSubmission
-SUBMISSION_TYPE_HELPERS["interest"] = RegisterInterestSubmission
-SUBMISSION_TYPE_HELPERS["application"] = ApplicationSubmission
+SUBMISSION_TYPE_HELPERS = {
+    "invite": InviteThirdPartySubmission,
+    "assign": AssignUserSubmission,
+    "interest": RegisterInterestSubmission,
+    "application": ApplicationSubmission,
+}

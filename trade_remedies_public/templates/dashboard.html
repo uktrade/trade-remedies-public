@@ -49,12 +49,18 @@
       <!-- 3rd party invites -->
       <div class="margin-top-2">
         {% if invite_submissions %}
-          <h1 class="heading-medium">Your third party invites</h1>
+          <h1 class="heading-medium">Your 3rd Party invites</h1>
             <UL>
               {% for invite in invite_submissions %}
                 <LI>
-                  <a href="/case/{{invite.case.id}}/organisation/{{invite.organisation.id}}/submission/{{invite.id}}/">{{invite.case.name}}</a>
-                  {% format_date invite.created_at '%d %b %Y' %}
+                    {% if invite.locked %}
+                        <a href="/case/{{invite.case.id}}/submission/{{invite.id}}/">
+                    {% else %}
+                        <a href="/case/invite/{{invite.case.id}}/submission/{{invite.id}}/">
+                    {% endif %}
+                    {{invite.case.reference}} - {% format_date invite.created_at '%d %b %Y' %}
+                  </a>
+                    ({{invite.status.name}})
                 </LI>
               {% endfor %}
             </UL>
@@ -91,7 +97,6 @@
             <h1 class="heading-medium">Other things you can do</h1>
             <ul>
               {% if pre_register_interest %}<li><a href="/case/interest/">Register interest in a case</a></li>{% endif %}
-              {% comment %}{% if pre_invitations %}<li><a href="/case/invite/">Invite a 3rd party</a></li>{% endif %}{% endcomment %}
               {% if pre_applications %}<li><a href="/case/">Apply for an investigation</a></li>{% endif %}
               {% if pre_manage_team and is_org_owner %}<li><a href="/accounts/team/">Manage your team</a></li>{% endif %}
               {% if pre_manage_team and is_org_owner %}<li><a href="/cases/">See all cases</a></li>{% endif %}

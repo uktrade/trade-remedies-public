@@ -1,15 +1,18 @@
 {% extends "base.html" %}
-{% load to_json %}
 {% load alert_message %}
+{% load to_json %}
+{% load set %}
 
 {% block main_content %}
+
 <div class="grid-row">
   <div class="column-two-thirds">
 
     <div class="breadcrumbs" data-module="track-click">
       <ol>
         <li class="">
-            <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+            <a data-track-category="breadcrumbClicked" data-track-action="1" class=""
+               aria-current="false" href="{% url 'dashboard' %}">Dashboard</a>
         </li>
         <li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
           Manage your team
@@ -20,14 +23,13 @@
     {% load alert_message %}
     <h1 class="heading-large">Manage your team</h1>
 
-    <p>
-      From here, you can:
+    <p>From here, you can:</p>
       <ul class="list-bullet indent">
         <li>invite colleagues to your account</li>
         <li>assign or remove case access</li>
         <li>deactivate accounts</li>
       </ul>
-    </p>
+    <p></p>
     <p>An invited colleague needs to set up their account before being added to cases.</p>
 
   </div>
@@ -129,19 +131,19 @@
           {% endif %}
         {% endfor %}
 
-      {% if invites %}
+      {% if invites or third_party_invites %}
         <h2 class="heading-medium">Pending user invitations</h2>
 
         <table data-attach="TableSort">
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Role</th>
-                <th scope="col" class="no-sort">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-                {% for invite in invites %}
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Role</th>
+              <th scope="col" class="no-sort">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for invite in invites %}
             <tr>
               <td title="{{invite.meta.name}}"><a href="/accounts/team/{{user.organisation.id}}/invite/{{invite.id}}/edit/">{{invite.meta.name}}</a></td>
               <td>
@@ -160,41 +162,32 @@
                 </form>
               </td>
             </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-
-
-        {% comment %}
-        <!--
-          <ul class="user-list double-spaced">
-        {% for invite in invites %}
-          <li class="user">
-            <a href="/accounts/team/{{user.organisation.id}}/invite/{{invite.id}}/edit/">{{invite.meta.name}} &lt;{{invite.email}}&gt;</a>&nbsp;
-            {% if not user.active %}
-              (De-activated)
-            {% elif user.organisation.role.security_group == 'Organisation Owner' %}
-              (Administrator)
-            {% endif %}
-            <form class="inline" data-attach="ConfirmPost" action="/accounts/team/{{user.organisation.id}}/invite/{{invite.id}}/delete/" method="post">
-              (<button class="link no-debounce" type="submit">Delete</button>)
-              {% csrf_token %}
-              <span class="hidden confirmation-message">Are you sure you want to delete this invitation?</span>
-              <span class="hidden confirmation-title">Confirm delete</span>
-            </form>
-          </li>
-        {% endfor %}
-        </ul> -->
-        {% endcomment %}
+          {% endfor %}
+          {% for invite in third_party_invites %}
+            <tr>
+              <td title="{{invite.contact.name}}">{{invite.contact.name}}</td>
+              <td>Third Party User</td>
+              <td>
+                {% if invite.locked %}
+                  <form class="inline" action="/case/{{invite.case.id}}/submission/{{invite.submission.id}}/" method="get">
+                    <button class="link no-debounce" type="submit">View invitation</button>
+                  </form>
+                {% else %}
+                  <form class="inline" action="/case/invite/{{invite.case.id}}/submission/{{invite.submission.id}}/" method="get">
+                    <button class="link no-debounce" type="submit">Update invitation</button>
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
 
       {% endif %}
-
       <a class="button margin-top-1" href="/accounts/team/{{user.organisation.id}}/user/create/">Invite colleague</a>
-
       <div class="margin-top-1">
-        <a class="link" href="/dashboard/">Back</a>
+        <a class="link" href="{% url 'dashboard' %}">Back</a>
       </div>
-
     </div>
   </div>
 

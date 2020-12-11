@@ -29,7 +29,7 @@ urlpatterns = [
     path("invite/", case_views.CaseInviteView.as_view(), name="invite_top"),
     path("invite/<uuid:case_id>/", case_views.CaseInviteView.as_view(), name="invite_case"),
     path(
-        "invite/<uuid:case_id>/<uuid:submission_id>/",
+        "invite/<uuid:case_id>/submission/<uuid:submission_id>/",
         case_views.CaseInviteView.as_view(),
         name="invite_submission",
     ),
@@ -166,16 +166,6 @@ urlpatterns = [
         case_views.ReviewView.as_view(),
         name="review",
     ),
-    path(
-        "<uuid:case_id>/submission/<uuid:submission_id>/download/",
-        case_views.ApplicationFormsView.as_view(),
-        name="download",
-    ),
-    path(
-        "<uuid:case_id>/submission/<uuid:submission_id>/download/<str:document_type>/",
-        case_views.ApplicationFormsView.as_view(),
-        name="download_type",
-    ),
     # Documents
     path(
         "<uuid:case_id>/submission/<uuid:submission_id>/upload/",
@@ -193,6 +183,16 @@ urlpatterns = [
         name="removedoc",
     ),
     # Document download
+    path(
+        "<uuid:case_id>/submission/<uuid:submission_id>/download/",
+        case_views.ApplicationFormsView.as_view(),
+        name="download",
+    ),
+    path(
+        "<uuid:case_id>/submission/<uuid:submission_id>/download/<str:document_type>/",
+        case_views.ApplicationFormsView.as_view(),
+        name="download_type",
+    ),
     path(
         "<uuid:case_id>/submission/<uuid:submission_id>/document/<uuid:document_id>/download/",
         case_views.DocumentDownloadStreamView.as_view(),

@@ -1,11 +1,44 @@
-{% extends '../base_download.html' %}
+{% extends 'cases/submissions/base_download.html' %}
 {% load confidential %}
 
-{% block breadcrumb_current %}Invite a 3rd party{% endblock %}
+{% block breadcrumb %}
+    <li class="">
+        <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="{% url 'dashboard' %}">Dashboard</a>
+    </li>
+    <li data-track-category="breadcrumbClicked" data-track-action="2" class="" aria-current="false" >
+        <a data-track-category="breadcrumbClicked" aria-current="false" href="/case/{{case_id}}">Case {{case.reference|default_if_none:''}}</a>
+    </li>
+{% endblock %}
+
+{% block breadcrumb_current %}Invite 3rd party{% endblock %}
 {% block page_subtitle %}3. Download letter of authority template{% endblock %}
 {% block page_title  %}Download letter of authority template{% endblock %}
 
 {% block download_message %}
     <p>Download and complete the letter of authority template below.</p>
     <p>You can upload a single letter of authority for all invitees or individual ones.</p>
+{% endblock %}
+
+
+{% block buttons %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% block continue_button %}
+                <div class="margin-top-1">
+                    <a class="button"
+                       href="/case/invite/{{case_id}}/submission/{{submission_id}}/">Continue</a>
+                </div>
+            {% endblock %}
+            <div class="margin-top-1">
+                {% if submission_id and case_id %}
+                    <a href="/case/invite/{{case_id}}/submission/{{submission_id}}/">Back to
+                        menu</a>
+                {% elif back_url %}
+                    <a href="{{back_url}}">Back</a>
+                {% else %}
+                    <a href="{% url 'dashboard' %}">Back to menu</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
