@@ -89,9 +89,6 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
             context["documents"] = {"caseworker": documents}
         return context
 
-    def on_submit(self, **kwargs):
-        super().on_update(**kwargs)
-
 
 class AssignUserSubmission(BaseSubmissionHelper):
     type_ids = []
