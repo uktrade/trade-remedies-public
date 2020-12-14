@@ -1,4 +1,5 @@
 from .local import *  # noqa: F403,  F401
+from .local import API_PREFIX
 
 INSTALLED_APPS += [  # noqa
     "behave_django",
