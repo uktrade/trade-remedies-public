@@ -17,6 +17,7 @@ def user_navigates(context, username, url_name):
 
 @then('the "{text}" button is visible')
 def button_visible(context, text):
+    print("In When")
     assert utils.find_element_by_text(context, text, "button"), f"button {text} not found!"
 
 

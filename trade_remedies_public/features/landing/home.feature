@@ -19,3 +19,17 @@ Feature: Landing Page
   Scenario: A user does not have an account
     When an anonymous user navigates to "register"
     Then the Create an account page is displayed
+
+  @home
+  Scenario: A user cannot log into the site
+    When an anonymous user navigates to "initial"
+    And the user tries to log in with wrong credentials
+    Then the message "Please correct the following errors" is displayed
+
+  @home
+  Scenario: A user logs into the site
+    When an anonymous user navigates to "initial"
+    And the user tries to log in with correct credentials
+    Then the user dashboard is displayed
+
+
