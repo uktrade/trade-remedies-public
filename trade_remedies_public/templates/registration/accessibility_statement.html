@@ -1,14 +1,16 @@
 {% extends "base.html" %}
+{% load organisation_name %}
+{% load organisation_initialism %}
 
 {% block main_content %}
   <div class="terms-and-conditions-page">
       <h1 class="heading-large"><span class="heading-secondary">Trade Remedies Digital Service</span>
-        Accessibility statement for the TRID service 
+        Accessibility statement for the {% organisation_initialism %} service 
       </h1>    
     <div class="column-two-thirds left-column">
 
       <h2 class="heading-medium">Using this website</h2>
-      <p>This website is run by the Trade Remedies Investigations Directorate (TRID), part of Department for International Trade (DIT). We want as many people as possible to use this website, so you should be able to:</p>
+      <p>This website is run by the {% organisation_name %} ({% organisation_initialism %}), part of Department for International Trade (DIT). We want as many people as possible to use this website, so you should be able to:</p>
       <ul class="list list-bullet">
         <li>navigate the website using speech recognition software </li>
         <li>navigate the website using a keyboard</li>
@@ -26,7 +28,7 @@
       </ul>
       <p>We’ll consider your request and get back to you in 5 working days.</p>
       <h2 class="heading-medium">Technical information about this website’s accessibility</h2>
-      <p>TRID is committed to making its service accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.</p>
+      <p>{% organisation_initialism %} is committed to making its service accessible, in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.</p>
       <p>This website is fully compliant with the Web Content Accessibility Guidelines version 2.1 AA standard.<p>
       <p>This statement was prepared on 03 July 2019 It was last updated on 03 July 2019.</p>
       <h2 class="heading-medium">How we tested this website</h2>

@@ -4,6 +4,8 @@ It's used in both the public file, and the customer's public file view
 {% endcomment %}
 
 {% load format_date %}
+{% load organisation_name %}
+{% load organisation_initialism %}
 
    {% if submission.type.key in 'public,questionnaire' %}
     <div class="lede">
@@ -18,7 +20,8 @@ It's used in both the public file, and the customer's public file view
     </div>
     {% endif %}
     <div class="border-top border-bottom margin-bottom-1">
-        <div>Published: {{ submission.received_at|_or:submission.sent_at|format_date:"%d %B %Y" }}</div>
+        <div>Received: {{ submission.received_at|_or:submission.sent_at|format_date:"%d %B %Y" }}</div>
+        <div>Issued: {{ submission.issued_at|format_date:"%d %B %Y" }}</div>
         <div>From:
           {% if  submission.organisation_name %}
             {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
@@ -31,7 +34,7 @@ It's used in both the public file, and the customer's public file view
               {% endif %}
             {% endif %}
           {% else %}
-              {% include "partials/TRID_full_name.html" %}
+              {% organisation_name %}
           {% endif %}
         </div>
     </div>
@@ -70,11 +73,11 @@ It's used in both the public file, and the customer's public file view
       <div class="column-full">
         <h3 class="heading-small">
           {% if type.key == 'public' %}
-            {% include "partials/TRID_abbreviation.html" %} published documents
+            {% organisation_initialism %} published documents
           {% elif type.key == "questionnaire" %}
             Original templates
           {% else %}
-            {% include "partials/TRID_abbreviation.html" %} documents
+            {% organisation_initialism %} documents
           {% endif %}
         </h3>
         {% include 'partials/widgets/public_document_list.html' with documents=documents.template submission_id=submission.id all_downloadable=True %}

@@ -1,36 +1,29 @@
 import logging
 
 import json
-import datetime
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
 from django_countries import countries
 from django.utils import timezone
 from django.urls import reverse
 from django.conf import settings
 
 from core.base import GroupRequiredMixin, BasePublicView
-from core.views import TradeRemediesBaseView
-from django.template.loader import select_template
 from cases.constants import (
     SUBMISSION_TYPE_EX_OFFICIO,
-    CASE_DOCUMENT_TYPE_PRESAMPLING_QUESTIONNAIRE,
     SUBMISSION_TYPE_ALL_ORGANISATIONS,
     SUBMISSION_TYPE_ADHOC,
     DIRECTION_BOTH,
     DIRECTION_PUBLIC_TO_TRA,
     ALL_COUNTRY_CASE_TYPES,
-    CASE_ROLE_AWAITING_APPROVAL,
 )
 from core.constants import ALERT_MAP
-from cases.submissions import SUBMISSION_TYPE_HELPERS
-from cases.utils import decorate_due_status, decorate_rois, get_org_parties
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
-from .utils import (
+from cases.utils import (
     decorate_due_status,
+    get_org_parties,
     decorate_submission_updated,
     validate_hs_code,
     structure_documents,
@@ -105,7 +98,12 @@ class CaseOrganisationSelectView(
         redirect_to = request.GET.get("next")
         organisations = self.client(request.user).get_user_case_organisations(case_id)
         return render(
-            request, self.template_name, {"organisations": organisations, "next": redirect_to,}
+            request,
+            self.template_name,
+            {
+                "organisations": organisations,
+                "next": redirect_to,
+            },
         )
 
 
@@ -384,7 +382,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             },
         )
 
-    def post(self, request, case_id=None, submission_id=None, *args, **kwargs):
+    def post(self, request, case_id=None, submission_id=None, *args, **kwargs):  # noqa: C901
 
         page = request.POST.get("page")
         if page == "role":
@@ -401,7 +399,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             request.session["organisation_id"] = organisation["id"]
             request.session.modified = True
             return redirect(
-                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"
+                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"  # noqa: E501
             )
         else:
             representing_value = request.POST.get("representing_value")
@@ -420,7 +418,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             enable_review_process = self._client.get_system_boolean("PRE_REVIEW_APPLICATIONS")
             if self.submission_type_key == "application" and enable_review_process:
                 request.session.modified = True
-                return redirect(f"/case/company/?page=role")
+                return redirect("/case/company/?page=role")
             else:
                 params["representing"] = params.get("representing_value")
                 try:
@@ -434,7 +432,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             request.session["organisation_id"] = organisation["id"]
             request.session.modified = True
             return redirect(
-                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"
+                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"  # noqa: E501
             )
 
 
@@ -500,7 +498,7 @@ class ProductView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 elif code:
                     valid_codes = True
         if not valid_codes:
-            errors["hs_code"] = get(errors, "hs_code") or f"You must provide at least one HS code"
+            errors["hs_code"] = get(errors, "hs_code") or "You must provide at least one HS code"
         json_data = get(self.submission, "deficiency_notice_params") or {}
         json_data["case_category"] = request.POST.get("case_category")
         self._client.update_submission(
@@ -547,7 +545,8 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         *args,
         **kwargs,
     ):
-        # We need to work out if the user needs to select a case (for reviews, new exporter or refunds)
+        # We need to work out if the user needs to select a case
+        # (for reviews, new exporter or refunds)
         # If so, we will need a case list.
         # If not, just have the original source page
         case_category = get(self.submission, "deficiency_notice_params/case_category")
@@ -606,7 +605,7 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 },
             )
 
-    def post(
+    def post(  # noqa: C901
         self, request, case_id=None, submission_id=None, export_source_id=None, *args, **kwargs
     ):
 
@@ -945,7 +944,8 @@ class RemoveDocumentView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView)
         redirect_path = request.POST.get("redirect")
         self.populate_objects(request, case_id, None, submission_id)
         self.clear_docs_reviewed()
-        # organisation_id = this.submission.get('organisation', {}).get('id') or request.session['organisation_id']
+        # organisation_id = this.submission.get('organisation', {}).get('id')
+        # or request.session['organisation_id']
         if case_id and submission_id and document_id:
             response = self._client.remove_document(
                 organisation_id=self.organisation_id,
@@ -1066,7 +1066,7 @@ class ReviewDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
             return redirect(f"/case/{case_id}/submission/{submission_id}/")
         else:
             errors = {
-                "documents_reviewed": "You must check the box to indicate that you have reviewed the documents."
+                "documents_reviewed": "You must check the box to indicate that you have reviewed the documents."  # noqa: E501
             }
             return self.get(request, case_id=case_id, submission_id=submission_id, errors=errors)
 
@@ -1163,7 +1163,7 @@ class DocumentDownloadStreamView(
             raise APIException("Invalid request parameters")
         document = client.get_document(document_id, case_id, submission_id)
 
-        if document.get("safe") != True:
+        if document.get("safe") is not True:
             if settings.DEBUG:
                 logger.warning(
                     "Document is marked as not safe and cannot be "
@@ -1412,5 +1412,5 @@ class SetPrimaryContactView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
             contact_id=contact_id, organisation_id=organisation_id, case_id=case_id
         )
         return redirect(
-            f"/case/{case_id}/?tab=case_members&organisation_id={organisation_id}&alert=primary-contact-updated"
+            f"/case/{case_id}/?tab=case_members&organisation_id={organisation_id}&alert=primary-contact-updated"  # noqa: E501
         )

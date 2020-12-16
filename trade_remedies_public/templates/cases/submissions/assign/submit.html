@@ -2,6 +2,7 @@
 {% block breadcrumb_current %}Assign user to case{% endblock %}
 {% block page_subtitle %}5. Submit your request{% endblock %}
 {% block page_title  %}Final check and submission{% endblock %}
+{% load organisation_name %}
 
 {% block breadcrumb %}
     <li class="">
@@ -51,7 +52,7 @@
 
 {% block submission_checkbox_label %}
 {% if representing %}
-    I understand my request will need to be authorised and approved by the Trade Remedies Investigation Directorate.
+    I understand my request will need to be authorised and approved by the {% organisation_name %}.
 {% else %}
     I understand the user will be assiged to the case as soon as this form is submitted.
 {% endif %}

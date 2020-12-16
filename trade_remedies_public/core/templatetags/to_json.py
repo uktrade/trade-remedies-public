@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 """
 A template filter to display data in JSON format - useful when debugging the UI.
 
-Usage: 
+Usage:
     {% data|to_json %}
 """
 

@@ -1,5 +1,4 @@
 import json
-import base64
 import re
 from django.conf import settings
 from django.shortcuts import render, redirect
@@ -8,11 +7,14 @@ from django.views.generic import TemplateView
 from core.models import TransientUser
 from django.contrib.auth import logout
 from django_countries import countries
-from core.utils import validate, pluck, get, set_cookie
+from core.utils import (
+    validate,
+    get,
+    set_cookie,
+)
 from core.constants import ALERT_MAP
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from core.validators import (
-    company_form_validators,
     registration_validators,
     base_registration_validators,
 )
@@ -67,7 +69,11 @@ class LoginChoiceView(BaseRegisterView):
         return render(
             request,
             self.template_name,
-            {"code": code, "case_id": case_id, "errors": request.session.get("errors", None),},
+            {
+                "code": code,
+                "case_id": case_id,
+                "errors": request.session.get("errors", None),
+            },
         )
 
 
@@ -101,7 +107,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
             },
         )
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):  # noqa: C901
         email = request.POST.get("email")
         password = request.POST.get("password")
         code = request.POST.get("code")
@@ -153,7 +159,8 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
                             detail = exc.response.json().get("detail")
                         except Exception:
                             detail = """You have entered an incorrect email address or password.
-                                        Please try again or click on the Forgotten password link below."""
+                                        Please try again or click on the
+                                        Forgotten password link below."""
                     else:
                         response = exc.response.json()
                         detail = response.get("detail")
@@ -166,7 +173,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
             if case_id and code:
                 return redirect(f"/accounts/login/{code}/{case_id}/?error")
             else:
-                return redirect(f"/accounts/login/?error")
+                return redirect("/accounts/login/?error")
 
 
 class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
@@ -371,7 +378,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
         {
             "key": "organisation_website",
             "message": "Your website should be a complete, valid URL.",
-            "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+            "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",  # noqa: E501
         },
     ]
 
@@ -454,7 +461,11 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
         return render(
             request,
             "registration/reset_password.html",
-            {"invalid_code": not code_valid, "code": code, "error": error_message,},
+            {
+                "invalid_code": not code_valid,
+                "code": code,
+                "error": error_message,
+            },
         )
 
     def post(self, request, code, *args, **kwargs):
@@ -491,7 +502,10 @@ class CookieSettingsView(BaseRegisterView):
         return render(
             request,
             "registration/cookies.html",
-            {"cookie_policy": cookie_policy, "redirect_url": redirect_url,},
+            {
+                "cookie_policy": cookie_policy,
+                "redirect_url": redirect_url,
+            },
         )
 
     def post(self, request, *args, **kwargs):

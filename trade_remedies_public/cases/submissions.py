@@ -4,8 +4,6 @@ from trade_remedies_client.client import Client
 from django_countries import countries
 from core.utils import get
 from cases.constants import (
-    CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION,
-    CASE_DOCUMENT_TYPE_PRESAMPLING_QUESTIONNAIRE,
     SUBMISSION_TYPE_ASSIGN_TO_CASE,
     CASE_ROLE_PREPARING,
 )
@@ -78,7 +76,8 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
         context = base_context or {}
         if self.submission:
             invites = self.client.get_third_party_invites(case_id, self.submission["id"])
-            # case_documents = self.client.get_case_documents(case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
+            # case_documents =
+            # self.client.get_case_documents(case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION)
             # documents = [cd['document'] for cd in case_documents]
         context["invites"] = invites
         # context['case_documents'] = documents
@@ -216,7 +215,12 @@ class RegisterInterestSubmission(BaseSubmissionHelper):
     def get_context(self, base_context=None):
         context = base_context or {}
         context.update(
-            {"case_id": self.case_id, "countries": countries, "country": "GB", "representing": "",}
+            {
+                "case_id": self.case_id,
+                "countries": countries,
+                "country": "GB",
+                "representing": "",
+            }
         )
         return context
 

@@ -1,0 +1,12 @@
+[flake8]
+exclude = */migrations/*,__pycache__,manage.py,env/*,venv/*,.venv/*,node_modules/*
+# added F841 (local variable  assigned to but never used) again too many.
+# added E722 do not use bare 'except'
+ignore = D100,D104,D106,D200,D203,D205,D400,D401,W503,W504,E704,E231,F841,E722
+# 100 is still very long, but it is a reasonable compromise to avoid make too many changes
+max-line-length = 100
+# several functions have a complexity higher that 10. I added noqa to them, so they can be checked later on
+max-complexity = 10
+application-import-names = cases, core, govuk_template, registration, templates, trade_remedies_public
+
+import_order_style = smarkets

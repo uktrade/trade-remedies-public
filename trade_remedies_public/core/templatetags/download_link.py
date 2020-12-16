@@ -51,7 +51,7 @@ def download_link(context, document, all_downloadable=None):
         reference = case.get("reference")
         submission_id = context.get("submission_id")
         output = (
-            f"<a href=\"/public/case/{reference}/submission/{submission_id}/document/{document.get('id')}/\""
+            f"<a href=\"/public/case/{reference}/submission/{submission_id}/document/{document.get('id')}/\""  # noqa: E501
             f' class="link" target="_blank">{output}</a>'
         )
 

@@ -101,7 +101,7 @@ urlpatterns = [
         name="create_submission",
     ),
     path(
-        "<uuid:case_id>/organisation/<uuid:organisation_id>/submission/create/<int:submission_type_id>/",
+        "<uuid:case_id>/organisation/<uuid:organisation_id>/submission/create/<int:submission_type_id>/",  # noqa: E501
         case_views.CreateSubmissionView.as_view(),
         name="create_submission_by_type",
     ),

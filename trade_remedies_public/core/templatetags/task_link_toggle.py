@@ -13,7 +13,7 @@ def task_link_toggle(submission, section, title, enabled=False, link=None):
     case_id = submission and submission.get("case", {}).get("id")
     submission_id = submission and submission.get("id")
     if enabled:
-        if link == None:
+        if link is None:
             link = (
                 f"/case/{case_id}/submission/{submission_id}/{section}/"
                 if case_id
