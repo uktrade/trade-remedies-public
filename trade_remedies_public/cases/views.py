@@ -1341,7 +1341,7 @@ class CaseInviteView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 "organisation": request.user.organisation,
                 "organisation_name": request.user.organisation.get("name", "unknown"),
                 "documents": documents,
-                "application": request.session["application"],
+                "application": request.session.get("application", "unknown"),
                 "invitee_name": invitee_name,
             },
         )
