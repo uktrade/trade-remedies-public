@@ -4,7 +4,7 @@
 {% load password_element %}
 
 {% block task_name1 %}
-	{% if create_mode %}	
+	{% if create_mode %}
 		Invite a colleague
 	{% else %}
 		User permissions
@@ -22,6 +22,9 @@
 	{% endif %}
   	{% for group in groups %}
 		<div class="multiple-choice">
+        {% if group.0 == 'Third Party User' %}
+            <!-- continue -->
+        {% else %}
 			<input
 				type="radio"
 				id="role_{{forloop.counter}}"
@@ -34,7 +37,8 @@
 				{% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
 			{% endif %}
 	  		<label for="role_{{forloop.counter}}" class="form-label">{{ perm_name }}</label>
-		</div>
+        {% endif %}
+        </div>
 	{% endfor %}
 	{% if create_mode and not user_record.wizard_complete %}
 		<input type="hidden" name="redirect" value="cases/">

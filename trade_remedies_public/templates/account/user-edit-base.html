@@ -65,8 +65,10 @@
 				<a
 					{% if self_details %}
 						href="/accounts/info/"
-					{% else %}
+					{% elif user_record.id %}
 						href="/accounts/team/{{organisation_id}}/user/{{user_record.id}}/edit/"
+                    {% else %}
+                        href="/accounts/team/{{organisation_id}}/user/"
 					{% endif %}
 				class="link clear pull-left margin-top-1" />Back</a>
 			{% endif %}

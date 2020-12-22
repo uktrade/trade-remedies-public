@@ -1,5 +1,6 @@
 {% extends "../base_conf_nonconf.html" %}
 {% load set %}
+{% load organisation_name %}
 
 {% block breadcrumb_current %}Apply for a new investigation{% endblock %}
 {% block page_subtitle %}3. Your application{% endblock %}
@@ -15,7 +16,7 @@
 
 {% block post_label %}
     <p>When you have finished uploading documents you can request a review of your draft application in the next step.</p>
-    <p>If changes are recommended by the {% include "partials/TRID_full_name.html" %} caseworkers you can upload replacement documents on this page. You can repeat this process until you are happy to proceed to submitting a final application.</p>
+    <p>If changes are recommended by the {% organisation_name %} caseworkers you can upload replacement documents on this page. You can repeat this process until you are happy to proceed to submitting a final application.</p>
     {% if error %}
         {% error_message error %}
     {% endif %}

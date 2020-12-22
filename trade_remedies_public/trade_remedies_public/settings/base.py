@@ -46,6 +46,10 @@ DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
 
 ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
 
+ORGANISATION_NAME = os.environ.get("ORGANISATION_NAME", "Organisation name placeholder")
+
+ORGANISATION_INITIALISM = os.environ.get("ORGANISATION_INITIALISM", "PLACEHOLDER")
+
 # Application definition
 
 INSTALLED_APPS = [

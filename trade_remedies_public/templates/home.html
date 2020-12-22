@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block main_content %}
+{% load organisation_initialism %}
 
 <div id="wrapper" class="site-wrapper direction-ltr">
     <main role="main" id="content" lang="en">
@@ -18,7 +19,7 @@
                 <li>you have the authority to represent your company (or a third party)</li>
             </ul>
 
-            <p>You do not need an account to view the public file for a case. You can find this on the case page of the {% include "partials/TRID_abbreviation.html" %} website.</p>
+            <p>You do not need an account to view the public file for a case. You can find this on the case page of the {% organisation_initialism %} website.</p>
             <p>When you have an account, you will be able to:</p>
             <ul class="ul">
                 <li>register interest in a case</li>

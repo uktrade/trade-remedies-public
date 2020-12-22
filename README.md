@@ -23,6 +23,8 @@ Populate the following environment variables in the local.env file:
 | `S3_STORAGE_KEY`  | Yes | AWS access key ID |
 | `S3_STORAGE_SECRET`  | Yes | AWS secret access key | |
 | `AWS_REGION`  | Yes | Change if different from "eu-west-2" |
+| `ORGANISATION_NAME` | Yes | Name for the organisation |
+| `ORGANISATION_INITIALISM` | Yes | Initials for the organisation |
 
 If you are not sure what to use for one of the values above, ask a colleague or contact the SRE team.
 
@@ -30,13 +32,17 @@ If you are not sure what to use for one of the values above, ask a colleague or 
 
 This project should be run using the Trade Remedies orchestration project available at: https://github.com/uktrade/trade-remedies-docker
 
-## Compiling requirements
+## BDD testing
 
-We use pip-compile from https://github.com/jazzband/pip-tools to manage pip dependencies. This runs from the make file when generating requirements:
+Behavioural testing is provided by [Behave Django](https://github.com/behave/behave-django) and can be triggered by running:
 
-Run `make all-requirements`
+`make bdd`
 
-This needs to be run from the host machine as it does not run in a container.
+from the Trade Remedies orchestration project directory.
+
+You can make test objects available for BDD testing by creating views that create them in the 'api_test' app in the [Trade Remedies API](https://github.com/uktrade/trade-remedies-api) project.
+
+For more information on the setup of BDD tests see the readme at https://github.com/uktrade/trade-remedies-docker
 
 ## Contributors ✨
 

@@ -27,9 +27,9 @@
 	<div class="form-group">
 		{% if create_mode %}
 			<div class="warning-text">
-				Do not add members of other organisations to your account.
+				Only add members of your organisation to your account as Administrators or
+                Regular users.
 			</div>
-
 		{% else %}
 			{% if self_details %}
 				Use this form to edit your name and contact details.
@@ -38,79 +38,97 @@
 			{% endif %}
 		{% endif %}
 	</div>
-	{% text_element id='name' label='Name' autocomplete="off" errors=errors value=user_record.name %}
-	{% text_element id='email' label='Email (username)' errors=errors value=user_record.email read_only=existing_user_id %}
-	{% text_element id='phone' label='Phone number' type='tel' autocomplete='off' errors=errors value=user_record.phone %}
+    {% if not user_record.email %}
+        {% if errors.group %}<span class="error-message" id="group_error">{{ errors.group }}</span>{% endif %}
+        <div class="form-group">
+            <label for="email" class="form-label">How will the user interact with the trade remedies system?</label>
+            <details>
+                <summary>More details</summary>
+                <div class="panel panel-border-wide">
+                    <p>Regular users can:</p>
+                    <ul class="list-bullet indent">
+                        <li>See the details of cases they have been granted access to.</li>
+                        <li>Register interest in a case.</li>
+                        <li>Apply for an investigation or review of measures (when made available).</li>
+                    </ul>
+                    <p></p>
+                    <p>Administrators can also:</p>
+                    <ul class="list-bullet indent">
+                        <li>See all cases that account members have participated in.</li>
+                        <li>Add themselves to active cases.</li>
+                        <li>Invite colleagues into your account.</li>
+                        <li>Grant or revoke access to cases.</li>
+                        <li>Deactivate accounts.</li>
+                        <li>Accounts can have several administrators.</li>
+                    </ul>
+                    <p></p>
+                    <p>Inviting a 3rd Party user:</p>
+                    <ul class="list-bullet indent">
+                        <li>You will prompted for a case and invitee details.</li>
+                        <li>You will required to download, complete and upload a letter of authority.</li>
+                        <li>When your 3rd Party invitation is approved the 3rd Party will receive an
+                            invite to this organisation.</li>
+                    </ul>
+                </div>
+            </details>
+            {% set 'security_group' user_record.group %}
+            {% if user_record.organisation.role.security_group %}
+                {% set 'security_group' user_record.organisation.role.security_group %}
+            {% else %}
+                {% set 'security_group' 'Organisation Owner' %}
+            {% endif %}
+            {% for group in groups %}
+                <div class="multiple-choice">
+                    <input
+                            type="radio"
+                            id="role_{{forloop.counter}}"
+                            name="group"
+                            value="{{group.0}}"
+                            autocomplete="off"
+                            {% if group.0 == 'Third Party User' %}
+                                onclick="document.getElementById('form-fields').hidden = true;
+                                document.getElementById('third-party-message').hidden = false;"
+                            {% else %}
+                                onclick="document.getElementById('form-fields').hidden = false;
+                                         document.getElementById('third-party-message').hidden = true;"
+                            {% endif %}
+                    />
+                    {% if group.0 == 'Organisation Owner' %}
+                        {% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
+                    {% elif group.0 == 'Third Party User' %}
+                        {% set 'perm_name' 'Regular (3rd Party) user who is representing your organisation on a particular case (e.g. Lawyer)' %}
+                    {% else %}
+                        {% set 'perm_name' 'Regular user with access to selected cases only' %}
+                    {% endif %}
+                    <label for="role_{{forloop.counter}}" class="form-label">{{ perm_name }}</label>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-	{% text_element id='address' textarea=True label='Address' errors=errors value=user_record.address %}
-	<div class="form-group edit-item type-text ">
-		<label class="form-label" for="country">Country</label>
-		{% if errors.organisation_country %}<span class="error-message" id="country_error">{{ errors.organisation_country }}</span>{% endif %}
-		<select class="form-control" name="country" id="country">
-			<option value="">Please select ...</option>
-			{% for country_code, country_name in countries %}
-				<option
-					value="{{country_code}}"
-					{% if user_record.country_code == country_code %}selected{% endif %}
-				>{{country_name}}</option>
-			{% endfor %}
-		</select>
-	</div>
+    <div id="third-party-message" class="form-group" hidden>
+        <div class="panel panel-border-wide">
+            <p>You will be prompted for invitee details on the next page.</p>
+        </div>
+    </div>
+    <div id="form-fields" class="form-group edit-item type-text">
+        {% text_element id='name' label='Name' autocomplete="off" errors=errors value=user_record.name %}
+        {% text_element id='email' label='Email (username)' errors=errors value=user_record.email read_only=existing_user_id %}
+        {% text_element id='phone' label='Phone number' type='tel' autocomplete='off' errors=errors value=user_record.phone %}
 
-	{% if not user_record.id %}
-	{% if errors.group %}<span class="error-message" id="group_error">{{ errors.group }}</span>{% endif %}
-	<div class="form-group">
-		<label for="email" class="form-label">How will the user interact with the trade remedies system?</label>
-
-		<details>
-			<summary>More details</summary>
-			<text>
-				<div class="panel panel-border-wide">
-					<p>
-						All users can:
-						<ul class="list-bullet indent">
-							<li>see the details of cases they have been granted access to</li>
-							<li>register interest in a case</li>
-							<li>apply for an investigation or review of measures (when made available)</li>
-						</ul>
-					</p>
-					<p>
-						Administrators can also:
-						<ul class="list-bullet indent">
-							<li>see all cases that account members have participated in</li>
-							<li>add themselves to active cases</li>
-							<li>invite colleagues into your account</li>
-							<li>grant or revoke access to cases</li>
-							<li>deactivate accounts</li>
-						</ul>
-						Accounts can have several administrators.
-					</p>
-				</div>
-			</text>
-		</details>
-	   {% set 'security_group' user_record.group %}
-		{% if user_record.organisation.role.security_group %}
-		   {% set 'security_group' user_record.organisation.role.security_group %}
-	   {% endif %}
-		 {% for group in groups %}
-		   <div class="multiple-choice">
-			   <input
-				   type="radio"
-				   id="role_{{forloop.counter}}"
-				   name="group"
-				   value="{{group.0}}"
-				   {% if group.0 == security_group %}checked{% endif %}
-			   />
-			   {% set 'perm_name' 'Regular user with access to selected cases only' %}
-			   {% if group.0 == 'Organisation Owner' %}
-				   {% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
-			   {% endif %}
-				 <label for="role_{{forloop.counter}}" class="form-label">{{ perm_name }}</label>
-		   </div>
-	   {% endfor %}
-   </div>
-   {% endif %}
-	{% if create_mode and not user_record.wizard_complete %}
-		<!-- <input type="hidden" name="redirect" value="permissions/"> -->
-	{% endif %}
+        {% text_element id='address' textarea=True label='Address' errors=errors value=user_record.address %}
+        <div class="form-group edit-item type-text ">
+            <label class="form-label" for="country">Country</label>
+            {% if errors.organisation_country %}<span class="error-message" id="country_error">{{ errors.organisation_country }}</span>{% endif %}
+            <select class="form-control" name="country" id="country">
+                <option value="">Please select ...</option>
+                {% for country_code, country_name in countries %}
+                    <option
+                        value="{{country_code}}"
+                        {% if user_record.country_code == country_code %}selected{% endif %}
+                    >{{country_name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
 {% endblock %}
