@@ -11,10 +11,9 @@ def create_test_object(path):
 
 
 def create_test_user(email, password, group):
-    # response = requests.get(
-    #     f"{settings.API_BASE_URL}/api-test-obj/create-user/{email}/{password}/"
-    #     f"{group}/")
-    response = requests.get(f"{settings.API_BASE_URL}/api-test-obj/create-standard-user/")
-    # assert response.status_code == 200
+    response = requests.get(
+        f"{settings.API_BASE_URL}/api-test-obj/create-test-user/{email}/{password}/" f"{group}/"
+    )
+    assert response.status_code == 200
     json_response = response.json()
-    # assert json_response["message"] == "success"
+    assert json_response["message"] == "success"
