@@ -1,13 +1,10 @@
 from behave import then, when
 
-# from features.api_test_objects import create_test_object
 from features.api_test_objects import create_test_user
 from features.steps import shared
 from features.steps.utils import get_element_by_id
 from trade_remedies_public.constants import (
-    # SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
-    # SECURITY_GROUP_THIRD_PARTY_USER,
 )
 
 
@@ -20,7 +17,7 @@ def step_wrong_credentials(context):
     email_element.send_keys(email)
     password_element = get_element_by_id(context, "password_id")
     password_element.send_keys(password)
-    submit_element = get_element_by_id(context, "bdd-submit")
+    submit_element = get_element_by_id(context, "login-submit")
     submit_element.click()
 
 
@@ -41,10 +38,15 @@ def enter_account_details(context):
     email_element.send_keys(email)
     password_element = get_element_by_id(context, "password_id")
     password_element.send_keys(password)
-    submit_element = get_element_by_id(context, "bdd-submit")
+    submit_element = get_element_by_id(context, "login-submit")
     submit_element.click()
 
 
 @then("the user dashboard is displayed")
 def see_dashboard(context):
     shared.text_is_visible(context, "This is your dashboard to interact")
+
+
+@when("the user click it")
+def user_logout(context):
+    context.browser.find_element_by_link_text("Logout").click()

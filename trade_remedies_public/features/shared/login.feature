@@ -13,4 +13,9 @@ Feature: Login Process
     And the user supplies correct credentials
     Then the user dashboard is displayed
 
+  Scenario: A user logs away from the site
+    When the "Logout" link is visible
+    And the user click it
+    Then the "Sign in" button is visible
+
 

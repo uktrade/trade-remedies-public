@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 def get_element_by_id(context, id):
-    return WebDriverWait(context.browser, 500).until(ec.presence_of_element_located((By.ID, id)))
+    return WebDriverWait(context.browser, 10).until(ec.presence_of_element_located((By.ID, id)))
 
 
 def login(context, email, password):
