@@ -1,12 +1,13 @@
 from behave import then, when
 
-from features.api_test_objects import create_test_user
+from features.api_test_objects import create_test_user, user
 from features.steps import shared
 from features.steps.utils import get_element_by_id
 from trade_remedies_public.constants import (
     SECURITY_GROUP_ORGANISATION_USER,
 )
 
+TEST_PASSWORD= "A7Hhfa!jfaw@f"
 
 @when("the user supplies wrong credentials")
 def step_wrong_credentials(context):
@@ -30,9 +31,10 @@ def step_impl(context):
 @when("the user supplies correct credentials")
 def enter_account_details(context):
     # Generate test objects
-    email = "t.t@test.co.uk"
-    password = "seCret*12345"
-    create_test_user(email, password, SECURITY_GROUP_ORGANISATION_USER)
+    email = "t1.t@test.co.uk"
+    password = TEST_PASSWORD
+    # create_test_user(email, password, SECURITY_GROUP_ORGANISATION_USER)
+    user(email)
     shared.text_is_visible(context, "Email address")
     email_element = get_element_by_id(context, "email")
     email_element.send_keys(email)
