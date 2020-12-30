@@ -1373,7 +1373,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
                 "organisation": request.user.organisation,
                 "organisation_name": request.user.organisation.get("name", "unknown"),
                 "documents": submission_documents,
-                "application": request.session["application"],
+                "application": request.session.get("application", "unknown"),
                 "invitee": invitee,
                 "invite": invitee["contact"] if invitee else None,
             },
