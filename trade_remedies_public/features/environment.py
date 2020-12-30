@@ -10,8 +10,21 @@ from django.conf import settings
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+from behave.fixture import use_fixture
+
+from features.fixtures import public_user
 
 CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
+
+# -- ENVIRONMENT-HOOKS:
+
+
+def before_tag(context, tag):
+    if tag == "fixture.public.user":
+        # NOTE: Calls setup_fixture part (until yield statement) and
+        # registers cleanup_fixture which will be called when
+        #  context scope is left (after scenario, feature or test-run).
+        the_fixture = use_fixture(public_user, context)
 
 
 def before_scenario(context, scenario):  # no-qa
