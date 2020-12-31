@@ -4,7 +4,6 @@ from trade_remedies_client.client import Client
 from django_countries import countries
 from core.utils import get
 from cases.constants import (
-    CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION,
     SUBMISSION_TYPE_ASSIGN_TO_CASE,
     CASE_ROLE_PREPARING,
 )
@@ -74,19 +73,9 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
             return context
 
         invites = []
-        documents = []
         if self.submission:
             invites = self.client.get_third_party_invites(self.case_id, self.submission["id"])
-            case_documents = self.client.get_case_documents(
-                self.case_id, CASE_DOCUMENT_TYPE_LETTER_OF_AUTHORISATION
-            )
-            documents = [doc for doc in case_documents]
         context["invites"] = invites
-        context["case_documents"] = documents
-        if "documents" in context:
-            context["documents"]["caseworker"] += documents
-        else:
-            context["documents"] = {"caseworker": documents}
         return context
 
 
