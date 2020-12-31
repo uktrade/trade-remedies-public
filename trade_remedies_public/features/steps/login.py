@@ -39,8 +39,3 @@ def step_impl(context):
 @then("the user dashboard is displayed")  # noqa: F811
 def step_impl(context):
     shared.text_is_visible(context, "This is your dashboard to interact")
-
-
-@when("the user click it")  # noqa: F811
-def step_impl(context):
-    context.browser.find_element_by_link_text("Logout").click()
