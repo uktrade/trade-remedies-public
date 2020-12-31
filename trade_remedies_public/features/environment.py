@@ -14,6 +14,8 @@ from behave.fixture import use_fixture
 
 from features.fixtures import public_user
 
+import requests
+
 CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
 
 # -- ENVIRONMENT-HOOKS:
@@ -32,7 +34,13 @@ def before_scenario(context, scenario):  # no-qa
     context.timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
 
 
+def after_scenario(context, scenario):  # no-qa
+    response = requests.get(f"{settings.API_BASE_URL}/api-test-obj/reset-status/")
+    assert response.ok
+
+
 def after_feature(context, feature):  # no-qa
+    # TODO Reset database
     context.browser.quit()
 
 

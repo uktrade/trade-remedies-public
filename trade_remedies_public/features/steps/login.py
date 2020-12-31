@@ -5,7 +5,7 @@ from features.steps.utils import get_element_by_id
 
 
 @when("the user supplies wrong credentials")
-def step_wrong_credentials(context):
+def step_impl(context):
     email = "a@a.com"
     password = "wrong"
     shared.text_is_visible(context, "Email address")
@@ -17,15 +17,15 @@ def step_wrong_credentials(context):
     submit_element.click()
 
 
-@then('the message "Please correct the following errors" is displayed')
+@then('the message "Please correct the following errors" is displayed')  # noqa: F811
 def step_impl(context):
     context.browser.find_element_by_class_name("error-summary")
     shared.text_is_visible(context, "Please correct the following errors")
 
 
-@when("the user supplies correct credentials")
-def enter_account_details(context):
-    email = context.public_user
+@when("the user supplies correct credentials")  # noqa: F811
+def step_impl(context):
+    email = context.user
     password = context.password
     shared.text_is_visible(context, "Email address")
     email_element = get_element_by_id(context, "email")
@@ -36,11 +36,11 @@ def enter_account_details(context):
     submit_element.click()
 
 
-@then("the user dashboard is displayed")
-def see_dashboard(context):
+@then("the user dashboard is displayed")  # noqa: F811
+def step_impl(context):
     shared.text_is_visible(context, "This is your dashboard to interact")
 
 
-@when("the user click it")
-def user_logout(context):
+@when("the user click it")  # noqa: F811
+def step_impl(context):
     context.browser.find_element_by_link_text("Logout").click()
