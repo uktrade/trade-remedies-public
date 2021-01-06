@@ -10,6 +10,6 @@ TEST_PASSWORD = "A7Hhfa!jfaw@f"
 @fixture
 def public_user(context):
     response = requests.post(f"{settings.API_BASE_URL}/api-test-obj/users/")
-    email_response = response.json()["email"]
-    context.user = email_response
+    context.user = response.json().get("email", "Unknown")
     context.password = TEST_PASSWORD
+    return context
