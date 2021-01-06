@@ -19,3 +19,5 @@ Feature: Landing Page
   Scenario: A user does not have an account
     When an anonymous user navigates to "register"
     Then the Create an account page is displayed
+
+

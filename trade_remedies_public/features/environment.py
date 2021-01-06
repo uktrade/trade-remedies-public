@@ -10,13 +10,31 @@ from django.conf import settings
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+from behave.fixture import use_fixture
+
+from features.fixtures import public_user
+
+import requests
 
 CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
+
+# -- ENVIRONMENT-HOOKS:
+
+
+def before_tag(context, tag):
+    if tag == "fixture.public.user":
+        the_fixture = use_fixture(public_user, context)
 
 
 def before_scenario(context, scenario):  # no-qa
     BehaviorDrivenTestCase.host = settings.SELENIUM_HOST
     context.timestamp = datetime.datetime.now().replace(microsecond=0).isoformat()
+
+
+def after_scenario(context, scenario):  # no-qa
+    # Reset the database
+    response = requests.get(f"{settings.API_BASE_URL}/api-test-obj/reset-status/")
+    assert response.ok
 
 
 def after_feature(context, feature):  # no-qa

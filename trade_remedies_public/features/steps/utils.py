@@ -1,7 +1,14 @@
-from selenium.webdriver.common.by import By
 from django.contrib.auth import get_user_model
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as ec
+
 
 User = get_user_model()
+
+
+def get_element_by_id(context, id):
+    return WebDriverWait(context.browser, 10).until(ec.presence_of_element_located((By.ID, id)))
 
 
 def login(context, email, password):
