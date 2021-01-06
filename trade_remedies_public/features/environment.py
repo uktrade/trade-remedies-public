@@ -23,9 +23,6 @@ CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
 
 def before_tag(context, tag):
     if tag == "fixture.public.user":
-        # NOTE: Calls setup_fixture part (until yield statement) and
-        # registers cleanup_fixture which will be called when
-        #  context scope is left (after scenario, feature or test-run).
         the_fixture = use_fixture(public_user, context)
 
 
@@ -35,12 +32,12 @@ def before_scenario(context, scenario):  # no-qa
 
 
 def after_scenario(context, scenario):  # no-qa
+    # Reset the database
     response = requests.get(f"{settings.API_BASE_URL}/api-test-obj/reset-status/")
     assert response.ok
 
 
 def after_feature(context, feature):  # no-qa
-    # TODO Reset database
     context.browser.quit()
 
 
