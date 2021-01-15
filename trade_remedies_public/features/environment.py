@@ -14,6 +14,10 @@ from behave.fixture import use_fixture
 
 from features.fixtures import public_user
 
+from features.steps.utils import (
+    go_to_page,
+)
+
 import requests
 
 CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
@@ -32,6 +36,8 @@ def before_scenario(context, scenario):  # no-qa
 
 
 def after_scenario(context, scenario):  # no-qa
+    # log out the user
+    go_to_page(context, "logout")
     # Reset the database
     response = requests.get(f"{settings.API_BASE_URL}/api-test-obj/reset-status/")
     assert response.ok

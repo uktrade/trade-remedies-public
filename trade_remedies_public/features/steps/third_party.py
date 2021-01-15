@@ -12,8 +12,6 @@ from features.steps.utils import (
 @when("the user click the 'Manage Team' link")
 def step_impl(context):
     assert_dashboard_visible(context)
-    import time
-    time.sleep(10)
     ref = get_element_by_id(context, "bdd_manage_your_team")
     ref.click()
 
@@ -21,3 +19,18 @@ def step_impl(context):
 @then("the 'Manage your team' page is displayed")
 def step_impl(context):
     text_is_visible(context, "Manage your team")
+
+
+@when("the user click the 'Invite colleague' link")
+def step_impl(context):
+    text_is_visible(context, "Manage your team")
+    # import time
+    # time.sleep(10)
+    ref = get_element_by_id(context, "bdd_invite_colleague")
+    ref.click()
+
+
+@then("the 'Invite Colleague' page is displayed")
+def step_impl(context):
+    text_is_visible(context, "Manage your team")
+

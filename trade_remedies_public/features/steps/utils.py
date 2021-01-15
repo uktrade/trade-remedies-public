@@ -49,3 +49,45 @@ def find_element_by_text(context, text, element_type="*"):
         print(e)
         return None
 
+
+
+def create_test_user(context):
+    if not hasattr(context, 'user'):
+        test_user_email = "test@test.com"
+        test_password = "test_password"
+
+        test_user, _ = get_user_model().objects.get_or_create(
+            email=test_user_email
+        )
+        test_user.is_staff = True
+        test_user.is_superuser = True
+        test_user.set_password(test_password)
+        test_user.save()
+
+        context.user = test_user
+
+        client = context.test.client
+        client.login(
+            email=test_user_email,
+            password=test_password,
+        )
+
+        # Then create the authenticated session using the new user credentials
+        session = SessionStore()
+        session[SESSION_KEY] = test_user.pk
+        session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
+        session[HASH_SESSION_KEY] = test_user.get_session_auth_hash()
+        session.save()
+
+        # Finally, create the cookie dictionary
+        cookie = {
+            'name': settings.SESSION_COOKIE_NAME,
+            'value': session.session_key,
+            'secure': False,
+            'path': '/',
+        }
+
+        context.browser.get(f'{context.base_url}/admin/login/')
+        context.browser.add_cookie(cookie)
+        context.browser.refresh()  # need to update page for logged in user
+        context.browser.get(f'{context.base_url}/')
