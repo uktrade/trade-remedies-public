@@ -57,7 +57,15 @@ def step_impl(context):
 @given('the logged in user is on the "{view_name}" page')
 @when('the logged in user is on the "{view_name}" page')
 def step_impl(context, view_name):
-    testuser_login(context)
+    context.execute_steps("given the user is logged in")
     go_to_page(context, view_name)
+
+
+@given ('the logged in user is on the "{view_name}" organisation page')
+def step_impl(context, view_name):
+    context.execute_steps("given the user is logged in")
+    go_to_page(context, view_name, organisation_id=context.organisation_id)
+    import time
+    time.sleep(30)
 
 

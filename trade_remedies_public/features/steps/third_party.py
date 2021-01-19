@@ -33,3 +33,15 @@ def step_impl(context):
 def step_impl(context):
     text_is_visible(context, "Manage your team")
 
+
+@when(u'the user selects the 3rd Party option on the form')
+def step_impl(context):
+    text_is_visible(context, "Regular (3rd Party) user who is representing your organisation on a particular case (e.g. Lawyer)")
+    ref = get_element_by_id(context, "role_3")
+    ref.click()
+
+
+@then(u'the message \'You will be prompted for invitee details on the next page\'')
+def step_impl(context):
+    text_is_visible(context, "You will be prompted for invitee details on the next page")
+

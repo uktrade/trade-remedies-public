@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
-from django.urls import reverse
 
 User = get_user_model()
 
@@ -30,6 +29,7 @@ def testuser_login(context):
 def go_to_page(context, view_name, **kwargs):
     """Navigate to page with given url name."""
     url = context.get_url(view_name, **kwargs)
+    print(f"==============={view_name}  {url}")
     context.browser.get(url)
 
 
