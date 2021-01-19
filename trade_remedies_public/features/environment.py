@@ -12,7 +12,10 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from behave.fixture import use_fixture
 
-from features.fixtures import public_user
+from features.fixtures import (
+    public_logged_user,
+    public_user,
+)
 
 from features.steps.utils import (
     go_to_page,
@@ -28,6 +31,8 @@ CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
 def before_tag(context, tag):
     if tag == "fixture.public.user":
         the_fixture = use_fixture(public_user, context)
+    if tag == "fixture.public.logged_user":
+        the_fixture = use_fixture(public_logged_user, context)
 
 
 def before_scenario(context, scenario):  # no-qa

@@ -24,13 +24,12 @@ def step_impl(context):
 @when("the user click the 'Invite colleague' link")
 def step_impl(context):
     text_is_visible(context, "Manage your team")
-    # import time
-    # time.sleep(10)
     ref = get_element_by_id(context, "bdd_invite_colleague")
     ref.click()
 
 
 @then("the 'Invite Colleague' page is displayed")
+@when("the 'Invite Colleague' page is displayed")
 def step_impl(context):
     text_is_visible(context, "Manage your team")
 

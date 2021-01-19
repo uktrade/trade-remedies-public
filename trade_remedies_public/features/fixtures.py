@@ -6,6 +6,7 @@ from django.conf import settings
 
 TEST_PASSWORD = "A7Hhfa!jfaw@f"
 
+from features.steps.utils import testuser_login
 
 @fixture
 def public_user(context):
@@ -18,4 +19,11 @@ def public_user(context):
         print(context.organisation_id)
     context.user = response_json.get("email", "Unknown")
     context.password = TEST_PASSWORD
+    return context
+
+
+@fixture
+def public_logged_user(context):
+    public_user(context)
+    testuser_login(context)
     return context

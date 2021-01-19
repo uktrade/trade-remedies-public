@@ -1,5 +1,7 @@
 """Shared step logic."""
 from behave import given, then, when
+from behave_django.decorators import fixtures
+
 from features.steps.utils import (
     find_element_by_text,
     get_element_by_id,
@@ -9,18 +11,18 @@ from features.steps.utils import (
 )
 
 
-@given('the user navigates to "{url_name}"')
-@when('navigates to "{url_name}"')
-@when('the user navigates to "{url_name}"')
-@when('an anonymous user navigates to "{url_name}"')
-def navigate(context, url_name):
-    go_to_page(context, url_name)
+@given('the user navigates to "{view_name}"')
+@when('navigates to "{view_name}"')
+@when('the user navigates to "{view_name}"')
+@when('an anonymous user navigates to "{view_name}"')
+def navigate(context, view_name):
+    go_to_page(context, view_name)
 
 
-@given('"{username}" navigates to "{url_name}"')
-@when('"{username}" navigates to "{url_name}"')
-def user_navigates(context, username, url_name):
-    go_to_page(context, url_name)
+@given('"{username}" navigates to "{view_name}"')
+@when('"{username}" navigates to "{view_name}"')
+def user_navigates(context, username, view_name):
+    go_to_page(context, view_name)
 
 
 @then('the "{text}" button is visible')
@@ -49,3 +51,9 @@ def step_impl(context):
     testuser_login(context)
     assert_dashboard_visible(context)
 
+
+@given('the logged in user is on the "{view_name}" page')
+@when('the logged in user is on the "{view_name}" page')
+@fixtures('logged_user')
+def step_impl(context, view_name):
+    go_to_page(context, view_name)
