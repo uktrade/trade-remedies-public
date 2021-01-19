@@ -37,9 +37,10 @@ def link_visible(context, text):
     assert find_element_by_text(context, text, "a"), f"link {text} not found!"
 
 
+@then('the message "{text}" is displayed')
 @then('text "{text}" is visible')
 def text_is_visible(context, text):
-    assert find_element_by_text(context, text), f"could not find text {text} in page"
+    assert find_element_by_text(context, text), f"could not find '{text}' in page"
 
 
 def assert_dashboard_visible(context):
@@ -65,7 +66,5 @@ def step_impl(context, view_name):
 def step_impl(context, view_name):
     context.execute_steps("given the user is logged in")
     go_to_page(context, view_name, organisation_id=context.organisation_id)
-    import time
-    time.sleep(30)
 
 

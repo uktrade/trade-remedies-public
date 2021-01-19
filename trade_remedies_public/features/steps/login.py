@@ -16,11 +16,11 @@ def step_impl(context):
     login(context, email, password)
 
 
-@then('the message "Please correct the following errors" is displayed')  # noqa: F811
-def step_impl(context):
-    context.browser.find_element_by_class_name("error-summary")
-    text_is_visible(context, "Please correct the following errors")
-
+# @then('the message "Please correct the following errors" is displayed')  # noqa: F811
+# def step_impl(context):
+#     context.browser.find_element_by_class_name("error-summary")
+#     text_is_visible(context, "Please correct the following errors")
+#
 
 @when("the user supplies correct credentials")  # noqa: F811
 def step_impl(context):

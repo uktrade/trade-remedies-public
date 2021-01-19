@@ -29,7 +29,6 @@ def testuser_login(context):
 def go_to_page(context, view_name, **kwargs):
     """Navigate to page with given url name."""
     url = context.get_url(view_name, **kwargs)
-    print(f"==============={view_name}  {url}")
     context.browser.get(url)
 
 

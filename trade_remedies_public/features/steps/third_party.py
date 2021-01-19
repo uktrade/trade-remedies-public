@@ -9,7 +9,7 @@ from features.steps.utils import (
 )
 
 
-@when("the user click the 'Manage Team' link")
+@when("the user selects the 'Manage Team' link")
 def step_impl(context):
     assert_dashboard_visible(context)
     ref = get_element_by_id(context, "bdd_manage_your_team")
@@ -21,7 +21,7 @@ def step_impl(context):
     text_is_visible(context, "Manage your team")
 
 
-@when("the user click the 'Invite colleague' link")
+@when("the user selects the 'Invite colleague' link")
 def step_impl(context):
     text_is_visible(context, "Manage your team")
     ref = get_element_by_id(context, "bdd_invite_colleague")
@@ -40,8 +40,4 @@ def step_impl(context):
     ref = get_element_by_id(context, "role_3")
     ref.click()
 
-
-@then(u'the message \'You will be prompted for invitee details on the next page\'')
-def step_impl(context):
-    text_is_visible(context, "You will be prompted for invitee details on the next page")
 

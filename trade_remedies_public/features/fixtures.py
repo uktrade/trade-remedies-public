@@ -16,7 +16,8 @@ def public_user(context):
     organisation =  response_json.get("organisations", [])
     if organisation:
         context.organisation_id = organisation[0].get("id", "Unknown")
-        print(context.organisation_id)
+    else:
+        context.organisation_id = "Unknown"
     context.user = response_json.get("email", "Unknown")
     context.password = TEST_PASSWORD
     return context
