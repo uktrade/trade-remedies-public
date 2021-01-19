@@ -10,7 +10,9 @@ from django.conf import settings
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-from behave.fixture import use_fixture
+from behave.fixture import (use_fixture,
+                            use_fixture_by_tag,
+                            fixture_call_params,)
 
 from features.fixtures import (
     public_logged_user,
@@ -23,16 +25,26 @@ from features.steps.utils import (
 
 import requests
 
+# -- REGISTRY DATA SCHEMA 1: fixture_func
+fixture_registry1 = {
+    "fixture.public.user": public_user,
+    "fixture.public.logged_user":  public_logged_user,
+}
+# -- REGISTRY DATA SCHEMA 2: (fixture_func, fixture_args, fixture_kwargs)
+fixture_registry2 = {
+    "fixture.browser.firefox": fixture_call_params(public_logged_user),
+    "fixture.browser.chrome":  fixture_call_params(public_user, timeout=12),
+}
+
+
 CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
 
 # -- ENVIRONMENT-HOOKS:
 
 
 def before_tag(context, tag):
-    if tag == "fixture.public.user":
-        the_fixture = use_fixture(public_user, context)
-    if tag == "fixture.public.logged_user":
-        the_fixture = use_fixture(public_logged_user, context)
+    if tag.startswith("fixture."):
+        return use_fixture_by_tag(tag, context, fixture_registry1)
 
 
 def before_scenario(context, scenario):  # no-qa

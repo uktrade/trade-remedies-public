@@ -10,6 +10,7 @@ from features.steps.utils import (
     testuser_login,
 )
 
+from features.fixtures import public_logged_user
 
 @given('the user navigates to "{view_name}"')
 @when('navigates to "{view_name}"')
@@ -52,8 +53,11 @@ def step_impl(context):
     assert_dashboard_visible(context)
 
 
+@given(u'the logged in user navigates to the "{view_name}" page')
 @given('the logged in user is on the "{view_name}" page')
 @when('the logged in user is on the "{view_name}" page')
-@fixtures('logged_user')
 def step_impl(context, view_name):
+    testuser_login(context)
     go_to_page(context, view_name)
+
+
