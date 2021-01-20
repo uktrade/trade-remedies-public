@@ -14,22 +14,16 @@ Feature: # Third party invite
     Then the 'Invite Colleague' page is displayed
 
   @fixture.public.user
-  Scenario: The user wants to invite a colleague as a third party
+  Scenario: The user prepares to invite a colleague as a third party
     Given the logged in user is on the "user_view" organisation page
     When the user selects the 3rd Party option on the form
     Then the message "You will be prompted for invitee details on the next page" is displayed
 
 
-#  @fixture.public.user
-#  Scenario: The user wants to invite a colleague as a third party
-#    Given the logged in user is on the 'invite colleague' page
-#    And the user selects the 3rd Party option on the form
-#    When the user submits the form
-#    Then the 'Invite a 3rd party'(put the view name) page is displayed
-#
-#
-#  @fixture.public.user
-#  Scenario: The user fill up the invitation for a third party invite
-#    Given the logged in user is on the 'Invite a 3rd party' page
-#    When the user click 3rd Party
-#    Then You will be prompted for invitee details on the next page is displayed
+  @fixture.public.user
+  Scenario: The user wants to invite a colleague as a third party
+    Given the logged in user is on the "user_view" organisation page
+    And the user selects the 3rd Party option on the form
+    When the user submits the form
+    Then the "invite_top" page is displayed
+

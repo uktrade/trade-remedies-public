@@ -1,4 +1,4 @@
-from behave import then, when
+from behave import given, then, when
 
 from features.steps.shared import (text_is_visible,
                                    assert_dashboard_visible)
@@ -35,6 +35,7 @@ def step_impl(context):
 
 
 @when(u'the user selects the 3rd Party option on the form')
+@given(u'the user selects the 3rd Party option on the form')
 def step_impl(context):
     text_is_visible(context, "Regular (3rd Party) user who is representing your organisation on a particular case (e.g. Lawyer)")
     ref = get_element_by_id(context, "role_3")

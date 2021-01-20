@@ -68,3 +68,7 @@ def step_impl(context, view_name):
     go_to_page(context, view_name, organisation_id=context.organisation_id)
 
 
+@when(u'the user submits the form')
+def step_impl(context):
+    get_element_by_id(context, "submit").click()
+
