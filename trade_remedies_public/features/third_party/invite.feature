@@ -5,13 +5,13 @@ Feature: # Third party invite
   Scenario: The user access the 'Manage your team' page
     Given the user is logged in
     When the user selects the 'Manage Team' link
-    Then the 'Manage your team' page is displayed
+    Then the page showing "Manage your team" is displayed
 
   @fixture.public.user
-  Scenario: The user invite a colleague
+  Scenario: The user decides to invite a colleague
     Given the logged in user navigates to the "team_view" page
     When the user selects the 'Invite colleague' link
-    Then the 'Invite Colleague' page is displayed
+    Then the page showing "Invite colleague" is displayed
 
   @fixture.public.user
   Scenario: The user prepares to invite a colleague as a third party
@@ -19,11 +19,10 @@ Feature: # Third party invite
     When the user selects the 3rd Party option on the form
     Then the message "You will be prompted for invitee details on the next page" is displayed
 
-
   @fixture.public.user
   Scenario: The user wants to invite a colleague as a third party
     Given the logged in user is on the "user_view" organisation page
     And the user selects the 3rd Party option on the form
     When the user submits the form
-    Then the "invite_top" page is displayed
+    Then the page showing "Invite a 3rd party" is displayed
 

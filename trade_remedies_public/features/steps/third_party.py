@@ -16,11 +16,11 @@ def step_impl(context):
     ref.click()
 
 
-@then("the 'Manage your team' page is displayed")
-def step_impl(context):
-    text_is_visible(context, "Manage your team")
-
-
+# @then("the 'Manage your team' page is displayed")
+# def step_impl(context):
+#     text_is_visible(context, "Manage your team")
+#
+#
 @when("the user selects the 'Invite colleague' link")
 def step_impl(context):
     text_is_visible(context, "Manage your team")
@@ -28,11 +28,11 @@ def step_impl(context):
     ref.click()
 
 
-@then("the 'Invite Colleague' page is displayed")
-@when("the 'Invite Colleague' page is displayed")
-def step_impl(context):
-    text_is_visible(context, "Manage your team")
-
+# @then("the 'Invite Colleague' page is displayed")
+# @when("the 'Invite Colleague' page is displayed")
+# def step_impl(context):
+#     text_is_visible(context, "Manage your team")
+#
 
 @when(u'the user selects the 3rd Party option on the form')
 @given(u'the user selects the 3rd Party option on the form')

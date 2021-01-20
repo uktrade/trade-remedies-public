@@ -39,6 +39,8 @@ def link_visible(context, text):
 
 @then('the message "{text}" is displayed')
 @then('text "{text}" is visible')
+@then('the page showing "{text}" is displayed')
+@when('the page showing "{text}" is displayed')
 def text_is_visible(context, text):
     assert find_element_by_text(context, text), f"could not find '{text}' in page"
 
