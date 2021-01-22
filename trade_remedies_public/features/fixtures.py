@@ -12,7 +12,6 @@ from features.steps.utils import testuser_login
 def public_user(context):
     response = requests.post(f"{settings.API_BASE_URL}/api-test-obj/users/")
     response_json = response.json()
-
     organisation =  response_json.get("organisations", [])
     if organisation:
         context.organisation_id = organisation[0].get("id", "Unknown")
