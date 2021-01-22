@@ -1,16 +1,13 @@
 """Shared step logic."""
 from behave import given, then, when
-from behave_django.decorators import fixtures
 
 from features.steps.utils import (
     find_element_by_text,
     get_element_by_id,
     go_to_page,
-    login,
     testuser_login,
 )
 
-from features.fixtures import public_logged_user
 
 @given('the user navigates to "{view_name}"')
 @when('navigates to "{view_name}"')
@@ -49,14 +46,14 @@ def assert_dashboard_visible(context):
     text_is_visible(context, "This is your dashboard to interact")
 
 
-@given ('the user is logged in')
+@given("the user is logged in")
 def step_impl(context):
     go_to_page(context, "initial")
     testuser_login(context)
     assert_dashboard_visible(context)
 
 
-@given(u'the logged in user navigates to the "{view_name}" page')
+@given('the logged in user navigates to the "{view_name}" page')  # noqa: F811
 @given('the logged in user is on the "{view_name}" page')
 @when('the logged in user is on the "{view_name}" page')
 def step_impl(context, view_name):
@@ -64,13 +61,12 @@ def step_impl(context, view_name):
     go_to_page(context, view_name)
 
 
-@given ('the logged in user is on the "{view_name}" organisation page')
+@given('the logged in user is on the "{view_name}" organisation page')  # noqa: F811
 def step_impl(context, view_name):
     context.execute_steps("given the user is logged in")
     go_to_page(context, view_name, organisation_id=context.organisation_id)
 
 
-@when(u'the user submits the form')
+@when("the user submits the form")  # noqa: F811
 def step_impl(context):
     get_element_by_id(context, "submit").click()
-

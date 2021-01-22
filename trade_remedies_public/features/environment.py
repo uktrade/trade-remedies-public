@@ -10,9 +10,10 @@ from django.conf import settings
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-from behave.fixture import (use_fixture,
-                            use_fixture_by_tag,
-                            fixture_call_params,)
+from behave.fixture import (
+    use_fixture_by_tag,
+    fixture_call_params,
+)
 
 from features.fixtures import (
     public_logged_user,
@@ -28,12 +29,12 @@ import requests
 # -- REGISTRY DATA SCHEMA 1: fixture_func
 fixture_registry1 = {
     "fixture.public.user": public_user,
-    "fixture.public.logged_user":  public_logged_user,
+    "fixture.public.logged_user": public_logged_user,
 }
 # -- REGISTRY DATA SCHEMA 2: (fixture_func, fixture_args, fixture_kwargs)
 fixture_registry2 = {
     "fixture.browser.firefox": fixture_call_params(public_logged_user),
-    "fixture.browser.chrome":  fixture_call_params(public_user, timeout=12),
+    "fixture.browser.chrome": fixture_call_params(public_user, timeout=12),
 }
 
 

@@ -49,7 +49,6 @@ def find_element_by_text(context, text, element_type="*"):
         return None
 
 
-
 # def create_test_user(context):
 #     if not hasattr(context, 'user'):
 #         test_user_email = "test@test.com"
