@@ -12,7 +12,6 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from behave.fixture import (
     use_fixture_by_tag,
-    fixture_call_params,
 )
 
 from features.fixtures import (
@@ -26,26 +25,19 @@ from features.steps.utils import (
 
 import requests
 
-# -- REGISTRY DATA SCHEMA 1: fixture_func
-fixture_registry1 = {
+fixture_registry = {
     "fixture.public.user": public_user,
     "fixture.public.logged_user": public_logged_user,
-}
-# -- REGISTRY DATA SCHEMA 2: (fixture_func, fixture_args, fixture_kwargs)
-fixture_registry2 = {
-    "fixture.browser.firefox": fixture_call_params(public_logged_user),
-    "fixture.browser.chrome": fixture_call_params(public_user, timeout=12),
 }
 
 
 CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
 
+
 # -- ENVIRONMENT-HOOKS:
-
-
 def before_tag(context, tag):
     if tag.startswith("fixture."):
-        return use_fixture_by_tag(tag, context, fixture_registry1)
+        return use_fixture_by_tag(tag, context, fixture_registry)
 
 
 def before_scenario(context, scenario):  # no-qa
