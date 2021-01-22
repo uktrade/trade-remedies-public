@@ -58,10 +58,10 @@
 			{% endblock %}
 			<div class="form-group">
 			{% if create_mode and not user_record.wizard_complete %}
-				<button type="submit" id="submit" class="button" value="save">Continue</button>
+				<button type="submit" id="bdd_submit" class="button" value="save">Continue</button>
 				<a href="/accounts/team/" class="button button-grey pull-right" />Cancel</a>
 			{% else %}
-				<button type="submit" id="submit" class="button pull-left" value="save">Save</button>
+				<button type="submit" id="bdd_submit" class="button pull-left" value="save">Save</button>
 				<a
 					{% if self_details %}
 						href="/accounts/info/"

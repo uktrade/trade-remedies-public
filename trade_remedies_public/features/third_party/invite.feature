@@ -1,7 +1,7 @@
 Feature: # Third party invite
 
   @fixture.public.user
-  Scenario: The user access the 'Manage your team' page
+  Scenario: The user accesses the 'Manage your team' page
     Given the user is logged in
     When the user selects the 'Manage Team' link
     Then the page showing "Manage your team" is displayed

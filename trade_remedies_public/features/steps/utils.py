@@ -20,7 +20,7 @@ def login(context, email, password):
     submit_button.click()
 
 
-def testuser_login(context):
+def test_user_login(context):
     email = context.user
     password = context.password
     login(context, email, password)

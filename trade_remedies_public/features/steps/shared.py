@@ -5,7 +5,7 @@ from features.steps.utils import (
     find_element_by_text,
     get_element_by_id,
     go_to_page,
-    testuser_login,
+    test_user_login,
 )
 
 
@@ -49,7 +49,7 @@ def assert_dashboard_visible(context):
 @given("the user is logged in")
 def step_impl(context):
     go_to_page(context, "initial")
-    testuser_login(context)
+    test_user_login(context)
     assert_dashboard_visible(context)
 
 
@@ -69,4 +69,4 @@ def step_impl(context, view_name):
 
 @when("the user submits the form")  # noqa: F811
 def step_impl(context):
-    get_element_by_id(context, "submit").click()
+    get_element_by_id(context, "bdd_submit").click()

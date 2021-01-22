@@ -4,7 +4,7 @@ from behave import fixture
 
 from django.conf import settings
 
-from features.steps.utils import testuser_login
+from features.steps.utils import test_user_login
 
 TEST_PASSWORD = "A7Hhfa!jfaw@f"
 
@@ -26,5 +26,5 @@ def public_user(context):
 @fixture
 def public_logged_user(context):
     public_user(context)
-    testuser_login(context)
+    test_user_login(context)
     return context

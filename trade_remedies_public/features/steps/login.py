@@ -3,7 +3,7 @@ from behave import then, when
 from features.steps.shared import text_is_visible
 from features.steps.utils import (
     login,
-    testuser_login,
+    test_user_login,
 )
 
 
@@ -18,7 +18,7 @@ def step_impl(context):
 @when("the user supplies correct credentials")  # noqa: F811
 def step_impl(context):
     text_is_visible(context, "Email address")
-    testuser_login(context)
+    test_user_login(context)
 
 
 @then("the user dashboard is displayed")  # noqa: F811
