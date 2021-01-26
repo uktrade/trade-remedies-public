@@ -19,9 +19,7 @@ from features.fixtures import (
     public_user,
 )
 
-from features.steps.utils import (
-    go_to_page,
-)
+import features.steps.utils as utils
 
 import requests
 
@@ -47,7 +45,7 @@ def before_scenario(context, scenario):  # no-qa
 
 def after_scenario(context, scenario):  # no-qa
     # log out the user
-    go_to_page(context, "logout")
+    utils.go_to_page(context, "logout")
     # Reset the database
     response = requests.get(f"{settings.API_BASE_URL}/api-test-obj/reset-status/")
     assert response.ok
