@@ -3,7 +3,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
-
 User = get_user_model()
 
 
@@ -21,9 +20,15 @@ def login(context, email, password):
     submit_button.click()
 
 
-def go_to_page(context, url_name, **kwargs):
+def test_user_login(context):
+    email = context.user
+    password = context.password
+    login(context, email, password)
+
+
+def go_to_page(context, view_name, **kwargs):
     """Navigate to page with given url name."""
-    url = context.get_url(url_name, **kwargs)
+    url = context.get_url(view_name, **kwargs)
     context.browser.get(url)
 
 

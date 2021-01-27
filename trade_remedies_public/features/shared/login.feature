@@ -8,6 +8,7 @@ Feature: Login Process
     When the user supplies wrong credentials
     Then the message "Please correct the following errors" is displayed
 
+
   @fixture.public.user
   Scenario: The user logs into the site
     Given the user navigates to "initial"

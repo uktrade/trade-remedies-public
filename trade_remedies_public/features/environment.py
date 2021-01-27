@@ -10,20 +10,32 @@ from django.conf import settings
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
-from behave.fixture import use_fixture
+from behave.fixture import (
+    use_fixture_by_tag,
+)
 
-from features.fixtures import public_user
+from features.fixtures import (
+    public_logged_user,
+    public_user,
+)
+
+import features.steps.utils as utils
 
 import requests
 
+fixture_registry = {
+    "fixture.public.user": public_user,
+    "fixture.public.logged_user": public_logged_user,
+}
+
+
 CAPTURE_PATH = "/app/test-reports/bdd-screenshots/"
 
+
 # -- ENVIRONMENT-HOOKS:
-
-
 def before_tag(context, tag):
-    if tag == "fixture.public.user":
-        the_fixture = use_fixture(public_user, context)
+    if tag.startswith("fixture."):
+        return use_fixture_by_tag(tag, context, fixture_registry)
 
 
 def before_scenario(context, scenario):  # no-qa
@@ -32,6 +44,8 @@ def before_scenario(context, scenario):  # no-qa
 
 
 def after_scenario(context, scenario):  # no-qa
+    # log out the user
+    utils.go_to_page(context, "logout")
     # Reset the database
     response = requests.get(f"{settings.API_BASE_URL}/api-test-obj/reset-status/")
     assert response.ok
