@@ -26,7 +26,7 @@ Feature: # Third party invite
     Then the page showing "Invite a 3rd party" is displayed
 
   @fixture.public.user
-  Scenario: The user select a case for the third party invite,
+  Scenario: The user select a case for the third party invite
     Given the logged in user is on the "user_view" organisation page
     And the user selects the 3rd Party option on the form
     When the user submits the form
