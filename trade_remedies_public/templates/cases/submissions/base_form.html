@@ -16,9 +16,13 @@
 
     {% endif %}
     {% if submission_id %}
-	    <div class="margin-top-2">
+        <div class="margin-top-2">
+        {% if invites %}
+            <a href="/case/invite/{{case_id}}/submission/{{submission_id}}/">Back</a>
+        {% else %}
 	        <a href="/case/{{case_id}}/submission/{{submission_id}}/">Back to menu</a>
-	    </div>
+        {% endif %}
+        </div>
     {% elif organisation_id %}
       <div class="margin-top-2">
           <a href="/case/{{case_id}}/organisation/{{organisation_id}}/submission/create/">Back to menu</a>

@@ -15,6 +15,7 @@ from django.http import HttpResponseNotFound, HttpResponse
 from trade_remedies_public.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
+    SECURITY_GROUP_THIRD_PARTY_USER,
 )
 from core.base import GroupRequiredMixin, BasePublicView
 from core.utils import (
@@ -397,10 +398,10 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
     template_name = "account/team.html"
 
     def get(self, request, *args, **kwargs):
-        organisation_id = request.session.get("organisation_id")
         users = []
         pending_assignments = []
         pending_invites = []
+        pending_third_party_invites = []
         request.session["create-user"] = {}
         request.session.modified = True
         client = self.client(request.user)
@@ -412,6 +413,21 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
             _user_emails = [user["email"] for user in users]
             _invites = client.get_user_invitations()
             pending_invites = [invite for invite in _invites if invite["email"] not in _user_emails]
+
+            # Get any 3rd party invites
+            organisation = request.user.organisation
+            if organisation:
+                pending_submissions = client.get_organisation_invite_submissions(organisation["id"])
+                for submission in pending_submissions:
+                    case_id = submission["case"]["id"]
+                    submission_id = submission["id"]
+                    submission_invites = client.get_third_party_invites(
+                        case_id=case_id, submission_id=submission_id
+                    )
+                    for submission_invite in submission_invites:
+                        submission_invite["locked"] = submission.get("locked", True)
+                    pending_third_party_invites += submission_invites
+
         return render(
             request,
             self.template_name,
@@ -420,6 +436,7 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
                 "users": users,
                 "pending_assignments": pending_assignments,
                 "invites": pending_invites,
+                "third_party_invites": pending_third_party_invites,
                 "alert_message": ALERT_MAP.get(request.GET.get("alert")),
             },
         )
@@ -593,6 +610,9 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         *args,
         **kwargs,
     ):
+        if request.POST.get("group") == SECURITY_GROUP_THIRD_PARTY_USER:
+            return redirect("/case/invite")
+
         client = self.client(request.user)
         if section == "delete":
             delete_response = client.delete_pending_invite(invitation_id, organisation_id)
@@ -608,8 +628,10 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             if user_id
             else f"/accounts/team/{organisation_id}/user/"
         )
+        user_group = request.user.groups[0] if request.user.groups else None
         data = {
             "organisation_id": organisation_id,
+            "group": user_group,
         }
         data.update(request.POST.dict())
         if data.get("active"):
