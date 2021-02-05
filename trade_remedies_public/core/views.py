@@ -425,8 +425,10 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
                         case_id=case_id, submission_id=submission_id
                     )
                     for submission_invite in submission_invites:
+                        if submission_invite["contact"]["has_user"]:
+                            continue
                         submission_invite["locked"] = submission.get("locked", True)
-                    pending_third_party_invites += submission_invites
+                        pending_third_party_invites.append(submission_invite)
 
         return render(
             request,
