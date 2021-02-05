@@ -1388,6 +1388,10 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             "address": request.POST.get("organisation_address"),
             "invite_id": request.POST.get("invite_id"),
         }
+        if data["organisation_name"] == request.user.organisation["name"]:
+            msg = "Invalid company name: A third party cannot be from your organisation"
+            errors = {"organisation_name": msg}
+            return self.get(request, case_id, submission_id=None, errors=errors)
         if not data["name"] or not data["email"]:
             if submission_id:
                 return redirect(f"/case/invite/{case_id}/submission/{submission_id}/")
