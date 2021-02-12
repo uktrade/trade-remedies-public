@@ -93,7 +93,7 @@
               <td>{{ submission.issued_at|format_date:'%d %b %Y' }}
               </td>
               <td>
-                <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/public/">{{ submission.type.name }}</a>
+                <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/public/">{{ submission.type_display }}</a>
               </td>
               <td>
                 {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
