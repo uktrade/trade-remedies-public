@@ -4,18 +4,32 @@
 {% block main_content %}
 <div class="grid-row">
   <div class="column-two-thirds">
-      
-    <h1 class="heading-large"><span class="heading-secondary">Error 500</span>
-      <i class="icon icon32 icon-amber-warning"></i>Server error
-    </h1>
-      <p>Something went wrong on our server. Here are some things you can try:</p>
+      <h1 class="heading-large"><span class="heading-secondary">HTTP 500</span>
+          <i class="icon icon-alert"><span
+                  class="visually-hidden">Alert</span></i>
+          Server Error
+      </h1>
+      <p>
+          Oops, something has gone wrong. This might be an intermittent
+          issue that will be automatically remediated. In the meantime
+          here are some things you can try:
+      </p>
       <ul class="list list-bullet double-spaced">
-        <li>If you entered a web address, please check that it was correct.</li>
-        <li>Use your browser's back button and check the link that you clicked.</li>
-        <li>If you clicked a link that brought you to this page, please let us know using the contact details on the right.</li>
-        <li>Return to the <a class="link" href="/dashboard/">Trade Remedies service start page.</a></li>      </ul>
+          <li>If you entered a web address, please check that it was correct.</li>
+          <li>Use your browser's back button and check the link that you clicked.</li>
+          <li>If you clicked a link that brought you to this page, please let us know.</li>
+          <li>Return to the <a class="link" href="/">home page</a> and start
+              again.</li>
+      </ul>
+      <p><em>If problems persist, please email</em>
+           <span>
+             <a class="link break-word"
+                href="mailto:help@traderemedies.gov.uk?subject=Public Portal-500 Error">
+                 help@traderemedies.gov.uk
+             </a>
+           </span>
+      </p>
   </div>
-
   <div class="column-one-third">
       {% include "partials/widgets/help_box.html" %}
   </div>
