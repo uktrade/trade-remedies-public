@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load format_date %}
+
+{% block main_content %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-large"><span class="heading-secondary">HTTP 400</span>
+                <i class="icon icon-amber-warning">
+                    <span class="visually-hidden">Alert</span>
+                </i>
+                Bad Request
+            </h1>
+            <p>
+                Oops, the server was unable to process the request. Here are some
+                things you can try:
+            </p>
+            <ul class="list list-bullet double-spaced">
+                <li>Check your session has not expired (try to re-login).</li>
+                <li>Check the URL of the page you are attempting to access is correct.
+                    For example, are you using a bookmark or copy-pasted url?
+                </li>
+                <li>Were you uploading a file? Check its size, it may be too big.</li>
+                <li>Try clearing your browser cache and cookies.</li>
+            </ul>
+            <p><em>If problems persist, please email</em>
+                <span>
+             <a class="link break-word"
+                href="mailto:help@traderemedies.gov.uk?subject=Public Portal-400 Error">
+                 help@traderemedies.gov.uk
+             </a>
+           </span>
+            </p>
+        </div>
+        <div class="column-one-third">
+            {% include "partials/widgets/help_box.html" %}
+        </div>
+    </div>
+{% endblock %}
