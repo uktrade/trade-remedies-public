@@ -106,6 +106,8 @@ def structure_documents(documents):
     type_idx = deep_index_items_by(documents, "type/key")
     conf_idx = deep_index_items_by(type_idx.get("respondent") or [], "confidential")
     doc_idx = deep_index_items_by(documents, "id")
+    parent_idx = deep_index_items_by(conf_idx.get("false", []), "parent_id")
+
     for document in documents:
         parent_id = document.get("parent_id")
         if parent_id:
@@ -118,6 +120,7 @@ def structure_documents(documents):
             "confidential": conf_idx.get("true", []),
             "non_confidential": conf_idx.get("false", []),
             "loa": type_idx.get("loa") or [],
+            "orphan": parent_idx.get("", [])
         },
         doc_idx,
     )

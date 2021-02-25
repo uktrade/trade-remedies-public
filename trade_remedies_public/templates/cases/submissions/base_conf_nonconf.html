@@ -33,6 +33,7 @@
         {% set 'one_column' True %}
     {% endif %}
 
+
     <div class="form-group margin-bottom-1">
         {% if not one_column %}
             <div class="column-one-half center bold">Private documents<br>(Confidential)</div>
@@ -41,6 +42,9 @@
             <div class="column-full center bold">Private documents (Confidential)</div>
         {% endif %}
     </div>
+
+
+
     {% set 'documents_list' documents.confidential %}
     {% if submission_document_type == 'loa' %}
         {% set 'documents_list' documents.loa %}
@@ -62,11 +66,27 @@
                 {% endif %}
             {% endfor %}
         {% endif %}
+
         {% for file in documents_list %}
             {% if new_document.id != file.id %}
                 {% include "partials/widgets/upload/row.html" with file=file %}
             {% endif %}
         {% endfor %}
+
+
+
+
+    {% set 'documents_list' documents.orphan %}
+    {% if documents_list %}
+        <div class="conf-mismatch" >
+                   <div class="column-full center bold">Mismatched document(s). Please remove.</div>
+            {% for file in documents_list %}
+                {% if new_document.id != file.id %}
+                    {% include "partials/widgets/upload/row.html" with file=file %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
     </div>
 
     {% if not submission.locked %}
