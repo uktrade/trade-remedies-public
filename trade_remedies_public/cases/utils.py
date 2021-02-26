@@ -103,26 +103,26 @@ def structure_documents(documents):
     including parent/child relationships
     """
 
-    type_idx = deep_index_items_by(documents, "type/key")
-    conf_idx = deep_index_items_by(type_idx.get("respondent") or [], "confidential")
-    doc_idx = deep_index_items_by(documents, "id")
-    parent_idx = deep_index_items_by(conf_idx.get("false", []), "parent_id")
+    document_types = deep_index_items_by(documents, "type/key")
+    confidential_docs = deep_index_items_by(document_types.get("respondent") or [], "confidential")
+    all_docs_by_id = deep_index_items_by(documents, "id")
+    doc_parents = deep_index_items_by(confidential_docs.get("false", []), "parent_id")
 
     for document in documents:
         parent_id = document.get("parent_id")
         if parent_id:
-            parent = doc_idx.get(parent_id)
+            parent = all_docs_by_id.get(parent_id)
             parent = parent and parent[0]  # remove list wrapper
             if parent:
                 parent["child"] = document
     return (
         {
-            "confidential": conf_idx.get("true", []),
-            "non_confidential": conf_idx.get("false", []),
-            "loa": type_idx.get("loa") or [],
-            "orphan": parent_idx.get("", []),
+            "confidential": confidential_docs.get("true", []),
+            "non_confidential": confidential_docs.get("false", []),
+            "loa": document_types.get("loa") or [],
+            "orphan": doc_parents.get("", []),
         },
-        doc_idx,
+        all_docs_by_id,
     )
 
 
