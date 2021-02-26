@@ -120,7 +120,7 @@ def structure_documents(documents):
             "confidential": conf_idx.get("true", []),
             "non_confidential": conf_idx.get("false", []),
             "loa": type_idx.get("loa") or [],
-            "orphan": parent_idx.get("", [])
+            "orphan": parent_idx.get("", []),
         },
         doc_idx,
     )
