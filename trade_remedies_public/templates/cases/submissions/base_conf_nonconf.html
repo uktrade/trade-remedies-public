@@ -82,7 +82,7 @@
                    <div class="column-full center bold">Mismatched document(s). Please remove.</div>
             {% for file in documents_list %}
                 {% if new_document.id != file.id %}
-                    {% include "partials/widgets/upload/row.html" with file=file %}
+                    {% include "partials/widgets/upload/orphan.html" with file=file %}
                 {% endif %}
             {% endfor %}
         </div>

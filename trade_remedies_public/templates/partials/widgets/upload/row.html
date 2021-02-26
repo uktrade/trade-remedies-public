@@ -23,14 +23,9 @@ side - left or right
 {% if not empty_row and not review_mode %}
     {% include "partials/widgets/upload/delete_link.html" with file=file %}
 {% endif %}
-<div class="upload-row form-group {% if warning %}warning{% endif %} {% if empty_row %}new-file-uploader{% endif %}
-{% if is_empty or new_file_row %}expanded{% endif %} {% if new_file_row %}new-row{% endif %}">
-   {% if file.confidential %}
-        {% include "partials/widgets/upload/panel.html" with file=file side='left' %}
-        {% if not one_column and not empty_row %}
-            {% include "partials/widgets/upload/panel.html" with file=file.child side='right' parent=file %}
-        {% endif %}
-    {% else %}
-        {% include "partials/widgets/upload/panel.html" with file=file side='right' %}
-   {% endif %}
+<div class="upload-row form-group {% if warning %}warning{% endif %} {% if empty_row %}new-file-uploader{% endif %} {% if is_empty or new_file_row %}expanded{% endif %} {% if new_file_row %}new-row{% endif %}">
+    {% include "partials/widgets/upload/panel.html" with file=file side='left' %}
+    {% if not one_column and not empty_row %}
+        {% include "partials/widgets/upload/panel.html" with file=file.child side='right' parent=file %}
+    {% endif %}
 </div>
