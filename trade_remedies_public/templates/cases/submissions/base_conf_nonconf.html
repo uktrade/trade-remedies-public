@@ -33,7 +33,6 @@
         {% set 'one_column' True %}
     {% endif %}
 
-
     <div class="form-group margin-bottom-1">
         {% if not one_column %}
             <div class="column-one-half center bold">Private documents<br>(Confidential)</div>
@@ -43,11 +42,12 @@
         {% endif %}
     </div>
 
-
-
     {% set 'documents_list' documents.confidential %}
+    {% set 'handling_confidential' True %}
+
     {% if submission_document_type == 'loa' %}
         {% set 'documents_list' documents.loa %}
+        {% set 'handling_confidential' False %}
     {% endif %}
 
     <div class="conf-nonconf3 {% if one_column %} one-column{% endif %}" data-attach="ConfNonconf">
@@ -73,20 +73,19 @@
             {% endif %}
         {% endfor %}
 
-
-
-
-    {% set 'documents_list' documents.orphan %}
-    {% if documents_list %}
-        <div class="conf-mismatch" >
-                   <div class="column-full center bold">Mismatched document(s). Please remove.</div>
-            {% for file in documents_list %}
-                {% if new_document.id != file.id %}
-                    {% include "partials/widgets/upload/orphan.html" with file=file %}
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
+    {% if handling_confidential %}
+        {% set 'documents_list' documents.orphan %}
+        {% if documents_list %}
+            <div class="conf-mismatch" >
+                       <div class="column-full center bold">Mismatched non-confidential document(s). Please remove.</div>
+                {% for file in documents_list %}
+                    {% if new_document.id != file.id %}
+                        {% include "partials/widgets/upload/orphan.html" with file=file %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+     {% endif %}
     </div>
 
     {% if not submission.locked %}
