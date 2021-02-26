@@ -51,17 +51,17 @@ def step_impl(context):
 @given('the logged in user navigates to the "{view_name}" page')  # noqa: F811
 @given('the logged in user is on the "{view_name}" page')
 @when('the logged in user is on the "{view_name}" page')
-def step_impl(context, view_name):
+def step_impl(context, view_name):  # noqa: F811
     context.execute_steps("given the user is logged in")
     utils.go_to_page(context, view_name)
 
 
 @given('the logged in user is on the "{view_name}" organisation page')  # noqa: F811
-def step_impl(context, view_name):
+def step_impl(context, view_name):  # noqa: F811
     context.execute_steps("given the user is logged in")
     utils.go_to_page(context, view_name, organisation_id=context.organisation_id)
 
 
-@when("the user submits the form")  # noqa: F811
-def step_impl(context):
+@when("the user submits the form")
+def step_impl(context):  # noqa: F811
     utils.get_element_by_id(context, "btn_submit").click()

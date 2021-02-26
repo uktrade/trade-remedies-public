@@ -12,12 +12,12 @@ def step_impl(context):
     utils.login(context, email, password)
 
 
-@when("the user supplies correct credentials")  # noqa: F811
-def step_impl(context):
+@when("the user supplies correct credentials")
+def step_impl(context):  # noqa: F811
     text_is_visible(context, "Email address")
     utils.test_user_login(context)
 
 
-@then("the user dashboard is displayed")  # noqa: F811
-def step_impl(context):
+@then("the user dashboard is displayed")
+def step_impl(context):  # noqa: F811
     text_is_visible(context, "This is your dashboard to interact")
