@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   python_steps:
     docker:
-      - image: circleci/python:3.6.12
+      - image: circleci/python:3.9.2
         environment:
           DATABASE_URL: sqlite:///trade_remedies_public/db.sqlite3
           DJANGO_SETTINGS_MODULE: trade_remedies_public.settings.local

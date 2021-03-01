@@ -1,4 +1,4 @@
 -r base.in
 
-gevent==1.4.0
+gevent==21.1.2
 gunicorn==20.0.4
