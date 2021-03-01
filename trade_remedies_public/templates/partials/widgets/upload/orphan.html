@@ -1,0 +1,27 @@
+{% load set %}
+
+{% comment %}
+ A single panel - right/left or full width
+ Supports expanded/compact display, recently-uploaded, upload widget, deficient and 'requiring upload' modes
+
+file - document structure
+submission
+side - left or right 
+{% endcomment %}
+
+{% set 'warning' True %}
+
+
+{% include "partials/widgets/upload/delete_link.html" with file=file %}
+
+<div class="upload-row form-group warning ">
+        <div class="display-panel">
+            <div class="display-shim">
+                <div class="display-title">
+                    <div><i class="icon icon-black-warning"></i></div>
+                    <a class="link" href="/case/{{ case_id }}/submission/{{ submission.id }}/document/{{ file.id }}/download/">{{ file.name }}</a>
+                </div>
+            </div>
+        </div>
+
+</div>
