@@ -12,7 +12,7 @@ def step_impl(context):
 
 
 @when("the user selects the 'Invite colleague' link")  # noqa: F811
-def step_impl(context):
+def step_impl(context):  # noqa: F811
     text_is_visible(context, "Manage your team")
     ref = utils.get_element_by_id(context, "lnk_invite_colleague")
     ref.click()
@@ -20,7 +20,7 @@ def step_impl(context):
 
 @when("the user selects the 3rd Party option on the form")  # noqa: F811
 @given("the user selects the 3rd Party option on the form")
-def step_impl(context):
+def step_impl(context):  # noqa: F811
     text_is_visible(
         context,
         "Regular (3rd Party) user who is representing "
