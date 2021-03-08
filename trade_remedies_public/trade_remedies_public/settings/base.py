@@ -24,8 +24,6 @@ env = environ.Env(
     DEBUG=(bool, False),
 )
 
-environ.Env.read_env()
-
 sentry_sdk.init(
     dsn=env("SENTRY_DSN", default=""),
     integrations=[DjangoIntegration()],
