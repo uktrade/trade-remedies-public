@@ -19,6 +19,13 @@ from django_log_formatter_ecs import ECSFormatter
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+# We use django-environ but do not read a `.env` file. Locally we feed
+# docker-compose an environment from a local.env file in the project root.
+# In our PaaS the service's environment is supplied from Vault.
+#
+# NB: Some settings acquired using `env()` deliberately *do not* have defaults
+# as we want to get an `ImproperlyConfigured` exception to avoid a badly
+# configured deployment.
 root = environ.Path(__file__) - 4
 env = environ.Env(
     DEBUG=(bool, False),
