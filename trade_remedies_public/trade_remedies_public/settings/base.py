@@ -19,17 +19,22 @@ from django_log_formatter_ecs import ECSFormatter
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+# We use django-environ but do not read a `.env` file. Locally we feed
+# docker-compose an environment from a local.env file in the project root.
+# In our PaaS the service's environment is supplied from Vault.
+#
+# NB: Some settings acquired using `env()` deliberately *do not* have defaults
+# as we want to get an `ImproperlyConfigured` exception to avoid a badly
+# configured deployment.
 root = environ.Path(__file__) - 4
 env = environ.Env(
     DEBUG=(bool, False),
 )
 
-environ.Env.read_env()
-
 sentry_sdk.init(
-    dsn=os.environ.get("SENTRY_DSN"),
+    dsn=env("SENTRY_DSN", default=""),
     integrations=[DjangoIntegration()],
-    environment=os.environ.get("SENTRY_ENVIRONMENT"),
+    environment=env("SENTRY_ENVIRONMENT", default="local"),
 )
 
 SITE_ROOT = root()
@@ -42,19 +47,18 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+SECRET_KEY = env("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!!!
-DEBUG = os.environ.get("DEBUG", "FALSE").upper() == "TRUE"
+DEBUG = env("DEBUG")
 
-ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(",")
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost"])
 
-ORGANISATION_NAME = os.environ.get("ORGANISATION_NAME", "Organisation name placeholder")
+ORGANISATION_NAME = env("ORGANISATION_NAME", default="Organisation name placeholder")
 
-ORGANISATION_INITIALISM = os.environ.get("ORGANISATION_INITIALISM", "PLACEHOLDER")
+ORGANISATION_INITIALISM = env("ORGANISATION_INITIALISM", default="PLACEHOLDER")
 
 # Application definition
-
 INSTALLED_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -86,7 +90,7 @@ MIDDLEWARE = [
 ]
 
 # Add basic authentication if configured
-basic_auth_user = os.environ.get("BASIC_AUTH_USER")
+basic_auth_user = env("BASIC_AUTH_USER", default=False)
 if basic_auth_user:
     MIDDLEWARE.append("basicauth.middleware.BasicAuthMiddleware")
 
@@ -151,35 +155,28 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
-
 TIME_ZONE = "Europe/London"
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 _VCAP_SERVICES = env.json("VCAP_SERVICES", default={})
 
-# Trade remedies uses different redis database numbers
-# Public Django cache - 2
-# Caseworker Django cache - 1
-# API Django cache - 0
-#  API Celery - 2 TODO find out if this should be a different value to public
-
-# Redis
+# Redis - Trade remedies uses different redis database numbers for the Django Cache
+# API:        0
+# Caseworker: 1
+# Public:     2
+REDIS_DATABASE_NUMBER = env("REDIS_DATABASE_NUMBER", default=2)
 if "redis" in _VCAP_SERVICES:
-    REDIS_BASE_URL = f"{_VCAP_SERVICES['redis'][0]['credentials']['uri']}/2"
+    REDIS_BASE_URL = _VCAP_SERVICES["redis"][0]["credentials"]["uri"]
 else:
-    REDIS_BASE_URL = os.getenv("REDIS_BASE_URL")
+    REDIS_BASE_URL = env("REDIS_BASE_URL", default="redis://redis:6379")
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_BASE_URL,
+        "LOCATION": f"{REDIS_BASE_URL}/{REDIS_DATABASE_NUMBER}",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -189,40 +186,34 @@ CACHES = {
 # Session configuration
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_SECURE = os.environ.get("SECURE_COOKIE", "FALSE").upper() == "TRUE"
-SESSION_EXPIRE_SECONDS = int(os.environ.get("SESSION_LENGTH_MINUTES") or 15) * 60
+SESSION_COOKIE_SECURE = env("SECURE_COOKIE", default=False)
+SESSION_EXPIRE_SECONDS = env("SESSION_LENGTH_MINUTES", default=30) * 60
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-CSRF_COOKIE_SECURE = os.environ.get("SECURE_CSRF_COOKIE", "FALSE").upper() == "TRUE"
-CSRF_COOKIE_HTTPONLY = os.environ.get("CSRF_COOKIE_HTTPONLY", "FALSE").upper() == "TRUE"
+CSRF_COOKIE_SECURE = env("SECURE_CSRF_COOKIE", default=False)
+CSRF_COOKIE_HTTPONLY = env("CSRF_COOKIE_HTTPONLY", default=False)
+USE_2FA = os.environ.get("USE_2FA", "TRUE").upper() == "TRUE"
+VERIFY_EMAIL = os.environ.get("VERIFY_EMAIL", "TRUE").upper() == "TRUE"
+MANAGED_FEEDBACK_MODELS = False
+GOOGLE_ANALYTICS_TAG_MANAGER_ID = os.environ.get("GA_TAG_MANAGER_ID", "GTM-XXXXXX")
+PUBLIC_FILE_CACHE_MINUTES = 10
 
-# AUTHENTICATION_BACKENDS = ['trade_remedies_public.core.auth.AuthenticationBackend']
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/dashboard/"
 LOGOUT_URL = "/accounts/logout/"
 LOGOUT_REDIRECT_URL = "/"
 AUTO_LOGIN = True
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.0/howto/static-files/
-API_BASE_URL = os.environ.get("API_BASE_URL", "http://api:8000")
+
+API_BASE_URL = env("API_BASE_URL", default="http://localhost:8000")
 API_PREFIX = "api/v1"
 API_URL = f"{API_BASE_URL}/{API_PREFIX}"
-TRUSTED_USER_TOKEN = os.environ.get("HEALTH_CHECK_TOKEN")
-ENVIRONMENT_KEY = os.environ.get("ENVIRONMENT_KEY")
-USE_2FA = os.environ.get("USE_2FA", "TRUE").upper() == "TRUE"
-VERIFY_EMAIL = os.environ.get("VERIFY_EMAIL", "TRUE").upper() == "TRUE"
-MANAGED_FEEDBACK_MODELS = False
-GOOGLE_ANALYTICS_TAG_MANAGER_ID = os.environ.get("GA_TAG_MANAGER_ID", "GTM-XXXXXX")
+TRUSTED_USER_TOKEN = env("HEALTH_CHECK_TOKEN")
+ENVIRONMENT_KEY = env("ENVIRONMENT_KEY", default="PUB-ENV")
+APPEND_SLASH = True
 
-PUBLIC_FILE_CACHE_MINUTES = 10
-
-# Max upload size - 2GB
-MAX_UPLOAD_SIZE = 2 * (1024 * 1024 * 1024)
-AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = os.environ.get("S3_STORAGE_KEY")
-AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = os.environ.get("S3_STORAGE_SECRET")
-AWS_STORAGE_BUCKET_NAME = os.environ.get("S3_BUCKET_NAME")
-AWS_REGION = AWS_S3_REGION_NAME = os.environ.get(
-    "AWS_REGION", "eu-west-1"
-)  # "eu-west-1" looks like a legacy setting, TODO investigate if used in prod
+AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = env("S3_STORAGE_KEY", default=None)
+AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = env("S3_STORAGE_SECRET", default=None)
+AWS_STORAGE_BUCKET_NAME = env("S3_BUCKET_NAME", default=None)
+AWS_S3_REGION_NAME = env("AWS_REGION", default="eu-west-1")
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_ENCRYPTION = True
 AWS_DEFAULT_ACL = None
@@ -230,10 +221,7 @@ AWS_DEFAULT_ACL = None
 S3_CLIENT = "boto3"
 # S3 Root directory name
 S3_DOCUMENT_ROOT_DIRECTORY = "documents"
-# Time before S3 download links expire
-S3_DOWNLOAD_LINK_EXPIREY_SECONDS = 30
-# Asynchronous document uploads/checks
-ASYNC_DOC_PREPARE = True
+
 FILE_UPLOAD_HANDLERS = ("s3chunkuploader.file_handler.S3FileUploadHandler",)
 
 if basic_auth_user:
@@ -244,7 +232,8 @@ COUNTRIES_OVERRIDE = {
     "EU": "EU Customs Union",
 }
 
-APPEND_SLASH = True
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.0/howto/static-files/
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", "static"))
 
@@ -252,16 +241,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "govuk_template", "static"),
     os.path.join(BASE_DIR, "..", "templates", "static"),
 ]
-# Django static file storage to use whitenoise
-# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 ACCOUNT_INFO_READ_ONLY = os.environ.get("ACCOUNT_INFO_READ_ONLY", "TRUE").upper() == "TRUE"
-
-
-RAVEN_CONFIG = {
-    "dsn": os.environ.get("SENTRY_DSN"),
-    "environment": os.environ.get("SENTRY_ENVIRONMENT"),
-}
 
 
 LOGGING = {
@@ -282,28 +263,28 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stdout"],
-        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
+        "level": env("ROOT_LOG_LEVEL", default="INFO"),
     },
     "loggers": {
         "django": {
             "handlers": [
                 "stdout",
             ],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
             "propagate": True,
         },
         "django.server": {
             "handlers": [
                 "stdout",
             ],
-            "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "INFO"),
+            "level": env("DJANGO_SERVER_LOG_LEVEL", default="INFO"),
             "propagate": False,
         },
         "django.db.backends": {
             "handlers": [
                 "stdout",
             ],
-            "level": os.getenv("DJANGO_DB_LOG_LEVEL", "INFO"),
+            "level": env("DJANGO_DB_LOG_LEVEL", default="INFO"),
             "propagate": True,
         },
     },
@@ -330,28 +311,28 @@ ENVIRONMENT_LOGGING = {
         "handlers": [
             "ecs",
         ],
-        "level": os.getenv("ROOT_LOG_LEVEL", "INFO"),
+        "level": env("ROOT_LOG_LEVEL", default="INFO"),
     },
     "loggers": {
         "django": {
             "handlers": [
                 "ecs",
             ],
-            "level": os.getenv("DJANGO_LOG_LEVEL", "INFO"),
+            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
             "propagate": False,
         },
         "django.server": {
             "handlers": [
                 "ecs",
             ],
-            "level": os.getenv("DJANGO_SERVER_LOG_LEVEL", "ERROR"),
+            "level": env("DJANGO_SERVER_LOG_LEVEL", default="ERROR"),
             "propagate": False,
         },
         "django.db.backends": {
             "handlers": [
                 "ecs",
             ],
-            "level": os.getenv("DJANGO_DB_LOG_LEVEL", "ERROR"),
+            "level": env("DJANGO_DB_LOG_LEVEL", default="ERROR"),
             "propagate": False,
         },
     },
