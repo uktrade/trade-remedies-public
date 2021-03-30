@@ -4,10 +4,13 @@ behave-django==1.4.0
 black
 coverage
 flake8
-ipython==7.12
+ipython==7.22.0
 pytest
 pytest-cov
 pytest-django
 pytest-xdist
 selenium==3.141.0
 traitlets==4.3.3
+
+# ipython dep - for CVE-2021-27291
+pygments==2.8.1
