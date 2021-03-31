@@ -1,6 +1,6 @@
 {
   "name": "trade-remedies-public",
-  "version": "1.5.3",
+  "version": "1.5.9",
   "description": "Public-facing UI for the Trade Remedies system",
   "main": "index.js",
   "private": true,
@@ -17,14 +17,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "clean": "^4.0.2",
     "del": "^5.1.0",
     "gulp": "^4.0.2",
+    "gulp-cli": "^2.3.0",
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.5"
   },
   "devDependencies": {
     "all-contributors-cli": "^6.17.2",
-    "prettier": "^2.0.5"
+    "prettier": "2.2.1"
   },
   "bugs": {
     "url": "https://github.com/uktrade/trade-remedies-public/issues"
