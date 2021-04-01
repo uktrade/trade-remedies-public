@@ -1,1 +1,1 @@
-web: cd trade_remedies_public && python ./manage.py migrate && ./manage.py collectstatic --noinput  && gunicorn trade_remedies_public.wsgi --bind 0.0.0.0:8080 --config trade_remedies_public/gunicorn.py
+web: cd trade_remedies_public && python ./manage.py migrate && ./manage.py collectstatic --noinput && gunicorn trade_remedies_public.wsgi --bind 0.0.0.0:8080 --capture-output --config trade_remedies_public/gunicorn.py
