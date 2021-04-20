@@ -1352,12 +1352,10 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
     template_name = "cases/submissions/invite/invites.html"
 
     def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
-        invitee = invitee_name = None
-        submission_documents = []
+        contact = None
         if self.submission:
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
-            invitee = invites[0] if invites else None
-            submission_documents = self.get_submission_documents()
+            contact = invites[0].get("contact") if invites else None
         return render(
             request,
             self.template_name,
@@ -1370,12 +1368,8 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
                 "submission_id": self.submission_id,
                 "case": self.case,
                 "submission": self.submission,
-                "organisation": request.user.organisation,
-                "organisation_name": request.user.organisation.get("name", "unknown"),
-                "documents": submission_documents,
-                "application": request.session.get("application", "unknown"),
-                "invitee": invitee,
-                "invite": invitee["contact"] if invitee else None,
+                "inviting_organisation": request.user.organisation,
+                "contact": contact,
             },
         )
 
@@ -1385,8 +1379,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             "email": request.POST.get("email"),
             "organisation_name": request.POST.get("organisation_name"),
             "companies_house_id": request.POST.get("companies_house_id"),
-            "address": request.POST.get("organisation_address"),
-            "invite_id": request.POST.get("invite_id"),
+            "organisation_address": request.POST.get("organisation_address"),
         }
         if data["organisation_name"] == request.user.organisation["name"]:
             msg = "Invalid company name: A third party cannot be from your organisation"
@@ -1396,7 +1389,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             if submission_id:
                 return redirect(f"/case/invite/{case_id}/submission/{submission_id}/")
             return redirect(f"/case/invite/{case_id}/")
-        # Remove existing third party invites
+        # We create a new invite after each edit, so remove existing third party invites
         if submission_id:
             invites = self._client.get_third_party_invites(case_id, submission_id)
             for invite in invites:
