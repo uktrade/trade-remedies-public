@@ -8,7 +8,7 @@
     {% block extra_save_button %}
     {% endblock %}
   	{% if not submission.status.locking %}
-    <div class="margin-top-2">
+    <div class="margin-top-0">
       {% block save_button %}
         <button type="submit" class="button" name="btn-action" value="savecontinue">{% block save_button_text %}Save and continue{% endblock %}</button>
       {% endblock %}
