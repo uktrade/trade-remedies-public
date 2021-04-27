@@ -12,15 +12,15 @@ botocore==1.14.17
     # via
     #   boto3
     #   s3transfer
-certifi==2020.6.20
+certifi==2020.12.5
     # via
     #   requests
     #   sentry-sdk
-chardet==3.0.4
+chardet==4.0.0
     # via requests
 django-basicauth==0.5.2
     # via -r requirements.in/base.in
-django-cache-memoize==0.1.7
+django-cache-memoize==0.1.8
     # via trade-remedies-client
 django-countries==5.4
     # via -r requirements.in/base.in
@@ -57,7 +57,7 @@ django==2.2.20
     #   feed-gov-back
     #   s3chunkuploader
     #   trade-remedies-client
-djangorestframework==3.12.1
+djangorestframework==3.12.4
     # via feed-gov-back
 docutils==0.15.2
     # via botocore
@@ -79,7 +79,7 @@ psycopg2-binary==2.8.6
     # via feed-gov-back
 python-dateutil==2.8.1
     # via botocore
-pytz==2020.1
+pytz==2021.1
     # via
     #   -r requirements.in/base.in
     #   django
@@ -88,13 +88,13 @@ redis==3.2.0
     # via
     #   -r requirements.in/base.in
     #   django-redis
-requests==2.24.0
+requests==2.25.1
     # via
     #   -r requirements.in/base.in
     #   trade-remedies-client
 s3chunkuploader==0.10
     # via -r requirements.in/base.in
-s3transfer==0.3.3
+s3transfer==0.3.7
     # via boto3
 sentry-sdk==0.13.1
     # via -r requirements.in/base.in
@@ -102,11 +102,11 @@ six==1.15.0
     # via
     #   django-extensions
     #   python-dateutil
-sqlparse==0.3.1
+sqlparse==0.4.1
     # via django
 git+git://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/base.in
-urllib3==1.25.10
+urllib3==1.25.11
     # via
     #   botocore
     #   requests
