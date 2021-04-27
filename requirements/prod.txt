@@ -83,6 +83,8 @@ marshmallow==3.6.1
     # via kubi-ecs-logger
 psycopg2-binary==2.8.6
     # via feed-gov-back
+py==1.10.0
+    # via -r requirements.in/base.in
 python-dateutil==2.8.1
     # via botocore
 pytz==2021.1
