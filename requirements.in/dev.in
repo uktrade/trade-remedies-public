@@ -5,6 +5,7 @@ black
 coverage
 flake8
 ipython==7.22.0
+pip-tools
 pytest
 pytest-cov
 pytest-django
