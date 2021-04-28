@@ -37,7 +37,9 @@ certifi==2020.12.5
 chardet==4.0.0
     # via requests
 click==7.1.2
-    # via black
+    # via
+    #   black
+    #   pip-tools
 coverage==5.5
     # via
     #   -r requirements.in/dev.in
@@ -131,10 +133,14 @@ parso==0.8.2
     # via jedi
 pathspec==0.8.1
     # via black
+pep517==0.10.0
+    # via pip-tools
 pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
+pip-tools==6.1.0
+    # via -r requirements.in/dev.in
 pluggy==0.13.1
     # via pytest
 prompt-toolkit==3.0.18
@@ -211,6 +217,7 @@ sqlparse==0.4.1
 toml==0.10.2
     # via
     #   black
+    #   pep517
     #   pytest
 git+git://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/base.in
@@ -236,4 +243,5 @@ whitenoise==3.3.1
     # via -r requirements.in/base.in
 
 # The following packages are considered to be unsafe in a requirements file:
+# pip
 # setuptools
