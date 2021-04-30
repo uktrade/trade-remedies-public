@@ -18,6 +18,8 @@ certifi==2020.12.5
     #   sentry-sdk
 chardet==4.0.0
     # via requests
+django-audit-log-middleware==0.0.4
+    # via -r requirements.in/base.in
 django-basicauth==0.5.2
     # via -r requirements.in/base.in
 django-cache-memoize==0.1.8
@@ -33,7 +35,9 @@ django-govuk-forms==0.5
 django-govuk-template==0.6
     # via -r requirements.in/base.in
 django-ipware==3.0.2
-    # via django-log-formatter-ecs
+    # via
+    #   django-audit-log-middleware
+    #   django-log-formatter-ecs
 django-log-formatter-ecs==0.0.5
     # via -r requirements.in/base.in
 django-redis==4.10.0
@@ -47,6 +51,7 @@ django-timezone-field==3.0
 django==2.2.20
     # via
     #   -r requirements.in/base.in
+    #   django-audit-log-middleware
     #   django-basicauth
     #   django-govuk-forms
     #   django-govuk-template
