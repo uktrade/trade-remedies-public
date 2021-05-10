@@ -2,7 +2,7 @@ version: 2.1
 jobs:
   python_steps:
     docker:
-      - image: circleci/python:3.9.2
+      - image: cimg/python:3.9.5
         environment:
           DATABASE_URL: sqlite:///trade_remedies_public/db.sqlite3
           DJANGO_SETTINGS_MODULE: trade_remedies_public.settings.local
@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
       - run:
           name: Install Python deps
           command: |
@@ -19,7 +19,7 @@ jobs:
             . venv/bin/activate
             pip install -r requirements/dev.txt
       - save_cache:
-          key: deps1-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
           paths:
             - "venv"
       - run:
