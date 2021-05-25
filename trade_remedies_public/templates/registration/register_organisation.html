@@ -11,6 +11,12 @@ Create an account
 {% endblock %}
 
 {% block form_content %}
+{% if invite.organisation_security_group == 'Third Party User' %}
+    {% set 'organisation_name' invite.contact.organisation.name %}
+    {% set 'companies_house_id' invite.contact.organisation.companies_house_id %}
+    {% set 'organisation_address' invite.contact.organisation.address %}
+{% endif %}
+
   <h2 class="heading-medium">
       Your company details
   </h2>
