@@ -4,11 +4,11 @@
 #
 #    pip-compile --output-file=requirements/prod.txt requirements.in/prod.in
 #
-boto3==1.11.14
+boto3==1.17.88
     # via
     #   -r requirements.in/base.in
     #   s3chunkuploader
-botocore==1.14.17
+botocore==1.20.88
     # via
     #   boto3
     #   s3transfer
@@ -48,7 +48,7 @@ django-storages==1.9.1
     #   s3chunkuploader
 django-timezone-field==3.0
     # via -r requirements.in/base.in
-django==2.2.20
+django==2.2.21
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
@@ -64,8 +64,6 @@ django==2.2.20
     #   trade-remedies-client
 djangorestframework==3.12.4
     # via feed-gov-back
-docutils==0.15.2
-    # via botocore
 dpath==1.4.2
     # via -r requirements.in/base.in
 feed-gov-back==0.4
@@ -107,7 +105,7 @@ requests==2.25.1
     #   trade-remedies-client
 s3chunkuploader==0.10
     # via -r requirements.in/base.in
-s3transfer==0.3.7
+s3transfer==0.4.2
     # via boto3
 sentry-sdk==0.13.1
     # via -r requirements.in/base.in
@@ -119,8 +117,9 @@ sqlparse==0.4.1
     # via django
 git+git://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/base.in
-urllib3==1.25.11
+urllib3==1.26.5
     # via
+    #   -r requirements.in/base.in
     #   botocore
     #   requests
     #   sentry-sdk

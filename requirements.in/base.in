@@ -1,5 +1,5 @@
 git+git://github.com/uktrade/trade-remedies-client.git
-boto3==1.11.14
+boto3==1.17.88
 django-basicauth==0.5.2
 django-countries==5.4
 django-environ==0.4.5
@@ -13,12 +13,15 @@ feed-gov-back==0.4
 redis==3.2.0
 django-redis==4.10.0
 django-timezone-field==3.0
-Django==2.2.20
+Django==2.2.21
 dpath==1.4.2
 pytz
 sentry-sdk==0.13.1
-requests
+requests==2.25.1
 s3chunkuploader==0.10
 werkzeug==0.15.5
 whitenoise==3.3.1
 py>=1.10.0
+
+# CVE-2021-33503
+urllib3==1.26.5
