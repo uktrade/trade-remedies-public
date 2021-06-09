@@ -60,7 +60,11 @@
 				{% include "partials/widgets/key_value_row.html" with key="Status" value=status %}
 			</div>
 			<div class="edit-section">
-				{% include "partials/widgets/key_value_row.html" with key="User type" value='Direct employee of your organisation' %}
+                {% set 'user_type' 'Direct employee of your organisation' %}
+                {% if 'Third Party User' in user_record.groups %}
+                    {% set 'user_type' 'Third party collaborating with your organisation' %}
+                {% endif %}
+				{% include "partials/widgets/key_value_row.html" with key="User type" value=user_type %}
 			</div>
 			<div class="edit-section">
 				{% if is_owner and not self and not invitation_id %}

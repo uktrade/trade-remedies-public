@@ -409,6 +409,7 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
             pending_assignments = client.get_pending_user_case_assignments(
                 request.user.organisation["id"]
             )
+            # TODO HERE pass in ORG???
             users = client.get_team_users()
             _user_emails = [user["email"] for user in users]
             _invites = client.get_user_invitations()
@@ -495,7 +496,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         **kwargs,
     ):
         invitation_id = invitation_id or request.GET.get("invitation_id")
-        create_mode = False
         organisation_id = organisation_id or request.user.organisation.get("id")
         _session_data = request.session.get("create-user", {})
         user = _session_data.get("user", {"active": True})
@@ -522,17 +522,18 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             request.session["create-user"] = self.init_data(invite, user, case_spec)
             if section != "edit":
                 section = "contact"
-        if not user:
-            user = request.session.get("create-user", {}).get("user")
-        if not user.get("address") or not user.get("country_code"):
+        code = user.get("selected_country_code")
+        if not user.get("address") or not code:
             organisation = client.get_organisation(request.user.organisation["id"])
             if not user.get("address"):
                 user["address"] = organisation.get("address", "")
-            if not user.get("country_code"):
+            if not code:
+                # Use inviting user's organisation's country if set
                 user["country"] = organisation.get("country", {})
-                user["country_code"] = organisation.get("country", {}).get("code", "GB")
-        elif user.get("country_code") and user.get("country") and isinstance(user["country"], str):
-            user["country"] = {"code": user["country_code"], "name": user["country"]}
+                user["country"]["name"] = organisation.get("country", {}).get("name", "United Kingdom")
+                user["country"]["code"] = organisation.get("country", {}).get("code", "GB")
+        elif user.get("selected_country_code"):
+            user["country"] = {"code": code, "name": countries.countries[code]}
         if kwargs.get("errors") and kwargs.get("data"):
             user.update(kwargs["data"])
         create_mode = user.get("case_ids") is None
@@ -586,7 +587,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 "organisation_id": organisation_id,
                 "user_record": user,
                 "invitation_id": invitation_id,
-                # 'invites': invites,
                 "countries": countries,
                 "groups": client.get_public_security_groups(),
                 "timezones": pytz.common_timezones,
@@ -612,7 +612,8 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         *args,
         **kwargs,
     ):
-        if request.POST.get("group") == SECURITY_GROUP_THIRD_PARTY_USER:
+        user_group = request.POST.get("group")
+        if user_group == SECURITY_GROUP_THIRD_PARTY_USER:
             return redirect("/case/invite")
 
         client = self.client(request.user)
@@ -630,7 +631,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             if user_id
             else f"/accounts/team/{organisation_id}/user/"
         )
-        user_group = request.user.groups[0] if request.user.groups else None
         data = {
             "organisation_id": organisation_id,
             "group": user_group,
@@ -641,9 +641,11 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         if request.POST.get("section") == "contact":
             _validator = user_create_validators
             if not self.self_details and not user_id:
-                _validator = user_create_validators + [
-                    {"key": "group", "message": "You must select a security group", "re": ".+"}
-                ]
+                user_create_validators.extend([
+                    {"key": "group", "message": "You must select a security group", "re": ".+"},
+                    {"key": "selected_country_code", "message": "You must select a country", "re": ".+"}
+                ])
+                _validator = user_create_validators
             errors = validate(data, _validator)
             if errors:
                 return self.get(

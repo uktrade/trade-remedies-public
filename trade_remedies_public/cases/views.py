@@ -43,7 +43,7 @@ from trade_remedies_public.constants import (
     SECURITY_GROUP_ORGANISATION_USER,
 )
 
-from core.validators import company_form_validators, review_form_validators
+from core.validators import company_form_validators, registration_validators, review_form_validators
 import dpath
 
 
@@ -1353,9 +1353,11 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
 
     def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
         contact = None
+        uk_company = non_uk_company = False
         if self.submission:
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
             contact = invites[0].get("contact") if invites else None
+            uk_company = False
         return render(
             request,
             self.template_name,
@@ -1370,6 +1372,9 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
                 "submission": self.submission,
                 "inviting_organisation": request.user.organisation,
                 "contact": contact,
+                "uk_company": uk_company,
+                "non_uk_company": non_uk_company,
+                "countries": countries,
             },
         )
 
@@ -1377,25 +1382,23 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
         data = {
             "name": request.POST.get("name"),
             "email": request.POST.get("email"),
+            "uk_company_choice": request.POST.get("uk_company_choice"),
             "organisation_name": request.POST.get("organisation_name"),
             "companies_house_id": request.POST.get("companies_house_id"),
             "organisation_address": request.POST.get("organisation_address"),
         }
+        errors = {}
         if data["organisation_name"] == request.user.organisation["name"]:
             msg = "Invalid company name: A third party cannot be from your organisation"
-            errors = {"organisation_name": msg}
+            errors["organisation_name"] = msg
+        if not data["uk_company_choice"]:
+            errors["uk_company_choice"] = "You must select an option"
+        if errors:
             return self.get(request, case_id, submission_id=None, errors=errors)
         if not data["name"] or not data["email"]:
             if submission_id:
                 return redirect(f"/case/invite/{case_id}/submission/{submission_id}/")
             return redirect(f"/case/invite/{case_id}/")
-        # We create a new invite after each edit, so remove existing third party invites
-        if submission_id:
-            invites = self._client.get_third_party_invites(case_id, submission_id)
-            for invite in invites:
-                self._client.remove_third_party_invite(
-                    invite["case"]["id"], invite["submission"]["id"], invite["id"]
-                )
         response = self._client.third_party_invite(
             case_id=case_id,
             organisation_id=request.user.organisation["id"],

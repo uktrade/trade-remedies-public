@@ -38,7 +38,7 @@
 			{% endif %}
 		{% endif %}
 	</div>
-    {% if not user_record.email %}
+    {% if create_mode %}
         {% if errors.group %}<span class="error-message" id="group_error">{{ errors.group }}</span>{% endif %}
         <div class="form-group">
             <label for="email" class="form-label">How will the user interact with the trade remedies system?</label>
@@ -92,6 +92,9 @@
                                 onclick="document.getElementById('form-fields').hidden = false;
                                          document.getElementById('third-party-message').hidden = true;"
                             {% endif %}
+                            {% if user_record.group == group.0 %}
+                                checked
+                            {% endif %}
                     />
                     {% if group.0 == 'Organisation Owner' %}
                         {% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
@@ -104,6 +107,8 @@
                 </div>
             {% endfor %}
         </div>
+    {% else %}
+        <input type="hidden" name="group" value="{{ user_record.group }}">
     {% endif %}
 
     <div id="third-party-message" class="form-group" hidden>
@@ -115,17 +120,16 @@
         {% text_element id='name' label='Name' autocomplete="off" errors=errors value=user_record.name %}
         {% text_element id='email' label='Email (username)' errors=errors value=user_record.email read_only=existing_user_id %}
         {% text_element id='phone' label='Phone number' type='tel' autocomplete='off' errors=errors value=user_record.phone %}
-
         {% text_element id='address' textarea=True label='Address' errors=errors value=user_record.address %}
         <div class="form-group edit-item type-text ">
             <label class="form-label" for="country">Country</label>
-            {% if errors.organisation_country %}<span class="error-message" id="country_error">{{ errors.organisation_country }}</span>{% endif %}
-            <select class="form-control" name="country" id="country">
+            {% if errors.selected_country_code %}<span class="error-message" id="selected_country_code_error">{{ errors.selected_country_code }}</span>{% endif %}
+            <select class="form-control" name="selected_country_code" id="selected_country_code">
                 <option value="">Please select ...</option>
                 {% for country_code, country_name in countries %}
                     <option
                         value="{{country_code}}"
-                        {% if user_record.country_code == country_code %}selected{% endif %}
+                        {% if user_record.country.code == country_code %}selected{% endif %}
                     >{{country_name}}</option>
                 {% endfor %}
             </select>
