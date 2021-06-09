@@ -42,7 +42,7 @@ jobs:
             python -m flake8
   front_end:
     docker: 
-      - image: 'circleci/node:latest'
+      - image: 'circleci/node:lts'
     steps:
       - checkout
       - restore_cache:
