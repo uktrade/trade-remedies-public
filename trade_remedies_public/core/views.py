@@ -530,7 +530,9 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             if not code:
                 # Use inviting user's organisation's country if set
                 user["country"] = organisation.get("country", {})
-                user["country"]["name"] = organisation.get("country", {}).get("name", "United Kingdom")
+                user["country"]["name"] = organisation.get("country", {}).get(
+                    "name", "United Kingdom"
+                )
                 user["country"]["code"] = organisation.get("country", {}).get("code", "GB")
         elif user.get("selected_country_code"):
             user["country"] = {"code": code, "name": countries.countries[code]}
@@ -641,10 +643,16 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         if request.POST.get("section") == "contact":
             _validator = user_create_validators
             if not self.self_details and not user_id:
-                user_create_validators.extend([
-                    {"key": "group", "message": "You must select a security group", "re": ".+"},
-                    {"key": "selected_country_code", "message": "You must select a country", "re": ".+"}
-                ])
+                user_create_validators.extend(
+                    [
+                        {"key": "group", "message": "You must select a security group", "re": ".+"},
+                        {
+                            "key": "selected_country_code",
+                            "message": "You must select a country",
+                            "re": ".+",
+                        },
+                    ]
+                )
                 _validator = user_create_validators
             errors = validate(data, _validator)
             if errors:
