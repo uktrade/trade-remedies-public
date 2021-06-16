@@ -69,3 +69,19 @@ user_create_validators = [
         "re": "^([0|\\+[0-9\s]{1,5})?([0-9\s]{4,13})?$",  # noqa: W605
     },
 ]
+
+third_party_validators_base = [
+    {"key": "name", "message": "You must enter a name", "re": ".+"},
+    {"key": "email", "message": "You must enter an email address", "re": ".+"},
+    {"key": "email", "message": "This email address is invalid", "re": email_validator},
+    {"key": "organisation_name", "message": "Company name is required", "re": ".+"},
+    {"key": "organisation_address", "message": "Company address is required", "re": ".+"},
+]
+
+third_party_validators_uk = [
+    {"key": "companies_house_id", "message": "Company number is required", "re": ".+"},
+]
+
+third_party_validators_non_uk = [
+    {"key": "country_code", "message": "You must select a country", "re": ".+"},
+]
