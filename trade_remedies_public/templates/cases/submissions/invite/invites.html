@@ -19,23 +19,40 @@
             {% if submission.locked %}
                 {{ contact.name }}
             {% else %}
-                <div class="form-group type-text">
+                <div class="form-group type-text {% if errors.name %}form-group-error{% endif %}">
                     <label class="form-label" for="name">Name</label>
+                    {% if errors.name %}
+                        <span class="error-message" id="name_error">
+                            {{ errors.name }}
+                        </span>
+                    {% endif %}
                     <input class="form-control form-control-3-4"
                            id="name"
                            name="name"
                            type="text"
-                           value="{{ contact.name }}">
+                           value="{{ contact.name|default_if_none:'' }}">
                 </div>
-                <div class="form-group type-text">
+                <div class="form-group type-text {% if errors.email %}form-group-error{% endif %}">
                     <label class="form-label" for="email">Email</label>
+                    {% if errors.email %}
+                        <span class="error-message" id="email_error">
+                            {{ errors.email }}
+                        </span>
+                    {% endif %}
                     <input class="form-control form-control-3-4"
                            id="email"
                            name="email"
                            type="text"
-                           value="{{ contact.email }}">
+                           value="{{ contact.email|default_if_none:'' }}">
                 </div>
-                <label class="form-label">Is the Third Party's company UK based?</label>
+                <div class="form-group {% if errors.uk_company_choice %}form-group-error{% endif %}">
+                    <label class="form-label">Is the Third Party's company UK based?</label>
+                    {% if errors.uk_company_choice %}
+                        <span class="error-message" id="uk_company_choice_error">
+                            {{ errors.uk_company_choice }}
+                        </span>
+                    {% endif %}
+                </div>
                 <div class="multiple-choice">
                     <input type="radio"
                            id="uk_company"
@@ -55,29 +72,44 @@
                         option. The company number and company address will be automatically
                         populated.
                     </label>
-                    <div class="form-group type-text type-typeahead"
+                    <div class="form-group type-text type-typeahead {% if errors.organisation_name %}form-group-error{% endif %}"
                          id="typeAheadWrapper">
                         <label class="form-label" for="company">Company name</label>
+                        {% if errors.organisation_name %}
+                            <span class="error-message" id="organisation_name_error">
+                            {{ errors.organisation_name }}
+                        </span>
+                        {% endif %}
                         <input class="form-control form-control-3-4"
                                data-mode="company"
                                id="company"
-                               name="organisation_name"
+                               name="organisation_name_uk"
                                type="text"
-                               value="{{ contact.organisation.name }}">
+                               value="{{ contact.organisation.name|default_if_none:'' }}">
                     </div>
-                    <div class="form-group type-text">
+                    <div class="form-group type-text {% if errors.company_id %}form-group-error{% endif %}">
                         <label class="form-label" for="company_number">Company number</label>
+                        {% if errors.company_id %}
+                            <span class="error-message" id="company_id_error">
+                            {{ errors.company_id }}
+                        </span>
+                        {% endif %}
                         <input class="form-control form-control-3-4"
                                id="company_number"
                                name="companies_house_id"
                                type="text"
                                value="{{ company_id }}">
                     </div>
-                    <div class="form-group type-text">
-                        <label class="form-label" for="full_address">Address</label>
+                    <div class="form-group type-text {% if errors.organisation_address %}form-group-error{% endif %}">
+                        <label class="form-label" for="full_address">Company Address</label>
+                        {% if errors.organisation_address %}
+                            <span class="error-message" id="organisation_address_error">
+                            {{ errors.organisation_address }}
+                        </span>
+                        {% endif %}
                         <textarea class="form-control form-control-3-4"
                                   id="full_address"
-                                  name="organisation_address"
+                                  name="organisation_address_uk"
                                   rows="5"
                                   type="text">{{ contact.organisation.address|default_if_none:"" }}</textarea>
                     </div>
@@ -100,36 +132,51 @@
                         Select the country of the Third Party's company and enter the
                         company name and address.
                     </label>
-                    <div class="form-group type-text ">
-                        <label for="country" class="form-label">Country </label>
+                    <div class="form-group type-text {% if errors.country_code %}form-group-error{% endif %}">
+                        <label for="country" class="form-label">Country</label>
+                        {% if errors.country_code %}
+                            <span class="error-message" id="country_error">
+                            {{ errors.country_code }}
+                        </span>
+                        {% endif %}
                         <select name="country_code" class="form-control" id="country">
                             <option value="">Select Country</option>
                             {% for country in countries %}
                                 <option
                                         value="{{ country.0 }}"
-                                        {% if country.0 == user.country_code %}selected{% endif %}>{{ country.1 }}
+                                        {% if country.0 == contact.organisation.country_code %}selected{% endif %}>{{ country.1 }}
                                 </option>
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="form-group type-text">
+                    <div class="form-group type-text {% if errors.organisation_name %}form-group-error{% endif %}">
                         <label class="form-label" for="company">Company Name</label>
+                        {% if errors.organisation_name %}
+                            <span class="error-message" id="organisation_name_error">
+                            {{ errors.organisation_name }}
+                        </span>
+                        {% endif %}
                         <input class="form-control form-control-3-4"
                                data-mode="company"
                                id="company"
-                               name="organisation_name"
+                               name="organisation_name_non_uk"
                                type="text"
-                               value="{{ contact.organisation.name }}">
+                               value="{{ contact.organisation.name|default_if_none:'' }}">
                     </div>
-                    <div class="form-group type-text">
-                        <label class="form-label" for="full_address">Address</label>
+                    <div class="form-group type-text {% if errors.organisation_address %}form-group-error{% endif %}">
+                        <label class="form-label" for="full_address">Company Address</label>
+                        {% if errors.organisation_address %}
+                            <span class="error-message" id="organisation_address_error">
+                            {{ errors.organisation_address }}
+                        </span>
+                        {% endif %}
                         <input class="form-control form-control-3-4"
                                id="postal_code" type="hidden"
                                name="organisation_post_code"
                                value="{{ contact.organisation.address }}">
                         <textarea class="form-control form-control-3-4"
                                   id="full_address"
-                                  name="organisation_address"
+                                  name="organisation_address_non_uk"
                                   rows="5"
                                   type="text">{{ contact.organisation.address|default_if_none:"" }}</textarea>
                     </div>
