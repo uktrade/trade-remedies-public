@@ -529,7 +529,7 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             if section != "edit":
                 section = "contact"
         if not user.get("group"):
-            user["group"] = user.get("groups", ['unset'])[0]
+            user["group"] = user.get("groups", ["unset"])[0]
         organisation = client.get_organisation(request.user.organisation["id"])
         if not user.get("address"):
             user["address"] = organisation.get("address", "")
