@@ -614,7 +614,8 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         if not section:
             section = request.POST.get("section")
         user_group = request.POST.get("group")
-        if user_group == SECURITY_GROUP_THIRD_PARTY_USER and not section:
+        create_mode = request.POST.get("create_mode")
+        if user_group == SECURITY_GROUP_THIRD_PARTY_USER and create_mode:
             return redirect("/case/invite")
 
         client = self.client(request.user)
@@ -699,8 +700,7 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 redirect_url = f"/accounts/team/{organisation_id}/user/"
                 return redirect(request.POST.get("redirect") or redirect_url)
             else:
-                # to create a user, set the data pack to be sent next, to the session stashed data
-                # pack case_spec into a json strucure to preserve the data
+                # Create json payload for case spec
                 if user["user"].get("case_spec"):
                     user["user"]["case_spec"] = json.dumps(user["user"]["case_spec"])
                 try:
