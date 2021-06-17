@@ -76,7 +76,7 @@ django-storages==1.9.1
     #   s3chunkuploader
 django-timezone-field==3.0
     # via -r requirements.in/base.in
-django==2.2.21
+django==2.2.24
     # via
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
