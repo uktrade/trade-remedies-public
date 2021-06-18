@@ -43,8 +43,8 @@
         <div class="form-group">
             <label for="email" class="form-label">How will the user interact with the trade remedies system?</label>
             <details>
-                <summary>More details</summary>
-                <div class="panel panel-border-wide">
+                <summary style="display: list-item;text-decoration: underline;">More details</summary>
+                <div class="panel panel-border-narrow">
                     <p>Regular users can:</p>
                     <ul class="list-bullet indent">
                         <li>See the details of cases they have been granted access to.</li>
@@ -69,7 +69,7 @@
                         <li>When your 3rd Party invitation is approved the 3rd Party will receive an
                             invite to this organisation.</li>
                     </ul>
-                </div>
+              </div>
             </details>
             {% set 'security_group' user_record.group %}
             {% if user_record.organisation.role.security_group %}
@@ -112,7 +112,7 @@
     {% endif %}
 
     <div id="third-party-message" class="form-group" hidden>
-        <div class="panel panel-border-wide">
+        <div class="panel panel-border-narrow">
             <p>You will be prompted for invitee details on the next page.</p>
         </div>
     </div>

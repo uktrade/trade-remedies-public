@@ -17,7 +17,7 @@
                 Invite 3rd Party to {{ inviting_organisation.name }}
             </label>
             {% if submission.locked %}
-                {{ contact.name }}
+                {{ contact.name|default_if_none:"" }}
             {% else %}
                 <div class="form-group type-text {% if errors.name %}form-group-error{% endif %}">
                     <label class="form-label" for="name">Name</label>
@@ -45,140 +45,144 @@
                            type="text"
                            value="{{ contact.email|default_if_none:'' }}">
                 </div>
-                <div class="form-group {% if errors.uk_company_choice %}form-group-error{% endif %}">
+                <div class="form-group type-text {% if errors.uk_company_choice %}form-group-error{% endif %}">
                     <label class="form-label">Is the Third Party's company UK based?</label>
                     {% if errors.uk_company_choice %}
                         <span class="error-message" id="uk_company_choice_error">
                             {{ errors.uk_company_choice }}
                         </span>
                     {% endif %}
-                </div>
-                <div class="multiple-choice">
-                    <input type="radio"
-                           id="uk_company"
-                           name="uk_company_choice"
-                           value="uk_company"
-                           onclick="document.getElementById('uk_company_details').hidden = false;
-                                        document.getElementById('non_uk_company_details').hidden = true;"
-                           {% if uk_company %}checked{% endif %}
-                    />
-                    <label for="uk_company" class="form-label">Yes</label>
-                </div>
-                <div class="panel panel-border-narrow padded"
-                     id="uk_company_details"
-                     {% if not uk_company %}hidden{% endif %}>
-                    <label id="uk_company_hint" class="form-label">
-                        Start to type the Third Party's company name and select a suggested
-                        option. The company number and company address will be automatically
-                        populated.
-                    </label>
-                    <div class="form-group type-text type-typeahead {% if errors.organisation_name %}form-group-error{% endif %}"
-                         id="typeAheadWrapper">
-                        <label class="form-label" for="company">Company name</label>
-                        {% if errors.organisation_name %}
-                            <span class="error-message" id="organisation_name_error">
-                            {{ errors.organisation_name }}
-                        </span>
-                        {% endif %}
-                        <input class="form-control form-control-3-4"
-                               data-mode="company"
-                               id="company"
-                               name="organisation_name_uk"
-                               type="text"
-                               value="{{ contact.organisation.name|default_if_none:'' }}">
+                    <div class="form-group inline">
+                        <div class="multiple-choice small">
+                            <input class="radio"
+                                    type="radio"
+                                    id="uk_company"
+                                    name="uk_company_choice"
+                                    value="uk_company"
+                                    onclick="document.getElementById('uk_company_details').hidden = false;
+                                            document.getElementById('non_uk_company_details').hidden = true;"
+                                    {% if uk_company %}checked{% endif %}
+                            />
+                            <label for="uk_company" class="form-label">Yes</label>
+                        </div>
+                        <div class="multiple-choice small">
+                            <input class="radio"
+                                    type="radio"
+                                    id="non_uk_company"
+                                    name="uk_company_choice"
+                                    value="non_uk_company"
+                                    onclick="document.getElementById('uk_company_details').hidden = true;
+                                            document.getElementById('non_uk_company_details').hidden = false;"
+                                    {% if non_uk_company %}checked{% endif %}
+                            />
+                            <label for="non_uk_company" class="form-label">No</label>
+                        </div>
                     </div>
-                    <div class="form-group type-text {% if errors.company_id %}form-group-error{% endif %}">
-                        <label class="form-label" for="company_number">Company number</label>
-                        {% if errors.company_id %}
-                            <span class="error-message" id="company_id_error">
-                            {{ errors.company_id }}
-                        </span>
-                        {% endif %}
-                        <input class="form-control form-control-3-4"
-                               id="company_number"
-                               name="companies_house_id"
-                               type="text"
-                               value="{{ company_id }}">
+                    <div id="uk_company_details" {% if not uk_company %}hidden{% endif %}>
+                        <div class="panel panel-border-narrow">
+                            <label id="uk_company_hint" class="form-label">
+                                Start to type the Third Party's company name and select a suggested
+                                option. The company number and company address will be automatically
+                                populated.
+                            </label>
+                        </div>
+                        <div class="form-group type-text type-typeahead {% if errors.organisation_name %}form-group-error{% endif %}"
+                             id="typeAheadWrapper">
+                            <label class="form-label" for="company">Company name</label>
+                            {% if errors.organisation_name %}
+                                <span class="error-message" id="organisation_name_error">
+                                {{ errors.organisation_name }}
+                            </span>
+                            {% endif %}
+                            <input class="form-control form-control-3-4"
+                                   data-mode="company"
+                                   id="company"
+                                   name="organisation_name_uk"
+                                   type="text"
+                                   value="{{ contact.organisation.name|default_if_none:'' }}">
+                        </div>
+                        <div class="form-group type-text {% if errors.company_id %}form-group-error{% endif %}">
+                            <label class="form-label" for="company_number">Company number</label>
+                            {% if errors.company_id %}
+                                <span class="error-message" id="company_id_error">
+                                {{ errors.company_id }}
+                            </span>
+                            {% endif %}
+                            <input class="form-control form-control-3-4"
+                                   id="company_number"
+                                   name="companies_house_id"
+                                   type="text"
+                                   value="{{ company_id }}">
+                        </div>
+                        <div class="form-group type-text {% if errors.organisation_address %}form-group-error{% endif %}">
+                            <label class="form-label" for="full_address">Company Address</label>
+                            {% if errors.organisation_address %}
+                                <span class="error-message" id="organisation_address_error">
+                                {{ errors.organisation_address }}
+                            </span>
+                            {% endif %}
+                            <textarea class="form-control form-control-3-4"
+                                      id="full_address"
+                                      name="organisation_address_uk"
+                                      rows="5"
+                                      type="text">{{ contact.organisation.address|default_if_none:"" }}</textarea>
+                        </div>
                     </div>
-                    <div class="form-group type-text {% if errors.organisation_address %}form-group-error{% endif %}">
-                        <label class="form-label" for="full_address">Company Address</label>
-                        {% if errors.organisation_address %}
-                            <span class="error-message" id="organisation_address_error">
-                            {{ errors.organisation_address }}
-                        </span>
-                        {% endif %}
-                        <textarea class="form-control form-control-3-4"
-                                  id="full_address"
-                                  name="organisation_address_uk"
-                                  rows="5"
-                                  type="text">{{ contact.organisation.address|default_if_none:"" }}</textarea>
-                    </div>
-                </div>
-                <div class="multiple-choice">
-                    <input type="radio"
-                           id="non_uk_company"
-                           name="uk_company_choice"
-                           value="non_uk_company"
-                           onclick="document.getElementById('uk_company_details').hidden = true;
-                                        document.getElementById('non_uk_company_details').hidden = false;"
-                           {% if non_uk_company %}checked{% endif %}
-                    />
-                    <label for="non_uk_company" class="form-label">No</label>
-                </div>
-                <div class="panel panel-border-narrow"
-                     id="non_uk_company_details"
-                     {% if not non_uk_company %}hidden{% endif %}>
-                    <label id="non_uk_company_hint" class="form-label">
-                        Select the country of the Third Party's company and enter the
-                        company name and address.
-                    </label>
-                    <div class="form-group type-text {% if errors.country_code %}form-group-error{% endif %}">
-                        <label for="country" class="form-label">Country</label>
-                        {% if errors.country_code %}
-                            <span class="error-message" id="country_error">
-                            {{ errors.country_code }}
-                        </span>
-                        {% endif %}
-                        <select name="country_code" class="form-control" id="country">
-                            <option value="">Select Country</option>
-                            {% for country in countries %}
-                                <option
-                                        value="{{ country.0 }}"
-                                        {% if country.0 == contact.organisation.country_code %}selected{% endif %}>{{ country.1 }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group type-text {% if errors.organisation_name %}form-group-error{% endif %}">
-                        <label class="form-label" for="company">Company Name</label>
-                        {% if errors.organisation_name %}
-                            <span class="error-message" id="organisation_name_error">
-                            {{ errors.organisation_name }}
-                        </span>
-                        {% endif %}
-                        <input class="form-control form-control-3-4"
-                               data-mode="company"
-                               id="company"
-                               name="organisation_name_non_uk"
-                               type="text"
-                               value="{{ contact.organisation.name|default_if_none:'' }}">
-                    </div>
-                    <div class="form-group type-text {% if errors.organisation_address %}form-group-error{% endif %}">
-                        <label class="form-label" for="full_address">Company Address</label>
-                        {% if errors.organisation_address %}
-                            <span class="error-message" id="organisation_address_error">
-                            {{ errors.organisation_address }}
-                        </span>
-                        {% endif %}
-                        <input class="form-control form-control-3-4"
-                               id="postal_code" type="hidden"
-                               name="organisation_post_code"
-                               value="{{ contact.organisation.address }}">
-                        <textarea class="form-control form-control-3-4"
-                                  id="full_address"
-                                  name="organisation_address_non_uk"
-                                  rows="5"
-                                  type="text">{{ contact.organisation.address|default_if_none:"" }}</textarea>
+                    <div id="non_uk_company_details" {% if not non_uk_company %}hidden{% endif %}>
+                        <div class="panel panel-border-narrow">
+                            <label id="non_uk_company_hint" class="form-label">
+                                Select the country of the Third Party's company and enter the
+                                company name and address.
+                            </label>
+                        </div>
+                        <div class="form-group type-text {% if errors.country_code %}form-group-error{% endif %}">
+                            <label for="country" class="form-label">Country</label>
+                            {% if errors.country_code %}
+                                <span class="error-message" id="country_error">
+                                {{ errors.country_code }}
+                            </span>
+                            {% endif %}
+                            <select name="country_code" class="form-control" id="country">
+                                <option value="">Select Country</option>
+                                {% for country in countries %}
+                                    <option
+                                            value="{{ country.0 }}"
+                                            {% if country.0 == contact.organisation.country_code %}selected{% endif %}>{{ country.1 }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group type-text {% if errors.organisation_name %}form-group-error{% endif %}">
+                            <label class="form-label" for="company">Company Name</label>
+                            {% if errors.organisation_name %}
+                                <span class="error-message" id="organisation_name_error">
+                                {{ errors.organisation_name }}
+                            </span>
+                            {% endif %}
+                            <input class="form-control form-control-3-4"
+                                   data-mode="company"
+                                   id="company"
+                                   name="organisation_name_non_uk"
+                                   type="text"
+                                   value="{{ contact.organisation.name|default_if_none:'' }}">
+                        </div>
+                        <div class="form-group type-text {% if errors.organisation_address %}form-group-error{% endif %}">
+                            <label class="form-label" for="full_address">Company Address</label>
+                            {% if errors.organisation_address %}
+                                <span class="error-message" id="organisation_address_error">
+                                {{ errors.organisation_address }}
+                            </span>
+                            {% endif %}
+                            <input class="form-control form-control-3-4"
+                                   id="postal_code" type="hidden"
+                                   name="organisation_post_code"
+                                   value="{{ contact.organisation.address }}">
+                            <textarea class="form-control form-control-3-4"
+                                      id="full_address"
+                                      name="organisation_address_non_uk"
+                                      rows="5"
+                                      type="text">{{ contact.organisation.address|default_if_none:"" }}</textarea>
+                        </div>
                     </div>
                 </div>
             {% endif %}
