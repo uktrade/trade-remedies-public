@@ -9,6 +9,8 @@ from django.utils import timezone
 from django.urls import reverse
 from django.conf import settings
 
+from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
+
 from core.base import GroupRequiredMixin, BasePublicView
 from cases.constants import (
     SUBMISSION_TYPE_EX_OFFICIO,
@@ -905,6 +907,13 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
                 )
             try:
                 for _file in request.FILES.getlist("file"):
+                    try:
+                        _file.readline()
+                    except VirusFoundInFileException as e:
+                        msg = "Your uploaded file contains a virus!"
+                        return redirect(
+                            f"/case/{case_id}/submission/{submission_id}/upload/?error={msg}"
+                        )
                     original_file_name = _file.original_name
                     data = {
                         "name": "Uploaded from UI",
