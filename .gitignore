@@ -103,7 +103,7 @@ ENV/
 .mypy_cache/
 
 # sqlite
-db_sqlite3
+db.sqlite3
 
 #vscode
 .vscode
