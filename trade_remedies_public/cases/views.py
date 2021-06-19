@@ -933,9 +933,7 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
                     msg = "File upload aborted, malware detected in file!"
                 else:
                     msg = str(e)
-                return redirect(
-                    f"/case/{case_id}/submission/{submission_id}/upload/?error={msg}"
-                )
+                return redirect(f"/case/{case_id}/submission/{submission_id}/upload/?error={msg}")
         self._client.set_submission_status_public(case_id, submission_id, status_context="draft")
         new_docs = new_documents[0].get("id") if new_documents else None
         if redirect_path:
