@@ -1,6 +1,9 @@
 import dpath
 import datetime
+from django.conf import settings
 from django.http import StreamingHttpResponse
+from django.shortcuts import redirect
+from django.utils.http import is_safe_url  # D3 - url_has_allowed_host_and_scheme
 import re
 
 
@@ -133,3 +136,19 @@ def set_cookie(response, key, value, days_expire=365):
         "%a, %d-%b-%Y %H:%M:%S GMT",
     )
     response.set_cookie(key, value, max_age=max_age, expires=expires)
+
+
+def internal_redirect(url, default_path):
+    """
+    Redirect to the specified URL after checking that
+    host is in the allowed hosts list
+    :param url: URL to redirect to
+    :param default_path: Default path to redirect to if url is unsafe
+    """
+    if not is_safe_url(
+        url,
+        settings.ALLOWED_HOSTS
+    ):
+        return redirect(default_path)
+
+    return redirect(url)
