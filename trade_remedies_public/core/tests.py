@@ -190,7 +190,11 @@ class TestPublicDocumentSplitting(TestCase):
 
 
 class UtilsTestCases(TestCase):
-    @override_settings(ALLOWED_HOSTS=['trade-remedies.com',])
+    @override_settings(
+        ALLOWED_HOSTS=[
+            "trade-remedies.com",
+        ]
+    )
     def internal_redirect(self):
         test_redirect = internal_redirect(
             "https://trade-remedies.com/test",

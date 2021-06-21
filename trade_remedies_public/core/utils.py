@@ -145,10 +145,7 @@ def internal_redirect(url, default_path):
     :param url: URL to redirect to
     :param default_path: Default path to redirect to if url is unsafe
     """
-    if not is_safe_url(
-        url,
-        settings.ALLOWED_HOSTS
-    ):
+    if not is_safe_url(url, settings.ALLOWED_HOSTS):
         return redirect(default_path)
 
     return redirect(url)
