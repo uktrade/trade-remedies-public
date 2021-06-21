@@ -9,6 +9,8 @@ from django.utils import timezone
 from django.urls import reverse
 from django.conf import settings
 
+from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
+
 from core.base import GroupRequiredMixin, BasePublicView
 from cases.constants import (
     SUBMISSION_TYPE_EX_OFFICIO,
@@ -905,6 +907,7 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
                 )
             try:
                 for _file in request.FILES.getlist("file"):
+                    _file.readline()  # Important, will raise VirusFoundInFileException if infected
                     original_file_name = _file.original_name
                     data = {
                         "name": "Uploaded from UI",
@@ -925,11 +928,12 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
                             data=data,
                         )
                     )
-            except APIException as ex:
-                return redirect(
-                    f"/case/{case_id}/submission/{submission_id}/upload/?error={str(ex)}"
-                )
-
+            except (VirusFoundInFileException, APIException) as e:
+                if isinstance(e, VirusFoundInFileException):
+                    msg = "File upload aborted, malware detected in file!"
+                else:
+                    msg = str(e)
+                return redirect(f"/case/{case_id}/submission/{submission_id}/upload/?error={msg}")
         self._client.set_submission_status_public(case_id, submission_id, status_context="draft")
         new_docs = new_documents[0].get("id") if new_documents else None
         if redirect_path:
@@ -1205,41 +1209,6 @@ class CreateSubmissionView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
                 "tasklist_template": f"{template_key}/tasklist.html",
             },
         )
-
-    def post(
-        self, request, case_id=None, organisation_id=None, submission_id=None, *args, **kwargs
-    ):
-        files = request.FILES.get("file")
-        submission = self._client.create_submission(
-            case_id=case_id, organisation_id=organisation_id, submission_type=SUBMISSION_TYPE_ADHOC
-        )
-        submission_id = self.submission["id"]
-        if submission_id:
-            try:
-                original_file_name = files.original_name
-                document = self._client.upload_document(
-                    organisation_id=organisation_id,
-                    case_id=case_id,
-                    submission_id=self.submission["id"],
-                    data={
-                        "document_name": original_file_name,
-                        "file_name": files.name,
-                        "file_size": files.file_size,
-                    },
-                )
-            except APIException as ex:
-                return self.get(
-                    request,
-                    case_id=case_id,
-                    organisation_id=organisation_id,
-                    submission_id=submission_id,
-                    error={"file": str(ex)},
-                    *args,
-                    **kwargs,
-                )
-            return redirect(f"/case/{case_id}/submission/{submission_id}/")
-        else:
-            return self.get(request, case_id=case_id, submission_id=None)
 
 
 class SelectCaseView(

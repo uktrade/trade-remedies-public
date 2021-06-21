@@ -4,11 +4,11 @@
 #
 #    pip-compile --output-file=requirements/base.txt requirements.in/base.in
 #
-boto3==1.17.88
+boto3==1.17.89
     # via
     #   -r requirements.in/base.in
-    #   s3chunkuploader
-botocore==1.20.88
+    #   django-chunk-upload-handlers
+botocore==1.20.97
     # via
     #   boto3
     #   s3transfer
@@ -24,6 +24,8 @@ django-basicauth==0.5.2
     # via -r requirements.in/base.in
 django-cache-memoize==0.1.8
     # via trade-remedies-client
+django-chunk-upload-handlers==0.0.11
+    # via -r requirements.in/base.in
 django-countries==5.4
     # via -r requirements.in/base.in
 django-environ==0.4.5
@@ -42,10 +44,10 @@ django-log-formatter-ecs==0.0.5
     # via -r requirements.in/base.in
 django-redis==4.10.0
     # via -r requirements.in/base.in
-django-storages==1.9.1
+django-storages==1.11.1
     # via
     #   -r requirements.in/base.in
-    #   s3chunkuploader
+    #   django-chunk-upload-handlers
 django-timezone-field==3.0
     # via -r requirements.in/base.in
 django==2.2.24
@@ -53,6 +55,7 @@ django==2.2.24
     #   -r requirements.in/base.in
     #   django-audit-log-middleware
     #   django-basicauth
+    #   django-chunk-upload-handlers
     #   django-govuk-forms
     #   django-govuk-template
     #   django-redis
@@ -60,7 +63,6 @@ django==2.2.24
     #   django-timezone-field
     #   djangorestframework
     #   feed-gov-back
-    #   s3chunkuploader
     #   trade-remedies-client
 djangorestframework==3.12.4
     # via feed-gov-back
@@ -97,8 +99,6 @@ requests==2.25.1
     # via
     #   -r requirements.in/base.in
     #   trade-remedies-client
-s3chunkuploader==0.10
-    # via -r requirements.in/base.in
 s3transfer==0.4.2
     # via boto3
 sentry-sdk==0.13.1

@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "govuk_template_base",
     "govuk_template",
     "govuk_forms",
+    "django_chunk_upload_handlers",
     "core",
     "registration",
     "feedback",
@@ -222,7 +223,14 @@ S3_CLIENT = "boto3"
 # S3 Root directory name
 S3_DOCUMENT_ROOT_DIRECTORY = "documents"
 
-FILE_UPLOAD_HANDLERS = ("s3chunkuploader.file_handler.S3FileUploadHandler",)
+CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
+CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
+CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
+
+FILE_UPLOAD_HANDLERS = (
+    "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
+    "django_chunk_upload_handlers.s3.S3FileUploadHandler",
+)  # Order is important
 
 if basic_auth_user:
     BASICAUTH_USERS = json.loads(basic_auth_user)
