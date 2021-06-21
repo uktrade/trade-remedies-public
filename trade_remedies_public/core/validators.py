@@ -63,6 +63,7 @@ user_create_validators = [
     {"key": "email", "message": "You must enter an email address", "re": ".+"},
     {"key": "email", "message": "This email address is invalid", "re": email_validator},
     {"key": "phone", "message": "You must enter a mobile phone number", "re": ".+"},
+    {"key": "address", "message": "Address is required", "re": ".+"},
     {
         "key": "phone",
         "message": "This phone number is invalid",
