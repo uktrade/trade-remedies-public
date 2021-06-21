@@ -17,6 +17,7 @@ from cases.constants import (
     DIRECTION_BOTH,
     DIRECTION_PUBLIC_TO_TRA,
     ALL_COUNTRY_CASE_TYPES,
+    SUBMISSION_TYPE_INVITE_3RD_PARTY,
 )
 from core.constants import ALERT_MAP
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
@@ -200,6 +201,10 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         *args,
         **kwargs,
     ):
+        # 3rd party handled by CaseInviteView
+        if self.submission["type"]["id"] == SUBMISSION_TYPE_INVITE_3RD_PARTY:
+            return redirect(f"/case/invite/{case_id}/submission/{submission_id}")
+
         public = public_str == "public"
         just_submitted = public_str == "submitted"
         state = {}
