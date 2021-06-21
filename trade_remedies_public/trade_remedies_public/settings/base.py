@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "govuk_template_base",
     "govuk_template",
     "govuk_forms",
+    "django_chunk_upload_handlers",
     "core",
     "registration",
     "feedback",
@@ -222,7 +223,14 @@ S3_CLIENT = "boto3"
 # S3 Root directory name
 S3_DOCUMENT_ROOT_DIRECTORY = "documents"
 
-FILE_UPLOAD_HANDLERS = ("s3chunkuploader.file_handler.S3FileUploadHandler",)
+CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
+CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
+CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
+
+FILE_UPLOAD_HANDLERS = (
+    "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
+    "django_chunk_upload_handlers.s3.S3FileUploadHandler",
+)  # Order is important
 
 if basic_auth_user:
     BASICAUTH_USERS = json.loads(basic_auth_user)
@@ -270,7 +278,7 @@ LOGGING = {
                 "stdout",
             ],
             "level": env("DJANGO_LOG_LEVEL", default="INFO"),
-            "propagate": True,
+            "propagate": False,
         },
         "django.server": {
             "handlers": [
@@ -279,12 +287,12 @@ LOGGING = {
             "level": env("DJANGO_SERVER_LOG_LEVEL", default="INFO"),
             "propagate": False,
         },
-        "django.db.backends": {
+        "django.request": {
             "handlers": [
                 "stdout",
             ],
-            "level": env("DJANGO_DB_LOG_LEVEL", default="INFO"),
-            "propagate": True,
+            "level": env("DJANGO_REQUEST_LOG_LEVEL", default="INFO"),
+            "propagate": False,
         },
     },
 }
@@ -327,11 +335,11 @@ ENVIRONMENT_LOGGING = {
             "level": env("DJANGO_SERVER_LOG_LEVEL", default="ERROR"),
             "propagate": False,
         },
-        "django.db.backends": {
+        "django.request": {
             "handlers": [
                 "ecs",
             ],
-            "level": env("DJANGO_DB_LOG_LEVEL", default="ERROR"),
+            "level": env("DJANGO_REQUEST_LOG_LEVEL", default="ERROR"),
             "propagate": False,
         },
     },
