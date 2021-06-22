@@ -5,7 +5,7 @@ from django.utils.safestring import mark_safe
 
 
 @register.simple_tag(takes_context=True)
-def text_element(
+def text_element(  # noqa: C901
     context,
     id,
     label,
