@@ -18,6 +18,7 @@ from core.validators import (
     registration_validators,
     base_registration_validators,
 )
+from core.utils import internal_redirect
 
 
 def logout_view(request):
@@ -142,7 +143,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
                         0
                     ]["id"]
                 request.session.modified = True
-                return redirect(redirection_url)
+                return internal_redirect(redirection_url, "/dashboard/")
             else:
                 if case_id and code:
                     return redirect(f"/accounts/login/{code}/{case_id}/?error=t")
@@ -513,7 +514,7 @@ class CookieSettingsView(BaseRegisterView):
         redirect_url = request.POST.get("redirect_url") or "/dashboard/"
         separator = "?" if redirect_url.find("?") == -1 else "#"
         redirect_url = f"{redirect_url}{separator}cookie-policy-updated=1"
-        response = redirect(redirect_url)
+        response = internal_redirect(redirect_url, "/dashboard/")
         policy = json.dumps({"accept_gi": accept_gi})
 
         if accept_gi != "on":

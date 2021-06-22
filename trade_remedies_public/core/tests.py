@@ -1,9 +1,12 @@
 from django.conf import settings
 from django.template import Template, Context
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils.html import escape
 
-from core.utils import split_public_documents
+from core.utils import (
+    internal_redirect,
+    split_public_documents,
+)
 
 
 class TestPublicDocumentSplitting(TestCase):
@@ -198,3 +201,25 @@ class TestTextElement(TestCase):
 
         assert escape(img_tag_str) in rendered
         assert rendered.count("src") == 1
+
+
+class UtilsTestCases(TestCase):
+    @override_settings(
+        ALLOWED_HOSTS=[
+            "trade-remedies.com",
+        ]
+    )
+    def internal_redirect(self):
+        test_redirect = internal_redirect(
+            "https://trade-remedies.com/test",
+            "/dashboard/",
+        )
+
+        assert test_redirect.url == "https://trade-remedies.com/test"
+
+        test_redirect = internal_redirect(
+            "https://www.google.com/?test=1",
+            "/dashboard/",
+        )
+
+        assert test_redirect.url == "/dashboard/"
