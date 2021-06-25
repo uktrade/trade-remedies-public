@@ -91,6 +91,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
         if email_verified:
             request.session["email_verified"] = None
         request.session.modified = True
+        request.session.cycle_key()
         return render(
             request,
             self.template_name,
@@ -143,6 +144,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
                         0
                     ]["id"]
                 request.session.modified = True
+                request.session.cycle_key()
                 return internal_redirect(redirection_url, "/dashboard/")
             else:
                 if case_id and code:
