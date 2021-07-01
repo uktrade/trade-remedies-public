@@ -524,7 +524,8 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             invite = client.get_invite_details(invitation_id)
             case_spec = invite.get("meta", {}).get("case_spec", [])
             user = self.init_data(invite).get("user")
-        if section == "create" or not request.session.get("create-user", {}).get("user"):
+        have_draft_user = user.get("email")
+        if section == "create" or not have_draft_user:
             request.session["create-user"] = self.init_data(invite, user, case_spec)
             if section != "edit":
                 section = "contact"

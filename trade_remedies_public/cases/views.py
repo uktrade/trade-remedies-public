@@ -1333,7 +1333,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
 
     def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
         contact = {}
-        session_data = request.session.get("form_data", {})
+        session_data = request.session.get("invite_form_data", {})
         if self.submission:
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
             contact = invites[0].get("contact") if invites else None
@@ -1370,7 +1370,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             "email": request.POST.get("email"),
             "uk_company_choice": request.POST.get("uk_company_choice"),
         }
-        request.session["form_data"] = data
+        request.session["invite_form_data"] = data
         request.session.modified = True
         errors = {}
         if not data.get("uk_company_choice"):
