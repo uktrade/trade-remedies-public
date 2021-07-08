@@ -1,5 +1,9 @@
 import os
 
+import gunicorn
+
+
+gunicorn.SERVER_SOFTWARE = "server signature redacted"
 
 accesslog = os.environ.get("GUNICORN_ACCESSLOG", "-")
 access_log_format = os.environ.get(
