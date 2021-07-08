@@ -39,6 +39,7 @@ from core.utils import (
     get,
     validate,
     parse_redirect_params,
+    internal_redirect,
 )
 from trade_remedies_public.constants import (
     ROLE_APPLICANT,
@@ -976,7 +977,7 @@ class RemoveDocumentView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView)
             if response:
                 if redirect_path:
                     feedback_message = "Document(s) deleted"
-                    return redirect(f"{redirect_path}?message={feedback_message}")
+                    return internal_redirect(f"{redirect_path}?message={feedback_message}")
                 else:
                     return redirect(f"/case/{case_id}/submission/{submission_id}/upload/")
             else:
