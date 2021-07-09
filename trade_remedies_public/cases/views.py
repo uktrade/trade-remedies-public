@@ -204,9 +204,10 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         *args,
         **kwargs,
     ):
-        # 3rd party handled by CaseInviteView
-        if self.submission["type"]["id"] == SUBMISSION_TYPE_INVITE_3RD_PARTY:
-            return redirect(f"/case/invite/{case_id}/submission/{submission_id}")
+        # 3rd party handled by CaseInviteView unless submission locked
+        if self.submission.get("type", {}).get("id") == SUBMISSION_TYPE_INVITE_3RD_PARTY:
+            if not self.submission["locked"]:
+                return redirect(f"/case/invite/{case_id}/submission/{submission_id}")
 
         public = public_str == "public"
         just_submitted = public_str == "submitted"
@@ -1338,6 +1339,8 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
         if self.submission:
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
             contact = invites[0].get("contact") if invites else None
+            if not contact.get("organisation", {}).get("country_code"):
+                contact["organisation"]["country_code"] = "GB"
         else:
             # Use what we have in the session
             contact["name"] = session_data.get("name")
@@ -1347,7 +1350,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             contact["organisation"]["address"] = session_data.get("organisation_address")
             contact["organisation"]["companies_house_id"] = session_data.get("companies_house_id")
             contact["organisation"]["country_code"] = session_data.get("country_code")
-
+        uk_company = contact["organisation"]["country_code"] == "GB"
         form_data = {
             "errors": kwargs.get("errors"),
             "current_page_name": "Invite 3rd party",
@@ -1359,8 +1362,9 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             "submission": self.submission,
             "inviting_organisation": request.user.organisation,
             "contact": contact,
-            "uk_company": session_data.get("uk_company_choice") == "uk_company",
-            "non_uk_company": session_data.get("uk_company_choice") == "non_uk_company",
+            "uk_company": uk_company,
+            # "uk_company": session_data.get("uk_company_choice") == "uk_company",
+            # "non_uk_company": session_data.get("uk_company_choice") == "non_uk_company",
             "countries": countries,
         }
         return render(request, self.template_name, form_data)

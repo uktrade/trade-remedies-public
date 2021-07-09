@@ -69,6 +69,11 @@ user_create_validators = [
         "message": "This phone number is invalid",
         "re": "^([0|\\+[0-9\s]{1,5})?([0-9\s]{4,13})?$",  # noqa: W605
     },
+    {
+        "key": "selected_country_code",
+        "message": "You must select a country",
+        "re": ".+",
+    },
 ]
 
 third_party_validators_base = [

@@ -40,7 +40,7 @@
 	</div>
     {% if create_mode %}
         {% if errors.group %}<span class="error-message" id="group_error">{{ errors.group }}</span>{% endif %}
-        <div class="form-group">
+        <div class="form-group {% if errors.group %}form-group-error{% endif %}">
             <label for="email" class="form-label">How will the user interact with the trade remedies system?</label>
             <details>
                 <summary style="display: list-item;text-decoration: underline;">More details</summary>
@@ -121,8 +121,8 @@
         {% text_element id='email' label='Email (username)' errors=errors value=user_record.email read_only=existing_user_id %}
         {% text_element id='phone' label='Phone number' type='tel' autocomplete='off' errors=errors value=user_record.phone %}
         {% text_element id='address' textarea=True label='Address' errors=errors value=user_record.address %}
-        <div class="form-group edit-item type-text ">
-            <label class="form-label" for="country">Country</label>
+        <div class="form-group edit-item type-text {% if errors.selected_country_code %}form-group-error{% endif %}">
+            <label class="form-label" for="selected_country_code">Country</label>
             {% if errors.selected_country_code %}<span class="error-message" id="selected_country_code_error">{{ errors.selected_country_code }}</span>{% endif %}
             <select class="form-control" name="selected_country_code" id="selected_country_code">
                 <option value="">Please select ...</option>

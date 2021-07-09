@@ -647,11 +647,11 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 user_create_validators.extend(
                     [
                         {"key": "group", "message": "You must select a security group", "re": ".+"},
-                        {
-                            "key": "selected_country_code",
-                            "message": "You must select a country",
-                            "re": ".+",
-                        },
+                        # {
+                        #     "key": "selected_country_code",
+                        #     "message": "You must select a country",
+                        #     "re": ".+",
+                        # },
                     ]
                 )
                 _validator = user_create_validators

@@ -73,7 +73,7 @@
                                     value="non_uk_company"
                                     onclick="document.getElementById('uk_company_details').hidden = true;
                                             document.getElementById('non_uk_company_details').hidden = false;"
-                                    {% if non_uk_company %}checked{% endif %}
+                                    {% if not uk_company %}checked{% endif %}
                             />
                             <label for="non_uk_company" class="form-label">No</label>
                         </div>
@@ -128,7 +128,7 @@
                                       type="text">{{ contact.organisation.address|default_if_none:"" }}</textarea>
                         </div>
                     </div>
-                    <div id="non_uk_company_details" {% if not non_uk_company %}hidden{% endif %}>
+                    <div id="non_uk_company_details" {% if uk_company %}hidden{% endif %}>
                         <div class="panel panel-border-narrow">
                             <label id="non_uk_company_hint" class="form-label">
                                 Select the country of the Third Party's company and enter the

@@ -60,7 +60,7 @@
                     {% endif %}
                     {{invite.case.reference}} - {% format_date invite.created_at '%d %b %Y' %}
                   </a>
-                    ({{invite.status.name}})
+                    ({{ invite.status.name }} for {{ invite.invitations.0.name }})
                 </LI>
               {% endfor %}
             </UL>
