@@ -1336,11 +1336,15 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
     def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
         contact = {}
         session_data = request.session.get("invite_form_data", {})
+        uk_company = non_uk_company = False  # initial state
         if self.submission:
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
-            contact = invites[0].get("contact") if invites else None
-            if not contact.get("organisation", {}).get("country_code"):
-                contact["organisation"]["country_code"] = "GB"
+            contact = invites[0].get("contact") if invites else {"organisation": {"country": {}}}
+            org_country_code = contact["organisation"]["country"].get("code")
+            contact["organisation"]["country_code"] = org_country_code  # bubble up for convenience
+            # Prep which radio button checked
+            uk_company = org_country_code == "GB"
+            non_uk_company = not uk_company
         else:
             # Use what we have in the session
             contact["name"] = session_data.get("name")
@@ -1349,8 +1353,16 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             contact["organisation"]["name"] = session_data.get("organisation_name")
             contact["organisation"]["address"] = session_data.get("organisation_address")
             contact["organisation"]["companies_house_id"] = session_data.get("companies_house_id")
-            contact["organisation"]["country_code"] = session_data.get("country_code")
-        uk_company = contact["organisation"]["country_code"] == "GB"
+            if country_code := session_data.get("country_code"):
+                # A country was stashed in the session
+                contact["organisation"]["country_code"] = country_code
+                uk_company = country_code == "GB"
+                non_uk_company = not uk_company
+            elif uk_company_choice := session_data.get("uk_company_choice"):
+                # No country, but we stashed a uk/non uk company choice
+                uk_company = uk_company_choice == "uk_company"
+                non_uk_company = not uk_company
+
         form_data = {
             "errors": kwargs.get("errors"),
             "current_page_name": "Invite 3rd party",
@@ -1363,8 +1375,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             "inviting_organisation": request.user.organisation,
             "contact": contact,
             "uk_company": uk_company,
-            # "uk_company": session_data.get("uk_company_choice") == "uk_company",
-            # "non_uk_company": session_data.get("uk_company_choice") == "non_uk_company",
+            "non_uk_company": non_uk_company,
             "countries": countries,
         }
         return render(request, self.template_name, form_data)
@@ -1388,11 +1399,13 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
         if data.get("uk_company_choice") == "uk_company":
             data["organisation_name"] = request.POST.get("organisation_name_uk")
             data["organisation_address"] = request.POST.get("organisation_address_uk")
-            data["companies_house_id"] = request.POST.get("companies_house_id")
+            data["companies_house_id"] = request.POST.get("companies_house_id_uk")
+            data["country_code"] = "GB"
             validations.extend(third_party_validators_uk.copy())
         else:
             data["organisation_name"] = request.POST.get("organisation_name_non_uk")
             data["organisation_address"] = request.POST.get("organisation_address_non_uk")
+            data["companies_house_id"] = request.POST.get("companies_house_id_non_uk")
             data["country_code"] = request.POST.get("country_code")
             validations.extend(third_party_validators_non_uk.copy())
         errors = validate(data, validations)
@@ -1406,7 +1419,7 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
             # Back to form for another go
             return self.get(request, case_id, submission_id=None, errors=errors)
 
-        # Call API to update
+        # Call API to create/update third party invite
         response = self._client.third_party_invite(
             case_id=case_id,
             organisation_id=request.user.organisation["id"],

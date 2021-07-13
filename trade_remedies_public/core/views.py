@@ -863,7 +863,10 @@ class AccountInfo(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin)
         client = self.client(request.user)
         if "create-user" in request.session:
             del request.session["create-user"]
-        organisation_id = request.user.organisation.get("id")
+        if SECURITY_GROUP_THIRD_PARTY_USER in request.user.groups:
+            organisation_id = request.user.contact.get("organisation", {}).get("id")
+        else:
+            organisation_id = request.user.organisation.get("id")
         return render(
             request,
             self.template_name,

@@ -73,7 +73,7 @@
                                     value="non_uk_company"
                                     onclick="document.getElementById('uk_company_details').hidden = true;
                                             document.getElementById('non_uk_company_details').hidden = false;"
-                                    {% if not uk_company %}checked{% endif %}
+                                    {% if non_uk_company %}checked{% endif %}
                             />
                             <label for="non_uk_company" class="form-label">No</label>
                         </div>
@@ -101,7 +101,7 @@
                                    type="text"
                                    value="{{ contact.organisation.name|default_if_none:'' }}">
                         </div>
-                        <div class="form-group type-text {% if errors.company_id %}form-group-error{% endif %}">
+                        <div class="form-group type-text {% if errors.companies_house_id %}form-group-error{% endif %}">
                             <label class="form-label" for="company_number">Company number</label>
                             {% if errors.company_id %}
                                 <span class="error-message" id="company_id_error">
@@ -110,7 +110,7 @@
                             {% endif %}
                             <input class="form-control form-control-3-4"
                                    id="company_number"
-                                   name="companies_house_id"
+                                   name="companies_house_id_uk"
                                    type="text"
                                    value="{{ company_id }}">
                         </div>
@@ -128,11 +128,13 @@
                                       type="text">{{ contact.organisation.address|default_if_none:"" }}</textarea>
                         </div>
                     </div>
-                    <div id="non_uk_company_details" {% if uk_company %}hidden{% endif %}>
+                    <div id="non_uk_company_details" {% if not non_uk_company %}hidden{% endif %}>
                         <div class="panel panel-border-narrow">
                             <label id="non_uk_company_hint" class="form-label">
                                 Select the country of the Third Party's company and enter the
-                                company name and address.
+                                company name, registration number and address. For company number
+                                you may alternatively enter a postal or zip code that uniquely
+                                identifies the company.
                             </label>
                         </div>
                         <div class="form-group type-text {% if errors.country_code %}form-group-error{% endif %}">
@@ -165,6 +167,19 @@
                                    name="organisation_name_non_uk"
                                    type="text"
                                    value="{{ contact.organisation.name|default_if_none:'' }}">
+                        </div>
+                        <div class="form-group type-text {% if errors.companies_house_id %}form-group-error{% endif %}">
+                            <label class="form-label" for="company_number">Company number</label>
+                            {% if errors.company_id %}
+                                <span class="error-message" id="company_id_error">
+                                {{ errors.company_id }}
+                            </span>
+                            {% endif %}
+                            <input class="form-control form-control-3-4"
+                                   id="company_number"
+                                   name="companies_house_id_non_uk"
+                                   type="text"
+                                   value="{{ company_id }}">
                         </div>
                         <div class="form-group type-text {% if errors.organisation_address %}form-group-error{% endif %}">
                             <label class="form-label" for="full_address">Company Address</label>
