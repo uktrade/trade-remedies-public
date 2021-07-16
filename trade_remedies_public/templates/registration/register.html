@@ -40,7 +40,7 @@ Create an account
   <label class="form-label" for="country">Country<span class="form-hint">The country that your mobile phone is registered in.</span></label>
   <select id="country" name="country" class="form-control">
     {% for item in countries %}
-      <option value="{{item.0}}" {% if item.0 == country %}selected{% endif %}>{{item.1}}</option>
+      <option value="{{item.0}}" {% if item.0 == country.code %}selected{% endif %}>{{item.1}}</option>
     {% endfor %}
   </select>
 </div>

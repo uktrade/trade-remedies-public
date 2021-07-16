@@ -4,9 +4,10 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
-from core.models import TransientUser
 from django.contrib.auth import logout
 from django_countries import countries
+
+from core.models import TransientUser
 from core.utils import (
     validate,
     get,
@@ -19,7 +20,7 @@ from core.validators import (
     base_registration_validators,
 )
 from core.utils import internal_redirect
-
+from trade_remedies_public.constants import SECURITY_GROUP_THIRD_PARTY_USER
 
 def logout_view(request):
     if "token" in request.session:
@@ -92,6 +93,9 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
             request.session["email_verified"] = None
         request.session.modified = True
         request.session.cycle_key()
+        if code and case_id:
+            # We're processing an invite URL
+            return redirect("register_invite", code=code, case_id=case_id)
         return render(
             request,
             self.template_name,
@@ -227,10 +231,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         if confirm_invited_org is not None:
             request.session["registration"]["confirm_invited_org"] = confirm_invited_org
             request.session.modified = True
-            # if confirm_invited_org == 'false' and not request.POST.get('organisation_name'):
             return redirect(f"/accounts/register/{code}/{case_id}/")
-            # elif confirm_invited_org == 'true':
-            #     return redirect(f'/accounts/register/{code}/{case_id}/')
         request.session["registration"].update(request.POST.dict())
         errors = validate(request.session["registration"], registration_validators)
         if request.session["registration"].get("password") != request.session["registration"].get(
@@ -246,7 +247,12 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                 and session_reg.get("case_id")
                 and session_reg.get("confirm_invited_org") == "true"
             ):
-                organisation_id = get(request.session["registration"], "invite/organisation/id")
+                invitee_sec_group = get(request.session["registration"], "invite/organisation_security_group")
+                if invitee_sec_group == SECURITY_GROUP_THIRD_PARTY_USER:
+                    # Use the third party invitee's organisation
+                    organisation_id = get(request.session["registration"], "invite/contact/organisation/id")
+                else:
+                    organisation_id = get(request.session["registration"], "invite/organisation/id")
                 organisation = self.trusted_client.get_organisation(organisation_id=organisation_id)
                 field_map = {
                     "id": "organisation_id",
@@ -254,14 +260,15 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                     "address": "organisation_address",
                 }
                 out = {}
-                company_code = get(organisation, "country/code")
-                if company_code:
-                    out["uk_company"] = "yes" if company_code == "GB" else "no"
+                organisation_country_code = get(organisation, "country/code")
+                if organisation_country_code:
+                    out["organisation_country_code"] = organisation_country_code
+                    out["uk_company"] = "yes" if organisation_country_code == "GB" else "no"
                 for field, value in organisation.items():
                     out_field = field_map.get(field) or field
                     out[out_field] = value
                 self.update_session(request, out)
-                if company_code:
+                if organisation_country_code:
                     return redirect("/accounts/register/3/")
                 return redirect("/accounts/register/2/")
             elif (

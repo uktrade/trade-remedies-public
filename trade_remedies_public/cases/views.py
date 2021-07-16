@@ -45,6 +45,7 @@ from trade_remedies_public.constants import (
     ROLE_APPLICANT,
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
+    SECURITY_GROUP_THIRD_PARTY_USER,
 )
 
 from core.validators import (
@@ -343,6 +344,16 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             "value": tab,
             "urlExt": f"&organisation_id={self.organisation_id}",
         }
+        is_third_party = SECURITY_GROUP_THIRD_PARTY_USER in request.user.groups
+        inviting_organisation_name = "Unknown"
+        if is_third_party:
+            all_submissions = self._client.get_submissions(case_id)
+            invite_to_case_submission = {
+                s.get("invitations")[0]["name"]: s
+                for s in all_submissions
+                if s["type"].get("name") == "Invite 3rd party"
+            }[self.user.name]
+            inviting_organisation_name = invite_to_case_submission.get("organisation_name")
         return render(
             request,
             self.template_name,
@@ -359,6 +370,8 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 "this_user": request.user,
                 "case_users": case_users if case_users else None,
                 "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER in request.user.groups,
+                "is_third_party": is_third_party,
+                "inviting_organisation_name": inviting_organisation_name,
                 "alert_message": ALERT_MAP.get(self.request.GET.get("alert")),
             },
         )

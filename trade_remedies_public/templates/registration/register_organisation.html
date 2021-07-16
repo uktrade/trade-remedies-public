@@ -37,7 +37,7 @@ Create an account
           {% for country_code, country_name in countries %}
               <option
                   value="{{country_code}}"
-                  {% if organisation_country == country_code %}selected{% endif %}
+                  {% if organisation_country_code == country_code %}selected{% endif %}
               >{{country_name}}</option>
           {% endfor %}
       </select>
