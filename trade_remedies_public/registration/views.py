@@ -225,7 +225,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         self.update_session(request, initial_context)
         return render(request, template_name, request.session["registration"])
 
-    def post(self, request, code=None, case_id=None, *args, **kwargs):
+    def post(self, request, code=None, case_id=None, *args, **kwargs):  # noqa: C901
         self.default_session(request)
         redirect_postfix = f"{code}/{case_id}/" if code and case_id else ""
         confirm_invited_org = request.POST.get("confirm_invited_org")
