@@ -22,6 +22,7 @@ from core.validators import (
 from core.utils import internal_redirect
 from trade_remedies_public.constants import SECURITY_GROUP_THIRD_PARTY_USER
 
+
 def logout_view(request):
     if "token" in request.session:
         del request.session["token"]
@@ -247,10 +248,14 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                 and session_reg.get("case_id")
                 and session_reg.get("confirm_invited_org") == "true"
             ):
-                invitee_sec_group = get(request.session["registration"], "invite/organisation_security_group")
+                invitee_sec_group = get(
+                    request.session["registration"], "invite/organisation_security_group"
+                )
                 if invitee_sec_group == SECURITY_GROUP_THIRD_PARTY_USER:
                     # Use the third party invitee's organisation
-                    organisation_id = get(request.session["registration"], "invite/contact/organisation/id")
+                    organisation_id = get(
+                        request.session["registration"], "invite/contact/organisation/id"
+                    )
                 else:
                     organisation_id = get(request.session["registration"], "invite/organisation/id")
                 organisation = self.trusted_client.get_organisation(organisation_id=organisation_id)
