@@ -205,9 +205,10 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         *args,
         **kwargs,
     ):
-        # 3rd party handled by CaseInviteView unless submission locked
+        # Handle 3rd party invite unless submission locked or is a deficiency notice
         if self.submission.get("type", {}).get("id") == SUBMISSION_TYPE_INVITE_3RD_PARTY:
-            if not self.submission["locked"]:
+            if not self.submission["locked"] and self.submission["deficiency_sent_at"] is None:
+                # Handle with CaseInviteView
                 return redirect(f"/case/invite/{case_id}/submission/{submission_id}")
 
         public = public_str == "public"
@@ -344,6 +345,8 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             "value": tab,
             "urlExt": f"&organisation_id={self.organisation_id}",
         }
+        # If the user is a 3rd party collaborator we want to show the organisation
+        # they are representing in this case.
         is_third_party = SECURITY_GROUP_THIRD_PARTY_USER in request.user.groups
         inviting_organisation_name = "Unknown"
         if is_third_party:

@@ -412,7 +412,6 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
             pending_assignments = client.get_pending_user_case_assignments(
                 request.user.organisation["id"]
             )
-            # TODO HERE pass in ORG???
             users = client.get_team_users()
             _user_emails = [user["email"] for user in users]
             _invites = client.get_user_invitations()
@@ -431,7 +430,7 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
                     for submission_invite in submission_invites:
                         if submission_invite["contact"]["has_user"]:
                             continue
-                        submission_invite["locked"] = submission.get("locked", True)
+                        submission_invite["locked"] = submission.get("locked", True) or submission.get("deficiency_sent_at") is not None
                         pending_third_party_invites.append(submission_invite)
 
         return render(

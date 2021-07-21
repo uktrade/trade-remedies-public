@@ -59,19 +59,10 @@
             <UL>
               {% for invite in invite_submissions %}
                 <LI>
-                    {% if invite.locked %}
-                        <a href="/case/{{invite.case.id}}/submission/{{invite.id}}/">
-                    {% else %}
-                        <a href="/case/invite/{{invite.case.id}}/submission/{{invite.id}}/">
-                    {% endif %}
+                    <a href="/case/{{invite.case.id}}/submission/{{invite.id}}/">
                     {{invite.case.reference}} - {% format_date invite.created_at '%d %b %Y' %}
                   </a>
                     ({{ invite.name }} - {{ invite.status.name }})
-{#                  {% if invite.invitations %}#}
-{#                      ({{ invite.name }} for {{ invite.invitations.0.name }})#}
-{#                {% else %}#}
-{#                      ({{ invite.name }} - {{ invite.status.name }} V{{ invite.version }})#}
-{#                {% endif %}#}
                 </LI>
               {% endfor %}
             </UL>
