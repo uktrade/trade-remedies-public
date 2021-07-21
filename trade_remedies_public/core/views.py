@@ -430,7 +430,10 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
                     for submission_invite in submission_invites:
                         if submission_invite["contact"]["has_user"]:
                             continue
-                        submission_invite["locked"] = submission.get("locked", True) or submission.get("deficiency_sent_at") is not None
+                        submission_invite["locked"] = (
+                            submission.get("locked", True)
+                            or submission.get("deficiency_sent_at") is not None
+                        )
                         pending_third_party_invites.append(submission_invite)
 
         return render(
