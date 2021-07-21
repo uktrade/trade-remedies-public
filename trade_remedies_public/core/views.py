@@ -649,11 +649,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 user_create_validators.extend(
                     [
                         {"key": "group", "message": "You must select a security group", "re": ".+"},
-                        # {
-                        #     "key": "selected_country_code",
-                        #     "message": "You must select a country",
-                        #     "re": ".+",
-                        # },
                     ]
                 )
                 _validator = user_create_validators
@@ -725,6 +720,9 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             user = client.get_user(user_id, organisation_id)
             data.setdefault("active", user["active"])
             data["country_code"] = data.get("selected_country_code", user.get("country_code"))
+            # If user is Third Party but owner of *their* organisation, don't update group
+            if SECURITY_GROUP_THIRD_PARTY_USER in user["groups"]:
+                data.pop("group")
             response = client.update_create_team_user(organisation_id, data, user_id)
             request.session["create-user"] = response
             if not self.self_details:
