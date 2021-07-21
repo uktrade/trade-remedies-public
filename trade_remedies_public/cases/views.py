@@ -994,7 +994,8 @@ class RemoveDocumentView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView)
             if response:
                 if redirect_path:
                     feedback_message = "Document(s) deleted"
-                    return internal_redirect(f"{redirect_path}?message={feedback_message}")
+                    return internal_redirect(f"{redirect_path}?message={feedback_message}",
+                                             "/dashboard/")
                 else:
                     return redirect(f"/case/{case_id}/submission/{submission_id}/upload/")
             else:
