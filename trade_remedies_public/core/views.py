@@ -1,3 +1,4 @@
+import logging
 import os
 import pytz
 import json
@@ -35,6 +36,8 @@ from trade_remedies_client.exceptions import APIException
 
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
+
+logger = logging.getLogger(__name__)
 
 
 class TradeRemediesBaseView(TemplateView):
@@ -427,7 +430,10 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
                     for submission_invite in submission_invites:
                         if submission_invite["contact"]["has_user"]:
                             continue
-                        submission_invite["locked"] = submission.get("locked", True)
+                        submission_invite["locked"] = (
+                            submission.get("locked", True)
+                            or submission.get("deficiency_sent_at") is not None
+                        )
                         pending_third_party_invites.append(submission_invite)
 
         return render(
@@ -495,7 +501,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         **kwargs,
     ):
         invitation_id = invitation_id or request.GET.get("invitation_id")
-        create_mode = False
         organisation_id = organisation_id or request.user.organisation.get("id")
         _session_data = request.session.get("create-user", {})
         user = _session_data.get("user", {"active": True})
@@ -514,25 +519,23 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             user["case_ids"] = [case["id"] for case in user_cases]
             user["case_index"] = {case["id"]: case["primary"] for case in user_cases}
             request.session["create-user"] = {"user": user}
+            code = user.get("country_code")
+            if code:
+                user["country"] = {"code": code, "name": countries.countries[code]}
         elif invitation_id:
             invite = client.get_invite_details(invitation_id)
             case_spec = invite.get("meta", {}).get("case_spec", [])
             user = self.init_data(invite).get("user")
-        if section == "create" or not request.session.get("create-user", {}).get("user"):
+        have_draft_user = user.get("email")
+        if section == "create" or not have_draft_user:
             request.session["create-user"] = self.init_data(invite, user, case_spec)
             if section != "edit":
                 section = "contact"
-        if not user:
-            user = request.session.get("create-user", {}).get("user")
-        if not user.get("address") or not user.get("country_code"):
-            organisation = client.get_organisation(request.user.organisation["id"])
-            if not user.get("address"):
-                user["address"] = organisation.get("address", "")
-            if not user.get("country_code"):
-                user["country"] = organisation.get("country", {})
-                user["country_code"] = organisation.get("country", {}).get("code", "GB")
-        elif user.get("country_code") and user.get("country") and isinstance(user["country"], str):
-            user["country"] = {"code": user["country_code"], "name": user["country"]}
+        if not user.get("group"):
+            user["group"] = user.get("groups", ["unset"])[0]
+        organisation = client.get_organisation(request.user.organisation["id"])
+        if not user.get("address"):
+            user["address"] = organisation.get("address", "")
         if kwargs.get("errors") and kwargs.get("data"):
             user.update(kwargs["data"])
         create_mode = user.get("case_ids") is None
@@ -586,7 +589,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 "organisation_id": organisation_id,
                 "user_record": user,
                 "invitation_id": invitation_id,
-                # 'invites': invites,
                 "countries": countries,
                 "groups": client.get_public_security_groups(),
                 "timezones": pytz.common_timezones,
@@ -612,7 +614,11 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         *args,
         **kwargs,
     ):
-        if request.POST.get("group") == SECURITY_GROUP_THIRD_PARTY_USER:
+        if not section:
+            section = request.POST.get("section")
+        user_group = request.POST.get("group")
+        create_mode = request.POST.get("create_mode")
+        if user_group == SECURITY_GROUP_THIRD_PARTY_USER and create_mode:
             return redirect("/case/invite")
 
         client = self.client(request.user)
@@ -630,7 +636,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
             if user_id
             else f"/accounts/team/{organisation_id}/user/"
         )
-        user_group = request.user.groups[0] if request.user.groups else None
         data = {
             "organisation_id": organisation_id,
             "group": user_group,
@@ -641,9 +646,12 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         if request.POST.get("section") == "contact":
             _validator = user_create_validators
             if not self.self_details and not user_id:
-                _validator = user_create_validators + [
-                    {"key": "group", "message": "You must select a security group", "re": ".+"}
-                ]
+                user_create_validators.extend(
+                    [
+                        {"key": "group", "message": "You must select a security group", "re": ".+"},
+                    ]
+                )
+                _validator = user_create_validators
             errors = validate(data, _validator)
             if errors:
                 return self.get(
@@ -680,16 +688,17 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         if not user_id:
             # In create mode, stash in the session
             user = request.session.get("create-user") or {"user": {}, "invitation": {}}
-            user["user"].update(data)
-            request.session["create-user"] = user
-            request.session.modified = True
             if not request.POST.get("btn-value") == "create":
+                user["user"].update(data)
+                code = user["user"].get("selected_country_code", user.get("country_code"))
+                user["user"]["country"] = {"code": code, "name": countries.countries[code]}
+                request.session["create-user"] = user
+                request.session.modified = True
                 # if we are in the forward create path,
                 redirect_url = f"/accounts/team/{organisation_id}/user/"
                 return redirect(request.POST.get("redirect") or redirect_url)
             else:
-                # to create a user, set the data pack to be sent next, to the session stashed data
-                # pack case_spec into a json strucure to preserve the data
+                # Create json payload for case spec
                 if user["user"].get("case_spec"):
                     user["user"]["case_spec"] = json.dumps(user["user"]["case_spec"])
                 try:
@@ -698,7 +707,8 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                         data=user["user"],
                         invitation_id=request.session.get("invitation", {}).get("id"),
                     )
-                except Exception:
+                except APIException as e:
+                    logger.warning(f"Problem calling API to invite user: {e}")
                     return self.get(
                         request, user_id=user_id, organisation_id=organisation_id, data=data
                     )
@@ -706,15 +716,21 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 return redirect("/accounts/team/?alert=added-employee")
 
         try:
+            # Update existing user's details
             user = client.get_user(user_id, organisation_id)
             data.setdefault("active", user["active"])
+            data["country_code"] = data.get("selected_country_code", user.get("country_code"))
+            # If user is Third Party but owner of *their* organisation, don't update group
+            if SECURITY_GROUP_THIRD_PARTY_USER in user["groups"]:
+                data.pop("group")
             response = client.update_create_team_user(organisation_id, data, user_id)
             request.session["create-user"] = response
             if not self.self_details:
                 redirect_url = f"/accounts/team/{organisation_id}/user/{user_id}/edit/"
             else:
                 redirect_url = "/accounts/info/?alert=details-updated"
-        except Exception:
+        except APIException as e:
+            logger.warning(f"Problem calling API to update user details: {e}")
             return self.get(request, user_id=user_id, organisation_id=organisation_id, data=data)
         user_id = user_id or response.get(user_id)
         if str(user_id) == str(request.user.id):
@@ -847,7 +863,10 @@ class AccountInfo(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin)
         client = self.client(request.user)
         if "create-user" in request.session:
             del request.session["create-user"]
-        organisation_id = request.user.organisation.get("id")
+        if SECURITY_GROUP_THIRD_PARTY_USER in request.user.groups:
+            organisation_id = request.user.contact.get("organisation", {}).get("id")
+        else:
+            organisation_id = request.user.organisation.get("id")
         return render(
             request,
             self.template_name,

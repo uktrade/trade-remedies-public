@@ -1,44 +1,49 @@
-{% extends "./submission_base.html" %}
+{% extends "cases/submissions/submission_base.html" %}
 
-{% block form_tag %}<form action="{{form_action}}" method="post" class="dd-form">{% endblock %}
+{% block form_tag %}
+    <form action="{{ form_action }}" method="post" class="dd-form">{% endblock %}
 
 {% block buttons %}
-  <div class="grid-row">
-    <div class="column-two-thirds">
-    {% block extra_save_button %}
-    {% endblock %}
-  	{% if not submission.status.locking %}
-    <div class="margin-top-0">
-      {% block save_button %}
-        <button type="submit" class="button" name="btn-action" value="savecontinue">{% block save_button_text %}Save and continue{% endblock %}</button>
-      {% endblock %}
-    </div>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% block extra_save_button %}
+            {% endblock %}
+            {% if not submission.status.locking %}
+                <div class="margin-top-0">
+                    {% block save_button %}
+                        <button type="submit" class="button" name="btn-action" value="savecontinue">
+                            {% block save_button_text %}Save and continue{% endblock %}</button>
+                    {% endblock %}
+                </div>
 
-    {% endif %}
-    {% if submission_id %}
-        <div class="margin-top-2">
-        {% if invites %}
-            <a href="/case/invite/{{case_id}}/submission/{{submission_id}}/">Back</a>
-        {% else %}
-	        <a href="/case/{{case_id}}/submission/{{submission_id}}/">Back to menu</a>
-        {% endif %}
+            {% endif %}
+            {% if submission_id %}
+                <div class="margin-top-2">
+                    {% if invites %}
+                        <a href="/case/invite/{{ case_id }}/submission/{{ submission_id }}/">Back</a>
+                    {% else %}
+                        <a href="/case/{{ case_id }}/submission/{{ submission_id }}/">Back to
+                            menu</a>
+                    {% endif %}
+                </div>
+            {% elif organisation_id %}
+                <div class="margin-top-2">
+                    <a href="/case/{{ case_id }}/organisation/{{ organisation_id }}/submission/create/">Back
+                        to menu</a>
+                </div>
+            {% elif case_id %}
+                <div class="margin-top-2">
+                    <a href="/case/{{ submission_type_key }}/?case_id={{ case_id }}">Back to
+                        menu</a>
+                </div>
+            {% elif no_context_back_link %}
+                <div class="margin-top-2">
+                    <a href="{{ no_context_back_link }}">Back to menu</a>
+                </div>
+
+            {% endif %}
         </div>
-    {% elif organisation_id %}
-      <div class="margin-top-2">
-          <a href="/case/{{case_id}}/organisation/{{organisation_id}}/submission/create/">Back to menu</a>
-      </div>
-    {% elif case_id %}
-      <div class="margin-top-2">
-          <a href="/case/{{submission_type_key}}/?case_id={{case_id}}">Back to menu</a>
-      </div>
-    {% elif no_context_back_link %}
-      <div class="margin-top-2">
-          <a href="{{no_context_back_link}}">Back to menu</a>
-      </div>
-
-    {% endif %}
     </div>
-  </div>
 {% endblock %}
 
 {% block form_end_tag %}</form>{% endblock %}

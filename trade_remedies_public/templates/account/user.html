@@ -60,8 +60,13 @@
 				{% include "partials/widgets/key_value_row.html" with key="Status" value=status %}
 			</div>
 			<div class="edit-section">
-				{% include "partials/widgets/key_value_row.html" with key="User type" value='Direct employee of your organisation' %}
+                {% set 'user_type' 'Direct employee of your organisation' %}
+                {% if 'Third Party User' in user_record.groups %}
+                    {% set 'user_type' 'Third party collaborating with your organisation' %}
+                {% endif %}
+				{% include "partials/widgets/key_value_row.html" with key="User type" value=user_type %}
 			</div>
+            {% if 'Third Party User' not in user_record.groups %}
 			<div class="edit-section">
 				{% if is_owner and not self and not invitation_id %}
 					<a class="pull-right" href="{{base_url}}permissions/?edit=1{{invitation_param}}">Edit</a>
@@ -79,7 +84,8 @@
 				{% endif %}
 				{% include "partials/widgets/key_value_row.html" with key="Permissions" value=perm_name %}
 			</div>
-			{% if user_record.id %}
+			{%  endif %}
+            {% if user_record.id %}
 				<div class="edit-section">
 					{% if is_owner and not invitation_id %}
 						<a class="pull-right" href="{{base_url}}cases/?edit=1{{invitation_param}}">Edit</a>
@@ -95,7 +101,7 @@
 										{{case.case.name}}
 										<div class="sub-list">
 										{% for organisation in case.organisations %}
-											{{organisation.name}}<br>
+										    {{organisation.name}}<br>
 										{% endfor %}
 										</div>
 									</li>

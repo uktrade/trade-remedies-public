@@ -14,9 +14,9 @@ Create an account
   <h2 class="heading-medium">
       Your contact details
   </h2>
-  {% text_element id='name' label='Name' errors=errors read_only=True %}  
+  {% text_element id='name' label='Name' errors=errors read_only=True %}
   {% text_element id='email' label='Email address' read_only=True %}
-  {% text_element id='phone' label='Mobile phone number' errors=errors read_only=True %}
+  {% text_element id='phone' label='Mobile phone number' errors=errors read_only=False %}
 
   {% text_element id='contact_address' textarea=True label='Contact address' errors=errors hint='The address where you can be contacted' %}
   <div class="form-group edit-item type-text ">

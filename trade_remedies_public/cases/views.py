@@ -19,6 +19,7 @@ from cases.constants import (
     DIRECTION_BOTH,
     DIRECTION_PUBLIC_TO_TRA,
     ALL_COUNTRY_CASE_TYPES,
+    SUBMISSION_TYPE_INVITE_3RD_PARTY,
 )
 from core.constants import ALERT_MAP
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
@@ -44,9 +45,16 @@ from trade_remedies_public.constants import (
     ROLE_APPLICANT,
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
+    SECURITY_GROUP_THIRD_PARTY_USER,
 )
 
-from core.validators import company_form_validators, review_form_validators
+from core.validators import (
+    company_form_validators,
+    review_form_validators,
+    third_party_validators_base,
+    third_party_validators_uk,
+    third_party_validators_non_uk,
+)
 import dpath
 
 
@@ -197,6 +205,12 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         *args,
         **kwargs,
     ):
+        # Handle 3rd party invite unless submission locked or is a deficiency notice
+        if self.submission.get("type", {}).get("id") == SUBMISSION_TYPE_INVITE_3RD_PARTY:
+            if not self.submission["locked"] and self.submission["deficiency_sent_at"] is None:
+                # Handle with CaseInviteView
+                return redirect(f"/case/invite/{case_id}/submission/{submission_id}")
+
         public = public_str == "public"
         just_submitted = public_str == "submitted"
         state = {}
@@ -331,6 +345,18 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             "value": tab,
             "urlExt": f"&organisation_id={self.organisation_id}",
         }
+        # If the user is a 3rd party collaborator we want to show the organisation
+        # they are representing in this case.
+        is_third_party = SECURITY_GROUP_THIRD_PARTY_USER in request.user.groups
+        inviting_organisation_name = "Unknown"
+        if is_third_party:
+            all_submissions = self._client.get_submissions(case_id)
+            invite_to_case_submission = {
+                s.get("invitations")[0]["name"]: s
+                for s in all_submissions
+                if s["type"].get("name") == "Invite 3rd party"
+            }[self.user.name]
+            inviting_organisation_name = invite_to_case_submission.get("organisation_name")
         return render(
             request,
             self.template_name,
@@ -347,6 +373,8 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 "this_user": request.user,
                 "case_users": case_users if case_users else None,
                 "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER in request.user.groups,
+                "is_third_party": is_third_party,
+                "inviting_organisation_name": inviting_organisation_name,
                 "alert_message": ALERT_MAP.get(self.request.GET.get("alert")),
             },
         )
@@ -966,7 +994,9 @@ class RemoveDocumentView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView)
             if response:
                 if redirect_path:
                     feedback_message = "Document(s) deleted"
-                    return internal_redirect(f"{redirect_path}?message={feedback_message}")
+                    return internal_redirect(
+                        f"{redirect_path}?message={feedback_message}", "/dashboard/"
+                    )
                 else:
                     return redirect(f"/case/{case_id}/submission/{submission_id}/upload/")
             else:
@@ -1322,62 +1352,106 @@ class CaseInvitePeopleView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
     template_name = "cases/submissions/invite/invites.html"
 
     def get(self, request, case_id=None, submission_id=None, *args, **kwargs):
-        contact = None
+        contact = {}
+        session_data = request.session.get("invite_form_data", {})
+        uk_company = non_uk_company = False  # initial state
         if self.submission:
             invites = self._client.get_third_party_invites(case_id, self.submission["id"])
-            contact = invites[0].get("contact") if invites else None
-        return render(
-            request,
-            self.template_name,
-            {
-                "errors": kwargs.get("errors"),
-                "current_page_name": "Invite 3rd party",
-                "submission_type_key": "invite",
-                "all_organisations": True,
-                "case_id": self.case_id,
-                "submission_id": self.submission_id,
-                "case": self.case,
-                "submission": self.submission,
-                "inviting_organisation": request.user.organisation,
-                "contact": contact,
-            },
-        )
+            contact = invites[0].get("contact") if invites else {"organisation": {"country": {}}}
+            org_country_code = contact["organisation"]["country"].get("code")
+            contact["organisation"]["country_code"] = org_country_code  # bubble up for convenience
+            # Prep which radio button checked
+            uk_company = org_country_code == "GB"
+            non_uk_company = not uk_company
+        else:
+            # Use what we have in the session
+            contact["name"] = session_data.get("name")
+            contact["email"] = session_data.get("email")
+            contact["organisation"] = {}
+            contact["organisation"]["name"] = session_data.get("organisation_name")
+            contact["organisation"]["address"] = session_data.get("organisation_address")
+            contact["organisation"]["companies_house_id"] = session_data.get("companies_house_id")
+            if country_code := session_data.get("country_code"):
+                # A country was stashed in the session
+                contact["organisation"]["country_code"] = country_code
+                uk_company = country_code == "GB"
+                non_uk_company = not uk_company
+            elif uk_company_choice := session_data.get("uk_company_choice"):
+                # No country, but we stashed a uk/non uk company choice
+                uk_company = uk_company_choice == "uk_company"
+                non_uk_company = not uk_company
+
+        form_data = {
+            "errors": kwargs.get("errors"),
+            "current_page_name": "Invite 3rd party",
+            "submission_type_key": "invite",
+            "all_organisations": True,
+            "case_id": self.case_id,
+            "submission_id": self.submission_id,
+            "case": self.case,
+            "submission": self.submission,
+            "inviting_organisation": request.user.organisation,
+            "contact": contact,
+            "uk_company": uk_company,
+            "non_uk_company": non_uk_company,
+            "countries": countries,
+        }
+        return render(request, self.template_name, form_data)
 
     def post(self, request, case_id, submission_id=None, *args, **kwargs):
         data = {
             "name": request.POST.get("name"),
             "email": request.POST.get("email"),
-            "organisation_name": request.POST.get("organisation_name"),
-            "companies_house_id": request.POST.get("companies_house_id"),
-            "organisation_address": request.POST.get("organisation_address"),
+            "uk_company_choice": request.POST.get("uk_company_choice"),
         }
-        if data["organisation_name"] == request.user.organisation["name"]:
-            msg = "Invalid company name: A third party cannot be from your organisation"
-            errors = {"organisation_name": msg}
+        request.session["invite_form_data"] = data
+        request.session.modified = True
+        errors = {}
+        if not data.get("uk_company_choice"):
+            # Only makes sense to deliver this one error at this point
+            errors["uk_company_choice"] = "You must select an option"
             return self.get(request, case_id, submission_id=None, errors=errors)
-        if not data["name"] or not data["email"]:
-            if submission_id:
-                return redirect(f"/case/invite/{case_id}/submission/{submission_id}/")
-            return redirect(f"/case/invite/{case_id}/")
-        # We create a new invite after each edit, so remove existing third party invites
-        if submission_id:
-            invites = self._client.get_third_party_invites(case_id, submission_id)
-            for invite in invites:
-                self._client.remove_third_party_invite(
-                    invite["case"]["id"], invite["submission"]["id"], invite["id"]
-                )
+
+        validations = third_party_validators_base.copy()
+        # Pick out posted data based on uk company choice and set appropriate validations
+        if data.get("uk_company_choice") == "uk_company":
+            data["organisation_name"] = request.POST.get("organisation_name_uk")
+            data["organisation_address"] = request.POST.get("organisation_address_uk")
+            data["companies_house_id"] = request.POST.get("companies_house_id_uk")
+            data["country_code"] = "GB"
+            validations.extend(third_party_validators_uk.copy())
+        else:
+            data["organisation_name"] = request.POST.get("organisation_name_non_uk")
+            data["organisation_address"] = request.POST.get("organisation_address_non_uk")
+            data["companies_house_id"] = request.POST.get("companies_house_id_non_uk")
+            data["country_code"] = request.POST.get("country_code")
+            validations.extend(third_party_validators_non_uk.copy())
+        errors = validate(data, validations)
+
+        # Cannot invite a company member as a third party
+        if data.get("organisation_name") == request.user.organisation.get("name"):
+            msg = "Invalid company name: A third party cannot be from your organisation"
+            errors["organisation_name"] = msg
+
+        if errors:
+            # Back to form for another go
+            return self.get(request, case_id, submission_id=None, errors=errors)
+
+        # Call API to create/update third party invite
         response = self._client.third_party_invite(
             case_id=case_id,
             organisation_id=request.user.organisation["id"],
             submission_id=submission_id,
             invite_params=data,
         )
-        if not submission_id and response.get("submission"):
+        if not submission_id:
             submission_id = response.get("submission", {}).get("id")
-
         if submission_id:
+            # We successfully created a submission, back to submission task list
             return redirect(f"/case/invite/{case_id}/submission/{submission_id}")
-        return redirect(f"/case/invite/{case_id}/")
+        else:
+            # No submission, back to case page
+            return redirect(f"/case/invite/{case_id}/")
 
     def delete(self, request, case_id, submission_id, invite_id, *args, **kwargs):
         self._client.remove_third_party_invite(case_id, submission_id, invite_id)

@@ -38,8 +38,8 @@
               {% text_element id='name' autocomplete="off" label='Name' errors=errors value=user.name %}
               {% text_element id='phone' label='Phone number' type="tel" autocomplete="off" errors=errors value=user.phone %}
               {% password_element id='current_password' label='Current password' errors=errors %}
-              {% password_element id='password' autocomplete="new-password" label='Password' errors=errors %}
-              {% password_element id='password_confirm' autocomplete="new-password" label='Confirm password' errors=errors %}
+              {% password_element id='password' label='Password' errors=errors %}
+              {% password_element id='password_confirm' label='Confirm password' errors=errors %}
               <div class="form-group type-text ">
                 <label for="country" class="form-label">Country </label>
                 <select name="country_code" class="form-control" id="country">

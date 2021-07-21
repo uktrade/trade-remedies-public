@@ -22,7 +22,13 @@
 <div class="grid-row">
   <div class="column-two-thirds">
     <div class="welcome-user-widget">
-      <p class="organisation-block-small">{{user.organisation.name}}</p>
+      <p class="organisation-block-small">
+          {% if 'Third Party User' in user.groups %}
+              {{user.organisation.name}} (Third Party Organisation)
+          {% else %}
+            {{user.organisation.name}}
+          {% endif %}
+      </p>
     </div>
     {% if cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
       <h1 class="heading-large">Your cases</h1>
@@ -53,14 +59,10 @@
             <UL>
               {% for invite in invite_submissions %}
                 <LI>
-                    {% if invite.locked %}
-                        <a href="/case/{{invite.case.id}}/submission/{{invite.id}}/">
-                    {% else %}
-                        <a href="/case/invite/{{invite.case.id}}/submission/{{invite.id}}/">
-                    {% endif %}
+                    <a href="/case/{{invite.case.id}}/submission/{{invite.id}}/">
                     {{invite.case.reference}} - {% format_date invite.created_at '%d %b %Y' %}
                   </a>
-                    ({{invite.status.name}})
+                    ({{ invite.name }} - {{ invite.status.name }})
                 </LI>
               {% endfor %}
             </UL>
