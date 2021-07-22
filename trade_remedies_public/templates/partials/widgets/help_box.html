@@ -1,9 +1,15 @@
 {% load get_item %}
 {% load link_lookup %}
-
+{% load set %}
+{% if case %}
+    {% set 'case_email' case.reference|add:"@trs.gov.uk" %}
+{% endif %}
 <div class="rh-box">
 	<p class="bold margin-bottom-1">Do you need help?</p>
 	<div class="font-xsmall double-spaced">
 		<a class="link" href="{% link_lookup 'LINK_HELP_BOX_GUIDANCE' %}" target="_blank">Read the guidance documents &nbsp;<i class="icon16 icon-outlink" title="Opens in a new tab"></i></a>
+        {% if case_email %}
+            <span>Email: <a class="link break-word" href="mailto:{{ case_email }}">{{ case_email }}</a></span><br>
+        {% endif %}
 	</div>
 </div>
