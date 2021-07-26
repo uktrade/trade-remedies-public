@@ -108,7 +108,7 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
             if delivery_type != "email" and not request.user.phone:
                 delivery_type = "email"
             result = None
-            if resend:
+            if resend or twofactor_error:
                 try:
                     result = self.client(request.user).two_factor_request(
                         delivery_type=delivery_type,
@@ -124,7 +124,7 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
                         f"We could not send the code to your phone ({request.user.phone}). "
                         f"Please select to use email delivery of the access code."
                     )
-                    result = "An error occured"
+                    result = "An error occurred"
             return render(
                 request,
                 self.template_name,
@@ -156,11 +156,7 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
             request.session.modified = True
             return redirect("/dashboard")
         except APIException as exc:
-            if exc.status_code == 401:
-                return redirect("/accounts/logout/")
-            request.session[
-                "twofactor_error"
-            ] = "You entered an incorrect code. Try again or resend."
+            request.session["twofactor_error"] = f"{exc}"
             request.session.modified = True
             return redirect("/dashboard")
 
