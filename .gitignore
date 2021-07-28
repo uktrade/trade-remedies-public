@@ -119,8 +119,5 @@ tags
 node_modules
 .idea
 
-# sqlite
-db.sqlite3
-
 # static
 trade_remedies_public/static/
