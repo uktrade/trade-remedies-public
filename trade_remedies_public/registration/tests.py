@@ -43,7 +43,7 @@ class TestPasswordValidation(TestCase):
     def test_password_validator(self):
         for password, is_valid, description in self.password_validation_test_cases:
             with self.subTest(password=password, is_valid=is_valid, description=description):
-                errors = validate(dict={"password": password}, validators=registration_validators)
+                errors = validate(data={"password": password}, validators=registration_validators)
                 password_errors = errors.get("password")
                 if is_valid:
                     self.assertIsNone(password_errors)
@@ -66,7 +66,7 @@ class TestEmailValidation(TestCase):
     def test_email_validator(self):
         for email, is_valid, description in self.test_cases:
             with self.subTest(email=email, is_valid=is_valid, description=description):
-                errors = validate(dict={"email": email}, validators=base_registration_validators)
+                errors = validate(data={"email": email}, validators=base_registration_validators)
                 email_errors = errors.get("email")
                 if is_valid:
                     self.assertIsNone(email_errors, description)

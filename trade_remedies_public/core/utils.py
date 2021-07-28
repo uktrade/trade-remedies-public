@@ -1,6 +1,9 @@
 import dpath
 import datetime
+from django.conf import settings
 from django.http import StreamingHttpResponse
+from django.shortcuts import redirect
+from django.utils.http import is_safe_url  # D3 - url_has_allowed_host_and_scheme
 import re
 
 
@@ -93,21 +96,20 @@ def proxy_stream_file_download(stream, filename, mime_type=None, chunk_size=None
     return response
 
 
-def validate(dict, validators):
+def validate(data, validators):
     """
     Run a set of validators against a dict (typically post parameters)
-    :dict: dictionary to be validated
+    :data: dictionary to be validated
     :validators: array of validators
     :return: dict of errors - keyed with the fieldnames
     """
     errors = {}
     for validator in validators:
         key = validator["key"]
-        value = dict.get(key) or ""
+        value = data.get(key) or ""
         if key not in errors:  # we only want one error per field
             if not re.compile(validator.get("re", ".+")).match(value):
                 errors[key] = validator["message"]
-    dict["errors"] = errors
     return errors
 
 
@@ -133,3 +135,16 @@ def set_cookie(response, key, value, days_expire=365):
         "%a, %d-%b-%Y %H:%M:%S GMT",
     )
     response.set_cookie(key, value, max_age=max_age, expires=expires)
+
+
+def internal_redirect(url, default_path):
+    """
+    Redirect to the specified URL after checking that
+    host is in the allowed hosts list
+    :param url: URL to redirect to
+    :param default_path: Default path to redirect to if url is unsafe
+    """
+    if not is_safe_url(url, settings.ALLOWED_HOSTS):
+        return redirect(default_path)
+
+    return redirect(url)

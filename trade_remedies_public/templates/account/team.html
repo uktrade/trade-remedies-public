@@ -53,7 +53,9 @@
         <tr class="{% if not user.active %}line-through {% endif %}">
           <td title="{{user.name}}"><a href="/accounts/team/{{user.organisation.id}}/user/{{user.id}}/edit/">{{user.name}}</a></td>
           <td>
-            {% if user.organisation.role.security_group == 'Organisation Owner' %}
+            {% if 'Third Party User' in user.groups %}
+              Third Party User
+            {% elif user.organisation.role.security_group == 'Organisation Owner' %}
               Administrator
             {% else %}
               User

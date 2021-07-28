@@ -102,9 +102,6 @@ ENV/
 # mypy
 .mypy_cache/
 
-# sqlite
-db_sqlite3
-
 #vscode
 .vscode
 
@@ -121,6 +118,9 @@ local.env
 tags
 node_modules
 .idea
+
+# sqlite
+db.sqlite3
 
 # static
 trade_remedies_public/static/

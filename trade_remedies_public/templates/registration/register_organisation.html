@@ -11,6 +11,12 @@ Create an account
 {% endblock %}
 
 {% block form_content %}
+{% if invite.organisation_security_group == 'Third Party User' %}
+    {% set 'organisation_name' invite.contact.organisation.name %}
+    {% set 'companies_house_id' invite.contact.organisation.companies_house_id %}
+    {% set 'organisation_address' invite.contact.organisation.address %}
+{% endif %}
+
   <h2 class="heading-medium">
       Your company details
   </h2>
@@ -31,7 +37,7 @@ Create an account
           {% for country_code, country_name in countries %}
               <option
                   value="{{country_code}}"
-                  {% if organisation_country == country_code %}selected{% endif %}
+                  {% if organisation_country_code == country_code %}selected{% endif %}
               >{{country_name}}</option>
           {% endfor %}
       </select>
