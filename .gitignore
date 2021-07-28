@@ -102,9 +102,6 @@ ENV/
 # mypy
 .mypy_cache/
 
-# sqlite
-db_sqlite3
-
 #vscode
 .vscode
 

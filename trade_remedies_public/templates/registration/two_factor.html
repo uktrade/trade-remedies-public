@@ -36,15 +36,29 @@
                     <div class="form-group">
                         <input class="form-control" type="text" name="code" value="">
                     </div>
-                    {% if delivery_type != 'email' %}
-                        <div class="form-group">
-                            <a href="?delivery_type=email&resend=true">Email me instead</a>
+                    <details>
+                        <summary style="display: list-item;text-decoration: underline;">I have not received a code</summary>
+                        <div class="panel panel-border-narrow">
+                            <p>
+                                Re-request an authentication code is resent using the
+                                link below. Note you will have a limited number attempts before
+                                your account is temporarily locked. It will however be automatically
+                                re-enabled after a set period of time.
+                            </p>
+                            <div class="form-group">
+                                <a href="?resend=true{% if delivery_type == 'email' %}&delivery_type=email{% endif %}">Resend my code</a>
+                            </div>
+                            <p>
+                                Sometimes getting the authentication code via SMS can be slow or
+                                unreliable. If you are having issues receiving an authentication
+                                code this way, then click the link below to get your code via email.
+                            </p>
+                            <div class="form-group">
+                                <a href="?delivery_type=email&resend=true">Email me instead</a>
+                            </div>
                         </div>
-                    {% endif %}
-                    <div class="form-group">
-                        <a href="?resend=true{% if delivery_type == 'email' %}&delivery_type=email{% endif %}">Resend my code</a>
-                    </div>
-                     <div class="form-group">
+                    </details>
+                     <div class="form-group margin-top-1">
                         <button type="submit" class="button"/>Submit</button>
                     </div>
                     {% else %}

@@ -1,9 +1,11 @@
+from django.utils.html import escape
+
 from core.templatetags import register
 from django.utils.safestring import mark_safe
 
 
 @register.simple_tag(takes_context=True)
-def text_element(
+def text_element(  # noqa: C901
     context,
     id,
     label,
@@ -30,7 +32,17 @@ def text_element(
     if value is None:
         value = context.get(id) or ""
     read_only = "" if not read_only else "readonly disabled"
-    autocomplete = f' autocomplete="{autocomplete}" ' if autocomplete else ""
+
+    if autocomplete:
+        autocomplete = f'autocomplete="{autocomplete}" '
+    else:
+        autocomplete = ""
+
+    if value is None:
+        value = context.get(id, "")
+    else:
+        value = escape(value)
+
     output.append('<div class="form-group type-text ')
     if name and errors and name in errors:
         output.append("form-group-error ")
