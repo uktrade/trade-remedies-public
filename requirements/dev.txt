@@ -8,8 +8,6 @@ apipkg==1.5
     # via execnet
 appdirs==1.4.4
     # via black
-appnope==0.1.2
-    # via ipython
 attrs==20.3.0
     # via pytest
 backcall==0.2.0
@@ -48,6 +46,8 @@ decorator==5.0.7
     # via
     #   ipython
     #   traitlets
+django-appconf==1.0.4
+    # via django-compressor
 django-audit-log-middleware==0.0.4
     # via -r requirements.in/base.in
 django-basicauth==0.5.2
@@ -55,6 +55,8 @@ django-basicauth==0.5.2
 django-cache-memoize==0.1.8
     # via trade-remedies-client
 django-chunk-upload-handlers==0.0.11
+    # via -r requirements.in/base.in
+django-compressor==2.4.1
     # via -r requirements.in/base.in
 django-countries==5.4
     # via -r requirements.in/base.in
@@ -74,6 +76,8 @@ django-log-formatter-ecs==0.0.5
     # via -r requirements.in/base.in
 django-redis==4.10.0
     # via -r requirements.in/base.in
+django-sass-processor==1.0.1
+    # via -r requirements.in/base.in
 django-storages==1.11.1
     # via
     #   -r requirements.in/base.in
@@ -83,6 +87,7 @@ django-timezone-field==3.0
 django==2.2.24
     # via
     #   -r requirements.in/base.in
+    #   django-appconf
     #   django-audit-log-middleware
     #   django-basicauth
     #   django-chunk-upload-handlers
@@ -120,6 +125,8 @@ jmespath==0.10.0
     #   botocore
 kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
+libsass==0.21.0
+    # via -r requirements.in/base.in
 marshmallow==3.6.1
     # via kubi-ecs-logger
 mccabe==0.6.1
@@ -191,6 +198,8 @@ pytz==2021.1
     #   -r requirements.in/base.in
     #   django
     #   django-timezone-field
+rcssmin==1.0.6
+    # via django-compressor
 redis==3.2.0
     # via
     #   -r requirements.in/base.in
@@ -201,6 +210,8 @@ requests==2.25.1
     # via
     #   -r requirements.in/base.in
     #   trade-remedies-client
+rjsmin==1.1.0
+    # via django-compressor
 s3transfer==0.4.2
     # via boto3
 selenium==3.141.0
@@ -210,7 +221,9 @@ sentry-sdk==0.13.1
 six==1.15.0
     # via
     #   behave
+    #   django-compressor
     #   django-extensions
+    #   libsass
     #   parse-type
     #   python-dateutil
     #   traitlets
