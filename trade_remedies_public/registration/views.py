@@ -331,6 +331,7 @@ class RegisterOrganisationView(BaseRegisterView):
             return redirect(f"/accounts/register/{redirect_postfix}")
 
         self.update_session(request, request.POST.dict())
+        request.session["registration"].pop("errors", None)  # Clear existing
         errors = validate(request.session["registration"], self.validators) or {}
         if get(request.session["registration"], "uk_company") == "no":
             errors.update(validate(request.session["registration"], self.country_validator) or {})
@@ -429,13 +430,15 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
                         auth_response = self.trusted_client.authenticate(
                             session_reg["email"], session_reg["password"]
                         )
-                        if auth_response and auth_response.get("token"):
-                            request.session.clear()
-                            request.session["token"] = auth_response["token"]
-                            request.session["user"] = auth_response["user"]
-                            return redirect("/dashboard/?welcome=true")
-                    request.session["registration"] = {}
-                    return redirect("/email/verify/")
+                        if auth_response:
+                            if auth_response.get("needs_verify"):
+                                request.session["registration"] = {}
+                                return redirect("/email/verify/")
+                            elif auth_response.get("token"):
+                                request.session.clear()
+                                request.session["token"] = auth_response["token"]
+                                request.session["user"] = auth_response["user"]
+                                return redirect("/dashboard/?welcome=true")
                 else:
                     request.session["registration"]["errors"] = response.get("error")
                     request.session.modified = True
