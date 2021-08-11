@@ -67,7 +67,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "govuk_template_base",
-    # "govuk_template",
     "govuk_forms",
     "django_chunk_upload_handlers",
     "core",
@@ -251,22 +250,6 @@ STATICFILES_FINDERS = [
     "sass_processor.finders.CssFinder",
 ]
 
-# SASS_PROCESSOR_INCLUDE_DIRS = [
-#     os.path.join(
-#         BASE_DIR,
-#         "..",
-#         "govuk_template",
-#         "assets",
-#         "stylesheets",
-#     ),
-#     os.path.join(
-#         BASE_DIR,
-#         "..",
-#         "templates",
-#         "sass",
-#     ),
-# ]
-
 SASS_PROCESSOR_FAIL_SILENTLY = False
 SASS_PROCESSOR_ENABLED = True
 SASS_PROCESSOR_AUTO_INCLUDE = False
@@ -274,10 +257,6 @@ SASS_PROCESSOR_AUTO_INCLUDE = False
 # Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", "static"))
 STATIC_URL = "/static/"
-
-# STATICFILES_DIRS = [
-#     'node_modules',
-# ]
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "templates", "static"),
