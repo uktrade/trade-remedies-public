@@ -2835,7 +2835,7 @@ table.small-font td {
 /*********   Icons  **********/
 .icon {
   background-size: 24px 960px;
-  background-image: url(images/sprite@2x.png);
+  background-image: url("../stylesheets/images/sprite@2x.png");
   display: inline-block;
   width: 24px;
   height: 24px;
@@ -2880,7 +2880,7 @@ table.small-font td {
 
 .icon16 {
   background-size: 16px 640px;
-  background-image: url(images/sprite@2x.png);
+  background-image: url("../stylesheets/images/sprite@2x.png");
   display: inline-block;
   width: 16px;
   height: 16px;
@@ -2899,7 +2899,7 @@ table.small-font td {
     width: 60px;
     height: 60px;
     background-size: 60px 1620px;
-    background-image: url("images/TRSprite2x.png");
+    background-image: url("../stylesheets/images/TRSprite2x.png");
     top: -7px;
     left: 0;
     margin-top: 0; }
@@ -3054,7 +3054,7 @@ table.small-font td {
   width: 40px;
   height: 46px;
   background-size: 40px 465px;
-  background-image: url("images/file-icons.png");
+  background-image: url("../stylesheets/images/file-icons.png");
   display: block; }
 
 .icon-file.doc {
@@ -3089,7 +3089,7 @@ table.small-font td {
     padding: 20px 20px 20px 60px; }
     .box-alert.warning:before {
       background-size: 36px 1440px;
-      background-image: url(images/sprite@2x.png);
+      background-image: url("../stylesheets/images/sprite@2x.png");
       display: inline-block;
       width: 36px;
       height: 36px;
