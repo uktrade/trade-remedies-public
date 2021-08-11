@@ -7,7 +7,7 @@ those will be preloaded and ready for the request processing.
 import json
 from django.urls import reverse
 from trade_remedies_client.client import Client
-from config.version import __version__
+from trade_remedies_public.version import __version__
 
 
 def motd_context(request):
