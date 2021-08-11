@@ -331,8 +331,7 @@ class RegisterOrganisationView(BaseRegisterView):
             return redirect(f"/accounts/register/{redirect_postfix}")
 
         self.update_session(request, request.POST.dict())
-        if "errors" in request.session["registration"]:
-            request.session["registration"].pop("errors")  # Clear existing
+        request.session["registration"].pop("errors", None)  # Clear existing
         errors = validate(request.session["registration"], self.validators) or {}
         if get(request.session["registration"], "uk_company") == "no":
             errors.update(validate(request.session["registration"], self.country_validator) or {})
