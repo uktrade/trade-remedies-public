@@ -41,7 +41,7 @@ from core.utils import (
     parse_redirect_params,
     internal_redirect,
 )
-from trade_remedies_public.constants import (
+from config.constants import (
     ROLE_APPLICANT,
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,

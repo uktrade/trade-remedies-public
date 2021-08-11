@@ -20,7 +20,7 @@ from core.validators import (
     base_registration_validators,
 )
 from core.utils import internal_redirect
-from trade_remedies_public.constants import SECURITY_GROUP_THIRD_PARTY_USER
+from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
 
 
 def logout_view(request):
