@@ -2,7 +2,7 @@
 
 @mixin icon($width) {
     background-size: $width $width*40;
-    background-image: url(images/sprite@2x.png);
+    background-image: url("../stylesheets/images/sprite@2x.png");
     display: inline-block;
     width: $width;
     height: $width;
@@ -85,7 +85,7 @@
     width: 60px;
     height: 60px;
     background-size: 60px 1620px;
-    background-image: url('images/TRSprite2x.png');
+    background-image: url("../stylesheets/images/TRSprite2x.png");
     top: -7px;
     left: 0;
     margin-top: 0;
@@ -273,7 +273,7 @@
   width: 40px;
   height: 46px;
   background-size: 40px 465px;
-  background-image: url('images/file-icons.png');
+  background-image: url('../stylesheets/images/file-icons.png');
   display: block;
 }
 .icon-file.doc {

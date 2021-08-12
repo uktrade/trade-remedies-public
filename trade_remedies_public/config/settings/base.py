@@ -67,12 +67,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_extensions",
     "govuk_template_base",
-    "govuk_template",
     "govuk_forms",
     "django_chunk_upload_handlers",
     "core",
     "registration",
     "feedback",
+    "sass_processor",
 ]
 
 MIDDLEWARE = [
@@ -242,11 +242,23 @@ COUNTRIES_OVERRIDE = {
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-STATIC_URL = "/static/"
+
+# Static
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    "sass_processor.finders.CssFinder",
+]
+
+SASS_PROCESSOR_FAIL_SILENTLY = False
+SASS_PROCESSOR_ENABLED = True
+SASS_PROCESSOR_AUTO_INCLUDE = False
+
+# Static files (CSS, JavaScript, Images)
 STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", "static"))
+STATIC_URL = "/static/"
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "..", "govuk_template", "static"),
     os.path.join(BASE_DIR, "..", "templates", "static"),
 ]
 
