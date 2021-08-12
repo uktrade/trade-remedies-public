@@ -5,7 +5,7 @@ jobs:
       - image: cimg/python:3.9.5
         environment:
           DATABASE_URL: sqlite:///trade_remedies_public/db.sqlite3
-          DJANGO_SETTINGS_MODULE: trade_remedies_public.settings.local
+          DJANGO_SETTINGS_MODULE: config.settings.local
           DJANGO_SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
     steps:
@@ -41,7 +41,7 @@ jobs:
             cd trade_remedies_public
             python -m flake8
   front_end:
-    docker: 
+    docker:
       - image: 'circleci/node:lts'
     steps:
       - checkout
@@ -59,7 +59,7 @@ jobs:
           paths:
             - node_modules
           key: npm-dependencies-{{ checksum "package-lock.json" }}
-          
+
 workflows:
   version: 2
   run_tests:

@@ -79,15 +79,15 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "trade_remedies_public.middleware.SessionTimeoutMiddleware",
+    "config.middleware.SessionTimeoutMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "trade_remedies_public.middleware.APIUserMiddleware",
+    "config.middleware.APIUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "trade_remedies_public.middleware.CacheControlMiddleware",
-    "trade_remedies_public.middleware.HoldingPageMiddleware",
+    "config.middleware.CacheControlMiddleware",
+    "config.middleware.HoldingPageMiddleware",
 ]
 
 # Add basic authentication if configured
@@ -95,7 +95,7 @@ basic_auth_user = env("BASIC_AUTH_USER", default=False)
 if basic_auth_user:
     MIDDLEWARE.append("basicauth.middleware.BasicAuthMiddleware")
 
-ROOT_URLCONF = "trade_remedies_public.urls"
+ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
     {
@@ -111,17 +111,17 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "govuk_template_base.context_processors.govuk_template_base",
-                "trade_remedies_public.context_processors.user_context",
-                "trade_remedies_public.context_processors.version_context",
-                "trade_remedies_public.context_processors.motd_context",
-                "trade_remedies_public.context_processors.cookie_management",
+                "config.context_processors.user_context",
+                "config.context_processors.version_context",
+                "config.context_processors.motd_context",
+                "config.context_processors.cookie_management",
             ],
         },
     },
 ]
 
 
-WSGI_APPLICATION = "trade_remedies_public.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
