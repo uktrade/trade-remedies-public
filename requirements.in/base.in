@@ -23,5 +23,10 @@ werkzeug==0.15.5
 whitenoise==3.3.1
 py>=1.10.0
 
+# SASS compilation
+libsass
+django-compressor
+django-sass-processor
+
 # CVE-2021-33503
 urllib3==1.26.5
