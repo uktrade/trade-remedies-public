@@ -4,13 +4,11 @@
 #
 #    pip-compile --output-file=requirements/dev.txt requirements.in/dev.in
 #
-apipkg==1.5
-    # via execnet
 appdirs==1.4.4
     # via black
 appnope==0.1.2
     # via ipython
-attrs==20.3.0
+attrs==21.2.0
     # via pytest
 backcall==0.2.0
     # via ipython
@@ -20,23 +18,23 @@ behave-django==1.4.0
     # via -r requirements.in/dev.in
 behave==1.2.6
     # via behave-django
-black==20.8b1
+black==21.7b0
     # via -r requirements.in/dev.in
 boto3==1.17.89
     # via
     #   -r requirements.in/base.in
     #   django-chunk-upload-handlers
-botocore==1.20.97
+botocore==1.20.112
     # via
     #   boto3
     #   s3transfer
-certifi==2020.12.5
+certifi==2021.5.30
     # via
     #   requests
     #   sentry-sdk
 chardet==4.0.0
     # via requests
-click==7.1.2
+click==8.0.1
     # via
     #   black
     #   pip-tools
@@ -44,17 +42,21 @@ coverage==5.5
     # via
     #   -r requirements.in/dev.in
     #   pytest-cov
-decorator==5.0.7
+decorator==5.0.9
     # via
     #   ipython
     #   traitlets
+django-appconf==1.0.4
+    # via django-compressor
 django-audit-log-middleware==0.0.4
     # via -r requirements.in/base.in
 django-basicauth==0.5.2
     # via -r requirements.in/base.in
-django-cache-memoize==0.1.8
+django-cache-memoize==0.1.10
     # via trade-remedies-client
 django-chunk-upload-handlers==0.0.11
+    # via -r requirements.in/base.in
+django-compressor==2.4.1
     # via -r requirements.in/base.in
 django-countries==5.4
     # via -r requirements.in/base.in
@@ -66,13 +68,15 @@ django-govuk-forms==0.5
     # via -r requirements.in/base.in
 django-govuk-template==0.6
     # via -r requirements.in/base.in
-django-ipware==3.0.2
+django-ipware==3.0.7
     # via
     #   django-audit-log-middleware
     #   django-log-formatter-ecs
 django-log-formatter-ecs==0.0.5
     # via -r requirements.in/base.in
 django-redis==4.10.0
+    # via -r requirements.in/base.in
+django-sass-processor==1.0.1
     # via -r requirements.in/base.in
 django-storages==1.11.1
     # via
@@ -83,6 +87,7 @@ django-timezone-field==3.0
 django==2.2.24
     # via
     #   -r requirements.in/base.in
+    #   django-appconf
     #   django-audit-log-middleware
     #   django-basicauth
     #   django-chunk-upload-handlers
@@ -98,11 +103,11 @@ djangorestframework==3.12.4
     # via feed-gov-back
 dpath==1.4.2
     # via -r requirements.in/base.in
-execnet==1.8.0
+execnet==1.9.0
     # via pytest-xdist
 feed-gov-back==0.4
     # via -r requirements.in/base.in
-flake8==3.9.1
+flake8==3.9.2
     # via -r requirements.in/dev.in
 idna==2.10
     # via requests
@@ -120,13 +125,15 @@ jmespath==0.10.0
     #   botocore
 kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
+libsass==0.21.0
+    # via -r requirements.in/base.in
 marshmallow==3.6.1
     # via kubi-ecs-logger
 mccabe==0.6.1
     # via flake8
 mypy-extensions==0.4.3
     # via black
-packaging==20.9
+packaging==21.0
     # via pytest
 parse-type==0.5.2
     # via behave
@@ -136,21 +143,21 @@ parse==1.19.0
     #   parse-type
 parso==0.8.2
     # via jedi
-pathspec==0.8.1
+pathspec==0.9.0
     # via black
-pep517==0.10.0
+pep517==0.11.0
     # via pip-tools
 pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pip-tools==6.1.0
+pip-tools==6.2.0
     # via -r requirements.in/dev.in
 pluggy==0.13.1
     # via pytest
-prompt-toolkit==3.0.18
+prompt-toolkit==3.0.19
     # via ipython
-psycopg2-binary==2.8.6
+psycopg2-binary==2.9.1
     # via feed-gov-back
 ptyprocess==0.7.0
     # via pexpect
@@ -169,48 +176,54 @@ pygments==2.8.1
     #   ipython
 pyparsing==2.4.7
     # via packaging
-pytest-cov==2.11.1
+pytest-cov==2.12.1
     # via -r requirements.in/dev.in
-pytest-django==4.2.0
+pytest-django==4.4.0
     # via -r requirements.in/dev.in
 pytest-forked==1.3.0
     # via pytest-xdist
-pytest-xdist==2.2.1
+pytest-xdist==2.3.0
     # via -r requirements.in/dev.in
-pytest==6.2.3
+pytest==6.2.4
     # via
     #   -r requirements.in/dev.in
     #   pytest-cov
     #   pytest-django
     #   pytest-forked
     #   pytest-xdist
-python-dateutil==2.8.1
+python-dateutil==2.8.2
     # via botocore
 pytz==2021.1
     # via
     #   -r requirements.in/base.in
     #   django
     #   django-timezone-field
+rcssmin==1.0.6
+    # via django-compressor
 redis==3.2.0
     # via
     #   -r requirements.in/base.in
     #   django-redis
-regex==2021.4.4
+regex==2021.8.3
     # via black
 requests==2.25.1
     # via
     #   -r requirements.in/base.in
     #   trade-remedies-client
+rjsmin==1.1.0
+    # via django-compressor
 s3transfer==0.4.2
     # via boto3
 selenium==3.141.0
     # via -r requirements.in/dev.in
 sentry-sdk==0.13.1
     # via -r requirements.in/base.in
-six==1.15.0
+six==1.16.0
     # via
     #   behave
+    #   django-compressor
     #   django-extensions
+    #   libsass
     #   parse-type
     #   python-dateutil
     #   traitlets
@@ -220,19 +233,18 @@ sqlparse==0.4.1
     # via django
 toml==0.10.2
     # via
+    #   pytest
+    #   pytest-cov
+tomli==1.2.1
+    # via
     #   black
     #   pep517
-    #   pytest
 git+git://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/base.in
 traitlets==4.3.3
     # via
     #   -r requirements.in/dev.in
     #   ipython
-typed-ast==1.4.3
-    # via black
-typing-extensions==3.7.4.3
-    # via black
 urllib3==1.26.5
     # via
     #   -r requirements.in/base.in
@@ -244,6 +256,8 @@ wcwidth==0.2.5
     # via prompt-toolkit
 werkzeug==0.15.5
     # via -r requirements.in/base.in
+wheel==0.37.0
+    # via pip-tools
 whitenoise==3.3.1
     # via -r requirements.in/base.in
 
