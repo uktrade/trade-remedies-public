@@ -13,7 +13,7 @@ from django.utils.decorators import method_decorator
 from django.conf import settings
 from django_countries import countries
 from django.http import HttpResponseNotFound, HttpResponse
-from trade_remedies_public.constants import (
+from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
     SECURITY_GROUP_THIRD_PARTY_USER,
