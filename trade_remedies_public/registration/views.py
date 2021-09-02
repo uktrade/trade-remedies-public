@@ -404,7 +404,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             request, self.template_name, {"countries": countries, **request.session["registration"]}
         )
 
-    def post(self, request, code=None, case_id=None, *args, **kwargs):
+    def post(self, request, code=None, case_id=None, *args, **kwargs):  # noqa: C901
         redirect_postfix = f"{code}/{case_id}/" if code and case_id else ""
         if "registration" not in request.session:
             return redirect("/accounts/register/")
