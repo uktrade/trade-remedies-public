@@ -20,7 +20,7 @@ from core.validators import (
     base_registration_validators,
 )
 from core.utils import internal_redirect
-from trade_remedies_public.constants import SECURITY_GROUP_THIRD_PARTY_USER
+from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
 
 
 def logout_view(request):
@@ -331,6 +331,7 @@ class RegisterOrganisationView(BaseRegisterView):
             return redirect(f"/accounts/register/{redirect_postfix}")
 
         self.update_session(request, request.POST.dict())
+        request.session["registration"].pop("errors", None)  # Clear existing
         errors = validate(request.session["registration"], self.validators) or {}
         if get(request.session["registration"], "uk_company") == "no":
             errors.update(validate(request.session["registration"], self.country_validator) or {})
@@ -403,7 +404,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             request, self.template_name, {"countries": countries, **request.session["registration"]}
         )
 
-    def post(self, request, code=None, case_id=None, *args, **kwargs):
+    def post(self, request, code=None, case_id=None, *args, **kwargs):  # noqa: C901
         redirect_postfix = f"{code}/{case_id}/" if code and case_id else ""
         if "registration" not in request.session:
             return redirect("/accounts/register/")
@@ -429,13 +430,15 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
                         auth_response = self.trusted_client.authenticate(
                             session_reg["email"], session_reg["password"]
                         )
-                        if auth_response and auth_response.get("token"):
-                            request.session.clear()
-                            request.session["token"] = auth_response["token"]
-                            request.session["user"] = auth_response["user"]
-                            return redirect("/dashboard/?welcome=true")
-                    request.session["registration"] = {}
-                    return redirect("/email/verify/")
+                        if auth_response:
+                            if auth_response.get("needs_verify"):
+                                request.session["registration"] = {}
+                                return redirect("/email/verify/")
+                            elif auth_response.get("token"):
+                                request.session.clear()
+                                request.session["token"] = auth_response["token"]
+                                request.session["user"] = auth_response["user"]
+                                return redirect("/dashboard/?welcome=true")
                 else:
                     request.session["registration"]["errors"] = response.get("error")
                     request.session.modified = True
