@@ -10,7 +10,7 @@
         <a data-track-category="breadcrumbClicked" aria-current="false" href="{% link_lookup 'LINK_TRA_CASELIST' %}">Trade remedies</a>
       </li>
       <li class="">
-        <a data-track-category="breadcrumbClicked" aria-current="false" href="\public\cases\">Active cases</a>
+        <a data-track-category="breadcrumbClicked" aria-current="false" href="\public\cases\">{% if case.archive_reason %}Archived{% else %}Active{% endif %} cases</a>
       </li>
       <li>
         Case {{case.reference}} public file
