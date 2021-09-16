@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from django.conf import settings
 from django_countries import countries
-from django.http import HttpResponseNotFound, HttpResponse
+from django.http import HttpResponse
 from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
