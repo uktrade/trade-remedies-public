@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
 from django.conf import settings
 from django_countries import countries
-from django.http import HttpResponseNotFound, HttpResponse
+from django.http import HttpResponse
 from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
@@ -872,7 +872,6 @@ class AccountInfo(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin)
                 "countries": countries,
                 "is_owner": request.user.has_group("Organisation Owner"),
                 "organisation_id": organisation_id,
-                "is_read_only": settings.ACCOUNT_INFO_READ_ONLY,
                 "alert_message": ALERT_MAP.get(request.GET.get("alert")),
                 "pre_manage_team": client.get_system_boolean("PRE_MANAGE_TEAM"),
                 "organisation": client.get_organisation(organisation_id)
@@ -886,9 +885,6 @@ class AccountEditInfo(LoginRequiredMixin, TemplateView):
     template_name = "account/update.html"
 
     def get(self, request, *args, **kwargs):
-        if settings.ACCOUNT_INFO_READ_ONLY:
-            return HttpResponseNotFound()
-
         organisation_id = request.user.organisations[0]["id"]
         return render(
             request,
