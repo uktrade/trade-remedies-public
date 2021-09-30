@@ -262,8 +262,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "..", "templates", "static"),
 ]
 
-ACCOUNT_INFO_READ_ONLY = os.environ.get("ACCOUNT_INFO_READ_ONLY", "TRUE").upper() == "TRUE"
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
