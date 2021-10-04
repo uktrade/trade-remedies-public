@@ -55,12 +55,12 @@ class TestEmailValidation(TestCase):
 
     test_cases = [
         # (email, is_valid, description)
-        ("email@domain.com", True, "Basic"),
-        ("eMail@dOmain.cOm", True, "Capitals allowed anywhere"),
-        ("e本ail@d本main.c本m", True, "Unicode allowed anywhere"),
-        ("eMai1l@dOmai9n.c0m", True, "Digits allowed"),
-        ("email.domain.com", False, "No @"),
-        ("email@domain.com.", False, "Symbol at end"),
+        ("email@domain.com", True, "Basic"), # /PS-IGNORE
+        ("eMail@dOmain.cOm", True, "Capitals allowed anywhere"), # /PS-IGNORE
+        ("e本ail@d本main.c本m", True, "Unicode allowed anywhere"), # /PS-IGNORE
+        ("eMai1l@dOmai9n.c0m", True, "Digits allowed"), # /PS-IGNORE
+        ("email.domain.com", False, "No @"), # /PS-IGNORE
+        ("email@domain.com.", False, "Symbol at end"), # /PS-IGNORE
     ]
 
     def test_email_validator(self):

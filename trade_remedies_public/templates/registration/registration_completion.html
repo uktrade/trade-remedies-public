@@ -31,7 +31,7 @@
             {% endfor %}
           </select>
         </div>
-        {% text_element id='email' type="email" label='Email address' read_only=True value=invite.meta.email errors=errors hint='You will need this to sign in to your account. We will use this to contact you. This must be your professional email address, for example yourname@company.com.'%}
+        {% text_element id='email' type="email" label='Email address' read_only=True value=invite.meta.email errors=errors hint='You will need this to sign in to your account. We will use this to contact you. This must be your professional email address, for example yourname@company.com.'%}{# /PS-IGNORE #}
         {% include "registration/_password_entry.html" %}
         {% text_element id='password_confirm' label='Confirm password' errors=errors password=True%}
         {% text_element id='phone' type='tel' autocomplete='tel' label='Mobile phone number' value=invite.meta.phone errors=errors hint="We will send a log in security code to this number. If you do not provide a number, we will email this code to you."%}
