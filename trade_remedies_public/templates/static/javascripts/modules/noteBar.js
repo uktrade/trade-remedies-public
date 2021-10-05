@@ -11,14 +11,14 @@ define(['modules/helpers'],function(helpers) {
         </form></div>\
     ');
 
-    var noteTemplate = _.template('\
-        <div class="note-outer" data-noteid="<%- note.id %>">\
-            <span class="edit-block"><div class="icon icon-cross btn-delete" title="Delete"></div><div class="icon icon-pen btn-edit" title="Edit"></div></span>\
-            <h2 class="note-title heading-small"><%- note.title %></h2>\
-            <div note-text><%= _.escape(note.text || "").replace(/\\n/g,"<br>") %></div>\
-            <div class="note-footer" ><% print( note.user && ((note.user.firstName && (note.user.firstName + " " + note.user.lastName)) || note.user.name) || "anonymous") %> <span class="date pull-right"><%- new Date(note.date).format("dd mon yyyy HH:MM") %></span></div><div></div>\
-        </div>\
-    ');
+    var noteTemplate = _.template(''+
+        '<div class="note-outer" data-noteid="<%- note.id %>">' +
+            '<span class="edit-block"><div class="icon icon-cross btn-delete" title="Delete"></div><div class="icon icon-pen btn-edit" title="Edit"></div></span>' +
+            '<h2 class="note-title heading-small"><%- note.title %></h2>' +
+            '<div note-text><%= _.escape(note.text || "").replace(/\\n/g,"<br>") %></div>' + 
+            '<div class="note-footer" ><% print( note.user && ((note.user.firstName && (note.user.firstName + " " + note.user.lastName)) || note.user.name) || "anonymous") %> <span class="date pull-right"><%- new Date(note.date).format("dd mon yyyy HH:MM") %></span></div><div></div>' + // /PS-IGNORE
+        '</div>'
+    );
 
     function constructor(container, instance, questionsContainer) {
         this.questionsContainer = questionsContainer;

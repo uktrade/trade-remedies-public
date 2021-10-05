@@ -121,3 +121,6 @@ node_modules
 
 # static
 trade_remedies_public/static/
+
+# NER output
+ner_output_file.txt

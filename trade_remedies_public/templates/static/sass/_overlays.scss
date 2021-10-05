@@ -109,8 +109,8 @@
   .pop-up table {
     width: auto; }
   .pop-up tr.active {
-    background: #F6E0DD; }
-  .pop-up tr td, .pop-up tr th {
+    background: #F6E0DD; } // /PS-IGNORE
+  .pop-up tr td, .pop-up tr th { // /PS-IGNORE
     padding: 0.5em;
     font-size: 18px; }
 
