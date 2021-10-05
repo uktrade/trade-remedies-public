@@ -6,7 +6,7 @@ import features.steps.utils as utils
 
 @when("the user supplies wrong credentials")
 def step_impl(context):
-    email = "a@a.com"  #  /PS-IGNORE
+    email = "a@a.com"  # /PS-IGNORE
     password = "wrong"
     text_is_visible(context, "Email address")
     utils.login(context, email, password)
