@@ -685,7 +685,7 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 )
 
             params = pluck(request.POST, ["reference_case", "review_type"])
-            errors = validate(params, review_form_validators)
+            errors = validate(params, review_form_validators, True)
             if errors:
                 return self.get(
                     request, case_id=case_id, submission_id=submission_id, errors=errors

@@ -96,7 +96,7 @@ def proxy_stream_file_download(stream, filename, mime_type=None, chunk_size=None
     return response
 
 
-def validate(data, validators):
+def validate(data, validators, check_for_none=False):
     """
     Run a set of validators against a dict (typically post parameters)
     :data: dictionary to be validated
@@ -108,8 +108,12 @@ def validate(data, validators):
         key = validator["key"]
         value = data.get(key) or ""
         if key not in errors:  # we only want one error per field
-            if value and not re.compile(validator.get("re", ".+")).match(value):
-                errors[key] = validator["message"]
+            if check_for_none:
+                if value and not re.compile(validator.get("re", ".+")).match(value):
+                    errors[key] = validator["message"]
+            else:
+                if not re.compile(validator.get("re", ".+")).match(value):
+                    errors[key] = validator["message"]
     return errors
 
 
