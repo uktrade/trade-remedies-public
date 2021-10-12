@@ -108,7 +108,7 @@ def validate(data, validators):
         key = validator["key"]
         value = data.get(key) or ""
         if key not in errors:  # we only want one error per field
-            if not re.compile(validator.get("re", ".+")).match(value):
+            if value and not re.compile(validator.get("re", ".+")).match(value):
                 errors[key] = validator["message"]
     return errors
 
