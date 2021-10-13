@@ -71,7 +71,7 @@ function toggleHint(key) {
                         {% if notices %}
                             <optgroup label="Notices">
                                 {% for notice in notices %}
-                                    <option value="{{notice.id}}">{{notice.reference}} : {{notice.name}}</option>
+                                    <option value="notice:{{notice.id}}">{{notice.reference}} : {{notice.name}}</option>
                                 {% endfor %}
                             </optgroup>
                         {% endif %}
