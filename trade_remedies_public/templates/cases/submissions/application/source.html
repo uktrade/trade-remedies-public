@@ -58,7 +58,7 @@ function toggleHint(key) {
                 {% error_message errors 'reference_case' %}
                 <select id="case_selector" class="form-control" name="reference_case">
                     <option value="">Select a case ...</option>
-                        {% if notices %}<optgroup label="Cases">{% endif %}
+                        {% if reference_cases %}<optgroup label="Cases">{% endif %}
                         {% for ref_case in reference_cases %}
                             {% if ref_case.type.acronym not in 'RI,NE' %}
                                 <option
@@ -71,7 +71,7 @@ function toggleHint(key) {
                         {% if notices %}
                             <optgroup label="Notices">
                                 {% for notice in notices %}
-                                    <option value="notice:{{notice.id}}">{{notice.reference}} : {{notice.name}}</option>
+                                    <option value="{{notice.id}}">{{notice.reference}} : {{notice.name}}</option>
                                 {% endfor %}
                             </optgroup>
                         {% endif %}
