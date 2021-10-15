@@ -24,7 +24,10 @@ define(['modules/helpers'], function(helpers) {
         var selectedCaseId = this.driveSelector.val();
         $.ajax({
             url:`/case/${selectedCaseId}/availablereviewtypes/?select=${this.selectedCaseType}&organisation_role=${this.organisationRole}`,
-            method:'GET'
+            method:'GET',
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+              self.el.find('.radio-container').html("<div></div>");
+            }
         }).then(function(result) {
             self.el.find('.radio-container').html(result);
         })
