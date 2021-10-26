@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from django.utils import timezone
 from django.urls import reverse
-from django.conf import settings
 
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
 
