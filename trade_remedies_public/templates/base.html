@@ -62,19 +62,60 @@
   <script type="text/javascript" src="{% static 'javascripts/main.js' %}"></script>
 
   <script type="text/javascript">
-    window.dit = window.dit || {};
-    window.dit.jsBase = "{% static 'javascripts' %}";
-    window.dit.csrfToken = "{{ csrf_token }}";
+      // https://stackoverflow.com/questions/11008177/stop-people-having-my-website-loaded-on-multiple-tabs
+      // will detect if multiple tabs are open
+      function registerTabGUID() {
+          // detect local storage available
+          if (typeof (Storage) !== "undefined") {
+              // get (set if not) tab GUID and store in tab session
+              if (sessionStorage["tabGUID"] == null) sessionStorage["tabGUID"] = tabGUID();
+              var guid = sessionStorage["tabGUID"];
 
-    function setOrganisation(organisationId) {
-      var url;
-      if (organisationId && organisationId.length > 0) {
-        url = '/organisation/set/' + organisationId + '/?next={{request.path}}';
-      } else {
-        url = '/organisation/set/?next={{request.path}}';
+              // add eventListener to local storage
+              window.addEventListener("storage", storageHandler, false);
+
+              // set tab GUID in local storage
+              localStorage["tabGUID"] = guid;
+          }
       }
-      document.location.replace(url)
-    }
+
+      function storageHandler(e) {
+          // if tabGUID does not match then more than one tab and GUID
+          if (e.key == 'tabGUID') {
+              if (e.oldValue != e.newValue) stopWindow();
+          }
+      }
+
+      function tabGUID() {
+          function s4() {
+              return Math.floor((1 + Math.random()) * 0x10000)
+                  .toString(16)
+                  .substring(1);
+          }
+
+          return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+              s4() + '-' + s4() + s4() + s4();
+      }
+
+      function stopWindow() {
+          alert("You have more than one tab open. Please close this tab.")
+          window.stop();
+      }
+
+      window.dit = window.dit || {};
+      window.dit.jsBase = "{% static 'javascripts' %}";
+      window.dit.csrfToken = "{{ csrf_token }}";
+      window.addEventListener("load", registerTabGUID)
+
+      function setOrganisation(organisationId) {
+          var url;
+          if (organisationId && organisationId.length > 0) {
+              url = '/organisation/set/' + organisationId + '/?next={{request.path}}';
+          } else {
+              url = '/organisation/set/?next={{request.path}}';
+          }
+          document.location.replace(url)
+      }
   </script>
 {% endblock %}
 
