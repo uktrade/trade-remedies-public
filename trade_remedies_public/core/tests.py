@@ -20,7 +20,6 @@ class TestPublicDocumentSplitting(TestCase):
                 "confidential": False,
                 "block_from_public_file": False,
                 "block_reason": None,
-                "safe": True,
                 "index_state": 3,
                 "is_tra": True,
                 "created_by": {
@@ -56,7 +55,6 @@ class TestPublicDocumentSplitting(TestCase):
                 "confidential": True,
                 "block_from_public_file": False,
                 "block_reason": None,
-                "safe": True,
                 "index_state": 3,
                 "is_tra": False,
                 "created_by": {
@@ -88,7 +86,6 @@ class TestPublicDocumentSplitting(TestCase):
                 "confidential": False,
                 "block_from_public_file": False,
                 "block_reason": None,
-                "safe": True,
                 "index_state": 3,
                 "is_tra": False,
                 "created_by": {
@@ -120,7 +117,6 @@ class TestPublicDocumentSplitting(TestCase):
                 "confidential": True,
                 "block_from_public_file": False,
                 "block_reason": None,
-                "safe": True,
                 "index_state": 3,
                 "is_tra": False,
                 "created_by": {
@@ -152,7 +148,6 @@ class TestPublicDocumentSplitting(TestCase):
                 "confidential": False,
                 "block_from_public_file": True,
                 "block_reason": "GDPR failure",
-                "safe": True,
                 "index_state": 3,
                 "is_tra": False,
                 "created_by": {
