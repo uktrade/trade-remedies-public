@@ -10,8 +10,6 @@ from django.urls import reverse
 
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
 
-from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
-
 from core.base import GroupRequiredMixin, BasePublicView
 from cases.constants import (
     SUBMISSION_TYPE_EX_OFFICIO,
