@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 def masked_email(email):
     """
     Mask a users email address:
-        harel@harelmalka.com
+        harel@harelmalka.com  # /PS-IGNORE
         becomes
         ha****@*******.com
     Usage:

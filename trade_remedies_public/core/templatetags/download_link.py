@@ -35,7 +35,6 @@ def download_link(context, document, all_downloadable=None):
     Usage:
         {% download_link <document> <all_downloadable> %}
     """
-    safe = document.get("safe")
     downloadable = document.get("downloadable")
     filename = document.get("name")
 
@@ -46,7 +45,7 @@ def download_link(context, document, all_downloadable=None):
     )
 
     #  Show docs as links if they are created by this user or issued or not confidential
-    if safe and downloadable:
+    if downloadable:
         case = context.get("case") or {}
         reference = case.get("reference")
         submission_id = context.get("submission_id")

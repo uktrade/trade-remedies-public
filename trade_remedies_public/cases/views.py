@@ -7,7 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from django.utils import timezone
 from django.urls import reverse
-from django.conf import settings
+
+from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
 
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
 
@@ -1198,18 +1199,6 @@ class DocumentDownloadStreamView(
         if str(submission.get("case", {}).get("id")) != str(case_id):
             raise APIException("Invalid request parameters")
         document = client.get_document(document_id, case_id, submission_id)
-
-        if document.get("safe") is not True:
-            if settings.DEBUG:
-                logger.warning(
-                    "Document is marked as not safe and cannot be "
-                    "downloaded - do you need to set up anti-virus "
-                    "infrastructure? You can also manually mark "
-                    "the document as safe using the Django admin site "
-                    "if developing locally."
-                )
-            return render(request, "file_scan.html", {"document": document})
-
         document_stream = client.get_document_download_stream(
             document_id=document_id, submission_id=submission_id, organisation_id=organisation_id
         )

@@ -2,7 +2,7 @@
 
 @mixin icon($width) {
     background-size: $width $width*40;
-    background-image: url("../stylesheets/images/sprite@2x.png");
+    background-image: url("../stylesheets/images/sprite@2x.png"); // /PS-IGNORE
     display: inline-block;
     width: $width;
     height: $width;
