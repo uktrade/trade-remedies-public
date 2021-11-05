@@ -31,7 +31,7 @@ Create an account
 {% endif %}
 {% text_element id='name' autocomplete='name' label='Name' errors=errors %}
 {% if not invite or confirm_invited_org != 'true' %}
-  {% text_element id='email' autocomplete="email" type="email" label='Email address' errors=errors hint='You will need this to sign in to your account. We will use this to contact you. This must be your professional email address, for example yourname@company.com.' read_only=invite_mode %}
+  {% text_element id='email' autocomplete="email" type="email" label='Email address' errors=errors hint='You will need this to sign in to your account. We will use this to contact you. This must be your professional email address, for example yourname@company.com.' read_only=invite_mode %}{# /PS-IGNORE #}
 {% endif %}
 {% include "registration/_password_entry.html" %}
 {% text_element id='password_confirm' autocomplete="new-password" label='Confirm password' errors=errors password=True%}
