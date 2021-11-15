@@ -3,7 +3,7 @@ email_validator = "(?:[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*
 
 review_form_validators = [
     {"key": "reference_case", "message": "You must select a case", "re": ".+"},
-    {"key": "review_type", "message": "You must select a review type", "re": "^$"},
+    {"key": "review_type", "message": "You must select a review type", "re": ".+|^$"},
 ]
 company_form_validators = [
     {"key": "organisation_name", "message": "The company name is required", "re": ".+"},
