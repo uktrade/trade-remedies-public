@@ -1,4 +1,4 @@
-git+git://github.com/uktrade/trade-remedies-client.git
+git+https://github.com/uktrade/trade-remedies-client@feat/TRLST-495-tidy-client
 boto3==1.17.89
 django-basicauth==0.5.2
 django-countries==5.4

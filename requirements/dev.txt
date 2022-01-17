@@ -237,7 +237,7 @@ tomli==1.2.1
     # via
     #   black
     #   pep517
-git+git://github.com/uktrade/trade-remedies-client.git
+git+https://github.com/uktrade/trade-remedies-client@feat/TRLST-495-tidy-client
     # via -r requirements.in/base.in
 traitlets==4.3.3
     # via
