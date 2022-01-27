@@ -42,7 +42,7 @@ decorator==5.1.0
     # via
     #   ipython
     #   traitlets
-django==2.2.24
+django==2.2.26
     # via
     #   -r requirements.in/base.in
     #   django-appconf
