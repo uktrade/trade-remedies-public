@@ -62,6 +62,7 @@ function toggleHint(key) {
                         {% for ref_case in reference_cases %}
                             {% if ref_case.type.acronym not in 'RI,NE' %}
                                 <option
+                                    data-type="case"
                                   value="{{ref_case.id}}"
                                   {% if case.parent.id == ref_case.id or reference_case.id == ref_case.id %}selected{% endif %}
                                 >{{ref_case.reference}}: {{ref_case.name}}</option>
@@ -71,14 +72,14 @@ function toggleHint(key) {
                         {% if notices %}
                             <optgroup label="Notices">
                                 {% for notice in notices %}
-                                    <option value="notice:{{notice.id}}">{{notice.reference}} : {{notice.name}}</option>
+                                    <option data-type="notice" value="{{notice.id}}">{{notice.reference}} : {{notice.name}}</option>
                                 {% endfor %}
                             </optgroup>
                         {% endif %}
                 </select>
             {% endif %}
         </div>
-        <div data-attach="ChooseCaseForReview" data-selector="#case_selector" class="hidden" data-selectedcasetype="{{case.type.id}}" data-organisation-role="{{organisation_role}}">
+        <div data-attach="ChooseCaseForReview" data-selector="#case_selector" class="hidden form-group" data-selectedcasetype="{{case.type.id}}" data-organisation-role="{{organisation_role}}">
             <div class="radio-container">
             </div>
         </div>

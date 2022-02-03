@@ -22,8 +22,13 @@ define(['modules/helpers'], function(helpers) {
         var self = this;
         this.el.removeClass('hidden');
         var selectedCaseId = this.driveSelector.val();
+        var url = `/case/${selectedCaseId}/availablereviewtypes/?select=${this.selectedCaseType}&organisation_role=${this.organisationRole}`;
+        if (this.driveSelector.find("option:selected").data('type') === 'notice'){
+          // This is a notice, direct to /notice/
+          url = url + '&is_notice=yes';
+        }
         $.ajax({
-            url:`/case/${selectedCaseId}/availablereviewtypes/?select=${this.selectedCaseType}&organisation_role=${this.organisationRole}`,
+            url:url,
             method:'GET',
             error: function (XMLHttpRequest, textStatus, errorThrown) {
               self.el.find('.radio-container').html("<div></div>");
