@@ -4,6 +4,8 @@
 #
 #    pip-compile --output-file=requirements/dev.txt requirements.in/dev.in
 #
+asgiref==3.5.0
+    # via django
 attrs==21.2.0
     # via pytest
 backcall==0.2.0
@@ -42,7 +44,7 @@ decorator==5.1.0
     # via
     #   ipython
     #   traitlets
-django==2.2.26
+django==3.2.12
     # via
     #   -r requirements.in/base.in
     #   django-appconf
@@ -69,7 +71,7 @@ django-chunk-upload-handlers==0.0.11
     # via -r requirements.in/base.in
 django-compressor==2.4.1
     # via -r requirements.in/base.in
-django-countries==5.4
+django-countries==7.2.1
     # via -r requirements.in/base.in
 django-environ==0.4.5
     # via -r requirements.in/base.in
@@ -85,7 +87,7 @@ django-ipware==3.0.7
     #   django-log-formatter-ecs
 django-log-formatter-ecs==0.0.5
     # via -r requirements.in/base.in
-django-redis==4.10.0
+django-redis==5.2.0
     # via -r requirements.in/base.in
 django-sass-processor==1.0.1
     # via -r requirements.in/base.in
@@ -93,7 +95,7 @@ django-storages==1.11.1
     # via
     #   -r requirements.in/base.in
     #   django-chunk-upload-handlers
-django-timezone-field==3.0
+django-timezone-field==4.2.3
     # via -r requirements.in/base.in
 djangorestframework==3.12.4
     # via feed-gov-back
@@ -261,7 +263,7 @@ werkzeug==0.15.5
     # via -r requirements.in/base.in
 wheel==0.37.0
     # via pip-tools
-whitenoise==3.3.1
+whitenoise==5.3.0
     # via -r requirements.in/base.in
 
 # The following packages are considered to be unsafe in a requirements file:
