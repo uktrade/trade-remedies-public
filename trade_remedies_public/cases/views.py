@@ -698,13 +698,16 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             return redirect(f"/case/{case_id}/submission/{submission_id}/source/?page=source")
 
 
-class AvailableReviewTypesView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class AvailableReviewTypesView(
+    LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
+):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
 
-    def get(self, request, case_id):
+    def get(self, request, case_id, *args, **kwargs):
         selected_case_type = request.GET.get("select")
         organisation_role = request.GET.get("organisation_role")
-        results = self._client.available_review_types(case_id)
+        is_notice = request.GET.get("is_notice", False)
+        results = self.client(request.user).available_review_types(case_id, summary=is_notice)
         return render(
             request,
             "cases/submissions/application/review_types.html",
