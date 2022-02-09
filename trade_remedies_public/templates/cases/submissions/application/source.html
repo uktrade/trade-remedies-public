@@ -61,11 +61,9 @@ function toggleHint(key) {
                         {% if reference_cases %}<optgroup label="Cases">{% endif %}
                         {% for ref_case in reference_cases %}
                             {% if ref_case.type.acronym not in 'RI,NE' %}
-                                <option
-                                    data-type="case"
-                                  value="{{ref_case.id}}"
-                                  {% if case.parent.id == ref_case.id or reference_case.id == ref_case.id %}selected{% endif %}
-                                >{{ref_case.reference}}: {{ref_case.name}}</option>
+                                <option data-type="case" value="{{ref_case.id}}" {% if case.parent.id == ref_case.id or reference_case.id == ref_case.id %}selected{% endif %}>
+                                    {{ref_case.reference}}: {{ref_case.name}}
+                                </option>
                             {% endif %}
                         {% endfor %}
                         {% if notices %}</optgroup>{% endif %}
