@@ -3,8 +3,8 @@
     <tr class="{% if option.dates.status != 'ok' %}disabled{% endif %}">
         <td>
 			<div class="multiple-choice">
-				<input id="sel-{{option.value}}" type="radio" value="{{option.id}}" name="review_type" {% if option.id == selected_case_type %}checked{% endif %} {% if option.dates.status != 'ok' %}disabled{% endif %}>
-				<label class="form-label" for="sel-{{option.value}}"></label>
+				<input id="sel-{{option.id}}" type="radio" value="{{option.id}}" name="review_type" {% if option.id == selected_case_type %}checked{% endif %} {% if option.dates.status != 'ok' %}disabled{% endif %}>
+				<label class="form-label" for="sel-{{option.id}}"></label>
 			</div>
         </td>
         <td class="cell bold">{{option.name}}</td>
