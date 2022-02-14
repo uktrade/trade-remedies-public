@@ -123,7 +123,11 @@ urlpatterns = [
         name="update_details",
     ),
     path("accounts/logout/", register_views.logout_view, name="logout"),
-    path("accounts/forgotpassword/done", register_views.ForgotPasswordRequested.as_view(), name="forgot_password_requested"),
+    path(
+        "accounts/forgotpassword/done",
+        register_views.ForgotPasswordRequested.as_view(),
+        name="forgot_password_requested",
+    ),
     path(
         "accounts/forgotpassword/",
         register_views.ForgotPasswordView.as_view(),
