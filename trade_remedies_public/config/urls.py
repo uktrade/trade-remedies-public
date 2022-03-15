@@ -124,12 +124,17 @@ urlpatterns = [
     ),
     path("accounts/logout/", register_views.logout_view, name="logout"),
     path(
+        "accounts/forgotpassword/done",
+        register_views.ForgotPasswordRequested.as_view(),
+        name="forgot_password_requested",
+    ),
+    path(
         "accounts/forgotpassword/",
         register_views.ForgotPasswordView.as_view(),
         name="forgot_password",
     ),
     path(
-        "accounts/password/reset/<str:code>/",
+        "accounts/password/reset/<uuid:user_pk>/<str:token>/",
         register_views.ResetPasswordView.as_view(),
         name="reset_password",
     ),

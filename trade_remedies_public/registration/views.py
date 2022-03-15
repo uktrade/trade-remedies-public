@@ -1,7 +1,9 @@
 import json
 import re
 from django.conf import settings
+from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 from django.contrib.auth import logout
@@ -13,7 +15,7 @@ from core.utils import (
     get,
     set_cookie,
 )
-from core.constants import ALERT_MAP
+from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from core.validators import (
     registration_validators,
@@ -394,7 +396,9 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
         {
             "key": "organisation_website",
             "message": "Your website should be a complete, valid URL.",
-            "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",  # noqa: E501
+            "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)"
+            "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+            # noqa: E501
         },
     ]
 
@@ -456,47 +460,47 @@ class UpdateUserDetailsView(TemplateView, TradeRemediesAPIClientMixin):
         return render(request, self.template_name, context)
 
 
+class ForgotPasswordRequested(TemplateView, TradeRemediesAPIClientMixin):
+    template_name = "registration/password_reset_requested.html"
+
+
 class ForgotPasswordView(TemplateView, TradeRemediesAPIClientMixin):
-    def get(self, request, *args, **kwargs):
-        return render(
-            request, "registration/forgot_password.html", {"requested": "requested" in request.GET}
-        )
+    template_name = "registration/reset_password_request.html"
 
     def post(self, request, *args, **kwargs):
-        email = request.POST.get("email")
-        if email:
-            response = self.trusted_client.request_password_reset(email)
-        return redirect("/accounts/forgotpassword/?requested")
+        if email := request.POST.get("email"):
+            self.trusted_client.request_password_reset(email)
+            return redirect(reverse("forgot_password_requested"))
+        return redirect(request.path)
 
 
 class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
-    def get(self, request, code, *args, **kwargs):
-        code_valid = self.trusted_client.validate_password_reset(code)
-        error_code = request.GET.get("error")
-        error_message = ALERT_MAP.get(error_code) if error_code else ""
-        if kwargs.get("error"):
-            error_message = f"{error_message}<br/>{kwargs['error']}"
+    def get(self, request, user_pk, token, *args, **kwargs):
+        token_is_valid = self.trusted_client.validate_password_reset(user_pk=user_pk, token=token)
+        error_message = kwargs.get("error", None)
         return render(
             request,
             "registration/reset_password.html",
             {
-                "invalid_code": not code_valid,
-                "code": code,
+                "token_is_valid": token_is_valid,
+                "user_pk": user_pk,
+                "token": token,
                 "error": error_message,
             },
         )
 
-    def post(self, request, code, *args, **kwargs):
+    def post(self, request, user_pk, token, *args, **kwargs):
         password = request.POST.get("password")
         password_confirm = request.POST.get("password_confirm")
         if password and password_confirm and password == password_confirm:
             try:
-                response = self.trusted_client.reset_password(code, password)
-            except Exception as exc:
-                return self.get(request, code, error=str(exc), *args, **kwargs)
+                self.trusted_client.reset_password(token, user_pk, password)
+                # todo - alert user that their password reset was successful
+            except APIException as exc:
+                return self.get(request, user_pk, token, error=exc.message)
         elif password != password_confirm:
-            return redirect(f"/accounts/password/reset/{code}/?error=pass_conf")
-        return redirect("/accounts/login/choice/?next=/dashboard/")
+            return self.get(request, user_pk, token, error="The passwords do not match")
+        return redirect_to_login(reverse("dashboard"), reverse("login"), "next")
 
 
 class TermsAndConditionsView(TemplateView):
