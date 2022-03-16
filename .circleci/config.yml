@@ -29,7 +29,7 @@ jobs:
           name: Run tests and collect fitness functions
           command: |
             . venv/bin/activate
-            python manage.py test
+            pytest --ignore=staticfiles -n 4 -m "not version2"
             coverage json
             fitness-functions run . trade_remedies_api
             fitness-functions publish . trade_remedies_api
