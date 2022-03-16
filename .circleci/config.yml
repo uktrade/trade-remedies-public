@@ -9,6 +9,9 @@ jobs:
           DJANGO_SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "tbc"
       - checkout
       - restore_cache:
           key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
@@ -23,11 +26,23 @@ jobs:
           paths:
             - "venv"
       - run:
-          name: Run tests
+          name: Run tests and collect fitness functions
           command: |
             . venv/bin/activate
-            cd trade_remedies_public
             python manage.py test
+            coverage json
+            fitness-functions run . trade_remedies_api
+            fitness-functions publish . trade_remedies_api
+      - run:
+          name: Push the updated READ.ME back to GitHub
+          command: |
+            . venv/bin/activate
+            git config user.email "fitness-functions-machine-user@digital.trade.gov.uk"  # /PS-IGNORE
+            git config user.name "FITNESS-FUNCTIONS MACHINE USER"  # /PS-IGNORE
+            git add fitness/fitness_metrics.db
+            git add fitness/fitness_metrics_graph.png
+            git commit -m "[ci skip] AUTOMATED - update fitness functions"
+            git push << pipeline.project.git_url >> << pipeline.git.branch >>
       - run:
           name: Run black
           command: |

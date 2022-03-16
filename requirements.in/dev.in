@@ -5,13 +5,18 @@ black
 coverage
 flake8
 ipython==7.31.1
+matplotlib
+sklearn
 pip-tools>=6.5.0
 pytest
 pytest-cov
 pytest-django
 pytest-xdist
+pytest-pythonpath
 selenium==3.141.0
 traitlets==4.3.3
 
 # ipython dep - for CVE-2021-27291
 pygments==2.8.1
+
+git+https://github.com/uktrade/fitness-functions
