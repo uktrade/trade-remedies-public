@@ -31,8 +31,8 @@ jobs:
             . venv/bin/activate
             pytest --ignore=staticfiles -n 4 -m "not version2"
             coverage json
-            fitness-functions run . trade_remedies_api
-            fitness-functions publish . trade_remedies_api
+            fitness-functions run . trade_remedies_public
+            fitness-functions publish . trade_remedies_public
       - run:
           name: Push the updated READ.ME back to GitHub
           command: |
