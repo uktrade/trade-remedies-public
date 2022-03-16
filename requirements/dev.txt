@@ -40,6 +40,8 @@ coverage==5.5
     # via
     #   -r requirements.in/dev.in
     #   pytest-cov
+cycler==0.11.0
+    # via matplotlib
 decorator==5.1.0
     # via
     #   ipython
@@ -105,8 +107,12 @@ execnet==1.9.0
     # via pytest-xdist
 feed-gov-back==0.4
     # via -r requirements.in/base.in
+fitness-functions @ git+https://github.com/uktrade/fitness-functions
+    # via -r requirements.in/dev.in
 flake8==3.9.2
     # via -r requirements.in/dev.in
+fonttools==4.30.0
+    # via matplotlib
 idna==2.10
     # via requests
 iniconfig==1.1.1
@@ -121,20 +127,33 @@ jmespath==0.10.0
     # via
     #   boto3
     #   botocore
+joblib==1.1.0
+    # via scikit-learn
+kiwisolver==1.4.0
+    # via matplotlib
 kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
 libsass==0.21.0
     # via -r requirements.in/base.in
 marshmallow==3.6.1
     # via kubi-ecs-logger
+matplotlib==3.5.1
+    # via -r requirements.in/dev.in
 matplotlib-inline==0.1.3
     # via ipython
 mccabe==0.6.1
     # via flake8
 mypy-extensions==0.4.3
     # via black
+numpy==1.22.3
+    # via
+    #   matplotlib
+    #   scikit-learn
+    #   scipy
 packaging==21.0
-    # via pytest
+    # via
+    #   matplotlib
+    #   pytest
 parse==1.19.0
     # via
     #   behave
@@ -151,6 +170,8 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
+pillow==9.0.1
+    # via matplotlib
 pip-tools==6.5.1
     # via -r requirements.in/dev.in
 platformdirs==2.3.0
@@ -177,13 +198,16 @@ pygments==2.8.1
     #   -r requirements.in/dev.in
     #   ipython
 pyparsing==2.4.7
-    # via packaging
+    # via
+    #   matplotlib
+    #   packaging
 pytest==6.2.5
     # via
     #   -r requirements.in/dev.in
     #   pytest-cov
     #   pytest-django
     #   pytest-forked
+    #   pytest-pythonpath
     #   pytest-xdist
 pytest-cov==2.12.1
     # via -r requirements.in/dev.in
@@ -191,10 +215,14 @@ pytest-django==4.4.0
     # via -r requirements.in/dev.in
 pytest-forked==1.3.0
     # via pytest-xdist
+pytest-pythonpath==0.7.4
+    # via -r requirements.in/dev.in
 pytest-xdist==2.3.0
     # via -r requirements.in/dev.in
 python-dateutil==2.8.2
-    # via botocore
+    # via
+    #   botocore
+    #   matplotlib
 pytz==2021.1
     # via
     #   -r requirements.in/base.in
@@ -216,6 +244,10 @@ rjsmin==1.1.0
     # via django-compressor
 s3transfer==0.4.2
     # via boto3
+scikit-learn==1.0.2
+    # via sklearn
+scipy==1.8.0
+    # via scikit-learn
 selenium==3.141.0
     # via -r requirements.in/dev.in
 sentry-sdk==0.13.1
@@ -229,10 +261,14 @@ six==1.16.0
     #   parse-type
     #   python-dateutil
     #   traitlets
+sklearn==0.0
+    # via -r requirements.in/dev.in
 soupsieve==2.2.1
     # via beautifulsoup4
 sqlparse==0.4.2
     # via django
+threadpoolctl==3.1.0
+    # via scikit-learn
 toml==0.10.2
     # via
     #   pytest
