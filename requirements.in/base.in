@@ -1,4 +1,4 @@
-git+https://github.com/uktrade/trade-remedies-client.git
+git+https://github.com/uktrade/trade-remedies-client.git@Chris/feature/TRSV2-161-invite-existing-third-parties#egg=trade_remedies_client
 boto3==1.17.89
 django-basicauth==0.5.2
 django-countries==7.2.1
