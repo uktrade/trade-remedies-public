@@ -78,6 +78,21 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
         context["invites"] = invites
         return context
 
+    def on_submit(self, **kwargs):
+        pass
+        '''if invitation_object := self.get_context()["invites"][0]:
+            notify_data = {
+                "case_id": self.case["id"],
+                "submission_id": self.submission["id"],
+                "contact_id": self.submission["contact"]["id"],
+            }
+            response = self._client.action_third_party_invite(
+                case_id=self.case["id"],
+                submission_id=self.submission["id"],
+                contact_id=invitation_object["contact"]["id"],
+                params=notify_data,
+            )'''
+
 
 class AssignUserSubmission(BaseSubmissionHelper):
     type_ids = []

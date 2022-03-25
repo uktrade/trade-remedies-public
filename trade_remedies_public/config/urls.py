@@ -99,6 +99,11 @@ urlpatterns = [
         "invitation/<uuid:code>/<uuid:case_id>/", core_views.InvitationView.as_view(), name="start"
     ),
     path(
+        "invitation/<uuid:code>/<uuid:case_id>/confirm_organisation",
+        core_views.InvitationConfirmOrganisation.as_view(),
+        name="invitation_confirm_organisation"
+    ),
+    path(
         "termsofuse-privacypolicy/",
         register_views.TermsAndConditionsView.as_view(),
         name="Terms and conditions",

@@ -30,7 +30,7 @@
             You will need to create an account before you can see the case details, or use an existing account if you have one.
           </p>
           <div class="margin-top-1">
-            <a class="button button-start" href="/accounts/login/{{ code }}/{{ case_id }}/" role="button">Start now</a>
+            <a class="button button-start" href="{% url 'invitation_confirm_organisation' code=code case_id=case_id %}" role="button">Start now</a>
           </div>
         </div>
 
