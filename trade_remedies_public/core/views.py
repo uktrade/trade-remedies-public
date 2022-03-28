@@ -316,6 +316,9 @@ class InvitationView(BaseRegisterView, TradeRemediesAPIClientMixin):
             "case_id": case_id,
             "invitation": invitation
         }
+        if request.session.get("token"):
+            # The user is logged in already
+            pass
         self.update_session(request, new_session_data)
         return render(request, self.template_name, context=new_session_data)
 
