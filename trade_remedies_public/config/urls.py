@@ -18,10 +18,11 @@ from django.urls import (
     path,
 )
 from core import views as core_views
-from registration import views as register_views
+from cases.views import CasesView
+from cookies import views as cookie_views
 from login import views as login_views
 from password import views as password_views
-from cases.views import CasesView
+from registration import views as register_views
 
 urlpatterns = [
     path("", core_views.HomeView.as_view(), name="initial"),
@@ -105,8 +106,8 @@ urlpatterns = [
         register_views.TermsAndConditionsView.as_view(),
         name="Terms and conditions",
     ),
-    path("cookies/", register_views.CookieSettingsView.as_view(), name="Cookie preferences"),
-    path("cookiepolicy/", register_views.CookiePolicyView.as_view(), name="Cookie policy"),
+    path("cookies/", cookie_views.CookieSettingsView.as_view(), name="Cookie preferences"),
+    path("cookiepolicy/", cookie_views.CookiePolicyView.as_view(), name="Cookie policy"),
     path(
         "accessibilitystatement/",
         register_views.AccessibilityStatementView.as_view(),

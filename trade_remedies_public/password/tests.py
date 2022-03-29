@@ -3,7 +3,6 @@ from django.test import TestCase
 from core.utils import validate
 from core.validators import (
     registration_validators,
-    base_registration_validators,
 )
 
 

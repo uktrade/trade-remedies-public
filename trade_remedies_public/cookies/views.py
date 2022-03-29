@@ -1,33 +1,20 @@
 import json
 import re
-from django.conf import settings
-from django.contrib.auth.views import redirect_to_login
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.views.decorators.cache import never_cache
+from django.shortcuts import render
 from django.views.generic import TemplateView
-from django.contrib.auth import logout
-from django_countries import countries
 
-from core.models import TransientUser
 from core.utils import (
     validate,
     get,
     set_cookie,
 )
-from trade_remedies_client.exceptions import APIException
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from core.validators import (
-    registration_validators,
-    base_registration_validators,
-)
 from core.utils import internal_redirect
-from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
+from registration.views import BaseRegisterView
 
 
 class CookiePolicyView(TemplateView):
     def get(self, request, *args, **kwargs):
-        return render(request, "registration/cookie_policy.html", {})
+        return render(request, "cookies/cookie_policy.html", {})
 
 
 class CookieSettingsView(BaseRegisterView):
@@ -40,7 +27,7 @@ class CookieSettingsView(BaseRegisterView):
             print("Bad one", exception)
         return render(
             request,
-            "registration/cookies.html",
+            "cookies/cookies.html",
             {
                 "cookie_policy": cookie_policy,
                 "redirect_url": redirect_url,
