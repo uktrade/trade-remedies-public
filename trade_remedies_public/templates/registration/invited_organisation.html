@@ -16,11 +16,11 @@ This invitation is for {{invite.contact.name}}
     <p>If you are not the intended recipient you can still use the service as a representative of <span class="bold">{{invite.organisation.name}}</span> but you will need to enter your details in the next step.</p>
     <div class="form-group">
         <div class="multiple-choice">
-            <input type="radio" name="confirm_invited_org" value="true" id="confirm_invited_org_yes" {% if confirm_invited_org == 'true' %}checked{% endif %}/>
+            <input type="radio" name="confirm_invited_org" value="true" id="confirm_invited_org_yes" {% if confirm_invited_org is True %}checked{% endif %}/>
             <label for="confirm_invited_org_yes">I am {{invite.contact.name}}, accept this invitation</label>
         </div>
         <div class="multiple-choice">
-            <input type="radio" name="confirm_invited_org" value="false" id="confirm_invited_org_no" {% if confirm_invited_org == 'false' %}checked{% endif %}/>
+            <input type="radio" name="confirm_invited_org" value="false" id="confirm_invited_org_no" {% if confirm_invited_org is False %}checked{% endif %}/>
             <label for="confirm_invited_org_no">I am not {{invite.contact.name}}, enter my own contact details and continue</label>
         </div>
     </div>

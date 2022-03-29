@@ -208,7 +208,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                     "invite": invite_details,
                 }
             )
-            if confirm_invited_org == "true":
+            if confirm_invited_org:
                 initial_context.update(
                     {
                         "name": invite_details.get("contact", {}).get("name", ""),
@@ -236,7 +236,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
             if (
                 session_reg.get("code")
                 and session_reg.get("case_id")
-                and session_reg.get("confirm_invited_org") == "true"
+                and session_reg.get("confirm_invited_org") is True
             ):
                 invitee_sec_group = get(
                     request.session["registration"], "invite/organisation_security_group"
@@ -269,7 +269,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
             elif (
                 session_reg.get("code")
                 and session_reg.get("case_id")
-                and session_reg.get("confirm_invited_org") == "false"
+                and not session_reg.get("confirm_invited_org")
             ):
                 return redirect(f"/accounts/register/2/{redirect_postfix}")
             return redirect("/accounts/register/2/")

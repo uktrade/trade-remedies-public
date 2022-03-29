@@ -314,7 +314,7 @@ class InvitationView(BaseRegisterView, TradeRemediesAPIClientMixin):
         new_session_data = {
             "code": code,
             "case_id": case_id,
-            "invitation": invitation
+            "invite": invitation
         }
         if request.session.get("token"):
             # The user is logged in already
@@ -327,42 +327,41 @@ class InvitationConfirmOrganisation(BaseRegisterView, TradeRemediesAPIClientMixi
     template_name = "registration/invited_organisation.html"
 
     def get(self, request, code=None, case_id=None, *args, **kwargs):
-        if not self.request.session.get("registration", {}).get("invitation"):
+        if not self.request.session.get("registration", {}).get("invite"):
             # Redirect to the original invitation screen
             return redirect(reverse("start", kwargs={"code": code, "case_id": case_id}))
         return super().get(request, code=code, case_id=case_id, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["invite"] = self.request.session["registration"]["invitation"]
+        context["invite"] = self.request.session["registration"]["invite"]
+        context["confirm_invited_org"] = self.request.session["registration"].get("confirm_invited_org", None)
         return context
 
     def post(self, request, code, case_id, *args, **kwargs):
         if request.POST["confirm_invited_org"] == "true":
             # The user have verified they are the user the invitation is meant for
             self.update_session(request, {"confirm_invited_org": True})
-
-            # Now we check if the invitation belongs to a user who is already registered
-            invitation = request.session["registration"]["invitation"]
-            invited_user_email = invitation["email"]
-            try:
-                user = self.trusted_client.get_user_by_email(user_email=invited_user_email)
-                # The user is already registered on the TRS, we want to make them log in,
-                # so we can add them to this case
-                self.update_session(request, {
-                    "user_already_exists": True,
-                    "registering_user": user
-                })
-                return redirect(reverse("login_invite", kwargs={"code": code, "case_id": case_id}))
-            except HTTPError as e:
-                if e.response.status_code == 404:
-                    # The user was not found, continue with the invitation as normal
-                    return redirect(reverse("register_invite", kwargs={"code": code, "case_id": case_id}))
-                raise e
         else:
             self.update_session(request, {"confirm_invited_org": False})
-            return redirect()
 
+        # Now we check if the invitation belongs to a user who is already registered
+        invitation = request.session["registration"]["invite"]
+        invited_user_email = invitation["email"]
+        try:
+            user = self.trusted_client.get_user_by_email(user_email=invited_user_email)
+            # The user is already registered on the TRS, we want to make them log in,
+            # so we can add them to this case
+            self.update_session(request, {
+                "user_already_exists": True,
+                "registering_user": user
+            })
+            return redirect(reverse("login_invite", kwargs={"code": code, "case_id": case_id}))
+        except HTTPError as e:
+            if e.response.status_code == 404:
+                # The user was not found, continue with the invitation as normal
+                return redirect(reverse("register_invite", kwargs={"code": code, "case_id": case_id}))
+            raise e
 
 class DashboardView(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
