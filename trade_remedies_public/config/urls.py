@@ -19,6 +19,8 @@ from django.urls import (
 )
 from core import views as core_views
 from registration import views as register_views
+from login import views as login_views
+from password import views as password_views
 from cases.views import CasesView
 
 urlpatterns = [
@@ -110,11 +112,11 @@ urlpatterns = [
         register_views.AccessibilityStatementView.as_view(),
         name="Accessibility statement",
     ),
-    path("accounts/login/choice/", register_views.LoginChoiceView.as_view(), name="login_choice"),
-    path("accounts/login/", register_views.LoginView.as_view(), name="login"),
+    path("accounts/login/choice/", login_views.LoginChoiceView.as_view(), name="login_choice"),
+    path("accounts/login/", login_views.LoginView.as_view(), name="login"),
     path(
         "accounts/login/<uuid:code>/<uuid:case_id>/",
-        register_views.LoginView.as_view(),
+        login_views.LoginView.as_view(),
         name="login_invite",
     ),
     path(
@@ -122,20 +124,20 @@ urlpatterns = [
         register_views.UpdateUserDetailsView.as_view(),
         name="update_details",
     ),
-    path("accounts/logout/", register_views.logout_view, name="logout"),
+    path("accounts/logout/", login_views.logout_view, name="logout"),
     path(
         "accounts/forgotpassword/done",
-        register_views.ForgotPasswordRequested.as_view(),
+        password_views.ForgotPasswordRequested.as_view(),
         name="forgot_password_requested",
     ),
     path(
         "accounts/forgotpassword/",
-        register_views.ForgotPasswordView.as_view(),
+        password_views.ForgotPasswordView.as_view(),
         name="forgot_password",
     ),
     path(
         "accounts/password/reset/<uuid:user_pk>/<str:token>/",
-        register_views.ResetPasswordView.as_view(),
+        password_views.ResetPasswordView.as_view(),
         name="reset_password",
     ),
     path("accounts/info/", core_views.AccountInfo.as_view(), name="account_info"),
