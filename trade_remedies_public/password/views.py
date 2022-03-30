@@ -1,3 +1,5 @@
+# Views to handle the forgotten and reset password functionality
+
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import render, redirect
 from django.urls import reverse

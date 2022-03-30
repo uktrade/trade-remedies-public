@@ -1,3 +1,5 @@
+# Views to handle the registration functionality and legal pages
+
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.views.decorators.cache import never_cache

@@ -1,3 +1,5 @@
+# Views to handle the login and logout functionality
+
 import json
 from django.shortcuts import render, redirect
 from django.views.decorators.cache import never_cache

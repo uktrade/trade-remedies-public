@@ -1,3 +1,5 @@
+# Views to handle the cookie policy associated with registering
+
 import json
 import re
 from django.shortcuts import render
