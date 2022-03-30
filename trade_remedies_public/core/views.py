@@ -40,6 +40,7 @@ health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
 logger = logging.getLogger(__name__)
 
+
 class BaseRegisterView(TemplateView):
     def reset_session(self, request, initial_data=None):
         initial_data = initial_data or {}
@@ -67,6 +68,7 @@ class BaseRegisterView(TemplateView):
             request.session["registration"] = {}
         request.session.modified = True
         return request.session
+
 
 class TradeRemediesBaseView(TemplateView):
     """
@@ -311,11 +313,7 @@ class InvitationView(BaseRegisterView, TradeRemediesAPIClientMixin):
         except HTTPError as exc:
             # an invalid or delete invite
             return redirect(reverse("login"))
-        new_session_data = {
-            "code": code,
-            "case_id": case_id,
-            "invite": invitation
-        }
+        new_session_data = {"code": code, "case_id": case_id, "invite": invitation}
         if request.session.get("token"):
             # The user is logged in already
             pass
@@ -335,7 +333,9 @@ class InvitationConfirmOrganisation(BaseRegisterView, TradeRemediesAPIClientMixi
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["invite"] = self.request.session["registration"]["invite"]
-        context["confirm_invited_org"] = self.request.session["registration"].get("confirm_invited_org", None)
+        context["confirm_invited_org"] = self.request.session["registration"].get(
+            "confirm_invited_org", None
+        )
         return context
 
     def post(self, request, code, case_id, *args, **kwargs):
@@ -352,16 +352,16 @@ class InvitationConfirmOrganisation(BaseRegisterView, TradeRemediesAPIClientMixi
             user = self.trusted_client.get_user_by_email(user_email=invited_user_email)
             # The user is already registered on the TRS, we want to make them log in,
             # so we can add them to this case
-            self.update_session(request, {
-                "user_already_exists": True,
-                "registering_user": user
-            })
+            self.update_session(request, {"user_already_exists": True, "registering_user": user})
             return redirect(reverse("login_invite", kwargs={"code": code, "case_id": case_id}))
         except HTTPError as e:
             if e.response.status_code == 404:
                 # The user was not found, continue with the invitation as normal
-                return redirect(reverse("register_invite", kwargs={"code": code, "case_id": case_id}))
+                return redirect(
+                    reverse("register_invite", kwargs={"code": code, "case_id": case_id})
+                )
             raise e
+
 
 class DashboardView(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
@@ -498,8 +498,8 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
                         if submission_invite["contact"]["has_user"]:
                             continue
                         submission_invite["locked"] = (
-                                submission.get("locked", True)
-                                or submission.get("deficiency_sent_at") is not None
+                            submission.get("locked", True)
+                            or submission.get("deficiency_sent_at") is not None
                         )
                         pending_third_party_invites.append(submission_invite)
 
@@ -558,14 +558,14 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         }
 
     def get(  # noqa: C901
-            self,
-            request,
-            user_id=None,
-            organisation_id=None,
-            section=None,
-            invitation_id=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        user_id=None,
+        organisation_id=None,
+        section=None,
+        invitation_id=None,
+        *args,
+        **kwargs,
     ):
         invitation_id = invitation_id or request.GET.get("invitation_id")
         organisation_id = organisation_id or request.user.organisation.get("id")
@@ -672,14 +672,14 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         )
 
     def post(  # noqa: C901
-            self,
-            request,
-            user_id=None,
-            organisation_id=None,
-            section=None,
-            invitation_id=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        user_id=None,
+        organisation_id=None,
+        section=None,
+        invitation_id=None,
+        *args,
+        **kwargs,
     ):
         if not section:
             section = request.POST.get("section")
@@ -858,7 +858,8 @@ class AssignUserToCaseView(LoginRequiredMixin, BasePublicView):
             case_id, organisation_id = case_org_id.split(":")
         elif case_org_selection:
             return redirect(
-                f"/case/select/organisation/for/{user_id}/?redirect=assign_user_to_case|user_id={user_id}&alert=no-selection"
+                f"/case/select/organisation/for/{user_id}/"
+                f"?redirect=assign_user_to_case|user_id={user_id}&alert=no-selection"
                 # noqa: E501
             )
         submission = self.on_submission_update(
@@ -890,8 +891,8 @@ class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemed
         if self.submission:
             primary = (
                 self.submission.get("deficiency_notice_params", {})
-                    .get("assign_user", {})
-                    .get("contact_status")
+                .get("assign_user", {})
+                .get("contact_status")
             )
             representing = self.submission["organisation"]
         elif organisation_id and organisation_id != assign_user.get("organisation", {}).get("id"):
@@ -919,7 +920,8 @@ class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemed
                     "name", assign_user["organisation"]["name"]
                 ),
                 "application": None,
-                "form_action": f"/accounts/team/assign/{user_id}/case/{case_id}/submission/{submission_id}/",
+                "form_action": f"/accounts/team/assign/{user_id}"
+                               f"/case/{case_id}/submission/{submission_id}/",
                 # noqa: E501
             },
         )

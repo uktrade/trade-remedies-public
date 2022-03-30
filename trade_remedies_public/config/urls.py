@@ -101,7 +101,7 @@ urlpatterns = [
     path(
         "invitation/<uuid:code>/<uuid:case_id>/confirm_organisation",
         core_views.InvitationConfirmOrganisation.as_view(),
-        name="invitation_confirm_organisation"
+        name="invitation_confirm_organisation",
     ),
     path(
         "termsofuse-privacypolicy/",

@@ -80,7 +80,7 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
 
     def on_submit(self, **kwargs):
         pass
-        '''if invitation_object := self.get_context()["invites"][0]:
+        """if invitation_object := self.get_context()["invites"][0]:
             notify_data = {
                 "case_id": self.case["id"],
                 "submission_id": self.submission["id"],
@@ -91,7 +91,7 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
                 submission_id=self.submission["id"],
                 contact_id=invitation_object["contact"]["id"],
                 params=notify_data,
-            )'''
+            )"""
 
 
 class AssignUserSubmission(BaseSubmissionHelper):
