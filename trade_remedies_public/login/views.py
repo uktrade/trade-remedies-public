@@ -149,4 +149,3 @@ def logout_view(request):
         del request.session["user"]
     logout(request)
     return redirect("/accounts/login/")
-
