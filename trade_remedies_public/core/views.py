@@ -832,7 +832,6 @@ class AssignUserToCaseView(LoginRequiredMixin, BasePublicView):
             return redirect(
                 f"/case/select/organisation/for/{user_id}/"
                 f"?redirect=assign_user_to_case|user_id={user_id}&alert=no-selection"
-                # noqa: E501
             )
         submission = self.on_submission_update(
             {
@@ -894,7 +893,6 @@ class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemed
                 "application": None,
                 "form_action": f"/accounts/team/assign/{user_id}"
                 f"/case/{case_id}/submission/{submission_id}/",
-                # noqa: E501
             },
         )
 
