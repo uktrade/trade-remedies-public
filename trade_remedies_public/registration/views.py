@@ -1,37 +1,21 @@
-import json
-import re
+# Views to handle the registration functionality and legal pages
+
 from django.conf import settings
-from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
-from django.contrib.auth import logout
 from django_countries import countries
 
 from core.models import TransientUser
 from core.utils import (
     validate,
     get,
-    set_cookie,
 )
-from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from core.validators import (
     registration_validators,
-    base_registration_validators,
 )
-from core.utils import internal_redirect
 from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
-
-
-def logout_view(request):
-    if "token" in request.session:
-        del request.session["token"]
-    if "user" in request.session:
-        del request.session["user"]
-    logout(request)
-    return redirect("/accounts/login/")
 
 
 class BaseRegisterView(TemplateView):
@@ -61,129 +45,6 @@ class BaseRegisterView(TemplateView):
             request.session["registration"] = {}
         request.session.modified = True
         return request.session
-
-
-class LoginChoiceView(BaseRegisterView):
-    template_name = "registration/login_choice.html"
-
-    @never_cache
-    def get(self, request, code=None, case_id=None, *args, **kwargs):
-        error = request.GET.get("error")
-        if error is None:
-            request.session["errors"] = None
-        return render(
-            request,
-            self.template_name,
-            {
-                "code": code,
-                "case_id": case_id,
-                "errors": request.session.get("errors", None),
-            },
-        )
-
-
-class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
-    template_name = "registration/login.html"
-
-    @never_cache
-    def get(self, request, code=None, case_id=None, *args, **kwargs):
-        error = request.GET.get("error")
-        email_verified = request.session.get("email_verified")
-        request.session["next"] = request.GET.get("next")
-        if error is None:
-            request.session["errors"] = None
-        if email_verified:
-            request.session["email_verified"] = None
-        request.session.modified = True
-        request.session.cycle_key()
-        if code and case_id:
-            # We're processing an invite URL
-            return redirect("register_invite", code=code, case_id=case_id)
-        return render(
-            request,
-            self.template_name,
-            {
-                "all_organisations": True,
-                "email": request.GET.get("email") or "",
-                "code": code,
-                "case_id": case_id,
-                "short_code": request.GET.get("short_code"),
-                "welcome": request.GET.get("welcome"),
-                "expired": request.GET.get("expired"),
-                "errors": request.session.get("errors", None),
-                "email_verified": email_verified,
-                "next": request.GET.get("next"),
-            },
-        )
-
-    def post(self, request, *args, **kwargs):  # noqa: C901
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        code = request.POST.get("code")
-        short_code = request.POST.get("short_code")
-        case_id = request.POST.get("case_id")
-        errors = validate({"email": email, "password": password}, base_registration_validators)
-        if errors:
-            request.session["errors"] = errors
-            return redirect("/accounts/login/?error")
-        try:
-            response = self.trusted_client.authenticate(
-                email,
-                password,
-                user_agent=request.META["HTTP_USER_AGENT"],
-                ip_address=request.META["REMOTE_ADDR"],
-                code=code,
-                case_id=case_id,
-            )
-            if response and response.get("token"):
-                # TODO: Temporary application state initialisation
-                request.session.clear()
-                request.session["application"] = {}
-                # TODO: Tmp app state end
-                # Force 2fa for every public login
-                request.session["force_2fa"] = True
-                request.session["token"] = response["token"]
-                request.session["user"] = response["user"]
-                request.session["version"] = response.get("version")
-                redirection_url = request.POST.get("next") or "/dashboard/"
-                if len(request.session["user"].get("organisations", [])) == 1:
-                    request.session["organisation_id"] = request.session["user"]["organisations"][
-                        0
-                    ]["id"]
-                request.session.modified = True
-                request.session.cycle_key()
-                return internal_redirect(redirection_url, "/dashboard/")
-            else:
-                if case_id and code:
-                    return redirect(f"/accounts/login/{code}/{case_id}/?error=t")
-                elif short_code:
-                    return redirect(f"/accounts/login/?error=t&short_code={short_code}")
-                else:
-                    return redirect("/accounts/login/?error=t")
-        except Exception as exc:
-            detail = ""
-            if hasattr(exc, "response"):
-                try:
-                    if exc.response.status_code == 401:
-                        try:
-                            detail = exc.response.json().get("detail")
-                        except Exception:
-                            detail = """You have entered an incorrect email address or password.
-                                        Please try again or click on the
-                                        Forgotten password link below."""
-                    else:
-                        response = exc.response.json()
-                        detail = response.get("detail")
-                except json.decoder.JSONDecodeError:
-                    detail = exc.response.text
-            else:
-                detail = str(exc)
-            request.session["errors"] = {"email": detail}
-            request.session.modified = True
-            if case_id and code:
-                return redirect(f"/accounts/login/{code}/{case_id}/?error")
-            else:
-                return redirect("/accounts/login/?error")
 
 
 class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
@@ -449,110 +310,6 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
         return redirect(f"/accounts/register/5/{redirect_postfix}")
 
 
-class UpdateUserDetailsView(TemplateView, TradeRemediesAPIClientMixin):
-    template_name = "registration/update.html"
-
-    def get(self, request, invite_id, *args, **kwargs):
-        invite = self.client(request.user).get_invite_details(invite_id)
-        context = {
-            "invite": invite,
-        }
-        return render(request, self.template_name, context)
-
-
-class ForgotPasswordRequested(TemplateView, TradeRemediesAPIClientMixin):
-    template_name = "registration/password_reset_requested.html"
-
-
-class ForgotPasswordView(TemplateView, TradeRemediesAPIClientMixin):
-    template_name = "registration/reset_password_request.html"
-
-    def post(self, request, *args, **kwargs):
-        if email := request.POST.get("email"):
-            self.trusted_client.request_password_reset(email)
-            return redirect(reverse("forgot_password_requested"))
-        return redirect(request.path)
-
-
-class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
-    def get(self, request, user_pk, token, *args, **kwargs):
-        token_is_valid = self.trusted_client.validate_password_reset(user_pk=user_pk, token=token)
-        error_message = kwargs.get("error", None)
-        return render(
-            request,
-            "registration/reset_password.html",
-            {
-                "token_is_valid": token_is_valid,
-                "user_pk": user_pk,
-                "token": token,
-                "error": error_message,
-            },
-        )
-
-    def post(self, request, user_pk, token, *args, **kwargs):
-        password = request.POST.get("password")
-        password_confirm = request.POST.get("password_confirm")
-        if password and password_confirm and password == password_confirm:
-            try:
-                self.trusted_client.reset_password(token, user_pk, password)
-                # todo - alert user that their password reset was successful
-            except APIException as exc:
-                return self.get(request, user_pk, token, error=exc.message)
-        elif password != password_confirm:
-            return self.get(request, user_pk, token, error="The passwords do not match")
-        return redirect_to_login(reverse("dashboard"), reverse("login"), "next")
-
-
-class TermsAndConditionsView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "registration/terms_and_conditions.html", {})
-
-
-class CookiePolicyView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "registration/cookie_policy.html", {})
-
-
-class CookieSettingsView(BaseRegisterView):
-    def get(self, request, *args, **kwargs):
-        redirect_url = request.GET.get("url") or ""
-        cookie_policy = {"accept_gi": "off"}
-        try:
-            cookie_policy = json.loads(request.COOKIES.get("cookie_policy"))
-        except Exception as exception:
-            print("Bad one", exception)
-        return render(
-            request,
-            "registration/cookies.html",
-            {
-                "cookie_policy": cookie_policy,
-                "redirect_url": redirect_url,
-            },
-        )
-
-    def post(self, request, *args, **kwargs):
-        accept_gi = request.POST.get("accept_gi")
-        redirect_url = request.POST.get("redirect_url") or "/dashboard/"
-        separator = "?" if redirect_url.find("?") == -1 else "#"
-        redirect_url = f"{redirect_url}{separator}cookie-policy-updated=1"
-        response = internal_redirect(redirect_url, "/dashboard/")
-        policy = json.dumps({"accept_gi": accept_gi})
-
-        if accept_gi != "on":
-            # delete ga cookies by regex
-            regex = r"^_g(a|i)"
-            for key, value in request.COOKIES.items():
-                if re.search(regex, key):
-                    response.delete_cookie(key)
-        set_cookie(response, "cookie_policy", policy)
-        return response
-
-
-class AccessibilityStatementView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "registration/accessibility_statement.html", {})
-
-
 class RegistrationCompletionView(BaseRegisterView, TradeRemediesAPIClientMixin):
     """
     Complete a registration triggered by a user creation and invite
@@ -600,3 +357,24 @@ class RegistrationCompletionView(BaseRegisterView, TradeRemediesAPIClientMixin):
                 errors = exc.detail["errors"]
             return self.get(request, code, org_id, errors=errors)
         return redirect("/email/verify/")
+
+
+class UpdateUserDetailsView(TemplateView, TradeRemediesAPIClientMixin):
+    template_name = "registration/update.html"
+
+    def get(self, request, invite_id, *args, **kwargs):
+        invite = self.client(request.user).get_invite_details(invite_id)
+        context = {
+            "invite": invite,
+        }
+        return render(request, self.template_name, context)
+
+
+class TermsAndConditionsView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        return render(request, "registration/terms_and_conditions.html", {})
+
+
+class AccessibilityStatementView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        return render(request, "registration/accessibility_statement.html", {})
