@@ -41,6 +41,7 @@ health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
 logger = logging.getLogger(__name__)
 
+
 class TradeRemediesBaseView(TemplateView):
     """
     Base view for Trade Remedies generic template views
