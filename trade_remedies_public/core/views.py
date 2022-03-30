@@ -35,40 +35,11 @@ from cases.utils import decorate_due_status, decorate_rois
 from cases.constants import CASE_TYPE_REPAYMENT
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
+from trade_remedies_public.registration.views import BaseRegisterView
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
 logger = logging.getLogger(__name__)
-
-
-class BaseRegisterView(TemplateView):
-    def reset_session(self, request, initial_data=None):
-        initial_data = initial_data or {}
-        request.session["registration"] = initial_data
-        request.session.modified = True
-        return request.session
-
-    def update_session(self, request, update_data):
-        request.session.setdefault("registration", {})
-        request.session["registration"].update(update_data)
-        request.session.modified = True
-        return request.session
-
-    def vaidate_session(self, request, fields, message=None):
-        message = message or "Required"
-        request.session["registration"].setdefault("errors", {})
-        for key in fields:
-            if not request.session["registration"][key]:
-                request.session["registration"]["errors"][key] = message
-        request.session.modified = True
-        return request.session
-
-    def default_session(self, request):
-        if "registration" not in request.session:
-            request.session["registration"] = {}
-        request.session.modified = True
-        return request.session
-
 
 class TradeRemediesBaseView(TemplateView):
     """
@@ -921,7 +892,7 @@ class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemed
                 ),
                 "application": None,
                 "form_action": f"/accounts/team/assign/{user_id}"
-                               f"/case/{case_id}/submission/{submission_id}/",
+                f"/case/{case_id}/submission/{submission_id}/",
                 # noqa: E501
             },
         )

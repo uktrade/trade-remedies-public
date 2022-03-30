@@ -78,21 +78,6 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
         context["invites"] = invites
         return context
 
-    def on_submit(self, **kwargs):
-        pass
-        """if invitation_object := self.get_context()["invites"][0]:
-            notify_data = {
-                "case_id": self.case["id"],
-                "submission_id": self.submission["id"],
-                "contact_id": self.submission["contact"]["id"],
-            }
-            response = self._client.action_third_party_invite(
-                case_id=self.case["id"],
-                submission_id=self.submission["id"],
-                contact_id=invitation_object["contact"]["id"],
-                params=notify_data,
-            )"""
-
 
 class AssignUserSubmission(BaseSubmissionHelper):
     type_ids = []
@@ -108,8 +93,8 @@ class AssignUserSubmission(BaseSubmissionHelper):
             )
             context["primary"] = (
                 self.submission.get("deficiency_notice_params", {})
-                .get("assign_user", {})
-                .get("contact_status")
+                    .get("assign_user", {})
+                    .get("contact_status")
             )
             context["is_primary"] = context["primary"]
             context["assign_user"] = self.submission["contact"]["user"]
@@ -119,7 +104,7 @@ class AssignUserSubmission(BaseSubmissionHelper):
             )
             context["has_documents"] = has_documents
             context["enable_submit"] = context["primary"] and (
-                context["representing"]["id"] == self.user.organisation["id"] or has_documents
+                    context["representing"]["id"] == self.user.organisation["id"] or has_documents
             )
             context["organisation"] = context.get("current_organisation")
             if self.view:
@@ -150,8 +135,8 @@ class AssignUserSubmission(BaseSubmissionHelper):
         if self.submission:
             current_primary_state = (
                 self.submission.get("deficiency_notice_params", {})
-                .get("assign_user", {})
-                .get("contact_status")
+                    .get("assign_user", {})
+                    .get("contact_status")
             )
             if is_primary is not None and is_primary != current_primary_state:
                 deficiency_notice_params = self.submission.get("deficiency_notice_params", {})
@@ -192,18 +177,18 @@ class AssignUserSubmission(BaseSubmissionHelper):
         Returns an overriden redirect url if the assignment was successful.
         """
         user_organisation_id = (
-            get(self.submission, "contact/organisation/id")
-            or get(self.submission, "contact/user/organisation/id")
-            or get(self.user.organisation, "id")
+                get(self.submission, "contact/organisation/id")
+                or get(self.submission, "contact/user/organisation/id")
+                or get(self.user.organisation, "id")
         )
         user_id = get(self.submission, "contact/user/id")
         if get(self.submission, "organisation/id") == user_organisation_id:
             # make the case assignment.
             is_primary = (
-                self.submission.get("deficiency_notice_params", {})
-                .get("assign_user", {})
-                .get("contact_status")
-                == "primary"
+                    self.submission.get("deficiency_notice_params", {})
+                    .get("assign_user", {})
+                    .get("contact_status")
+                    == "primary"
             )
             self.client.assign_user_to_case(
                 user_organisation_id=user_organisation_id,
