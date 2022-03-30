@@ -132,7 +132,7 @@ six==1.16.0
     #   python-dateutil
 sqlparse==0.4.2
     # via django
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@Chris/feature/TRSV2-161-invite-existing-third-parties
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/base.in
 urllib3==1.26.5
     # via
