@@ -52,8 +52,8 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
 
     @never_cache
     def get(self, request, errors=None, code=None, case_id=None, *args, **kwargs):
-        confirm_invited_org = request.session.get("registration", {}).get("confirm_invited_org")
         self.default_session(request)
+        confirm_invited_org = request.session["registration"].get("confirm_invited_org")
         template_name = self.template_name
         if (
             "error" not in request.GET and confirm_invited_org is None
@@ -66,9 +66,6 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         }
         if code and case_id:
             invite_details = self.trusted_client.get_case_invitation_by_code(code, case_id)
-            confirm_invited_org = request.session["registration"].get("confirm_invited_org")
-            if confirm_invited_org is None:
-                template_name = "registration/invited_organisation.html"
             initial_context.update(
                 {
                     "code": code,
@@ -77,7 +74,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                     "invite": invite_details,
                 }
             )
-            if confirm_invited_org == "true":
+            if confirm_invited_org:
                 initial_context.update(
                     {
                         "name": invite_details.get("contact", {}).get("name", ""),
@@ -91,11 +88,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
     def post(self, request, code=None, case_id=None, *args, **kwargs):  # noqa: C901
         self.default_session(request)
         redirect_postfix = f"{code}/{case_id}/" if code and case_id else ""
-        confirm_invited_org = request.POST.get("confirm_invited_org")
-        if confirm_invited_org is not None:
-            request.session["registration"]["confirm_invited_org"] = confirm_invited_org
-            request.session.modified = True
-            return redirect(f"/accounts/register/{code}/{case_id}/")
+
         request.session["registration"].update(request.POST.dict())
         errors = validate(request.session["registration"], registration_validators)
         if request.session["registration"].get("password") != request.session["registration"].get(
@@ -109,7 +102,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
             if (
                 session_reg.get("code")
                 and session_reg.get("case_id")
-                and session_reg.get("confirm_invited_org") == "true"
+                and session_reg.get("confirm_invited_org") is True
             ):
                 invitee_sec_group = get(
                     request.session["registration"], "invite/organisation_security_group"
@@ -142,7 +135,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
             elif (
                 session_reg.get("code")
                 and session_reg.get("case_id")
-                and session_reg.get("confirm_invited_org") == "false"
+                and not session_reg.get("confirm_invited_org")
             ):
                 return redirect(f"/accounts/register/2/{redirect_postfix}")
             return redirect("/accounts/register/2/")

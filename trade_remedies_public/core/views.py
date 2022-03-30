@@ -2,6 +2,8 @@ import logging
 import os
 import pytz
 import json
+
+from django.urls import reverse
 from requests.exceptions import HTTPError
 from django.views.generic import View, TemplateView
 from django.shortcuts import render, redirect
@@ -33,7 +35,7 @@ from cases.utils import decorate_due_status, decorate_rois
 from cases.constants import CASE_TYPE_REPAYMENT
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
-
+from trade_remedies_public.registration.views import BaseRegisterView
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -153,6 +155,7 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
             request.session["user"] = result
             if "force_2fa" in request.session:
                 del request.session["force_2fa"]
+
             request.session.modified = True
             return redirect("/dashboard")
         except APIException as exc:
@@ -272,24 +275,64 @@ class PublicDownloadView(TemplateView, TradeRemediesAPIClientMixin):
         return proxy_stream_file_download(document_stream, document["name"])
 
 
-class InvitationView(TemplateView, TradeRemediesAPIClientMixin):
+class InvitationView(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "invite_home.html"
 
     def get(self, request, code=None, case_id=None, *args, **kwargs):
+        self.default_session(request)
         try:
             invitation = self.trusted_client.get_trusted_invitation_details(case_id, code)
         except HTTPError as exc:
             # an invalid or delete invite
-            return redirect("/accounts/login/")
-        return render(
-            request,
-            self.template_name,
-            {
-                "code": code,
-                "case_id": case_id,
-                "invitation": invitation,
-            },
+            return redirect(reverse("login"))
+        new_session_data = {"code": code, "case_id": case_id, "invite": invitation}
+        if request.session.get("token"):
+            # The user is logged in already
+            pass
+        self.update_session(request, new_session_data)
+        return render(request, self.template_name, context=new_session_data)
+
+
+class InvitationConfirmOrganisation(BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "registration/invited_organisation.html"
+
+    def get(self, request, code=None, case_id=None, *args, **kwargs):
+        if not self.request.session.get("registration", {}).get("invite"):
+            # Redirect to the original invitation screen
+            return redirect(reverse("start", kwargs={"code": code, "case_id": case_id}))
+        return super().get(request, code=code, case_id=case_id, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["invite"] = self.request.session["registration"]["invite"]
+        context["confirm_invited_org"] = self.request.session["registration"].get(
+            "confirm_invited_org", None
         )
+        return context
+
+    def post(self, request, code, case_id, *args, **kwargs):
+        if request.POST["confirm_invited_org"] == "true":
+            # The user have verified they are the user the invitation is meant for
+            self.update_session(request, {"confirm_invited_org": True})
+        else:
+            self.update_session(request, {"confirm_invited_org": False})
+
+        # Now we check if the invitation belongs to a user who is already registered
+        invitation = request.session["registration"]["invite"]
+        invited_user_email = invitation["email"]
+        try:
+            user = self.trusted_client.get_user_by_email(user_email=invited_user_email)
+            # The user is already registered on the TRS, we want to make them log in,
+            # so we can add them to this case
+            self.update_session(request, {"user_already_exists": True, "registering_user": user})
+            return redirect(reverse("login_invite", kwargs={"code": code, "case_id": case_id}))
+        except HTTPError as e:
+            if e.response.status_code == 404:
+                # The user was not found, continue with the invitation as normal
+                return redirect(
+                    reverse("register_invite", kwargs={"code": code, "case_id": case_id})
+                )
+            raise e
 
 
 class DashboardView(
@@ -787,7 +830,8 @@ class AssignUserToCaseView(LoginRequiredMixin, BasePublicView):
             case_id, organisation_id = case_org_id.split(":")
         elif case_org_selection:
             return redirect(
-                f"/case/select/organisation/for/{user_id}/?redirect=assign_user_to_case|user_id={user_id}&alert=no-selection"  # noqa: E501
+                f"/case/select/organisation/for/{user_id}/"
+                f"?redirect=assign_user_to_case|user_id={user_id}&alert=no-selection"
             )
         submission = self.on_submission_update(
             {
@@ -847,7 +891,8 @@ class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemed
                     "name", assign_user["organisation"]["name"]
                 ),
                 "application": None,
-                "form_action": f"/accounts/team/assign/{user_id}/case/{case_id}/submission/{submission_id}/",  # noqa: E501
+                "form_action": f"/accounts/team/assign/{user_id}"
+                f"/case/{case_id}/submission/{submission_id}/",
             },
         )
 

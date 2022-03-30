@@ -19,7 +19,7 @@
     This invitation was accepted.
     {% endif %}
 
-    The following were sent invitations to join your view of this case:
+    The following will be sent invitations to join your view of this case when the Letter of Authority is reviewed by the Trade Remedies Authority:
     <table>
         <tr>
             <th>Name</th>
@@ -30,7 +30,7 @@
         <tr>
             <td>{{invite.contact.name}}</td>
             <td>{{invite.contact.email}}</td>
-            <td>{{invite.organisation.name}}</td>
+            <td>{% if invite.submission.name == "Invite 3rd party" %}{{invite.contact.organisation.name}}{% else %}{{invite.organisation.name}}{% endif %}</td>
         </tr>
         {% endfor %}
     </table>

@@ -46,9 +46,6 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
             request.session["email_verified"] = None
         request.session.modified = True
         request.session.cycle_key()
-        if code and case_id:
-            # We're processing an invite URL
-            return redirect("register_invite", code=code, case_id=case_id)
         return render(
             request,
             self.template_name,

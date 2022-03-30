@@ -17,7 +17,7 @@ Create an account
     {% set 'third_party' True %}
 {% endif %}
 
-{% if invite and confirm_invited_org == 'true' %}
+{% if invite and confirm_invited_org %}
 <div class="margin-bottom-1">
     {% if third_party %}
         Your Company Name: {{invite.contact.organisation.name}}
@@ -26,11 +26,11 @@ Create an account
     {% endif %}
 </div>
 {% endif %}
-{% if invite and confirm_invited_org == 'true' %}
+{% if invite and confirm_invited_org %}
     {% text_element id='email' label='Email address' type='email' autocomplete='email' errors=errors hint='You will need this to sign in to your account. We will use this to contact you.' read_only=True %}
 {% endif %}
 {% text_element id='name' autocomplete='name' label='Name' errors=errors %}
-{% if not invite or confirm_invited_org != 'true' %}
+{% if not invite or not confirm_invited_org %}
   {% text_element id='email' autocomplete="email" type="email" label='Email address' errors=errors hint='You will need this to sign in to your account. We will use this to contact you. This must be your professional email address, for example yourname@company.com.' read_only=invite_mode %}{# /PS-IGNORE #}
 {% endif %}
 {% include "registration/_password_entry.html" %}
