@@ -5,12 +5,7 @@ import re
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from core.utils import (
-    validate,
-    get,
-    set_cookie,
-)
-from core.utils import internal_redirect
+from core.utils import internal_redirect, set_cookie
 from registration.views import BaseRegisterView
 
 

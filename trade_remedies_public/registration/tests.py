@@ -1,10 +1,7 @@
 from django.test import TestCase
 
 from core.utils import validate
-from core.validators import (
-    registration_validators,
-    base_registration_validators,
-)
+from core.validators import base_registration_validators
 
 
 class TestEmailValidation(TestCase):

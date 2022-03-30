@@ -10,12 +10,10 @@ from core.models import TransientUser
 from core.utils import (
     validate,
     get,
-    set_cookie,
 )
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from core.validators import (
     registration_validators,
-    base_registration_validators,
 )
 from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
 

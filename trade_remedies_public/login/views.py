@@ -5,16 +5,10 @@ from django.shortcuts import render, redirect
 from django.views.decorators.cache import never_cache
 from django.contrib.auth import logout
 
-from core.utils import (
-    validate,
-    get,
-    set_cookie,
-)
+from core.utils import validate
+
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from core.validators import (
-    registration_validators,
-    base_registration_validators,
-)
+from core.validators import base_registration_validators
 from core.utils import internal_redirect
 from registration.views import BaseRegisterView
 
