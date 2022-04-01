@@ -38,9 +38,12 @@ click==8.0.1
     # via
     #   black
     #   pip-tools
+codecov==2.1.12
+    # via -r requirements.in/dev.in
 coverage==5.5
     # via
     #   -r requirements.in/dev.in
+    #   codecov
     #   pytest-cov
 cycler==0.11.0
     # via matplotlib
@@ -241,6 +244,7 @@ regex==2021.8.28
 requests==2.25.1
     # via
     #   -r requirements.in/base.in
+    #   codecov
     #   trade-remedies-client
 rjsmin==1.1.0
     # via django-compressor
