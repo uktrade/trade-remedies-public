@@ -15,6 +15,7 @@ pytest-cov
 pytest-django
 pytest-xdist
 pytest-pythonpath
+pre-commit
 selenium==3.141.0
 traitlets==4.3.3
 

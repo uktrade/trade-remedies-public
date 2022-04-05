@@ -45,6 +45,17 @@ jobs:
           name: Run Flake8
           command: |
             pflake8 trade_remedies_public --config pyproject.toml
+      - restore_cache:
+          key: pii-secret
+      - run:
+          name: Run pre-commit hooks
+          command: |
+            pre-commit autoupdate
+            pre-commit run --all-files
+      - save_cache:
+          key: pii-secret
+          paths:
+            - ".pii-secret-hook"
   test_and_fitness_functions:
     docker:
       - image: cimg/python:3.9.5
