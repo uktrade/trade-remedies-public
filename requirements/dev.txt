@@ -115,7 +115,9 @@ feed-gov-back==0.4
 fitness-functions @ git+https://github.com/uktrade/fitness-functions
     # via -r requirements.in/dev.in
 flake8==3.9.2
-    # via -r requirements.in/dev.in
+    # via
+    #   -r requirements.in/dev.in
+    #   pyproject-flake8
 fonttools==4.30.0
     # via matplotlib
 idna==2.10
@@ -206,6 +208,8 @@ pyparsing==2.4.7
     # via
     #   matplotlib
     #   packaging
+pyproject-flake8==0.0.1a3
+    # via -r requirements.in/dev.in
 pytest==6.2.5
     # via
     #   -r requirements.in/dev.in
@@ -283,6 +287,7 @@ tomli==1.2.1
     # via
     #   black
     #   pep517
+    #   pyproject-flake8
 trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/base.in
 traitlets==4.3.3
