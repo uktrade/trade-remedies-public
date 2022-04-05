@@ -38,8 +38,7 @@ exclude = '''
 '''
 ignore = '''
 /(
-    C901
-    | D100
+    D100
     | D104
     | D106
     | D200
@@ -53,7 +52,6 @@ ignore = '''
     | E231
     | F841
     | E722
-    | E203
 )/
 '''
 application-import-names = '''
