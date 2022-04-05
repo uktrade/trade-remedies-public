@@ -3,6 +3,7 @@
 behave-django==1.4.0
 black
 coverage
+codecov
 flake8
 ipython==7.31.1
 matplotlib
