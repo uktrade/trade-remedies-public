@@ -9,6 +9,7 @@ ipython==7.31.1
 matplotlib
 sklearn
 pip-tools>=6.5.0
+pyproject-flake8
 pytest
 pytest-cov
 pytest-django
