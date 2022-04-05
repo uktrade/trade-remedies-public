@@ -1,6 +1,7 @@
 # trade-remedies-public-ui
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
+[![codecov](https://codecov.io/gh/uktrade/trade-remedies-public/branch/develop/graph/badge.svg)](https://codecov.io/gh/uktrade/trade-remedies-public/)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 Public-facing UI for the Trade Remedies system
 
