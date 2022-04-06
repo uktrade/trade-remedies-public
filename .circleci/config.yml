@@ -1,10 +1,66 @@
 version: 2.1
+
+commands:
+  install_dependencies:
+    description: "Install Python dependencies"
+    steps:
+      - run:
+          name: Install Python dependencies
+          command: |
+            python3 -m venv venv
+            echo ". venv/bin/activate" >> $BASH_ENV
+            . venv/bin/activate  # 
+            pip install --upgrade pip
+            pip install -r requirements/dev.txt
+
+  restore_dependency_cache:
+    description: "Restore dependency cache."
+    steps:
+      - restore_cache:
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+
+  save_dependency_cache:
+    description: "Save dependency cache."
+    steps:
+      - save_cache:
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          paths:
+            - "venv"
+
 jobs:
-  python_steps:
+
+  code_quality:
+    docker:
+      - image: cimg/python:3.9.5
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - install_dependencies
+      - save_dependency_cache
+      - run:
+          name: Run black
+          command: |
+            black trade_remedies_public --check
+      - run:
+          name: Run Flake8
+          command: |
+            pflake8 trade_remedies_public --config pyproject.toml
+      - restore_cache:
+          key: pii-secret
+      - run:
+          name: Run pre-commit hooks
+          command: |
+            pre-commit autoupdate
+            pre-commit run --all-files
+      - save_cache:
+          key: pii-secret
+          paths:
+            - ".pii-secret-hook"
+  test_and_fitness_functions:
     docker:
       - image: cimg/python:3.9.5
         environment:
-          DATABASE_URL: sqlite:///trade_remedies_public/db.sqlite3
+          DATABASE_URL: sqlite:///db.sqlite3
           DJANGO_SETTINGS_MODULE: config.settings.local
           DJANGO_SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
@@ -13,48 +69,31 @@ jobs:
           fingerprints:
             - "ba:20:40:f8:be:ec:29:e7:81:14:2a:87:49:9c:8e:e7"
       - checkout
-      - restore_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+      - restore_dependency_cache
+      - install_dependencies
+      - save_dependency_cache
       - run:
-          name: Install Python deps
+          name: Run tests and save coverage report
           command: |
-            python3 -m venv venv
-            . venv/bin/activate
-            pip install -r requirements/dev.txt
-      - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
-          paths:
-            - "venv"
-      - run:
-          name: Run tests and collect fitness functions
-          command: |
-            . venv/bin/activate
-            pytest --ignore=staticfiles -n 4 -m "not version2"
+            pytest
             coverage json
+      - run:
+          name: Send coverage report to codecov.io
+          command: codecov
+      - run:
+          name: Collect and publish fitness functions
+          command: |
             fitness-functions run . trade_remedies_public
             fitness-functions publish . trade_remedies_public
       - run:
           name: Push the updated READ.ME back to GitHub
           command: |
-            . venv/bin/activate
             git config user.email "fitness-functions-machine-user@digital.trade.gov.uk"  # /PS-IGNORE
             git config user.name "FITNESS-FUNCTIONS MACHINE USER"  # /PS-IGNORE
             git add fitness/fitness_metrics.db
             git add fitness/fitness_metrics_graph.png
             git commit -m "[ci skip] AUTOMATED - update fitness functions"
             git push << pipeline.project.git_url >> << pipeline.git.branch >>
-      - run:
-          name: Run black
-          command: |
-            . venv/bin/activate
-            cd trade_remedies_public
-            black . --check
-      - run:
-          name: Run Flake8
-          command: |
-            . venv/bin/activate
-            cd trade_remedies_public
-            python -m flake8
   front_end:
     docker:
       - image: 'circleci/node:lts'
@@ -79,5 +118,6 @@ workflows:
   version: 2
   run_tests:
     jobs:
-      - python_steps
+      - code_quality
+      - test_and_fitness_functions
       - front_end

@@ -35,7 +35,7 @@ from cases.utils import decorate_due_status, decorate_rois
 from cases.constants import CASE_TYPE_REPAYMENT
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
-from trade_remedies_public.registration.views import BaseRegisterView
+from registration.views import BaseRegisterView
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 

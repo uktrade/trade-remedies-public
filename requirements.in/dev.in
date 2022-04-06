@@ -3,16 +3,19 @@
 behave-django==1.4.0
 black
 coverage
+codecov
 flake8
 ipython==7.31.1
 matplotlib
 sklearn
 pip-tools>=6.5.0
+pyproject-flake8
 pytest
 pytest-cov
 pytest-django
 pytest-xdist
 pytest-pythonpath
+pre-commit
 selenium==3.141.0
 traitlets==4.3.3
 

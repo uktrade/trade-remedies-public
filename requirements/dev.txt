@@ -32,15 +32,20 @@ certifi==2021.5.30
     # via
     #   requests
     #   sentry-sdk
+cfgv==3.3.1
+    # via pre-commit
 chardet==4.0.0
     # via requests
 click==8.0.1
     # via
     #   black
     #   pip-tools
+codecov==2.1.12
+    # via -r requirements.in/dev.in
 coverage==5.5
     # via
     #   -r requirements.in/dev.in
+    #   codecov
     #   pytest-cov
 cycler==0.11.0
     # via matplotlib
@@ -48,6 +53,8 @@ decorator==5.1.0
     # via
     #   ipython
     #   traitlets
+distlib==0.3.4
+    # via virtualenv
 django==3.2.12
     # via
     #   -r requirements.in/base.in
@@ -109,12 +116,18 @@ execnet==1.9.0
     # via pytest-xdist
 feed-gov-back==0.4
     # via -r requirements.in/base.in
+filelock==3.6.0
+    # via virtualenv
 fitness-functions @ git+https://github.com/uktrade/fitness-functions
     # via -r requirements.in/dev.in
 flake8==3.9.2
-    # via -r requirements.in/dev.in
+    # via
+    #   -r requirements.in/dev.in
+    #   pyproject-flake8
 fonttools==4.30.0
     # via matplotlib
+identify==2.4.12
+    # via pre-commit
 idna==2.10
     # via requests
 iniconfig==1.1.1
@@ -147,6 +160,8 @@ mccabe==0.6.1
     # via flake8
 mypy-extensions==0.4.3
     # via black
+nodeenv==1.6.0
+    # via pre-commit
 numpy==1.22.3
     # via
     #   matplotlib
@@ -177,9 +192,13 @@ pillow==9.0.1
 pip-tools==6.5.1
     # via -r requirements.in/dev.in
 platformdirs==2.3.0
-    # via black
+    # via
+    #   black
+    #   virtualenv
 pluggy==1.0.0
     # via pytest
+pre-commit==2.18.1
+    # via -r requirements.in/dev.in
 prompt-toolkit==3.0.20
     # via ipython
 psycopg2-binary==2.9.1
@@ -203,6 +222,8 @@ pyparsing==2.4.7
     # via
     #   matplotlib
     #   packaging
+pyproject-flake8==0.0.1a3
+    # via -r requirements.in/dev.in
 pytest==6.2.5
     # via
     #   -r requirements.in/dev.in
@@ -230,6 +251,8 @@ pytz==2021.1
     #   -r requirements.in/base.in
     #   django
     #   django-timezone-field
+pyyaml==6.0
+    # via pre-commit
 rcssmin==1.0.6
     # via django-compressor
 redis==3.2.0
@@ -241,6 +264,7 @@ regex==2021.8.28
 requests==2.25.1
     # via
     #   -r requirements.in/base.in
+    #   codecov
     #   trade-remedies-client
 rjsmin==1.1.0
     # via django-compressor
@@ -263,6 +287,7 @@ six==1.16.0
     #   parse-type
     #   python-dateutil
     #   traitlets
+    #   virtualenv
 sklearn==0.0
     # via -r requirements.in/dev.in
 soupsieve==2.2.1
@@ -273,12 +298,14 @@ threadpoolctl==3.1.0
     # via scikit-learn
 toml==0.10.2
     # via
+    #   pre-commit
     #   pytest
     #   pytest-cov
 tomli==1.2.1
     # via
     #   black
     #   pep517
+    #   pyproject-flake8
 trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/base.in
 traitlets==4.3.3
@@ -295,6 +322,8 @@ urllib3==1.26.5
     #   requests
     #   selenium
     #   sentry-sdk
+virtualenv==20.14.0
+    # via pre-commit
 wcwidth==0.2.5
     # via prompt-toolkit
 werkzeug==0.15.5
