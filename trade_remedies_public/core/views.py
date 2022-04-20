@@ -402,7 +402,8 @@ class DashboardView(
                 "pre_manage_team": client.get_system_boolean("PRE_MANAGE_TEAM"),
                 "pre_applications": client.get_system_boolean("PRE_APPLICATIONS"),
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
-                "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER in request.user.organisation_groups,
+                "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
+                in request.user.organisation_groups,
             },
         )
 

@@ -24,7 +24,7 @@ define(['modules/helpers'], function(helpers) {
         var selectedCaseId = this.driveSelector.val();
         var url = `/case/${selectedCaseId}/availablereviewtypes/?select=${this.selectedCaseType}&organisation_role=${this.organisationRole}`;
         if (this.driveSelector.find("option:selected").data('type') === 'notice'){
-          // This is a notice, direct to /notice/
+          // This is a notice, append query parameter marking it as such
           url = url + '&is_notice=yes';
         }
         $.ajax({
