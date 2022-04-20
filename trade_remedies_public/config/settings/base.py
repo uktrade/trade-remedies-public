@@ -207,7 +207,7 @@ AUTO_LOGIN = True
 API_BASE_URL = env("API_BASE_URL", default="http://localhost:8000")
 API_PREFIX = "api/v1"
 API_URL = f"{API_BASE_URL}/{API_PREFIX}"
-TRUSTED_USER_TOKEN = env("HEALTH_CHECK_TOKEN")
+HEALTH_CHECK_TOKEN = env("HEALTH_CHECK_TOKEN")
 ENVIRONMENT_KEY = env("ENVIRONMENT_KEY", default="PUB-ENV")
 APPEND_SLASH = True
 
@@ -354,3 +354,5 @@ ENVIRONMENT_LOGGING = {
         },
     },
 }
+
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"

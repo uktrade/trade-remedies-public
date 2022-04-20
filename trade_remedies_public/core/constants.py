@@ -5,7 +5,7 @@ ORG_INDICATOR_TYPE_SMALL = 2
 ALERT_MAP = {
     "cancel_sub": "Your submission has been cancelled",
     "cancel_fail": "Cancellation failed",
-    "pass_conf": "Password does not match the confirmation",
+    "pass_conf": "The passwords do not match",
     "pass_reset": "Could not reset password. Please try again",
     "added-employee": "Employee invited",
     "invite-deleted": "Invite deleted",

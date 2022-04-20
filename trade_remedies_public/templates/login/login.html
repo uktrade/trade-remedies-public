@@ -46,7 +46,7 @@
 
     {% text_element id='email' type="email" autocomplete="email" label='Email address' errors=errors %}
     {% password_element id='password' label='Password' errors=errors %}
-    <div><a href="/accounts/forgotpassword/">Forgotten password</a></div>
+    <div><a href="{% url 'forgot_password' %}">Forgotten password</a></div>
     <button type="submit" id="login-submit" class="button margin-top-2" name="btn-action" value="login" >Sign in</button>
 
 {% endblock %}

@@ -707,7 +707,7 @@ class AvailableReviewTypesView(
         selected_case_type = request.GET.get("select")
         organisation_role = request.GET.get("organisation_role")
         is_notice = request.GET.get("is_notice", False)
-        results = self.client(request.user).available_review_types(case_id, summary=is_notice)
+        results = self.client(request.user).available_review_types(case_id, is_notice=is_notice)
         return render(
             request,
             "cases/submissions/application/review_types.html",

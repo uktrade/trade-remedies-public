@@ -1,35 +1,21 @@
-import json
-import re
+# Views to handle the registration functionality and legal pages
+
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
-from django.contrib.auth import logout
 from django_countries import countries
 
 from core.models import TransientUser
 from core.utils import (
     validate,
     get,
-    set_cookie,
 )
-from core.constants import ALERT_MAP
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from core.validators import (
     registration_validators,
-    base_registration_validators,
 )
-from core.utils import internal_redirect
 from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
-
-
-def logout_view(request):
-    if "token" in request.session:
-        del request.session["token"]
-    if "user" in request.session:
-        del request.session["user"]
-    logout(request)
-    return redirect("/accounts/login/")
 
 
 class BaseRegisterView(TemplateView):
@@ -61,136 +47,13 @@ class BaseRegisterView(TemplateView):
         return request.session
 
 
-class LoginChoiceView(BaseRegisterView):
-    template_name = "registration/login_choice.html"
-
-    @never_cache
-    def get(self, request, code=None, case_id=None, *args, **kwargs):
-        error = request.GET.get("error")
-        if error is None:
-            request.session["errors"] = None
-        return render(
-            request,
-            self.template_name,
-            {
-                "code": code,
-                "case_id": case_id,
-                "errors": request.session.get("errors", None),
-            },
-        )
-
-
-class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
-    template_name = "registration/login.html"
-
-    @never_cache
-    def get(self, request, code=None, case_id=None, *args, **kwargs):
-        error = request.GET.get("error")
-        email_verified = request.session.get("email_verified")
-        request.session["next"] = request.GET.get("next")
-        if error is None:
-            request.session["errors"] = None
-        if email_verified:
-            request.session["email_verified"] = None
-        request.session.modified = True
-        request.session.cycle_key()
-        if code and case_id:
-            # We're processing an invite URL
-            return redirect("register_invite", code=code, case_id=case_id)
-        return render(
-            request,
-            self.template_name,
-            {
-                "all_organisations": True,
-                "email": request.GET.get("email") or "",
-                "code": code,
-                "case_id": case_id,
-                "short_code": request.GET.get("short_code"),
-                "welcome": request.GET.get("welcome"),
-                "expired": request.GET.get("expired"),
-                "errors": request.session.get("errors", None),
-                "email_verified": email_verified,
-                "next": request.GET.get("next"),
-            },
-        )
-
-    def post(self, request, *args, **kwargs):  # noqa: C901
-        email = request.POST.get("email")
-        password = request.POST.get("password")
-        code = request.POST.get("code")
-        short_code = request.POST.get("short_code")
-        case_id = request.POST.get("case_id")
-        errors = validate({"email": email, "password": password}, base_registration_validators)
-        if errors:
-            request.session["errors"] = errors
-            return redirect("/accounts/login/?error")
-        try:
-            response = self.trusted_client.authenticate(
-                email,
-                password,
-                user_agent=request.META["HTTP_USER_AGENT"],
-                ip_address=request.META["REMOTE_ADDR"],
-                code=code,
-                case_id=case_id,
-            )
-            if response and response.get("token"):
-                # TODO: Temporary application state initialisation
-                request.session.clear()
-                request.session["application"] = {}
-                # TODO: Tmp app state end
-                # Force 2fa for every public login
-                request.session["force_2fa"] = True
-                request.session["token"] = response["token"]
-                request.session["user"] = response["user"]
-                request.session["version"] = response.get("version")
-                redirection_url = request.POST.get("next") or "/dashboard/"
-                if len(request.session["user"].get("organisations", [])) == 1:
-                    request.session["organisation_id"] = request.session["user"]["organisations"][
-                        0
-                    ]["id"]
-                request.session.modified = True
-                request.session.cycle_key()
-                return internal_redirect(redirection_url, "/dashboard/")
-            else:
-                if case_id and code:
-                    return redirect(f"/accounts/login/{code}/{case_id}/?error=t")
-                elif short_code:
-                    return redirect(f"/accounts/login/?error=t&short_code={short_code}")
-                else:
-                    return redirect("/accounts/login/?error=t")
-        except Exception as exc:
-            detail = ""
-            if hasattr(exc, "response"):
-                try:
-                    if exc.response.status_code == 401:
-                        try:
-                            detail = exc.response.json().get("detail")
-                        except Exception:
-                            detail = """You have entered an incorrect email address or password.
-                                        Please try again or click on the
-                                        Forgotten password link below."""
-                    else:
-                        response = exc.response.json()
-                        detail = response.get("detail")
-                except json.decoder.JSONDecodeError:
-                    detail = exc.response.text
-            else:
-                detail = str(exc)
-            request.session["errors"] = {"email": detail}
-            request.session.modified = True
-            if case_id and code:
-                return redirect(f"/accounts/login/{code}/{case_id}/?error")
-            else:
-                return redirect("/accounts/login/?error")
-
-
 class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "registration/register.html"
 
     @never_cache
     def get(self, request, errors=None, code=None, case_id=None, *args, **kwargs):
-        confirm_invited_org = request.session.get("registration", {}).get("confirm_invited_org")
         self.default_session(request)
+        confirm_invited_org = request.session["registration"].get("confirm_invited_org")
         template_name = self.template_name
         if (
             "error" not in request.GET and confirm_invited_org is None
@@ -203,9 +66,6 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         }
         if code and case_id:
             invite_details = self.trusted_client.get_case_invitation_by_code(code, case_id)
-            confirm_invited_org = request.session["registration"].get("confirm_invited_org")
-            if confirm_invited_org is None:
-                template_name = "registration/invited_organisation.html"
             initial_context.update(
                 {
                     "code": code,
@@ -214,7 +74,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                     "invite": invite_details,
                 }
             )
-            if confirm_invited_org == "true":
+            if confirm_invited_org:
                 initial_context.update(
                     {
                         "name": invite_details.get("contact", {}).get("name", ""),
@@ -228,11 +88,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
     def post(self, request, code=None, case_id=None, *args, **kwargs):  # noqa: C901
         self.default_session(request)
         redirect_postfix = f"{code}/{case_id}/" if code and case_id else ""
-        confirm_invited_org = request.POST.get("confirm_invited_org")
-        if confirm_invited_org is not None:
-            request.session["registration"]["confirm_invited_org"] = confirm_invited_org
-            request.session.modified = True
-            return redirect(f"/accounts/register/{code}/{case_id}/")
+
         request.session["registration"].update(request.POST.dict())
         errors = validate(request.session["registration"], registration_validators)
         if request.session["registration"].get("password") != request.session["registration"].get(
@@ -246,7 +102,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
             if (
                 session_reg.get("code")
                 and session_reg.get("case_id")
-                and session_reg.get("confirm_invited_org") == "true"
+                and session_reg.get("confirm_invited_org") is True
             ):
                 invitee_sec_group = get(
                     request.session["registration"], "invite/organisation_security_group"
@@ -279,7 +135,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
             elif (
                 session_reg.get("code")
                 and session_reg.get("case_id")
-                and session_reg.get("confirm_invited_org") == "false"
+                and not session_reg.get("confirm_invited_org")
             ):
                 return redirect(f"/accounts/register/2/{redirect_postfix}")
             return redirect("/accounts/register/2/")
@@ -394,7 +250,9 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
         {
             "key": "organisation_website",
             "message": "Your website should be a complete, valid URL.",
-            "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",  # noqa: E501
+            "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)"
+            "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+            # noqa: E501
         },
     ]
 
@@ -445,110 +303,6 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
         return redirect(f"/accounts/register/5/{redirect_postfix}")
 
 
-class UpdateUserDetailsView(TemplateView, TradeRemediesAPIClientMixin):
-    template_name = "registration/update.html"
-
-    def get(self, request, invite_id, *args, **kwargs):
-        invite = self.client(request.user).get_invite_details(invite_id)
-        context = {
-            "invite": invite,
-        }
-        return render(request, self.template_name, context)
-
-
-class ForgotPasswordView(TemplateView, TradeRemediesAPIClientMixin):
-    def get(self, request, *args, **kwargs):
-        return render(
-            request, "registration/forgot_password.html", {"requested": "requested" in request.GET}
-        )
-
-    def post(self, request, *args, **kwargs):
-        email = request.POST.get("email")
-        if email:
-            response = self.trusted_client.request_password_reset(email)
-        return redirect("/accounts/forgotpassword/?requested")
-
-
-class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
-    def get(self, request, code, *args, **kwargs):
-        code_valid = self.trusted_client.validate_password_reset(code)
-        error_code = request.GET.get("error")
-        error_message = ALERT_MAP.get(error_code) if error_code else ""
-        if kwargs.get("error"):
-            error_message = f"{error_message}<br/>{kwargs['error']}"
-        return render(
-            request,
-            "registration/reset_password.html",
-            {
-                "invalid_code": not code_valid,
-                "code": code,
-                "error": error_message,
-            },
-        )
-
-    def post(self, request, code, *args, **kwargs):
-        password = request.POST.get("password")
-        password_confirm = request.POST.get("password_confirm")
-        if password and password_confirm and password == password_confirm:
-            try:
-                response = self.trusted_client.reset_password(code, password)
-            except Exception as exc:
-                return self.get(request, code, error=str(exc), *args, **kwargs)
-        elif password != password_confirm:
-            return redirect(f"/accounts/password/reset/{code}/?error=pass_conf")
-        return redirect("/accounts/login/choice/?next=/dashboard/")
-
-
-class TermsAndConditionsView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "registration/terms_and_conditions.html", {})
-
-
-class CookiePolicyView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "registration/cookie_policy.html", {})
-
-
-class CookieSettingsView(BaseRegisterView):
-    def get(self, request, *args, **kwargs):
-        redirect_url = request.GET.get("url") or ""
-        cookie_policy = {"accept_gi": "off"}
-        try:
-            cookie_policy = json.loads(request.COOKIES.get("cookie_policy"))
-        except Exception as exception:
-            print("Bad one", exception)
-        return render(
-            request,
-            "registration/cookies.html",
-            {
-                "cookie_policy": cookie_policy,
-                "redirect_url": redirect_url,
-            },
-        )
-
-    def post(self, request, *args, **kwargs):
-        accept_gi = request.POST.get("accept_gi")
-        redirect_url = request.POST.get("redirect_url") or "/dashboard/"
-        separator = "?" if redirect_url.find("?") == -1 else "#"
-        redirect_url = f"{redirect_url}{separator}cookie-policy-updated=1"
-        response = internal_redirect(redirect_url, "/dashboard/")
-        policy = json.dumps({"accept_gi": accept_gi})
-
-        if accept_gi != "on":
-            # delete ga cookies by regex
-            regex = r"^_g(a|i)"
-            for key, value in request.COOKIES.items():
-                if re.search(regex, key):
-                    response.delete_cookie(key)
-        set_cookie(response, "cookie_policy", policy)
-        return response
-
-
-class AccessibilityStatementView(TemplateView):
-    def get(self, request, *args, **kwargs):
-        return render(request, "registration/accessibility_statement.html", {})
-
-
 class RegistrationCompletionView(BaseRegisterView, TradeRemediesAPIClientMixin):
     """
     Complete a registration triggered by a user creation and invite
@@ -596,3 +350,24 @@ class RegistrationCompletionView(BaseRegisterView, TradeRemediesAPIClientMixin):
                 errors = exc.detail["errors"]
             return self.get(request, code, org_id, errors=errors)
         return redirect("/email/verify/")
+
+
+class UpdateUserDetailsView(TemplateView, TradeRemediesAPIClientMixin):
+    template_name = "registration/update.html"
+
+    def get(self, request, invite_id, *args, **kwargs):
+        invite = self.client(request.user).get_invite_details(invite_id)
+        context = {
+            "invite": invite,
+        }
+        return render(request, self.template_name, context)
+
+
+class TermsAndConditionsView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        return render(request, "registration/terms_and_conditions.html", {})
+
+
+class AccessibilityStatementView(TemplateView):
+    def get(self, request, *args, **kwargs):
+        return render(request, "registration/accessibility_statement.html", {})
