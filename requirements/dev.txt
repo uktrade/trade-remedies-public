@@ -55,7 +55,7 @@ decorator==5.1.0
     #   traitlets
 distlib==0.3.4
     # via virtualenv
-django==3.2.12
+django==3.2.13
     # via
     #   -r requirements.in/base.in
     #   django-appconf
