@@ -1,0 +1,117 @@
+{% extends "v2/govuk/base.html" %}
+{% load text_element %}
+{% load password_element %}
+
+{% block page_title %}
+    Start
+{% endblock %}
+
+{% block main_content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Trade Remedies</h1>
+            <p class="govuk-body">The UK’s Trade Remedies Authority (TRA) investigates whether new trade remedies are
+                needed to
+                prevent injury to UK industries caused by unfair trading practices and unforeseen surges in imports.</p>
+            <h2 class="govuk-heading-m">Active cases</h2>
+            <p class="govuk-body">We publish all active trade remedy cases so that anyone can view and track existing
+                case
+                progress.</p>
+            <p class="govuk-body">
+                <a class="govuk-link" href="#">View active cases on the public file</a>
+            </p>
+            <h2 class="govuk-heading-m">Trade Remedies Services</h2>
+            <p class="govuk-body">You can use this service to:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>request a new trade remedy investigation</li>
+                <li>participate in an existing trade remedy case</li>
+                <li>add work colleagues to a case</li>
+                <li>invite others to represent you on a case</li>
+            </ul>
+            <p class="govuk-body">To create an account it take around 10 minutes. Have ready details that will help us
+                confirm
+                your organisation, such as address and company number.</p>
+
+            <div class="govuk-button-group">
+                {% include "v2/component_macros/start_button.html" with button_text="Sign in" button_link="#" %}
+                <a class="govuk-link" href="#">Create an account</a>
+            </div>
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">
+                    More information
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="https://www.gov.uk/government/organisations/trade-remedies-authority"
+                               target="_blank">Trade Remedies Authority news (opens in a new window or tab)</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link"
+                               href="https://www.gov.uk/government/organisations/trade-remedies-authority/about"
+                               target="_blank">Who is the Trade Remedies Authority (opens in a new window or tab)</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link"
+                               href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
+                               target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+
+
+    </div>
+
+
+{% endblock main_content %}
+
+{% block login_title_banner %}
+    <div class="column-full margin-top-2 margin-bottom-2">
+        <span class="heading-xlarge margin-bottom-1">Welcome to the Trade Remedies Service</span>
+        <p>To start an application or participate in an existing case, sign in or create an account.</p>
+        <ul class="list">
+            <li>
+                <a class="link" href="/public/cases/" target="_blank">View active cases and follow progress on the
+                    public file <i class="icon16 icon-outlink inline" title="Opens in a new tab"></i></a>
+            </li>
+            <li>
+                <a class="link" href="{% link_lookup 'LINK_HELP_BOX_GUIDANCE' %}" target="_blank">Read more about trade
+                    remedies <i class="icon16 icon-outlink inline" title="Opens in a new tab"></i></a>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+
+
+{% block right_column %}
+    <div>
+        <h2 class="heading-large margin-top-1">Don't have an account?</h2>
+        <div class="pulll-left list">
+            <a href="/accounts/register{% if code and case_id %}/{{ code }}/{{ case_id }}/{% endif %}">Create an
+                account</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block form_content %}
+    <input type="hidden" name="next" value="{{ next|default:'' }}">
+
+    {% if expired %}
+        <div class="govuk-box-highlight left">
+            Your session has expired. <br/>Please log in again.
+        </div>
+    {% endif %}
+    {% include "partials/email_verified_notice.html" %}
+
+    {% text_element id='email' type="email" autocomplete="email" label='Email address' errors=errors %}
+    {% password_element id='password' label='Password' errors=errors %}
+    <div><a href="{% url 'forgot_password' %}">Forgotten password</a></div>
+    <button type="submit" id="login-submit" class="button margin-top-2" name="btn-action" value="login">Sign in</button>
+
+{% endblock %}

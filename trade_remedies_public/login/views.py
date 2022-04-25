@@ -33,7 +33,7 @@ class LoginChoiceView(BaseRegisterView):
 
 
 class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
-    template_name = "login/login.html"
+    template_name = "v2/landing.html"
 
     @never_cache
     def get(self, request, code=None, case_id=None, *args, **kwargs):
