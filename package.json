@@ -16,7 +16,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "clean": "^4.0.2",
+    "clean": "^3.0.3",
     "del": "^5.1.0"
   },
   "devDependencies": {
@@ -29,7 +29,11 @@
   "homepage": "https://github.com/uktrade/trade-remedies-public#readme",
   "overrides": {
     "all-contributors-cli": {
-      "node-fetch": ">=2.6.7"
+      "node-fetch": ">=2.6.7",
+      "async": ">=2.6.4"
+    },
+    "clean": {
+      "async": ">=2.6.4"
     }
   }
 }
