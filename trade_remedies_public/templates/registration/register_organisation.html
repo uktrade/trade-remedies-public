@@ -21,7 +21,7 @@ Create an account
       Your company details
   </h2>
   {% set 'read_only' False %}
-  {% if confirm_invited_org == 'true' %}
+  {% if confirm_invited_org %}
     {% set 'read_only' True %}
   {% endif %}
   {% text_element id='organisation_name' label='Company name' errors=errors data_mode='company' autocomplete='organization' hint='You are creating an account for this company and you will be the primary contact. This is the company you are directly employed by.' read_only=read_only %}

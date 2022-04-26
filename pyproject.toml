@@ -1,0 +1,93 @@
+# NOTE: you have to use single-quoted strings in TOML for regular expressions.
+# It's the equivalent of r-strings in Python. Multiline strings are treated as
+# verbose regular expressions by Black. Use [ ] to denote a significant space
+# character.
+
+[tool.black]
+line-length = 100
+target-version = ['py37']
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.mypy_cache
+  | \.venv
+  | _build
+  | env
+  | .venv
+  | tests-reports
+)/
+'''
+
+[tool.flake8]
+max-line-length = 100
+max-complexity = 10
+per-file-ignores = '__init__.py: F401'
+import_order_style = 'smarkets'
+exclude = '''
+/(
+    */migrations/*
+    | __pycache__
+    | manage.py
+    | env/*
+    | venv/*
+    | .venv/*
+    | node_modules/*
+    | */settings/*
+)/
+'''
+ignore = '''
+/(
+    D100
+    | D104
+    | D106
+    | D200
+    | D203
+    | D205
+    | D400
+    | D401
+    | W503
+    | W504
+    | E704
+    | E231
+    | F841
+    | E722
+)/
+'''
+application-import-names = '''
+/(
+    cases
+    | contacts
+    | core
+    | documents
+    | govuk_template
+    | manage.py
+    | tasks
+    | templates
+    | trade_remedies_caseworker
+    | users
+)/
+'''
+
+[tool.pytest.ini_options]
+addopts = '''
+    -p no:warnings
+    --cov=.
+    --no-cov-on-fail
+    --cov-config=.coveragerc
+    --cov-branch
+    --ignore=staticfiles
+    -n 4
+    -m "not version2"
+'''
+python_classes='Test*'
+
+python_files = ["test_*.py", "tests.py"]
+
+markers = [
+    "version2: marks tests that require API_V2_ENABLED env var set",
+    "functional: marks tests that exercise multiple units, e.g. login journey"
+    ]
+
+DJANGO_SETTINGS_MODULE = "trade_remedies_public.config.settings.test"
+python_paths = ". trade_remedies_public"
