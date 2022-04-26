@@ -12,7 +12,7 @@ from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 SESSION_TIMEOUT_KEY = "_session_init_timestamp_"
 NON_2FA_URLS = (
     reverse("email_verify"),
-    reverse("2fa"),
+    reverse("two_factor"),
     reverse("logout"),
 )
 
@@ -67,9 +67,9 @@ class APIUserMiddleware:
             request.kwargs = kwargs
             request.token = request.session["token"]
             if self.should_verify_email(request):
-                return redirect("/email/verify/")
+                return redirect(reverse("email_verify"))
             if self.should_2fa(request):
-                return redirect("/twofactor/")
+                return redirect(reverse("two_factor"))
         response = self.get_response(request)
         return response
 

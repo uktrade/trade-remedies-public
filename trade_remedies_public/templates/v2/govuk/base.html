@@ -21,11 +21,11 @@
         <link rel="apple-touch-icon" href="/images/govuk-apple-touch-icon.png">
 
         <!--[if !IE 8]><!-->
-        <link href="{% static 'v2/css/govuk-frontend-4.0.1.min.css' %}" rel="stylesheet">
+        <link href="{% static 'v2/css/govuk/govuk-frontend-4.0.1.min.css' %}" rel="stylesheet">
         <!--<![endif]-->
 
         <!--[if IE 8]>
-        <link href="{% static 'v2/css/govuk-frontend-ie8-4.0.1.min.css' %}" rel="stylesheet">
+        <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.0.1.min.css' %}" rel="stylesheet">
         <![endif]-->
 
         <!--[if lt IE 9]>
@@ -171,7 +171,10 @@
     {% endcomment %}
 
     <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
-        {% block main_content %}{% endblock main_content %}
+        <div class="govuk-grid-row">
+            {% block main_content %}{% endblock main_content %}
+
+        </div>
     </main>
 </div>
 
@@ -224,6 +227,8 @@
 </footer>
 
 <script src="{% static 'v2/js/govuk-frontend-4.0.1.min.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+{% block scripts %}{% endblock scripts %}
 </body>
 
 </html>

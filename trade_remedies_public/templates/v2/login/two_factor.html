@@ -1,0 +1,38 @@
+{% extends 'v2/govuk/base_with_form.html' %}
+
+{% block page_title %}
+    Two-factor authentication
+{% endblock page_title %}
+
+{% block fieldset_heading %}
+    Two-factor authentication
+{% endblock fieldset_heading %}
+
+{% block form_content %}
+    <p class="govuk-body">
+        We have sent you an authentication code to {% if request.session.two_factor_delivery_type == "email" %}email{% else %}mobile{% endif %}.
+    </p>
+    <p class="govuk-body">
+        This code will only be valid for 30 minutes, after that you will need to request a new code.
+    </p>
+    {% include "v2/component_macros/text_input.html" with id="two_factor_code" name="two_factor_code" type="text" width="5" %}
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              I have not received a code
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>If you have not received your code you can request a new code using the link below. </p>
+            <p> Note you will have a limited number attempts before your account is temporarily locked. It will however
+                be automatically re-enabled after a set period of time.</p>
+            <p><a href="signin-2FA?rerequest2FA=yes">Send new code</a></p>
+            <p>If you chose to receive your code by SMS it can sometimes be slow or unreliable. Click the link below to
+                get your authentication code sent to your email address:[Email address]</p>
+            <p><a href="signin-2FA?rerequest2FA=yes">Email me instead</a></p>
+        </div>
+    </details>
+    <button class="govuk-button" data-module="govuk-button">
+        Submit code
+    </button>
+{% endblock form_content %}
