@@ -6,8 +6,8 @@ from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth.models import AnonymousUser
 from core.models import TransientUser
+from django_audit_log_middleware import AuditLogMiddleware
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-
 
 SESSION_TIMEOUT_KEY = "_session_init_timestamp_"
 NON_2FA_URLS = (
@@ -33,10 +33,10 @@ class APIUserMiddleware:
         is_public = self.public_request(request)
         should_two_factor = request.user.should_two_factor or request.session.get("force_2fa")
         return (
-            settings.USE_2FA
-            and not is_public
-            and should_two_factor
-            and request.path not in NON_2FA_URLS
+                settings.USE_2FA
+                and not is_public
+                and should_two_factor
+                and request.path not in NON_2FA_URLS
         )
 
     def should_verify_email(self, request):
@@ -50,10 +50,10 @@ class APIUserMiddleware:
         """
         is_public = self.public_request(request)
         return (
-            settings.VERIFY_EMAIL
-            and not is_public
-            and not request.user.email_verified_at
-            and request.path not in NON_2FA_URLS
+                settings.VERIFY_EMAIL
+                and not is_public
+                and not request.user.email_verified_at
+                and request.path not in NON_2FA_URLS
         )
 
     def public_request(self, request):
@@ -83,7 +83,6 @@ class PublicRequestMiddleware:
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
-
         response = self.get_response(request)
         return response
 
@@ -155,3 +154,22 @@ class HoldingPageMiddleware(TradeRemediesAPIClientMixin):
                 return redirect("/dashboard/")
 
         return self.get_response(request)
+
+
+class CustomAuditLogMiddleware(AuditLogMiddleware):
+    def _get_first_name(self):
+        if self.request.user.is_authenticated:
+            try:
+                return self.request.user.first_name
+            except AttributeError:
+                pass
+
+        return ""
+
+    def _get_last_name(self):
+        if self.request.user.is_authenticated:
+            try:
+                return self.request.user.last_name
+            except AttributeError:
+                pass
+        return ""
