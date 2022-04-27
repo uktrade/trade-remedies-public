@@ -94,25 +94,6 @@ jobs:
             git add fitness/fitness_metrics_graph.png
             git commit -m "[ci skip] AUTOMATED - update fitness functions"
             git push << pipeline.project.git_url >> << pipeline.git.branch >>
-  front_end:
-    docker:
-      - image: 'circleci/node:lts'
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - npm-dependencies-{{ checksum "package-lock.json" }}
-      - run:
-          name: Restore npm dependencies
-          command: npm ci
-      - run:
-          name: Run prettier
-          command: |
-            npm run prettier
-      - save_cache:
-          paths:
-            - node_modules
-          key: npm-dependencies-{{ checksum "package-lock.json" }}
 
 workflows:
   version: 2
@@ -120,4 +101,3 @@ workflows:
     jobs:
       - code_quality
       - test_and_fitness_functions
-      - front_end
