@@ -32,7 +32,6 @@ exclude = '''
     | env/*
     | venv/*
     | .venv/*
-    | node_modules/*
     | */settings/*
 )/
 '''
