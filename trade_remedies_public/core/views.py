@@ -311,7 +311,7 @@ class InvitationConfirmOrganisation(BaseRegisterView, TradeRemediesAPIClientMixi
         return context
 
     def post(self, request, code, case_id, *args, **kwargs):
-        if request.POST["confirm_invited_org"] == "true":
+        if request.POST.get("confirm_invited_org", None) == "true":
             # The user have verified they are the user the invitation is meant for
             self.update_session(request, {"confirm_invited_org": True})
         else:

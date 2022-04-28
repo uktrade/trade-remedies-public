@@ -6,8 +6,8 @@ from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth.models import AnonymousUser
 from core.models import TransientUser
+from django_audit_log_middleware import AuditLogMiddleware
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-
 
 SESSION_TIMEOUT_KEY = "_session_init_timestamp_"
 NON_2FA_URLS = (
@@ -84,7 +84,6 @@ class PublicRequestMiddleware:
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
-
         response = self.get_response(request)
         return response
 
@@ -156,3 +155,22 @@ class HoldingPageMiddleware(TradeRemediesAPIClientMixin):
                 return redirect("/dashboard/")
 
         return self.get_response(request)
+
+
+class CustomAuditLogMiddleware(AuditLogMiddleware):
+    def _get_first_name(self):
+        if self.request.user.is_authenticated:
+            try:
+                return self.request.user.first_name
+            except AttributeError:
+                pass
+
+        return ""
+
+    def _get_last_name(self):
+        if self.request.user.is_authenticated:
+            try:
+                return self.request.user.last_name
+            except AttributeError:
+                pass
+        return ""
