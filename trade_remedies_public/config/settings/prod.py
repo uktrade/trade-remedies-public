@@ -8,5 +8,5 @@ INSTALLED_APPS += [  # noqa: F405
 ]
 
 MIDDLEWARE += [  # noqa: F405
-    "django_audit_log_middleware.AuditLogMiddleware",
+    "config.middleware.CustomAuditLogMiddleware",
 ]
