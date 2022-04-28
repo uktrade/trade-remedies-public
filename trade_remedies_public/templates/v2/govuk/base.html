@@ -22,6 +22,7 @@
 
         <!--[if !IE 8]><!-->
         <link href="{% static 'v2/css/govuk/govuk-frontend-4.0.1.min.css' %}" rel="stylesheet">
+
         <!--<![endif]-->
 
         <!--[if IE 8]>
@@ -33,26 +34,6 @@
         <![endif]-->
 
         <meta property="og:image" content="&lt;YOUR-DOMAIN&gt;/images/govuk-opengraph-image.png">
-
-        <style>
-            @font-face {
-                font-family: GDS Transport;
-                font-style: normal;
-                font-weight: 400;
-                src: url({% static 'v2/assets/fonts/light-94a07e06a1-v2.woff2' %}) format("woff2"),
-                url({% static 'v2/assets/fonts/light-f591b13f7d-v2.woff' %}) format("woff");
-                font-display: fallback
-            }
-
-            @font-face {
-                font-family: GDS Transport;
-                font-style: normal;
-                font-weight: 700;
-                src: url({% static 'v2/assets/fonts/bold-b542beb274-v2.woff2' %}) format("woff2"),
-                url({% static 'v2/assets/fonts/bold-affa96571d-v2.woff' %}) format("woff");
-                font-display: fallback
-            }
-        </style>
     {% endblock %}
 </head>
 
@@ -91,10 +72,10 @@
 
 <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
-<header class="govuk-header" role="banner" data-module="govuk-header">
+<header class="govuk-header " role="banner" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
         <div class="govuk-header__logo">
-            <a href="/" class="govuk-header__link govuk-header__link--homepage">
+            <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--homepage">
         <span class="govuk-header__logotype">
           <!--[if gt IE 8]><!-->
           <svg aria-hidden="true" focusable="false" class="govuk-header__logotype-crown"
@@ -104,53 +85,47 @@
           </svg>
             <!--<![endif]-->
             <!--[if IE 8]>
-            <img src="/assets/images/govuk-logotype-crown.png" class="govuk-header__logotype-crown-fallback-image"
-                 width="36" height="32">
-            <![endif]-->
-
-            <span class="govuk-header__logotype-text">
+          <img src="{% static 'v2/assets/images/govuk-logotype-crown.png' %}" class="govuk-header__logotype-crown-fallback-image" width="36" height="32">
+          <![endif]-->
+          <span class="govuk-header__logotype-text">
             GOV.UK
           </span>
-      </span></a>
+        </span>
+            </a>
         </div>
         <div class="govuk-header__content">
-            <a href="/" class="govuk-header__link govuk-header__link--service-name">Trade Remedies</a>
+            <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--service-name">
+                Trade Remedies
+            </a>
         </div>
-        <ul class="login-nav__list">
-            {% if request.user.is_authenticated %}
-                <li class="login-nav__list-item">{{ request.user.name }} |</li>
+        <nav aria-label="Menu" class="govuk-header__navigation ">
+            <button type="button" class="govuk-header__menu-button govuk-js-header-toggle" aria-controls="navigation"
+                    aria-label="Show or hide menu">Menu
+            </button>
 
-                {% if not within_2fa and not within_verify %}
-                    <li class="login-nav__list-item">
-                        <a href="{% url 'account_info' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link">
-                            Account details
-                        </a>
-                        |
-                    </li>
-                    <li class="login-nav__list-item">
-                        <a href="{% url 'logout' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link">
-                            Logout
-                        </a>
-                        |
-                    </li>
-                {% else %}
-                    <li class="login-nav__list-item">
-                        <a href="{% url 'logout' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link">
-                            Cancel and Logout
-                        </a>
-                        |
-                    </li>
-                {% endif %}
-            {% endif %}
-
-            <li class="login-nav__list-item">
-                <a href="#"
-                   class="govuk-link govuk-link govuk-link--inverse login-nav__link">Manage
-                    account</a>|
-            </li>
-            <li class="login-nav__list-item"><a href="start?signin=no"
-                                                class="govuk-link govuk-link--inverse login-nav__link">Sign out</a></li>
-        </ul>
+            <ul id="navigation" class="govuk-header__navigation-list">
+                <li class="govuk-header__navigation-item govuk-header__navigation-item--active">
+                    <a class="govuk-header__link" href="#1">
+                        Navigation item 1
+                    </a>
+                </li>
+                <li class="govuk-header__navigation-item">
+                    <a class="govuk-header__link" href="#2">
+                        Navigation item 2
+                    </a>
+                </li>
+                <li class="govuk-header__navigation-item">
+                    <a class="govuk-header__link" href="#3">
+                        Navigation item 3
+                    </a>
+                </li>
+                <li class="govuk-header__navigation-item">
+                    <a class="govuk-header__link" href="#4">
+                        Navigation item 4
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </header>
 
@@ -227,7 +202,8 @@
 </footer>
 
 <script src="{% static 'v2/js/govuk-frontend-4.0.1.min.js' %}"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 {% block scripts %}{% endblock scripts %}
 </body>
 

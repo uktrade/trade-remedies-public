@@ -30,6 +30,11 @@ urlpatterns = [
     path("holding_page/", core_views.HoldingView.as_view(), name="holdingpage"),
     # path('start/', core_views.StartView.as_view(), name='start'),
     path("twofactor/", login_views.TwoFactorView.as_view(), name="two_factor"),
+    path(
+        "request_new_two_factor/",
+        login_views.RequestNewTwoFactorView.as_view(),
+        name="request_new_two_factor"
+    ),
     path("email/verify/", core_views.EmailVerifyView.as_view(), name="email_verify"),
     path(
         "public/cases/", core_views.PublicCaseListView.as_view(archive=False), name="public_cases"

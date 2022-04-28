@@ -14,6 +14,7 @@ NON_2FA_URLS = (
     reverse("email_verify"),
     reverse("two_factor"),
     reverse("logout"),
+    reverse("request_new_two_factor"),
 )
 
 
