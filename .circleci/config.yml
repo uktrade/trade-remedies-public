@@ -1,6 +1,28 @@
 version: 2.1
 
 commands:
+  install_chrome:
+    description: "Install Chrome"
+    steps:
+      - run:
+          name: Install Chrome
+          command: |
+            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
+            sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+            apt-get -y update
+            apt-get install -y google-chrome-stable
+
+  install_chromedriver:
+    description: "Install chromedriver"
+    steps:
+      - run:
+          name: Install chromedriver
+          command: |
+            apt-get -y update
+            apt-get install -yqq unzip
+            wget -O /tmp/chromedriver.zip http://chromedriver.storage.googleapis.com/`curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE`/chromedriver_linux64.zip
+            unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
+
   install_dependencies:
     description: "Install Python dependencies"
     steps:
@@ -70,6 +92,8 @@ jobs:
             - "ba:20:40:f8:be:ec:29:e7:81:14:2a:87:49:9c:8e:e7"
       - checkout
       - restore_dependency_cache
+      - install_chrome
+      - install_chromedriver
       - install_dependencies
       - save_dependency_cache
       - run:
