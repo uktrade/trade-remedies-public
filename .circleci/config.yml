@@ -57,7 +57,7 @@ jobs:
             - ".pii-secret-hook"
   test_and_fitness_functions:
     docker:
-      - image: cimg/python:3.9.5-browsers
+      - image: cimg/python:3.9.5-browsers:chrome
         environment:
           DATABASE_URL: sqlite:///db.sqlite3
           DJANGO_SETTINGS_MODULE: config.settings.local
