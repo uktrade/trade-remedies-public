@@ -80,7 +80,7 @@ jobs:
             - ".pii-secret-hook"
   test_and_fitness_functions:
     docker:
-      - image: cimg/python:3.9.5
+      - image: cimg/python:3.9.5-browsers
         environment:
           DATABASE_URL: sqlite:///db.sqlite3
           DJANGO_SETTINGS_MODULE: config.settings.local
@@ -92,8 +92,6 @@ jobs:
             - "ba:20:40:f8:be:ec:29:e7:81:14:2a:87:49:9c:8e:e7"
       - checkout
       - restore_dependency_cache
-      - install_chrome
-      - install_chromedriver
       - install_dependencies
       - save_dependency_cache
       - run:
