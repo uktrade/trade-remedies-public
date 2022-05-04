@@ -114,14 +114,14 @@ urlpatterns = [
     path(
         "termsofuse-privacypolicy/",
         register_views.TermsAndConditionsView.as_view(),
-        name="Terms and conditions",
+        name="terms_and_conditions_and_privacy",
     ),
-    path("cookies/", cookie_views.CookieSettingsView.as_view(), name="Cookie preferences"),
+    path("cookies/", cookie_views.CookieSettingsView.as_view(), name="cookie_preferences"),
     path("cookiepolicy/", cookie_views.CookiePolicyView.as_view(), name="Cookie policy"),
     path(
         "accessibilitystatement/",
         register_views.AccessibilityStatementView.as_view(),
-        name="Accessibility statement",
+        name="accessibility_statement",
     ),
     path("accounts/login/", login_views.LoginView.as_view(), name="login"),
     path(

@@ -19,13 +19,12 @@
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
-              I have not received a code
+              I'm having issues with my code
             </span>
         </summary>
         <div class="govuk-details__text">
-            <p>If you have not received your code you can request a new code using the link below. </p>
-            <p> Note you will have a limited number attempts before your account is temporarily locked. It will however
-                be automatically re-enabled after a set period of time.</p>
+            <p>If you have not received your code or your code has expired you can request a new code using the link below.</p>
+            <p>Note you will have a limited number attempts before your account is temporarily locked. It will however be automatically re-enabled after a set period of time.</p>
             <p><a href="{% url 'request_new_two_factor' %}?delivery_type=sms">Send new code</a></p>
             <p>If you chose to receive your code by SMS it can sometimes be slow or unreliable. Click the link below to
                 get your authentication code sent to your email address:{{ request.user.email }}</p>

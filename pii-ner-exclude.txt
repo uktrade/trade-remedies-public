@@ -1266,3 +1266,21 @@ f'<li><a href="{spl_crum[1]}">{spl_crum[0]}</a></li
 sqlite:///db.sqlite3
 received_at
 f"""<a class="button
+class="govuk-button__start
+f'{self.live_server_url}/
+sign_in_button
+Department
+International Trade
+Talkback
+form_errors.error_summaries
+Remedies Authority
+Trade Remedies</h2>
+>View cookies</a>
+height="30" width="36">
+7.7-.2
+BETA
+viewBox="0 0 483.2
+height="17
+8.7 39.7 21.8l42.7-27.2A97.63
+integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=
+name="2fa_code" type="text

@@ -23,15 +23,15 @@
     </p>
     <input type="hidden" name="next" value="{{ next|default:'' }}">
     {% include 'v2/component_macros/text_input.html' with label="Email address" id="email" name="email" type="email" width="20" %}
-    <div class="input-with-button">
+    <div class="input-with-button govuk-grid-row">
+        {% include 'v2/component_macros/text_input.html' with label="Password" id="password" name="password" type="password" width="15" form_group_classes="govuk-grid-column-two-thirds" %}
         <button id="show_password" type="button" role="switch" aria-checked="false"
-                class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                class="govuk-button govuk-button--secondary govuk-grid-column-one-third" data-module="govuk-button">
             <span class="show-text">Show</span>
         </button>
-        {% include 'v2/component_macros/text_input.html' with label="Password" id="password" name="password" type="password" width="15" %}
     </div>
     <p class="govuk-body">
-        <a class="govuk-link" href="#">Forgotten password</a>
+        <a class="govuk-link" href="{% url 'forgot_password' %}">Forgotten password</a>
     </p>
     <button class="govuk-button" data-module="govuk-button">
         Sign in

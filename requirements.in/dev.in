@@ -16,7 +16,7 @@ pytest-django
 pytest-xdist
 pytest-pythonpath
 pre-commit
-selenium==3.141.0
+selenium
 traitlets==4.3.3
 
 # ipython dep - for CVE-2021-27291

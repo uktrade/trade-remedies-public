@@ -62,3 +62,11 @@ def cookie_management(request):
         "cookie_policy_updated": cookie_updated,
         "cookie_policy_set": cookie_policy_set,
     }
+
+
+def v2_error_handling(request):
+    """Pops the errors from the request.session for front-end rendering.
+    """
+    if form_errors := request.session.pop("form_errors", None):
+        return {"form_errors": form_errors}
+    return {}

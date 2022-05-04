@@ -115,6 +115,7 @@ TEMPLATES = [
                 "config.context_processors.version_context",
                 "config.context_processors.motd_context",
                 "config.context_processors.cookie_management",
+                "config.context_processors.v2_error_handling"
             ],
         },
     },
@@ -356,4 +357,3 @@ ENVIRONMENT_LOGGING = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
-TWO_FACTOR_RESEND_TIMEOUT_SECONDS = env("TWO_FACTOR_RESEND_TIMEOUT_SECONDS", default=20)
