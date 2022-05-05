@@ -2,7 +2,6 @@ from django.test.testcases import LiveServerTestCase
 from django.urls import reverse
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from django.conf import settings
 
 
 class TestLogin(LiveServerTestCase):
@@ -20,7 +19,9 @@ class TestLogin(LiveServerTestCase):
         self.browser.get(f"{self.live_server_url}/")
         self.assertIn("Start", self.browser.title)
         self.assertIn(
-            """The UK’s Trade Remedies Authority (TRA) investigates whether new trade remedies are needed to prevent injury to UK industries caused by unfair trading practices and unforeseen surges in imports.""",
+            "The UK’s Trade Remedies Authority (TRA) investigates whether new trade remedies "
+            "are needed to prevent injury to UK industries caused by unfair trading "
+            "practices and unforeseen surges in imports.",
             self.browser.find_element_by_tag_name("body").get_attribute("innerText"),
         )
 

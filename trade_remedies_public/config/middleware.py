@@ -69,7 +69,7 @@ class APIUserMiddleware:
         return request.path.startswith("/public")
 
     def __call__(self, request, *args, **kwargs):
-        request.session["show_back_button"] = not request.path in NON_BACK_URLS
+        request.session["show_back_button"] = request.path not in NON_BACK_URLS
         if request.session and request.session.get("token") and request.session.get("user"):
             back_link_url = request.META.get("HTTP_REFERER", reverse("dashboard"))
             if request.path in back_link_url:
