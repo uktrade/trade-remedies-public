@@ -51,8 +51,8 @@
       {% if service_settings.phase != 'live' %}
         <div class="phase-banner">
           <p>
-            <strong class="phase-tag">{{ service_settings.phase_name }}</strong>
-            <span>{% block phase_banner_message %}{% trans 'This is a new service.' %}{% endblock %}</span>
+            <strong class="phase-tag">BETA</strong>
+            <span>{% block phase_banner_message %} This is a new service – your <a class="govuk-link" target="_blank" data-attach="ModalForm" data-url="/feedback/TR-FEEDBACK/placement/FOOTER/inner/" href="/feedback/TR-FEEDBACK/placement/FOOTER/">feedback</a> will help us to improve it.{% endblock %}</span>
           </p>
         </div>
       {% endif %}

@@ -36,12 +36,19 @@
 
         <meta property="og:image" content="&lt;YOUR-DOMAIN&gt;/images/govuk-opengraph-image.png">
     {% endblock %}
+
+    {% block extra_css %}
+
+    {% endblock extra_css %}
 </head>
 
-<body class="govuk-template__body app-body-class" data-test="My value" data-other="report:details">
+<body class="govuk-template__body app-body-class js-disabled" data-test="My value" data-other="report:details">
 {% analytics body=True %}
 <script>
     document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
+    if (document.body.classList.contains("js-disabled")) {
+        document.body.classList.remove("js-disabled");
+    }
 </script>
 {% if not cookie_policy_set %}
     <div class="govuk-cookie-banner " data-nosnippet role="region" aria-label="Cookies on [name of service]">
@@ -78,13 +85,15 @@
 {% endif %}
 {% if cookie_policy_updated %}
     <form method="POST">
-        <div class="govuk-cookie-banner " data-nosnippet role="region" aria-label="Cookies on Trade Remedies" id="cookies_accepted_banner">
+        <div class="govuk-cookie-banner " data-nosnippet role="region" aria-label="Cookies on Trade Remedies"
+             id="cookies_accepted_banner">
             <div class="govuk-cookie-banner__message govuk-width-container">
 
                 <div class="govuk-grid-row">
                     <div class="govuk-grid-column-two-thirds">
                         <div class="govuk-cookie-banner__content">
-                            <p class="govuk-body">You’ve{% if cookie_policy.accept_gi == 'on' %} accepted {% else %} rejected {% endif %}additional cookies. You can
+                            <p class="govuk-body">You’ve{% if cookie_policy.accept_gi == 'on' %} accepted {% else %}
+                                rejected {% endif %}additional cookies. You can
                                 <a class="govuk-link" href="{% url 'cookie_preferences' %}">
                                     change your cookie settings </a> at any time.</p>
                         </div>
@@ -92,7 +101,8 @@
                 </div>
 
                 <div class="govuk-button-group">
-                    <a href="#" onclick="$('#cookies_accepted_banner').hide()" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                    <a href="#" onclick="$('#cookies_accepted_banner').hide()" role="button" draggable="false"
+                       class="govuk-button" data-module="govuk-button">
                         Hide this message
                     </a>
                 </div>
@@ -136,7 +146,8 @@
             {% else %}
                 {# The user is not logged on #}
                 <li class="login-nav__list-item">
-                    <a href="{% url 'login' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link" id="sign_in_link_header">
+                    <a href="{% url 'login' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link"
+                       id="sign_in_link_header">
                         Sign in
                     </a>
                 </li>
@@ -215,7 +226,8 @@
 
 <script src="{% static 'v2/js/govuk-frontend-4.0.1.min.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> {# /PS-IGNORE #}
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+{# /PS-IGNORE #}
 {% block scripts %}{% endblock scripts %}
 </body>
 

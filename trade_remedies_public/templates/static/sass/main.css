@@ -2657,10 +2657,12 @@ table.small-font td {
   #global-header.with-proposition .header-wrapper .header-proposition {
     width: 82%;
     float: left; }
-  #global-header .header-proposition #proposition-name {
-    font-size: 30px; }
   #global-header .header-proposition #proposition-menu {
-    margin-top: 2px; } }
+    margin-top: 2px;
+    padding-left: 20px;
+    padding-top: 4px;
+
+  } }
 
 #global-cookie-message {
   width: 100%;
