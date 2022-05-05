@@ -4,7 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
 
-class TestLogin(LiveServerTestCase):
+class Login():
     def setUp(self):
         chrome_options = Options()
         chrome_options.add_argument("--headless")
