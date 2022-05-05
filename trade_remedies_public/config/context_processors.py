@@ -65,8 +65,7 @@ def cookie_management(request):
 
 
 def v2_error_handling(request):
-    """Pops the errors from the request.session for front-end rendering.
-    """
+    """Pops the errors from the request.session for front-end rendering."""
     if form_errors := request.session.pop("form_errors", None):
         return {"form_errors": form_errors}
     return {}

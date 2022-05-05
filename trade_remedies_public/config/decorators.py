@@ -33,5 +33,7 @@ def v2_error_handling(redirection_url_resolver=None):
                     raise exc
 
                 return redirect(request.request.path)
+
         return _wrapped_view_func
+
     return decorator

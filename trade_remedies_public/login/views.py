@@ -31,7 +31,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
             password=password,
             user_agent=request.META["HTTP_USER_AGENT"],
             ip_address=request.META["REMOTE_ADDR"],
-            invitation_code=invitation_code
+            invitation_code=invitation_code,
         )
         if response and response.get("token"):
             request.session.clear()
@@ -41,9 +41,9 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
             request.session["user"] = response["user"]
             redirection_url = request.POST.get("next", reverse("dashboard"))
             if len(request.session["user"].get("organisations", [])) == 1:
-                request.session["organisation_id"] = request.session["user"]["organisations"][
-                    0
-                ]["id"]
+                request.session["organisation_id"] = request.session["user"]["organisations"][0][
+                    "id"
+                ]
             # sending the two_factor code
             r = Client(response["token"]).two_factor_request()
             request.session["two_factor_delivery_type"] = r["delivery_type"]

@@ -115,7 +115,7 @@ TEMPLATES = [
                 "config.context_processors.version_context",
                 "config.context_processors.motd_context",
                 "config.context_processors.cookie_management",
-                "config.context_processors.v2_error_handling"
+                "config.context_processors.v2_error_handling",
             ],
         },
     },

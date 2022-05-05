@@ -23,9 +23,7 @@ NON_2FA_URLS = (
 )
 
 # URLS that do not display the back button
-NON_BACK_URLS = (
-    reverse("landing")
-)
+NON_BACK_URLS = reverse("landing")
 
 
 class APIUserMiddleware:
@@ -44,10 +42,10 @@ class APIUserMiddleware:
         is_public = self.public_request(request)
         should_two_factor = request.session.get("force_2fa")
         return (
-                settings.USE_2FA
-                and not is_public
-                and should_two_factor
-                and request.path not in NON_2FA_URLS
+            settings.USE_2FA
+            and not is_public
+            and should_two_factor
+            and request.path not in NON_2FA_URLS
         )
 
     def should_verify_email(self, request):
@@ -61,10 +59,10 @@ class APIUserMiddleware:
         """
         is_public = self.public_request(request)
         return (
-                settings.VERIFY_EMAIL
-                and not is_public
-                and not request.user.email_verified_at
-                and request.path not in NON_2FA_URLS
+            settings.VERIFY_EMAIL
+            and not is_public
+            and not request.user.email_verified_at
+            and request.path not in NON_2FA_URLS
         )
 
     def public_request(self, request):
@@ -73,12 +71,12 @@ class APIUserMiddleware:
     def __call__(self, request, *args, **kwargs):
         request.session["show_back_button"] = not request.path in NON_BACK_URLS
         if request.session and request.session.get("token") and request.session.get("user"):
-            back_link_url = request.META.get('HTTP_REFERER', reverse("dashboard"))
+            back_link_url = request.META.get("HTTP_REFERER", reverse("dashboard"))
             if request.path in back_link_url:
                 back_link_url = reverse("dashboard")
             request.session["back_link_url"] = back_link_url
             if request.path in NON_2FA_URLS:
-                request.session['back_link_url'] = reverse("logout")
+                request.session["back_link_url"] = reverse("logout")
 
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)

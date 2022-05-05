@@ -27,14 +27,18 @@ commands:
           paths:
             - "venv"
 
-jobs:
+orbs:
+  browser-tools: circleci/browser-tools@1.3.0 # /PS-IGNORE
 
+jobs:
   code_quality:
     docker:
-      - image: cimg/python:3.9.5
+      - image: cimg/python:3.9.5-browsers
     steps:
       - checkout
       - restore_dependency_cache
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - install_dependencies
       - save_dependency_cache
       - run:

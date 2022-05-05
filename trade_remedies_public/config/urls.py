@@ -33,7 +33,7 @@ urlpatterns = [
     path(
         "request_new_two_factor/",
         login_views.RequestNewTwoFactorView.as_view(),
-        name="request_new_two_factor"
+        name="request_new_two_factor",
     ),
     path("email/verify/", core_views.EmailVerifyView.as_view(), name="email_verify"),
     path(
