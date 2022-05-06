@@ -221,8 +221,11 @@ class PublicCaseView(TemplateView, TradeRemediesAPIClientMixin):
                 case_submissions, key=lambda su: su.get("issued_at") or "", reverse=True
             )
             # Get a specific set of states for rendering
-            fields = ["PRODUCT_DESCRIPTION", "TARIFF_CLASSIFICATION",
-                      "REGISTRATION_OF_INTEREST_TIMER"]
+            fields = [
+                "PRODUCT_DESCRIPTION",
+                "TARIFF_CLASSIFICATION",
+                "REGISTRATION_OF_INTEREST_TIMER",
+            ]
             case_state = self.trusted_client.get_case_state(
                 case_ids=[case.get("id")], fields=fields
             ).get(case.get("id"))
@@ -406,7 +409,7 @@ class DashboardView(
                 "pre_applications": client.get_system_boolean("PRE_APPLICATIONS"),
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
                 "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
-                                in request.user.organisation_groups,
+                in request.user.organisation_groups,
             },
         )
 
@@ -474,8 +477,8 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
                         if submission_invite["contact"]["has_user"]:
                             continue
                         submission_invite["locked"] = (
-                                submission.get("locked", True)
-                                or submission.get("deficiency_sent_at") is not None
+                            submission.get("locked", True)
+                            or submission.get("deficiency_sent_at") is not None
                         )
                         pending_third_party_invites.append(submission_invite)
 
@@ -534,14 +537,14 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         }
 
     def get(  # noqa: C901
-            self,
-            request,
-            user_id=None,
-            organisation_id=None,
-            section=None,
-            invitation_id=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        user_id=None,
+        organisation_id=None,
+        section=None,
+        invitation_id=None,
+        *args,
+        **kwargs,
     ):
         invitation_id = invitation_id or request.GET.get("invitation_id")
         organisation_id = organisation_id or request.user.organisation.get("id")
@@ -648,14 +651,14 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         )
 
     def post(  # noqa: C901
-            self,
-            request,
-            user_id=None,
-            organisation_id=None,
-            section=None,
-            invitation_id=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        user_id=None,
+        organisation_id=None,
+        section=None,
+        invitation_id=None,
+        *args,
+        **kwargs,
     ):
         if not section:
             section = request.POST.get("section")
@@ -866,8 +869,8 @@ class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemed
         if self.submission:
             primary = (
                 self.submission.get("deficiency_notice_params", {})
-                    .get("assign_user", {})
-                    .get("contact_status")
+                .get("assign_user", {})
+                .get("contact_status")
             )
             representing = self.submission["organisation"]
         elif organisation_id and organisation_id != assign_user.get("organisation", {}).get("id"):
@@ -896,7 +899,7 @@ class AssignUserToCaseContactView(LoginRequiredMixin, BasePublicView, TradeRemed
                 ),
                 "application": None,
                 "form_action": f"/accounts/team/assign/{user_id}"
-                               f"/case/{case_id}/submission/{submission_id}/",
+                f"/case/{case_id}/submission/{submission_id}/",
             },
         )
 
