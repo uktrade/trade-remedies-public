@@ -11,7 +11,7 @@ from registration.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from trade_remedies_public.config.decorators import v2_error_handling
+from .decorators import v2_error_handling
 
 
 class LandingView(TemplateView, TradeRemediesAPIClientMixin):
