@@ -16,6 +16,8 @@ NON_2FA_URLS = (
     reverse("logout"),
 )
 
+NON_BACK_URLS = reverse("landing")
+
 
 class APIUserMiddleware:
     def __init__(self, get_response):
@@ -60,7 +62,12 @@ class APIUserMiddleware:
         return request.path.startswith("/public")
 
     def __call__(self, request, *args, **kwargs):
+        request.session["show_back_button"] = request.path not in NON_BACK_URLS
         if request.session and request.session.get("token") and request.session.get("user"):
+            back_link_url = request.META.get("HTTP_REFERER", reverse("dashboard"))
+            if request.path in back_link_url:
+                back_link_url = reverse("dashboard")
+            request.session["back_link_url"] = back_link_url
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)
             request.args = args
