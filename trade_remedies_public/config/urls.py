@@ -25,7 +25,7 @@ from password import views as password_views
 from registration import views as register_views
 
 urlpatterns = [
-    path("", core_views.HomeView.as_view(), name="initial"),
+    path("", login_views.LandingView.as_view(), name="landing"),
     path("health/", core_views.HealthCheckView.as_view(), name="healthcheck"),
     path("holding_page/", core_views.HoldingView.as_view(), name="holdingpage"),
     # path('start/', core_views.StartView.as_view(), name='start'),
@@ -109,14 +109,14 @@ urlpatterns = [
     path(
         "termsofuse-privacypolicy/",
         register_views.TermsAndConditionsView.as_view(),
-        name="Terms and conditions",
+        name="terms_and_conditions_and_privacy",
     ),
-    path("cookies/", cookie_views.CookieSettingsView.as_view(), name="Cookie preferences"),
+    path("cookies/", cookie_views.CookieSettingsView.as_view(), name="cookie_preferences"),
     path("cookiepolicy/", cookie_views.CookiePolicyView.as_view(), name="Cookie policy"),
     path(
         "accessibilitystatement/",
         register_views.AccessibilityStatementView.as_view(),
-        name="Accessibility statement",
+        name="accessibility_statement",
     ),
     path("accounts/login/choice/", login_views.LoginChoiceView.as_view(), name="login_choice"),
     path("accounts/login/", login_views.LoginView.as_view(), name="login"),

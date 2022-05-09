@@ -16,8 +16,9 @@ class ForgottenPasswordTestCase(LiveServerTestCase):
     def tearDown(self):
         self.browser.quit()
 
-    def test_forgotten_password_button_redirects_to_page(self):
+    def test_forgotten_password_button_redirects_to_forgot_password_page(self):
         self.browser.get(f"{self.live_server_url}/")
-        self.browser.find_element(By.ID, "forgotten_password_button").click()
-        self.assertIn(reverse("forgotten_password"), self.browser.current_url)
+        self.browser.find_element(By.ID, "sign_in_button").click()
+        self.browser.find_element(By.ID, "forgot_password_link").click()
+        self.assertIn(reverse("forgot_password"), self.browser.current_url)
 

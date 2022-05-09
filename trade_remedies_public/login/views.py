@@ -6,11 +6,16 @@ from django.views.decorators.cache import never_cache
 from django.contrib.auth import logout
 
 from core.utils import validate
+from django.views.generic import TemplateView
 
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from core.validators import base_registration_validators
 from core.utils import internal_redirect
 from registration.views import BaseRegisterView
+
+
+class LandingView(TemplateView, TradeRemediesAPIClientMixin):
+    template_name = "v2/landing.html"
 
 
 class LoginChoiceView(BaseRegisterView):
@@ -33,7 +38,7 @@ class LoginChoiceView(BaseRegisterView):
 
 
 class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
-    template_name = "login/login.html"
+    template_name = "v2/login/login.html"
 
     @never_cache
     def get(self, request, code=None, case_id=None, *args, **kwargs):
