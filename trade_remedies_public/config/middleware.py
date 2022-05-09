@@ -62,12 +62,7 @@ class APIUserMiddleware:
         return request.path.startswith("/public")
 
     def __call__(self, request, *args, **kwargs):
-        request.session["show_back_button"] = request.path not in NON_BACK_URLS
         if request.session and request.session.get("token") and request.session.get("user"):
-            back_link_url = request.META.get("HTTP_REFERER", reverse("dashboard"))
-            if request.path in back_link_url:
-                back_link_url = reverse("dashboard")
-            request.session["back_link_url"] = back_link_url
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)
             request.args = args
@@ -90,6 +85,13 @@ class PublicRequestMiddleware:
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
+        request.session["show_back_button"] = request.path not in NON_BACK_URLS
+        back_link_url = reverse("landing")
+        if request.path == reverse("login"):
+            back_link_url = reverse("landing")
+        elif request.path == reverse("forgot_password"):
+            back_link_url = reverse("login")
+        request.session["back_link_url"] = back_link_url
         response = self.get_response(request)
         return response
 
