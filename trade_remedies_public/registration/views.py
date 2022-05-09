@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 from django_countries import countries
@@ -19,6 +20,10 @@ from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
 
 
 class BaseRegisterView(TemplateView):
+    def dispatch(self, *args, **kwargs):
+        self.default_session(self.request)
+        return super().dispatch(*args, **kwargs)
+
     def reset_session(self, request, initial_data=None):
         initial_data = initial_data or {}
         request.session["registration"] = initial_data
@@ -56,7 +61,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         confirm_invited_org = request.session["registration"].get("confirm_invited_org")
         template_name = self.template_name
         if (
-            "error" not in request.GET and confirm_invited_org is None
+                "error" not in request.GET and confirm_invited_org is None
         ):  # Only clear the session if this is not a return with 'error' set on the url
             self.reset_session(request)
         initial_context = {
@@ -92,7 +97,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         request.session["registration"].update(request.POST.dict())
         errors = validate(request.session["registration"], registration_validators)
         if request.session["registration"].get("password") != request.session["registration"].get(
-            "password_confirm"
+                "password_confirm"
         ):
             errors["password_confirm"] = "Passwords do not match"
         if not request.session["registration"].get("email"):
@@ -100,9 +105,9 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         if not errors:
             session_reg = request.session.get("registration", {})
             if (
-                session_reg.get("code")
-                and session_reg.get("case_id")
-                and session_reg.get("confirm_invited_org") is True
+                    session_reg.get("code")
+                    and session_reg.get("case_id")
+                    and session_reg.get("confirm_invited_org") is True
             ):
                 invitee_sec_group = get(
                     request.session["registration"], "invite/organisation_security_group"
@@ -133,9 +138,9 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                     return redirect("/accounts/register/3/")
                 return redirect("/accounts/register/2/")
             elif (
-                session_reg.get("code")
-                and session_reg.get("case_id")
-                and not session_reg.get("confirm_invited_org")
+                    session_reg.get("code")
+                    and session_reg.get("case_id")
+                    and not session_reg.get("confirm_invited_org")
             ):
                 return redirect(f"/accounts/register/2/{redirect_postfix}")
             return redirect("/accounts/register/2/")
@@ -251,7 +256,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             "key": "organisation_website",
             "message": "Your website should be a complete, valid URL.",
             "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)"
-            "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+                  "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
             # noqa: E501
         },
     ]
@@ -278,7 +283,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             if "countries" in request.session["registration"]:
                 del request.session["registration"]["countries"]
             if all(
-                [bool(request.session["registration"].get(key)) for key in self.required_fields]
+                    [bool(request.session["registration"].get(key)) for key in self.required_fields]
             ):
                 session_reg = request.session["registration"]
                 response = self.trusted_client.register_public(**session_reg)
@@ -371,3 +376,52 @@ class TermsAndConditionsView(TemplateView):
 class AccessibilityStatementView(TemplateView):
     def get(self, request, *args, **kwargs):
         return render(request, "registration/accessibility_statement.html", {})
+
+
+class V2RegistrationViewStart(BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_start.html"
+
+    def post(self, request, *args, **kwargs):
+        # todo - validate
+        return redirect(reverse("v2_register_set_password"))
+
+
+class V2RegistrationViewSetPassword(BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_set_password.html"
+
+    def post(self, request, *args, **kwargs):
+        # todo - validate
+        return redirect(reverse("v2_register_2fa_choice"))
+
+
+class V2RegistrationView2FAChoice(BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_2fa_choice.html"
+
+    def post(self, request, *args, **kwargs):
+        # todo - validate
+        return redirect(reverse("v2_register_your_employer"))
+
+
+class V2RegistrationViewYourEmployer(BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_your_employer.html"
+
+    def post(self, request, *args, **kwargs):
+        # todo - validate
+        if request.POST.get("uk_employer") == "yes":
+            return redirect(reverse("v2_register_your_uk_employer"))
+        elif request.POST.get("uk_employer") == "no":
+            return redirect(reverse("v2_register_your_non_uk_employer"))
+
+class V2RegistrationViewUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_your_uk_employer.html"
+
+    def post(self, request, *args, **kwargs):
+        # todo - validate
+        print("asd")
+
+class V2RegistrationViewNonUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_your_non_uk_employer.html"
+
+    def post(self, request, *args, **kwargs):
+        # todo - validate
+        print("asd")

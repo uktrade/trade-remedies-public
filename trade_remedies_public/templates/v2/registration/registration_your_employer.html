@@ -1,0 +1,71 @@
+{% extends "v2/govuk/base_with_form.html" %}
+{% load static %}
+
+{% block page_title %}
+    Your employer
+{% endblock %}
+
+{% block fieldset_heading %}
+    Your employer
+{% endblock fieldset_heading %}
+
+{% block form_content %}
+    <p class="govuk-body">This is who employs you directly and not an organisation you are representing. You should have
+        permission to create this account on behalf of your employer.</p>
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                Is your employer a registered UK company?
+            </legend>
+            <div class="govuk-radios govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="uk_employer" name="uk_employer"
+                           type="radio" value="yes">
+                    <label class="govuk-label govuk-radios__label" for="uk_employer">
+                        Yes
+                    </label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="non_uk_employer" name="uk_employer"
+                           type="radio" value="no">
+                    <label class="govuk-label govuk-radios__label" for="non_uk_employer">
+                        No
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      How do I find out if my employer is registered in the UK?
+    </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p class="govuk-body">You can find this on the <a href="https://www.gov.uk/get-information-about-a-company"
+                                                              target="_blank" rel="noopener noreferrer"
+                                                              class="govuk-link">Companies House register (opens in a
+                new tab).</a></p>
+            <p>If you cannot find your organisation on the register you need to select "No" your employer is not
+                registered in the UK.</p>
+        </div>
+    </details>
+    <div class="govuk-button-group">
+        <button class="govuk-button" data-module="govuk-button">
+            Continue
+        </button>
+        <a class="govuk-link" href="javascript: history.back()">Back</a>
+    </div>
+{% endblock form_content %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $('[name="2fa-choice"]').change(function () {
+            if ($('[name="2fa-choice"]:checked').val() === "mobile") {
+                $('#conditional-mobile').show()
+            } else {
+                $('#conditional-mobile').hide()
+            }
+        })
+    </script>
+{% endblock %}

@@ -244,4 +244,32 @@ urlpatterns = [
     path(
         "companieshouse/search/", core_views.CompaniesHouseSearch.as_view(), name="companieshouse"
     ),
+    path(
+        "register/start", register_views.V2RegistrationViewStart.as_view(), name="v2_register_start"
+    ),
+    path(
+        "register/set_password",
+        register_views.V2RegistrationViewSetPassword.as_view(),
+        name="v2_register_set_password"
+    ),
+    path(
+        "register/2fa_choice",
+        register_views.V2RegistrationView2FAChoice.as_view(),
+        name="v2_register_2fa_choice"
+    ),
+    path(
+        "register/your_employer",
+        register_views.V2RegistrationViewYourEmployer.as_view(),
+        name="v2_register_your_employer"
+    ),
+    path(
+        "register/your_uk_employer",
+        register_views.V2RegistrationViewUkEmployer.as_view(),
+        name="v2_register_your_uk_employer"
+    ),
+    path(
+        "register/your_non_uk_employer",
+        register_views.V2RegistrationViewNonUkEmployer.as_view(),
+        name="v2_register_your_non_uk_employer"
+    )
 ]
