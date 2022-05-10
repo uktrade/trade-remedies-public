@@ -19,10 +19,10 @@ NON_2FA_URLS = (
 NON_BACK_URLS = reverse("landing")
 
 
-def get_non_back_urls(kwargs):
+def get_evaluated_non_back_urls(kwargs):
     if kwargs.get("user_pk") and kwargs.get("token"):
-        return reverse("landing"), reverse("reset_password", kwargs=kwargs)
-    return reverse("landing")
+        return NON_BACK_URLS, reverse("reset_password", kwargs=kwargs)
+    return NON_BACK_URLS
 
 
 class APIUserMiddleware:
@@ -96,7 +96,7 @@ class PublicRequestMiddleware:
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         url_kwargs = view_kwargs
-        request.session["show_back_button"] = request.path not in get_non_back_urls(url_kwargs)
+        request.session["show_back_button"] = request.path not in get_evaluated_non_back_urls(url_kwargs)
         back_link_url = reverse("landing")
         if request.path == reverse("login"):
             back_link_url = reverse("landing")
