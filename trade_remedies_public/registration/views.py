@@ -446,5 +446,7 @@ class V2RegistrationViewOrganisationFurtherDetails(BaseRegisterView, TradeRemedi
     template_name = "v2/registration/registration_organisation_further_details.html"
 
     def post(self, request, *args, **kwargs):
-        # we're done, let's create the stuff
+        # we're done, let's create the new user
+        self.update_session(request, request.POST)
+
         print("Ads")
