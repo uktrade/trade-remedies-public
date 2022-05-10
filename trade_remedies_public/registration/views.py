@@ -1,6 +1,7 @@
 # Views to handle the registration functionality and legal pages
 
 from django.conf import settings
+from django.http import QueryDict
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.decorators.cache import never_cache
@@ -32,6 +33,12 @@ class BaseRegisterView(TemplateView):
 
     def update_session(self, request, update_data):
         request.session.setdefault("registration", {})
+        if isinstance(update_data, QueryDict):
+            # If it's a QueryDict, we need to convert it to a normal dictionary as Django's
+            # internal representation of QueryDicts store individual values as lists, regardless
+            # of how many elements are in that list:
+            # https://www.ianlewis.org/en/querydict-and-update
+            update_data = update_data.dict()
         request.session["registration"].update(update_data)
         request.session.modified = True
         return request.session
@@ -383,6 +390,7 @@ class V2RegistrationViewStart(BaseRegisterView, TradeRemediesAPIClientMixin):
 
     def post(self, request, *args, **kwargs):
         # todo - validate
+        self.update_session(request, request.POST)
         return redirect(reverse("v2_register_set_password"))
 
 
@@ -391,6 +399,7 @@ class V2RegistrationViewSetPassword(BaseRegisterView, TradeRemediesAPIClientMixi
 
     def post(self, request, *args, **kwargs):
         # todo - validate
+        self.update_session(request, request.POST)
         return redirect(reverse("v2_register_2fa_choice"))
 
 
@@ -399,6 +408,7 @@ class V2RegistrationView2FAChoice(BaseRegisterView, TradeRemediesAPIClientMixin)
 
     def post(self, request, *args, **kwargs):
         # todo - validate
+        self.update_session(request, request.POST)
         return redirect(reverse("v2_register_your_employer"))
 
 
@@ -407,21 +417,34 @@ class V2RegistrationViewYourEmployer(BaseRegisterView, TradeRemediesAPIClientMix
 
     def post(self, request, *args, **kwargs):
         # todo - validate
+        self.update_session(request, request.POST)
         if request.POST.get("uk_employer") == "yes":
             return redirect(reverse("v2_register_your_uk_employer"))
         elif request.POST.get("uk_employer") == "no":
             return redirect(reverse("v2_register_your_non_uk_employer"))
+
 
 class V2RegistrationViewUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_your_uk_employer.html"
 
     def post(self, request, *args, **kwargs):
         # todo - validate
-        print("asd")
+        self.update_session(request, request.POST)
+        return redirect(reverse("v2_register_organisation_further_details"))
+
 
 class V2RegistrationViewNonUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_your_non_uk_employer.html"
 
     def post(self, request, *args, **kwargs):
         # todo - validate
-        print("asd")
+        self.update_session(request, request.POST)
+        return redirect(reverse("v2_register_organisation_further_details"))
+
+
+class V2RegistrationViewOrganisationFurtherDetails(BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_organisation_further_details.html"
+
+    def post(self, request, *args, **kwargs):
+        # we're done, let's create the stuff
+        print("Ads")

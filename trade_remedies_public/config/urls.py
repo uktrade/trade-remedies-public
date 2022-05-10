@@ -271,5 +271,10 @@ urlpatterns = [
         "register/your_non_uk_employer",
         register_views.V2RegistrationViewNonUkEmployer.as_view(),
         name="v2_register_your_non_uk_employer"
+    ),
+    path(
+        "register/organisation_further_details",
+        register_views.V2RegistrationViewOrganisationFurtherDetails.as_view(),
+        name="v2_register_organisation_further_details"
     )
 ]

@@ -32,10 +32,5 @@
 
         </fieldset>
     </div>
-    <div class="govuk-button-group">
-        <button class="govuk-button" data-module="govuk-button">
-            Continue
-        </button>
-        <a class="govuk-link" href="javascript: history.back()">Back</a>
-    </div>
+    {% include "v2/component_macros/form_button_group.html" with forward_button_text="Continue" %}
 {% endblock form_content %}
