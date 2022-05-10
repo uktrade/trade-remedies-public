@@ -146,6 +146,11 @@ urlpatterns = [
         password_views.ResetPasswordView.as_view(),
         name="reset_password",
     ),
+    path(
+        "accounts/password/reset/success/",
+        password_views.ResetPasswordSuccessView.as_view(),
+        name="reset_password_success",
+    ),
     path("accounts/info/", core_views.AccountInfo.as_view(), name="account_info"),
     path(
         "accounts/info/user/", core_views.TeamUserView.as_view(self_details=True), name="user_view"
