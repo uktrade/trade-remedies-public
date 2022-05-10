@@ -19,6 +19,12 @@ NON_2FA_URLS = (
 NON_BACK_URLS = reverse("landing")
 
 
+def get_non_back_urls(kwargs):
+    if kwargs.get("user_pk") and kwargs.get("token"):
+        return reverse("landing"), reverse("reset_password", kwargs=kwargs)
+    return reverse("landing")
+
+
 class APIUserMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -85,15 +91,20 @@ class PublicRequestMiddleware:
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
-        request.session["show_back_button"] = request.path not in NON_BACK_URLS
+        response = self.get_response(request)
+        return response
+
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        url_kwargs = view_kwargs
+        request.session["show_back_button"] = request.path not in get_non_back_urls(url_kwargs)
         back_link_url = reverse("landing")
         if request.path == reverse("login"):
             back_link_url = reverse("landing")
         elif request.path == reverse("forgot_password"):
             back_link_url = reverse("login")
+        elif request.path == reverse("forgot_password_requested"):
+            back_link_url = reverse("forgot_password")
         request.session["back_link_url"] = back_link_url
-        response = self.get_response(request)
-        return response
 
 
 class SessionTimeoutMiddleware(MiddlewareMixin):
