@@ -21,4 +21,3 @@ class ForgottenPasswordTestCase(LiveServerTestCase):
         self.browser.find_element(By.ID, "sign_in_button").click()
         self.browser.find_element(By.ID, "forgot_password_link").click()
         self.assertIn(reverse("forgot_password"), self.browser.current_url)
-
