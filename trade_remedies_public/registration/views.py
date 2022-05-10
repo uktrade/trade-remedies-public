@@ -448,5 +448,5 @@ class V2RegistrationViewOrganisationFurtherDetails(BaseRegisterView, TradeRemedi
     def post(self, request, *args, **kwargs):
         # we're done, let's create the new user
         self.update_session(request, request.POST)
-
-        print("Ads")
+        response = self.trusted_client.v2_register(request.session["registration"])
+        print("asd")
