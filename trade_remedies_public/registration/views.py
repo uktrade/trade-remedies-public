@@ -1,4 +1,5 @@
 # Views to handle the registration functionality and legal pages
+import json
 
 from django.conf import settings
 from django.http import QueryDict
@@ -429,7 +430,9 @@ class V2RegistrationViewUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin
 
     def post(self, request, *args, **kwargs):
         # todo - validate
-        self.update_session(request, request.POST)
+        post_dict = request.POST.copy()
+        post_dict["company_data"] = json.loads(post_dict["company_data"])
+        self.update_session(request, post_dict)
         return redirect(reverse("v2_register_organisation_further_details"))
 
 
@@ -448,5 +451,6 @@ class V2RegistrationViewOrganisationFurtherDetails(BaseRegisterView, TradeRemedi
     def post(self, request, *args, **kwargs):
         # we're done, let's create the new user
         self.update_session(request, request.POST)
-        response = self.trusted_client.v2_register(request.session["registration"])
+        registration_data = {"registration_data": json.dumps(request.session["registration"])}
+        response = self.trusted_client.v2_register(registration_data)
         print("asd")

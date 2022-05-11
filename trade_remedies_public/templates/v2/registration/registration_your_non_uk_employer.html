@@ -16,7 +16,7 @@
 {% block form_content %}
     <p class="govuk-body">This is who employs you directly and not an organisation you are representing. You should have
         permission to create this account on behalf of your employer.</p>
-    {% include 'v2/component_macros/text_input.html' with label="Organisation name" id="organisation_name" name="organisation_name" type="text" width="20" strong=True %}
+    {% include 'v2/component_macros/text_input.html' with autocomplete="organization" label="Organisation name" id="organisation_name" name="organisation_name" type="text" width="20" strong=True %}
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
             <h1 class="govuk-fieldset__heading">
@@ -29,14 +29,14 @@
                 Street address
             </label>
             <textarea class="govuk-textarea govuk-input--width-20" id="createaccount-org-address"
-                      name="createaccount-org-address" rows="5"></textarea>
+                      name="createaccount-org-address" rows="5" autocomplete="street-address"></textarea>
         </div>
         <div class="govuk-form-group">
             <label class="govuk-label" for="createaccount-org-zip">
                 Postcode or Zipcode
             </label>
             <input class="govuk-input govuk-input--width-5" id="createaccount-org-zip" name="createaccount-org-zip"
-                   type="text">
+                   type="text" autocomplete="postal-code">
         </div>
         {% include "v2/component_macros/country_dropdown.html" with id="company_country" name="company_country" %}
     </fieldset>

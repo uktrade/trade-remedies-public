@@ -19,7 +19,7 @@
             </p>
         {% endif %}
         <input class="govuk-input govuk-input--width-{{ width }} {% if error %}govuk-input--error{% endif %}"
-               id="{{ id }}" name="{{ name }}" type="{{ type }}"
+               id="{{ id }}" name="{{ name }}" type="{{ type }}" {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
                autocomplete="off">
     </div>
 {% endwith %}
