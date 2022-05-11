@@ -27,9 +27,6 @@ commands:
           paths:
             - "venv"
 
-orbs:
-  browser-tools: circleci/browser-tools@1.3.0 # /PS-IGNORE
-
 jobs:
 
   code_quality:
@@ -73,8 +70,6 @@ jobs:
             - "ba:20:40:f8:be:ec:29:e7:81:14:2a:87:49:9c:8e:e7"
       - checkout
       - restore_dependency_cache
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
       - install_dependencies
       - save_dependency_cache
       - run:
