@@ -45,7 +45,7 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
                 return redirect(reverse("reset_password_success"))
             except APIException as exc:
                 return self.get(request, user_pk, token, error=exc.message)
-        return self.get(request, user_pk, token)
+        return redirect(request.path)
 
 
 class ResetPasswordSuccessView(TemplateView, TradeRemediesAPIClientMixin):
