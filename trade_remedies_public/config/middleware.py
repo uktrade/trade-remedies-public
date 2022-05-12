@@ -1,7 +1,7 @@
 import time
 
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, NoReverseMatch
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth.models import AnonymousUser
@@ -21,8 +21,10 @@ NON_BACK_URLS = [reverse("landing"), reverse("reset_password_success")]
 
 def get_evaluated_non_back_urls(kwargs):
     urls = NON_BACK_URLS
-    if kwargs.get("user_pk") and kwargs.get("token"):
+    try:
         urls.append(reverse("reset_password", kwargs=kwargs))
+    except NoReverseMatch:
+        pass
     return urls
 
 
