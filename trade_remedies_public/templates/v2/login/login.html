@@ -16,9 +16,7 @@
 {% block form_content %}
     <p aria-live="polite" id="password-text" class="sr-only">Password hidden.</p>
     <p class="govuk-body">
-        To request a Trade Remedies investigation or participate in an existing case, sign in to the Trade
-        Remedies
-        Service.
+        Sign in to request a new investigation or participate in an existing case.
     </p>
     <input type="hidden" name="next" value="{{ next|default:'' }}">
     {% include 'v2/component_macros/text_input.html' with label="Email address" id="email" name="email" type="email" width="20" %}
@@ -54,7 +52,7 @@
 
     </div>
     <p class="govuk-body">
-        <a class="govuk-link" href="{% url 'forgot_password' %}">Forgotten password</a>
+        <a class="govuk-link" href="{% url 'forgot_password' %}">Forgot your password?</a>
     </p>
     <button class="govuk-button" data-module="govuk-button">
         Sign in
