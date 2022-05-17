@@ -1,6 +1,5 @@
 # Views to handle the forgotten and reset password functionality
 
-from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -40,13 +39,14 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
 
     def post(self, request, user_pk, token, *args, **kwargs):
         password = request.POST.get("password")
-        password_confirm = request.POST.get("password_confirm")
-        if password and password_confirm and password == password_confirm:
+        if password:
             try:
                 self.trusted_client.reset_password(token, user_pk, password)
-                # todo - alert user that their password reset was successful
+                return redirect(reverse("reset_password_success"))
             except APIException as exc:
                 return self.get(request, user_pk, token, error=exc.message)
-        elif password != password_confirm:
-            return self.get(request, user_pk, token, error="The passwords do not match")
-        return redirect_to_login(reverse("dashboard"), reverse("login"), "next")
+        return redirect(request.path)
+
+
+class ResetPasswordSuccessView(TemplateView, TradeRemediesAPIClientMixin):
+    template_name = "v2/password/reset_password_success.html"

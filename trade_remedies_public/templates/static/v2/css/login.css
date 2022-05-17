@@ -1,0 +1,19 @@
+.flex-input-button {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.input-with-buttonn .hold-left,
+.input-with-button .hold-right {
+    flex: 1;
+}
+
+#show_password {
+    margin-bottom: 0px;
+    margin-left: 20px;
+}
+
+.js-disabled #show_password_button_container{
+    visibility: hidden;
+}
