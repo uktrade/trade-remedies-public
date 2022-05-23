@@ -41,13 +41,8 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
     @v2_error_handling()
     def post(self, request, user_pk, token, *args, **kwargs):
         password = request.POST.get("password")
-        if password:
-            try:
-                self.trusted_client.reset_password(token, user_pk, password)
-                return redirect(reverse("reset_password_success"))
-            except APIException as exc:
-                return self.get(request, user_pk, token, error=exc.message)
-        return redirect(request.path)
+        self.trusted_client.reset_password(token, user_pk, password)
+        return redirect(reverse("reset_password_success"))
 
 
 class ResetPasswordSuccessView(TemplateView, TradeRemediesAPIClientMixin):
