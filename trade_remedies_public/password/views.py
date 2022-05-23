@@ -1,11 +1,12 @@
 # Views to handle the forgotten and reset password functionality
-
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 
 from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+
+from password.decorators import v2_error_handling
 
 
 class ForgotPasswordRequested(TemplateView, TradeRemediesAPIClientMixin):
@@ -15,11 +16,11 @@ class ForgotPasswordRequested(TemplateView, TradeRemediesAPIClientMixin):
 class ForgotPasswordView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "password/reset_password_request.html"
 
+    @v2_error_handling()
     def post(self, request, *args, **kwargs):
-        if email := request.POST.get("email"):
-            self.trusted_client.request_password_reset(email)
-            return redirect(reverse("forgot_password_requested"))
-        return redirect(request.path)
+        email = request.POST.get("email")
+        self.trusted_client.request_password_reset(email)
+        return redirect(reverse("forgot_password_requested"))
 
 
 class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
@@ -37,6 +38,7 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
             },
         )
 
+    @v2_error_handling()
     def post(self, request, user_pk, token, *args, **kwargs):
         password = request.POST.get("password")
         if password:
