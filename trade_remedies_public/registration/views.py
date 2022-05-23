@@ -1,6 +1,5 @@
 # Views to handle the registration functionality and legal pages
 import json
-from copy import copy
 
 from django.conf import settings
 from django.http import QueryDict
@@ -71,7 +70,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         confirm_invited_org = request.session["registration"].get("confirm_invited_org")
         template_name = self.template_name
         if (
-                "error" not in request.GET and confirm_invited_org is None
+            "error" not in request.GET and confirm_invited_org is None
         ):  # Only clear the session if this is not a return with 'error' set on the url
             self.reset_session(request)
         initial_context = {
@@ -107,7 +106,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         request.session["registration"].update(request.POST.dict())
         errors = validate(request.session["registration"], registration_validators)
         if request.session["registration"].get("password") != request.session["registration"].get(
-                "password_confirm"
+            "password_confirm"
         ):
             errors["password_confirm"] = "Passwords do not match"
         if not request.session["registration"].get("email"):
@@ -115,9 +114,9 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         if not errors:
             session_reg = request.session.get("registration", {})
             if (
-                    session_reg.get("code")
-                    and session_reg.get("case_id")
-                    and session_reg.get("confirm_invited_org") is True
+                session_reg.get("code")
+                and session_reg.get("case_id")
+                and session_reg.get("confirm_invited_org") is True
             ):
                 invitee_sec_group = get(
                     request.session["registration"], "invite/organisation_security_group"
@@ -148,9 +147,9 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                     return redirect("/accounts/register/3/")
                 return redirect("/accounts/register/2/")
             elif (
-                    session_reg.get("code")
-                    and session_reg.get("case_id")
-                    and not session_reg.get("confirm_invited_org")
+                session_reg.get("code")
+                and session_reg.get("case_id")
+                and not session_reg.get("confirm_invited_org")
             ):
                 return redirect(f"/accounts/register/2/{redirect_postfix}")
             return redirect("/accounts/register/2/")
@@ -266,7 +265,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             "key": "organisation_website",
             "message": "Your website should be a complete, valid URL.",
             "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)"
-                  "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+            "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
             # noqa: E501
         },
     ]
@@ -293,7 +292,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             if "countries" in request.session["registration"]:
                 del request.session["registration"]["countries"]
             if all(
-                    [bool(request.session["registration"].get(key)) for key in self.required_fields]
+                [bool(request.session["registration"].get(key)) for key in self.required_fields]
             ):
                 session_reg = request.session["registration"]
                 response = self.trusted_client.register_public(**session_reg)
