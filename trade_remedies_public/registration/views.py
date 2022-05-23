@@ -5,10 +5,11 @@ from django.conf import settings
 from django.http import QueryDict
 from django.shortcuts import render, redirect
 from django.urls import reverse
+from django.views import View
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 from django_countries import countries
-
+from config.decorators import v2_error_handling
 from core.models import TransientUser
 from core.utils import (
     validate,
@@ -386,6 +387,7 @@ class AccessibilityStatementView(TemplateView):
         return render(request, "registration/accessibility_statement.html", {})
 
 
+# ------------------------------------------V2 REGISTRATION JOURNEY--------------------------------#
 class V2RegistrationViewStart(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_start.html"
 
@@ -430,9 +432,9 @@ class V2RegistrationViewUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin
 
     def post(self, request, *args, **kwargs):
         # todo - validate
-        post_dict = request.POST.copy()
-        post_dict["company_data"] = json.loads(post_dict["company_data"])
-        self.update_session(request, post_dict)
+        company_data = json.loads(request.POST["company_data"])
+        company_data["country"] = "GB"  # Always going to be a UK company
+        self.update_session(request, company_data)
         return redirect(reverse("v2_register_organisation_further_details"))
 
 
@@ -453,4 +455,24 @@ class V2RegistrationViewOrganisationFurtherDetails(BaseRegisterView, TradeRemedi
         self.update_session(request, request.POST)
         registration_data = {"registration_data": json.dumps(request.session["registration"])}
         response = self.trusted_client.v2_register(registration_data)
-        print("asd")
+        self.update_session(request, response)
+        return redirect(reverse("v2_register_complete"))
+
+
+class V2RegistrationComplete(BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_complete.html"
+
+
+class RequestEmailVerifyCode(View, TradeRemediesAPIClientMixin):
+    def get(self, request, user_pk, *args, **kwargs):
+        self.trusted_client.send_email_verification_link(user_pk)
+        request.session["email_verification_link_resent"] = True
+        return redirect(reverse("v2_register_complete"))
+
+
+class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
+    @v2_error_handling()
+    def get(self, request, user_pk, email_verify_code, *args, **kwargs):
+        response = self.trusted_client.verify_email_verification_link(user_pk, email_verify_code)
+        request.session["email_just_verified"] = True
+        return redirect(reverse("login"))

@@ -276,5 +276,21 @@ urlpatterns = [
         "register/organisation_further_details",
         register_views.V2RegistrationViewOrganisationFurtherDetails.as_view(),
         name="v2_register_organisation_further_details"
-    )
+    ),
+    path(
+        "register/complete",
+        register_views.V2RegistrationComplete.as_view(),
+        name="v2_register_complete"
+    ),
+    path(
+        "register/verify_email/<uuid:user_pk>",
+        register_views.RequestEmailVerifyCode.as_view(),
+        name="request_email_verify_code"
+    ),
+    path(
+        "register/verify_email/<uuid:user_pk>/<str:email_verify_code>",
+        register_views.VerifyEmailVerifyCode.as_view(),
+        name="email_verify_code"
+    ),
+
 ]

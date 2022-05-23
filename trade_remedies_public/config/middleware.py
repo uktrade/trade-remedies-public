@@ -23,7 +23,10 @@ NON_2FA_URLS = (
 )
 
 # URLS that do not display the back button
-NON_BACK_URLS = reverse("landing")
+NON_BACK_URLS = (
+    reverse("landing"),
+    reverse("v2_register_complete"),
+)
 
 
 class APIUserMiddleware:

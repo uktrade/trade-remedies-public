@@ -1,0 +1,69 @@
+{% extends "v2/govuk/base.html" %}
+{% load pop_session %}
+{% block page_title %}
+    Your account has been created
+{% endblock %}
+
+{% block main_content %}
+
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Account created
+            </h1>
+        </div>
+        {% if request|pop_session:"email_verification_link_resent" %}
+            <div class="govuk-inset-text">
+                We have sent a new account activation email link to {{ request.session.registration.email }}.
+            </div>
+        {% endif %}
+        <p class="govuk-body">
+            You can now access your account, however, you need to verify your email address before you can take part in
+            a trade remedy investigation.
+        </p>
+        <p class="govuk-body">
+            We have sent an email to {{ request.session.registration.email }}.
+        </p>
+        <p class="govuk-body">
+            Open the email and click on the link to activate your account.
+        </p>
+        <p class="govuk-body">
+            The link in the email is only valid for 24 hours, after that you will need to request a new activation
+            email.
+        </p>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            I have not received an email
+          </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p>Please check the email address above to ensure that you entered it correctly. If it is incorrect you
+                    will need to create the account again using the correct email address. </p>
+                <p>Check your email spam folders and add our email address to your contact list:
+                    trade.remedies.service@notifications.service.gov.uk.</p>
+                <p>If the email still hasn't arrived <a
+                        href="{% url 'request_email_verify_code' user_pk=request.session.registration.pk %}">click
+                    here to resend the email</a>.</p>
+            </div>
+        </details>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            The link in my email has expired
+          </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p>The link in the email is only valid for 24 hours, after that you will need to request a new
+                    activation email.</p>
+                <p><a href="{% url 'request_email_verify_code' user_pk=request.session.registration.pk %}">Click here to
+                    resend the email</a>.</p>
+            </div>
+        </details>
+        <a href="{% url 'login' %}" class="govuk-button" data-module="govuk-button">
+            Sign in
+        </a>
+    </div>
+
+
+{% endblock main_content %}
