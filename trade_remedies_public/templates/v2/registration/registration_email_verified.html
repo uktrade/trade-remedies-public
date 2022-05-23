@@ -1,0 +1,24 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block page_title %}
+    Your account has been activated
+{% endblock %}
+
+{% block main_content %}
+
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Account activated
+            </h1>
+        </div>
+
+        <p class="govuk-body">Your email address has been verified and your account is fully activated.</p>
+        <p class="govuk-body">You can now apply to take part in a trade remedy investigation.</p>
+        <a class="govuk-button" data-module="govuk-button" href="{% url 'landing' %}">
+            Continue
+        </a>
+    </div>
+
+
+{% endblock main_content %}

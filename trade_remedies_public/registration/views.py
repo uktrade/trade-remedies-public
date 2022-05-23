@@ -1,5 +1,6 @@
 # Views to handle the registration functionality and legal pages
 import json
+from copy import copy
 
 from django.conf import settings
 from django.http import QueryDict
@@ -434,6 +435,7 @@ class V2RegistrationViewUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin
         # todo - validate
         company_data = json.loads(request.POST["company_data"])
         company_data["country"] = "GB"  # Always going to be a UK company
+        company_data["post_code"] = company_data["address"]["postal_code"]
         self.update_session(request, company_data)
         return redirect(reverse("v2_register_organisation_further_details"))
 
@@ -471,8 +473,7 @@ class RequestEmailVerifyCode(View, TradeRemediesAPIClientMixin):
 
 
 class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
-    @v2_error_handling()
+    @v2_error_handling(redirection_url_resolver="landing")
     def get(self, request, user_pk, email_verify_code, *args, **kwargs):
         response = self.trusted_client.verify_email_verification_link(user_pk, email_verify_code)
-        request.session["email_just_verified"] = True
-        return redirect(reverse("login"))
+        return render(request, "v2/registration/registration_email_verified.html")
