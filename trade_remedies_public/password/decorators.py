@@ -20,27 +20,19 @@ def v2_error_handling(redirection_url_resolver=None):  # noqa: C901
             except (APIException, HTTPError) as exc:
                 if hasattr(exc, "response"):
                     request.request.session["form_errors"] = exc.response.json()
-                    request.request.session.is_modified = True
-                    if redirection_url_resolver:
-                        try:
-                            redirection_url = reverse(redirection_url_resolver)
-                            return redirect(redirection_url)
-                        except NoReverseMatch:
-                            pass
                 elif hasattr(exc, "detail"):
                     request.request.session["form_errors"] = exc.detail
-                    request.request.session.is_modified = True
-                    if redirection_url_resolver:
-                        try:
-                            redirection_url = reverse(redirection_url_resolver)
-                            return redirect(redirection_url)
-                        except NoReverseMatch:
-                            pass
                 else:
                     # We're dealing with an unhandled error, let it (unfortunately) propagate and
                     # sentry will pick it up
                     raise exc
-
+                request.request.session.is_modified = True
+                if redirection_url_resolver:
+                    try:
+                        redirection_url = reverse(redirection_url_resolver)
+                        return redirect(redirection_url)
+                    except NoReverseMatch:
+                        pass
                 return redirect(request.request.path)
 
         return _wrapped_view_func
