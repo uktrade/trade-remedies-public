@@ -106,7 +106,7 @@ class PublicRequestMiddleware:
         previous_path = urlparse(request.META.get("HTTP_REFERER")).path
         back_link_url = reverse("landing")
         if request.path == reverse("login"):
-            if previous_path != reverse("landing"):
+            try:
                 back_link_url = reverse(
                     "reset_password",
                     kwargs={
@@ -114,13 +114,12 @@ class PublicRequestMiddleware:
                         "token": previous_path.split("/")[-2],
                     },
                 )
-            else:
+            except (IndexError, NoReverseMatch):
                 back_link_url = reverse("landing")
         elif request.path == reverse("forgot_password"):
             back_link_url = reverse("login")
         elif request.path == reverse("forgot_password_requested"):
-            if previous_path != reverse("forgot_password"):
-
+            try:
                 back_link_url = reverse(
                     "reset_password",
                     kwargs={
@@ -128,7 +127,7 @@ class PublicRequestMiddleware:
                         "token": previous_path.split("/")[-2],
                     },
                 )
-            else:
+            except (IndexError, NoReverseMatch):
                 back_link_url = reverse("forgot_password")
         request.session["back_link_url"] = back_link_url
 
