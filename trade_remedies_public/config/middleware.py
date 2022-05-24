@@ -114,7 +114,7 @@ class PublicRequestMiddleware:
                         "token": previous_path.split("/")[-2],
                     },
                 )
-            except (IndexError, NoReverseMatch):
+            except (IndexError, TypeError, NoReverseMatch):
                 back_link_url = reverse("landing")
         elif request.path == reverse("forgot_password"):
             back_link_url = reverse("login")
@@ -127,7 +127,7 @@ class PublicRequestMiddleware:
                         "token": previous_path.split("/")[-2],
                     },
                 )
-            except (IndexError, NoReverseMatch):
+            except (IndexError, TypeError, NoReverseMatch):
                 back_link_url = reverse("forgot_password")
         request.session["back_link_url"] = back_link_url
 
