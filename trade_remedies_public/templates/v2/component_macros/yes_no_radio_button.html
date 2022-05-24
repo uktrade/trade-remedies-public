@@ -1,0 +1,34 @@
+{% load get_item %}
+
+{% with form_errors|get_item:name as error %}
+    <div class="govuk-form-group  {% if error %}govuk-form-group--error{% endif %}">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                Is your employer a registered UK company?
+            </legend>
+            {% if error %}
+                <p id="{{ name }}-error" class="govuk-error-message">
+                    {% for error in error %}
+                        <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                    {% endfor %}
+                </p>
+            {% endif %}
+            <div class="govuk-radios govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="{{ id_yes }}" name="{{ name }}"
+                           type="radio" value="yes">
+                    <label class="govuk-label govuk-radios__label" for="{{ id_yes }}">
+                        Yes
+                    </label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="{{ id_no }}" name="{{ name }}"
+                           type="radio" value="no">
+                    <label class="govuk-label govuk-radios__label" for="{{ id_no }}">
+                        No
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+{% endwith %}

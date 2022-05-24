@@ -12,29 +12,7 @@
 {% block form_content %}
     <p class="govuk-body">This is who employs you directly and not an organisation you are representing. You should have
         permission to create this account on behalf of your employer.</p>
-    <div class="govuk-form-group">
-        <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                Is your employer a registered UK company?
-            </legend>
-            <div class="govuk-radios govuk-radios" data-module="govuk-radios">
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="uk_employer" name="uk_employer"
-                           type="radio" value="yes">
-                    <label class="govuk-label govuk-radios__label" for="uk_employer">
-                        Yes
-                    </label>
-                </div>
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="non_uk_employer" name="uk_employer"
-                           type="radio" value="no">
-                    <label class="govuk-label govuk-radios__label" for="non_uk_employer">
-                        No
-                    </label>
-                </div>
-            </div>
-        </fieldset>
-    </div>
+    {% include "v2/component_macros/yes_no_radio_button.html" with id_yes="uk_employer" id_no="non_uk_employer" name="uk_employer" %}
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
@@ -52,15 +30,3 @@
     </details>
     {% include "v2/component_macros/form_button_group.html" with forward_button_text="Continue" %}
 {% endblock form_content %}
-
-{% block scripts %}
-    <script type="text/javascript">
-        $('[name="2fa-choice"]').change(function () {
-            if ($('[name="2fa-choice"]:checked').val() === "mobile") {
-                $('#conditional-mobile').show()
-            } else {
-                $('#conditional-mobile').hide()
-            }
-        })
-    </script>
-{% endblock %}

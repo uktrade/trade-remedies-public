@@ -1,5 +1,7 @@
 # Views to handle the registration functionality and legal pages
 import json
+import re
+from collections import defaultdict
 
 from django.conf import settings
 from django.http import QueryDict
@@ -7,7 +9,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.decorators.cache import never_cache
-from django.views.generic import TemplateView
+from django.views.generic import FormView, TemplateView
 from django_countries import countries
 from config.decorators import v2_error_handling
 from core.models import TransientUser
@@ -20,6 +22,9 @@ from core.validators import (
     registration_validators,
 )
 from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
+
+from trade_remedies_public.registration.forms import PasswordForm, RegistrationStartForm, \
+    TwoFactorChoiceForm, UkEmployerForm, YourEmployerForm
 
 
 class BaseRegisterView(TemplateView):
@@ -70,7 +75,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         confirm_invited_org = request.session["registration"].get("confirm_invited_org")
         template_name = self.template_name
         if (
-            "error" not in request.GET and confirm_invited_org is None
+                "error" not in request.GET and confirm_invited_org is None
         ):  # Only clear the session if this is not a return with 'error' set on the url
             self.reset_session(request)
         initial_context = {
@@ -106,7 +111,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         request.session["registration"].update(request.POST.dict())
         errors = validate(request.session["registration"], registration_validators)
         if request.session["registration"].get("password") != request.session["registration"].get(
-            "password_confirm"
+                "password_confirm"
         ):
             errors["password_confirm"] = "Passwords do not match"
         if not request.session["registration"].get("email"):
@@ -114,9 +119,9 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         if not errors:
             session_reg = request.session.get("registration", {})
             if (
-                session_reg.get("code")
-                and session_reg.get("case_id")
-                and session_reg.get("confirm_invited_org") is True
+                    session_reg.get("code")
+                    and session_reg.get("case_id")
+                    and session_reg.get("confirm_invited_org") is True
             ):
                 invitee_sec_group = get(
                     request.session["registration"], "invite/organisation_security_group"
@@ -147,9 +152,9 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                     return redirect("/accounts/register/3/")
                 return redirect("/accounts/register/2/")
             elif (
-                session_reg.get("code")
-                and session_reg.get("case_id")
-                and not session_reg.get("confirm_invited_org")
+                    session_reg.get("code")
+                    and session_reg.get("case_id")
+                    and not session_reg.get("confirm_invited_org")
             ):
                 return redirect(f"/accounts/register/2/{redirect_postfix}")
             return redirect("/accounts/register/2/")
@@ -265,7 +270,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             "key": "organisation_website",
             "message": "Your website should be a complete, valid URL.",
             "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)"
-            "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+                  "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
             # noqa: E501
         },
     ]
@@ -292,7 +297,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             if "countries" in request.session["registration"]:
                 del request.session["registration"]["countries"]
             if all(
-                [bool(request.session["registration"].get(key)) for key in self.required_fields]
+                    [bool(request.session["registration"].get(key)) for key in self.required_fields]
             ):
                 session_reg = request.session["registration"]
                 response = self.trusted_client.register_public(**session_reg)
@@ -388,47 +393,76 @@ class AccessibilityStatementView(TemplateView):
 
 
 # ------------------------------------------V2 REGISTRATION JOURNEY--------------------------------#
-class V2RegistrationViewStart(BaseRegisterView, TradeRemediesAPIClientMixin):
+class V2BaseRegisterView(FormView):
+    next_url_resolver = ""
+
+    def dispatch(self, *args, **kwargs):
+        if "registration" not in self.request.session:
+            self.request.session["registration"] = {}
+        self.request.session.modified = True
+        return super().dispatch(*args, **kwargs)
+
+    def reset_session(self, request, initial_data=None):
+        initial_data = initial_data or {}
+        request.session["registration"] = initial_data
+        request.session.modified = True
+        return request.session
+
+    def update_session(self, request, update_data):
+        request.session.setdefault("registration", {})
+        if isinstance(update_data, QueryDict):
+            # If it's a QueryDict, we need to convert it to a normal dictionary as Django's
+            # internal representation of QueryDicts store individual values as lists, regardless
+            # of how many elements are in that list:
+            # https://www.ianlewis.org/en/querydict-and-update
+            update_data = update_data.dict()
+        request.session["registration"].update(update_data)
+        request.session.modified = True
+        return request.session
+
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return redirect(self.request.path)
+
+    def form_valid(self, form):
+        self.update_session(self.request, form.cleaned_data)
+        return redirect(self.get_next_url(form))
+
+    def get_next_url(self, form=None):
+        return reverse(self.next_url_resolver)
+
+
+class V2RegistrationViewStart(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_start.html"
-
-    def post(self, request, *args, **kwargs):
-        # todo - validate
-        self.update_session(request, request.POST)
-        return redirect(reverse("v2_register_set_password"))
+    form_class = RegistrationStartForm
+    next_url_resolver = "v2_register_set_password"
 
 
-class V2RegistrationViewSetPassword(BaseRegisterView, TradeRemediesAPIClientMixin):
+class V2RegistrationViewSetPassword(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_set_password.html"
-
-    def post(self, request, *args, **kwargs):
-        # todo - validate
-        self.update_session(request, request.POST)
-        return redirect(reverse("v2_register_2fa_choice"))
+    form_class = PasswordForm
+    next_url_resolver = "v2_register_2fa_choice"
 
 
-class V2RegistrationView2FAChoice(BaseRegisterView, TradeRemediesAPIClientMixin):
+class V2RegistrationView2FAChoice(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_2fa_choice.html"
-
-    def post(self, request, *args, **kwargs):
-        # todo - validate
-        self.update_session(request, request.POST)
-        return redirect(reverse("v2_register_your_employer"))
+    form_class = TwoFactorChoiceForm
+    next_url_resolver = "v2_register_your_employer"
 
 
-class V2RegistrationViewYourEmployer(BaseRegisterView, TradeRemediesAPIClientMixin):
+class V2RegistrationViewYourEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_your_employer.html"
+    form_class = YourEmployerForm
 
-    def post(self, request, *args, **kwargs):
-        # todo - validate
-        self.update_session(request, request.POST)
-        if request.POST.get("uk_employer") == "yes":
-            return redirect(reverse("v2_register_your_uk_employer"))
-        elif request.POST.get("uk_employer") == "no":
-            return redirect(reverse("v2_register_your_non_uk_employer"))
+    def get_next_url(self, form=None):
+        if form.cleaned_data["uk_employer"]:
+            return reverse("v2_register_your_uk_employer")
+        else:
+            return reverse("v2_register_your_non_uk_employer")
 
-
-class V2RegistrationViewUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin):
+class V2RegistrationViewUkEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_your_uk_employer.html"
+    form_class = UkEmployerForm
 
     def post(self, request, *args, **kwargs):
         # todo - validate
@@ -439,8 +473,9 @@ class V2RegistrationViewUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin
         return redirect(reverse("v2_register_organisation_further_details"))
 
 
-class V2RegistrationViewNonUkEmployer(BaseRegisterView, TradeRemediesAPIClientMixin):
+class V2RegistrationViewNonUkEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_your_non_uk_employer.html"
+    form_class = UkEmployerForm
 
     def post(self, request, *args, **kwargs):
         # todo - validate
@@ -448,7 +483,7 @@ class V2RegistrationViewNonUkEmployer(BaseRegisterView, TradeRemediesAPIClientMi
         return redirect(reverse("v2_register_organisation_further_details"))
 
 
-class V2RegistrationViewOrganisationFurtherDetails(BaseRegisterView, TradeRemediesAPIClientMixin):
+class V2RegistrationViewOrganisationFurtherDetails(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_organisation_further_details.html"
 
     def post(self, request, *args, **kwargs):
@@ -460,7 +495,7 @@ class V2RegistrationViewOrganisationFurtherDetails(BaseRegisterView, TradeRemedi
         return redirect(reverse("v2_register_complete"))
 
 
-class V2RegistrationComplete(BaseRegisterView, TradeRemediesAPIClientMixin):
+class V2RegistrationComplete(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_complete.html"
 
 
