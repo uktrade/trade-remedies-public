@@ -115,7 +115,10 @@ class PublicRequestMiddleware:
                     },
                 )
             except (IndexError, TypeError, NoReverseMatch):
-                back_link_url = reverse("landing")
+                if previous_path == reverse("reset_password_success"):
+                    back_link_url = reverse("reset_password_success")
+                else:
+                    back_link_url = reverse("landing")
         elif request.path == reverse("forgot_password"):
             back_link_url = reverse("login")
         elif request.path == reverse("forgot_password_requested"):

@@ -2,71 +2,68 @@
 {% load static %}
 
 {% block page_title %}
-    Sign in or create account
+Sign in or create account
 {% endblock %}
 
 {% block fieldset_heading %}
-    Sign in to Trade Remedies
+Sign in to Trade Remedies
 {% endblock fieldset_heading %}
 
 {% block extra_css %}
-    <link href="{% static 'v2/css/login.css' %}" rel="stylesheet">
+<link href="{% static 'v2/css/login.css' %}" rel="stylesheet">
 {% endblock extra_css %}
 
 {% block form_content %}
-    <p aria-live="polite" id="password-text" class="sr-only">Password hidden.</p>
-    <p class="govuk-body">
-        To request a Trade Remedies investigation or participate in an existing case, sign in to the Trade
-        Remedies
-        Service.
-    </p>
-    <input type="hidden" name="next" value="{{ next|default:'' }}">
-    {% include 'v2/component_macros/text_input.html' with label="Email address" id="email" name="email" type="email" width="20" %}
-    <div class="input-with-button">
-        {% with form_errors.password as error %}
-            <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
-                <label class="govuk-label" for="password">
-                    Password
-                </label>
-                {% if error %}
-                    <p id="password-error" class="govuk-error-message">
-                        {% for error in error %}
-                            <span class="govuk-visually-hidden">Error:</span> {{ error }}
-                        {% endfor %}
-                    </p>
-                {% endif %}
-                <div class="flex-input-button">
-                    <div class="hold-left">
-                        <input class="govuk-input govuk-input--width-15 {% if error %}govuk-input--error{% endif %}" id="password" name="password" type="password"
-                               autocomplete="off">
-                    </div>
-                    <div class="hold-right" id="show_password_button_container">
-                        <button id="show_password" type="button" role="switch" aria-checked="false"
-                                class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                            <span class="show-text">Show</span>
-                        </button>
-                    </div>
-                </div>
-
-
+<p aria-live="polite" id="password-text" class="sr-only">Password hidden.</p>
+<p>Sign in to request a new investigation or participate in an existing case.</p>
+<input type="hidden" name="next" value="{{ next|default:'' }}">
+{% include 'v2/component_macros/text_input.html' with label="Email address" id="email" name="email" type="email" width="20" %}
+<div class="input-with-button">
+    {% with form_errors.password as error %}
+    <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label" for="password">
+            Password
+        </label>
+        {% if error %}
+        <p id="password-error" class="govuk-error-message">
+            {% for error in error %}
+            <span class="govuk-visually-hidden">Error:</span> {{ error }}
+            {% endfor %}
+        </p>
+        {% endif %}
+        <div class="flex-input-button">
+            <div class="hold-left">
+                <input class="govuk-input govuk-input--width-15 {% if error %}govuk-input--error{% endif %}"
+                       id="password" name="password" type="password"
+                       autocomplete="off">
             </div>
-        {% endwith %}
+            <div class="hold-right" id="show_password_button_container">
+                <button id="show_password" type="button" role="switch" aria-checked="false"
+                        class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    <span class="show-text">Show</span>
+                </button>
+            </div>
+        </div>
+
 
     </div>
-    <p class="govuk-body">
-        <a class="govuk-link" href="{% url 'forgot_password' %}" id="forgot_password_link">Forgot your password?</a>
-    </p>
-    <button class="govuk-button" data-module="govuk-button">
-        Sign in
-    </button>
-    <p class="govuk-body">
-        <a class="govuk-link" href="{% url 'register' %}">Create an account</a>
-    </p>
+    {% endwith %}
+
+</div>
+<p class="govuk-body">
+    <a class="govuk-link" href="{% url 'forgot_password' %}" id="forgot_password_link">Forgot your password?</a>
+</p>
+<button class="govuk-button" data-module="govuk-button">
+    Sign in
+</button>
+<p class="govuk-body">
+    <a class="govuk-link" href="{% url 'register' %}">Create an account</a>
+</p>
 {% endblock form_content %}
 
 {% block scripts %}
 
-    <script type="text/javascript">
+<script type="text/javascript">
         $('#show_password').click(function () {
             if ($(this).attr('aria-checked') === 'false') {
                 $(this).attr('aria-checked', 'true')
@@ -78,6 +75,7 @@
                 $(this).find('span').text('Show')
             }
         })
-    </script>
+
+</script>
 
 {% endblock %}

@@ -181,7 +181,7 @@
 
 @media (min-width: 40.0625em) {
     .govuk-list--bullet > li, .govuk-list--number > li {
-        margin-bottom: 5px
+        margin-bottom: 10px
     }
 }
 

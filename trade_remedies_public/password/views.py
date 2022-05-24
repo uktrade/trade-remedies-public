@@ -71,3 +71,6 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
 
 class ResetPasswordSuccessView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "v2/password/reset_password_success.html"
+
+    def post(self, request, *args, **kwargs):
+        return redirect(reverse("login"))
