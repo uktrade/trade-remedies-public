@@ -6,7 +6,7 @@ from requests import HTTPError
 from trade_remedies_client.exceptions import APIException
 
 
-def v2_error_handling(redirection_url_resolver=None):
+def v2_error_handling(redirection_url_resolver=None):  # noqa: C901
     """Decorator that adds custom APIException V2 error handling to a view method.
     CustomValidationException errors thrown on the API side will be passed back to the public site,
     and errors summary/text will be added to the request.session for rendering in the front-end"""
