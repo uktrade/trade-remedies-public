@@ -18,7 +18,7 @@ class ForgotPasswordRequested(TemplateView, TradeRemediesAPIClientMixin):
         context = self.get_context_data(**kwargs)
         user_pk = request.GET.get("user_pk")
         headers = {
-            "Authorization": f"Token {HEALTH_CHECK_TOKEN}",
+            "Authorization": f"Token {HEALTH_CHECK_TOKEN}",  # /PS-IGNORE
             "X-Origin-Environment": ENVIRONMENT_KEY,
             "X-User-Agent": "",
             "X-Forwarded-For": "",
