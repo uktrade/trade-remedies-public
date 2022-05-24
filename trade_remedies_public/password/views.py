@@ -26,6 +26,8 @@ class ForgotPasswordView(TemplateView, TradeRemediesAPIClientMixin):
 class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
     def get(self, request, user_pk, token, *args, **kwargs):
         token_is_valid = self.trusted_client.validate_password_reset(user_pk=user_pk, token=token)
+        if not token_is_valid:
+            return render(request, "v2/password/reset_password_expired.html")
         error_message = kwargs.get("error", None)
         return render(
             request,
