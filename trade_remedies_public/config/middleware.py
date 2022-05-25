@@ -1,7 +1,7 @@
 import time
 
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, NoReverseMatch
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth.models import AnonymousUser
@@ -23,7 +23,16 @@ NON_2FA_URLS = (
 )
 
 # URLS that do not display the back button
-NON_BACK_URLS = reverse("landing")
+NON_BACK_URLS = [reverse("landing"), reverse("reset_password_success")]
+
+
+def get_evaluated_non_back_urls(kwargs):
+    urls = NON_BACK_URLS
+    try:
+        urls.append(reverse("reset_password", kwargs=kwargs))
+    except NoReverseMatch:
+        pass
+    return urls
 
 
 class APIUserMiddleware:
@@ -91,6 +100,20 @@ class APIUserMiddleware:
             request.session["back_link_url"] = reverse("landing")
         response = self.get_response(request)
         return response
+
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        url_kwargs = view_kwargs
+        request.session["show_back_button"] = request.path not in get_evaluated_non_back_urls(
+            url_kwargs
+        )
+        back_link_url = reverse("landing")
+        if request.path == reverse("login"):
+            back_link_url = reverse("landing")
+        elif request.path == reverse("forgot_password"):
+            back_link_url = reverse("login")
+        elif request.path == reverse("forgot_password_requested"):
+            back_link_url = reverse("forgot_password")
+        request.session["back_link_url"] = back_link_url
 
 
 class SessionTimeoutMiddleware(MiddlewareMixin):

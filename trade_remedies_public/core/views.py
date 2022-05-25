@@ -210,21 +210,27 @@ class PublicCaseView(TemplateView, TradeRemediesAPIClientMixin):
 
     def get(self, request, case_number, submission_id=None, *args, **kwargs):
         case = self.trusted_client.get_public_case_record(case_number)
-        case_submissions = self.trusted_client.get_submissions_public(
-            case_id=case.get("id"), private=False, get_global=True
-        )
-        case_submissions = [
-            submission for submission in case_submissions if submission.get("issued_at")
-        ]
-        case["submissions"] = sorted(
-            case_submissions, key=lambda su: su.get("issued_at") or "", reverse=True
-        )
-        # Get a specific set of states for rendering
-        fields = ["PRODUCT_DESCRIPTION", "TARIFF_CLASSIFICATION", "REGISTRATION_OF_INTEREST_TIMER"]
-        case_state = self.trusted_client.get_case_state(
-            case_ids=[case.get("id")], fields=fields
-        ).get(case.get("id"))
-        return render(request, self.template_name, {"case": case, "state": case_state})
+        if case:
+            case_submissions = self.trusted_client.get_submissions_public(
+                case_id=case.get("id"), private=False, get_global=True
+            )
+            case_submissions = [
+                submission for submission in case_submissions if submission.get("issued_at")
+            ]
+            case["submissions"] = sorted(
+                case_submissions, key=lambda su: su.get("issued_at") or "", reverse=True
+            )
+            # Get a specific set of states for rendering
+            fields = [
+                "PRODUCT_DESCRIPTION",
+                "TARIFF_CLASSIFICATION",
+                "REGISTRATION_OF_INTEREST_TIMER",
+            ]
+            case_state = self.trusted_client.get_case_state(
+                case_ids=[case.get("id")], fields=fields
+            ).get(case.get("id"))
+            return render(request, self.template_name, {"case": case, "state": case_state})
+        return redirect(reverse("public_cases"))
 
 
 @method_decorator(cache_page(settings.PUBLIC_FILE_CACHE_MINUTES * 60), name="dispatch")

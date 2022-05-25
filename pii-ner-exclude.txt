@@ -1266,14 +1266,10 @@ f'<li><a href="{spl_crum[1]}">{spl_crum[0]}</a></li
 sqlite:///db.sqlite3
 received_at
 f"""<a class="button
-class="govuk-button__start
-f'{self.live_server_url}/
-sign_in_button
-Department
-International Trade
-Talkback
+‘cookies�
 form_errors.error_summaries
-Remedies Authority
+Forgotten Password
+class="govuk-button__start
 Trade Remedies</h2>
 >View cookies</a>
 height="30" width="36">
@@ -1282,41 +1278,8 @@ BETA
 viewBox="0 0 483.2
 height="17
 8.7 39.7 21.8l42.7-27.2A97.63
-integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=
-name="2fa_code" type="text
-it.{%
-the Trade Remedies Service to:</p
-e){"object"==typeof
-NodeList.prototype.forEach)return
-n);if(null===t||!(t
-Object
-Function.prototype.toString
-u(t){try{return
-n(t){if("function"!=typeof
-h.call(v
-m.apply(e
-a=[],l={},c=0,t=0,e
-SyntaxError('String
-arguments);for(var
-n=0,o
-Element||window
-this&&"classList"in document.documentElement&&"Element"in
-this&&"classList"in
-DOMTokenList.call(o
-function(){return t}),delete e[n],t},!0)};h(t
-HTMLLinkElement,"relList","rel"),h(t
-HTMLAnchorElement,"relList","rel"),h(t
-HTMLAreaElement,"relList","rel")}(this)}.call("object"==typeof window&&window||"object"==typeof self&&self||"object"==typeof global&&global||{}),n.prototype.init=
-i.attributes.item(b).nodeValue;f.setAttribute(y
-this.isExpanded(t);this.setExpanded(!e
-function(t){e.setExpanded(n
-t.querySelectorAll('input[type="radio"]')}function
-t.target;32===t.keyCode&&"summary"===e.nodeName.toLowerCase()&&t.preventDefault()}),t.addEventListener("click",n)},r.prototype.defaults={characterCountAttribute:"data-maxlength",wordCountAttribute:"data-maxwords"},r.prototype.init=
-this.defaults.characterCountAttribute;this.options.maxwords&&(o
-hint"),n.classList.add("govuk
-document;s(e.querySelectorAll('[data-module="govuk-button"]'),function(t){new
-l(e.querySelector('[data-module="govuk-error
-u(e.querySelector('[data-module="govuk-header"]')).init(),s(e.querySelectorAll('[data-module="govuk
-c(t).init()}),s(e.querySelectorAll('[data-module="govuk
-h(e.querySelector('[data-module="govuk-skip
-CharacterCount
+id="password
+aria-describedby="password-hints
+this).val().length
+length").addClass("valid
+letter").addClass("valid
