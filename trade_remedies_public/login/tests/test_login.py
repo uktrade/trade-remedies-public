@@ -1,4 +1,3 @@
-from django.test.testcases import LiveServerTestCase
 from django.urls import reverse
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options

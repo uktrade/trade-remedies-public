@@ -1,4 +1,8 @@
 Invite 3rd party{%
+name="2fa_code" type="text
+the Trade Remedies Service to:</p
+Remedies Authority
+sign_in_button
 contact.organisation.companies_house_id
 Invite 3rd Party
 the Third Party's
