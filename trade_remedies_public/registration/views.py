@@ -439,6 +439,10 @@ class V2RegistrationViewStart(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     form_class = RegistrationStartForm
     next_url_resolver = "v2_register_set_password"
 
+    def get(self, request, *args, **kwargs):
+        self.reset_session(request)
+        return super().get(request, *args, **kwargs)
+
 
 class V2RegistrationViewSetPassword(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_set_password.html"

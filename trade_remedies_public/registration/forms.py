@@ -69,20 +69,26 @@ class UkEmployerForm(CustomValidationForm):
     )
 
     def clean(self):
-        if self.data["input-autocomplete"] and not self.cleaned_data.get("company_data"):
+        if self.data.get("input-autocomplete") and not self.cleaned_data.get("company_data"):
             # The user has entered something in the autocomplete box but not selected an option
             self.add_error('company_data', "companies_house_not_selected")
-        self.cleaned_data["country"] = "GB"  # Always going to be a UK company
-        # We want to extract the postcode and put it in a recognisable field, so we don't have to
-        # duplicate the nested dictionary for a NON-UK company, as the company_data variable is fed
-        # to the same create_or_update_organisation() method on the API
-        self.cleaned_data["post_code"] = self.cleaned_data["company_data"]["address"]["postal_code"]
-        # In fact, this goes for all of the fields, we want to extract them so they look the same
-        # as if we came from the non-UK company page
-        self.cleaned_data["address_snippet"] = self.cleaned_data["company_data"]["address_snippet"]
-        self.cleaned_data["company_number"] = self.cleaned_data["company_data"]["company_number"]
-        self.cleaned_data["company_name"] = self.cleaned_data["company_data"]["title"]
-        return self.cleaned_data
+        else:
+            if self.cleaned_data.get("company_data"):
+                # We only want to progress if they've selected something from the companies house drop
+                self.cleaned_data["country"] = "GB"  # Always going to be a UK company
+                # We want to extract the postcode and put it in a recognisable field, so we don't have to
+                # duplicate the nested dictionary for a NON-UK company, as the company_data variable is fed
+                # to the same create_or_update_organisation() method on the API
+                self.cleaned_data["post_code"] = self.cleaned_data["company_data"]["address"][
+                    "postal_code"]
+                # In fact, this goes for all of the fields, we want to extract them so they look the same
+                # as if we came from the non-UK company page
+                self.cleaned_data["address_snippet"] = self.cleaned_data["company_data"][
+                    "address_snippet"]
+                self.cleaned_data["company_number"] = self.cleaned_data["company_data"][
+                    "company_number"]
+                self.cleaned_data["company_name"] = self.cleaned_data["company_data"]["title"]
+                return self.cleaned_data
 
 
 class NonUkEmployerForm(CustomValidationForm):
