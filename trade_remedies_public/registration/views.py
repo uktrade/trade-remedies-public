@@ -483,6 +483,7 @@ class V2RegistrationViewOrganisationFurtherDetails(V2BaseRegisterView, TradeReme
     template_name = "v2/registration/registration_organisation_further_details.html"
     form_class = OrganisationFurtherDetailsForm
 
+    @v2_error_handling()
     def form_valid(self, form):
         # we're done, let's create the new user
         self.update_session(self.request, form.cleaned_data)
