@@ -14,13 +14,21 @@
 {% endblock %}
 
 {% block form_content %}
-    <div class="govuk-form-group">
-        <div id="sort-hint" class="govuk-hint">
-            Search the Companies House register for your employer
+    {% with form_errors.company_data as error %}
+        <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+            <div id="sort-hint" class="govuk-hint">
+                Search the Companies House register for your employer
+            </div>
+            {% if error %}
+                <p class="govuk-error-message">
+                    {% for error in error %}
+                        <span class="govuk-visually-hidden">Error:</span> {{ error }}<br>
+                    {% endfor %}
+                </p>
+            {% endif %}
+            <div id="company_search_container"></div>
         </div>
-        <div id="company_search_container"></div>
-    </div>
-
+    {% endwith %}
     <div style="display:none;" id="selected_company_wrapper">
         <p class="govuk-body">Check the organisation details below carefully. If it does not match the registered
             details of your employer,

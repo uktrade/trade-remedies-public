@@ -23,7 +23,9 @@ from core.validators import (
 )
 from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
 
-from trade_remedies_public.registration.forms import PasswordForm, RegistrationStartForm, \
+from trade_remedies_public.registration.forms import NonUkEmployerForm, \
+    OrganisationFurtherDetailsForm, PasswordForm, \
+    RegistrationStartForm, \
     TwoFactorChoiceForm, UkEmployerForm, YourEmployerForm
 
 
@@ -422,7 +424,7 @@ class V2BaseRegisterView(FormView):
 
     def form_invalid(self, form):
         form.assign_errors_to_request(self.request)
-        return redirect(self.request.path)
+        return super().form_invalid(form)
 
     def form_valid(self, form):
         self.update_session(self.request, form.cleaned_data)
@@ -455,47 +457,38 @@ class V2RegistrationViewYourEmployer(V2BaseRegisterView, TradeRemediesAPIClientM
     form_class = YourEmployerForm
 
     def get_next_url(self, form=None):
-        if form.cleaned_data["uk_employer"]:
+        if form.cleaned_data["uk_employer"] == "yes":
             return reverse("v2_register_your_uk_employer")
         else:
             return reverse("v2_register_your_non_uk_employer")
 
+
 class V2RegistrationViewUkEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_your_uk_employer.html"
     form_class = UkEmployerForm
-
-    def post(self, request, *args, **kwargs):
-        # todo - validate
-        company_data = json.loads(request.POST["company_data"])
-        company_data["country"] = "GB"  # Always going to be a UK company
-        company_data["post_code"] = company_data["address"]["postal_code"]
-        self.update_session(request, company_data)
-        return redirect(reverse("v2_register_organisation_further_details"))
+    next_url_resolver = "v2_register_organisation_further_details"
 
 
 class V2RegistrationViewNonUkEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_your_non_uk_employer.html"
-    form_class = UkEmployerForm
-
-    def post(self, request, *args, **kwargs):
-        # todo - validate
-        self.update_session(request, request.POST)
-        return redirect(reverse("v2_register_organisation_further_details"))
+    next_url_resolver = "v2_register_organisation_further_details"
+    form_class = NonUkEmployerForm
 
 
 class V2RegistrationViewOrganisationFurtherDetails(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_organisation_further_details.html"
+    form_class = OrganisationFurtherDetailsForm
 
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
         # we're done, let's create the new user
-        self.update_session(request, request.POST)
-        registration_data = {"registration_data": json.dumps(request.session["registration"])}
+        self.update_session(self.request, form.cleaned_data)
+        registration_data = {"registration_data": json.dumps(self.request.session["registration"])}
         response = self.trusted_client.v2_register(registration_data)
-        self.update_session(request, response)
+        self.update_session(self.request, response)
         return redirect(reverse("v2_register_complete"))
 
 
-class V2RegistrationComplete(V2BaseRegisterView, TradeRemediesAPIClientMixin):
+class V2RegistrationComplete(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_complete.html"
 
 

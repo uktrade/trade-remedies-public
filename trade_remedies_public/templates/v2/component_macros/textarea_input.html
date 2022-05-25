@@ -1,0 +1,24 @@
+{% load get_item %}
+
+{% with form_errors|get_item:id as error %}
+    <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+        <label class="govuk-label" for="{{ id }}">
+            {{ label }}
+        </label>
+        {% if error %}
+            <p id="{{ name }}-error" class="govuk-error-message">
+                {% for error in error %}
+                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                {% endfor %}
+            </p>
+        {% endif %}
+        <textarea class="govuk-textarea govuk-input--width-20" id="{{ id }}"
+                  name="{{ name }}" rows="{{ rows }}"
+                  {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+        >
+        {% if form.cleaned_data|get_item:name %}
+            {{ form.cleaned_data|get_item:name }}
+        {% endif %}
+        </textarea>
+    </div>
+{% endwith %}

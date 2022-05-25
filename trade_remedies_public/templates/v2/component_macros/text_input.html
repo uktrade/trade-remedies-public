@@ -1,7 +1,7 @@
 {% load get_item %}
 
 {% with form_errors|get_item:id as error %}
-    <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+    <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}
         {% if form_group_classes %}{{ form_group_classes }}{% endif %}">
         <label class="govuk-label {% if strong %}govuk-label--s{% endif %}" for="{{ id }}">
             {{ label }}
@@ -20,6 +20,10 @@
         {% endif %}
         <input class="govuk-input govuk-input--width-{{ width }} {% if error %}govuk-input--error{% endif %}"
                id="{{ id }}" name="{{ name }}" type="{{ type }}" {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
-               autocomplete="off">
+               autocomplete="off"
+                {% if form.cleaned_data|get_item:name %}
+                        value="{{ form.cleaned_data|get_item:name }}"
+                {% endif %}
+        >
     </div>
 {% endwith %}

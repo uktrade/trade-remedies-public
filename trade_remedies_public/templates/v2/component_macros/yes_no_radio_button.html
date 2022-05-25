@@ -1,7 +1,7 @@
 {% load get_item %}
 
 {% with form_errors|get_item:name as error %}
-    <div class="govuk-form-group  {% if error %}govuk-form-group--error{% endif %}">
+    <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
                 Is your employer a registered UK company?

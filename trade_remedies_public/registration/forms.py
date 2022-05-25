@@ -4,19 +4,18 @@ from django.core.validators import RegexValidator
 
 from config.forms import CustomValidationForm
 from django_countries.fields import CountryField
+from django_countries.data import COUNTRIES
 
 
 class RegistrationStartForm(CustomValidationForm):
-    name = forms.CharField(error_messages={"required": "no_name_entered"}, required=True)
+    name = forms.CharField(error_messages={"required": "no_name_entered"})
     email = forms.CharField(
         error_messages={"required": "no_email_entered"},
         validators=[
             RegexValidator(r"\w+@\w+", "email_not_valid"),
-        ],
-        required=True
+        ]
     )
     terms_and_conditions_accept = forms.BooleanField(
-        required=True,
         error_messages={"required": "terms_and_conditions_not_accepted"}
     )
 
@@ -35,16 +34,17 @@ class PasswordForm(CustomValidationForm):
 class TwoFactorChoiceForm(CustomValidationForm):
     two_factor_choice = forms.ChoiceField(
         choices=(("mobile", "mobile"), ("email", "email")),
-        required=True,
         error_messages={"required": "no_two_factor_selected"},
     )
-    mobile_country_code = CountryField().formfield()
+    mobile_country_code = CountryField().formfield(required=False)
+    # mobile_country_code = forms.ChoiceField(choices=sorted(COUNTRIES.items()))
     mobile = forms.CharField(
         max_length=13,
         validators=[
             RegexValidator(r"[^0-9]", "invalid_mobile_number", inverse_match=True),
         ],
-        error_messages={"max_length": "invalid_mobile_number"}
+        error_messages={"max_length": "invalid_mobile_number"},
+        required=False
     )
 
     def clean(self):
@@ -55,14 +55,73 @@ class TwoFactorChoiceForm(CustomValidationForm):
                 raise ValidationError(message="no_mobile_entered")
         return self.cleaned_data
 
+
 class YourEmployerForm(CustomValidationForm):
-    uk_employer = forms.BooleanField(
-        required=True,
-        error_messages={"required": "organisation_registered_country_not_selected"}
+    uk_employer = forms.ChoiceField(
+        error_messages={"required": "organisation_registered_country_not_selected"},
+        choices=(("no", False), ("yes", True))
     )
+
 
 class UkEmployerForm(CustomValidationForm):
     company_data = forms.JSONField(
-        required=True,
-        error_messages={"required": "organisation_registered_country_not_selected"}
+        error_messages={"required": "companies_house_not_searched"}
+    )
+
+    def clean(self):
+        if self.data["input-autocomplete"] and not self.cleaned_data.get("company_data"):
+            # The user has entered something in the autocomplete box but not selected an option
+            self.add_error('company_data', "companies_house_not_selected")
+        self.cleaned_data["country"] = "GB"  # Always going to be a UK company
+        # We want to extract the postcode and put it in a recognisable field, so we don't have to
+        # duplicate the nested dictionary for a NON-UK company, as the company_data variable is fed
+        # to the same create_or_update_organisation() method on the API
+        self.cleaned_data["post_code"] = self.cleaned_data["company_data"]["address"]["postal_code"]
+        # In fact, this goes for all of the fields, we want to extract them so they look the same
+        # as if we came from the non-UK company page
+        self.cleaned_data["address_snippet"] = self.cleaned_data["company_data"]["address_snippet"]
+        self.cleaned_data["company_number"] = self.cleaned_data["company_data"]["company_number"]
+        self.cleaned_data["company_name"] = self.cleaned_data["company_data"]["title"]
+        return self.cleaned_data
+
+
+class NonUkEmployerForm(CustomValidationForm):
+    name = forms.CharField(
+        error_messages={"required": "no_company_name_entered"}
+    )
+    address_snippet = forms.CharField(
+        error_messages={"required": "no_company_address_entered"}
+    )
+    post_code = forms.CharField(required=False)
+    company_number = forms.CharField(required=False)
+    country = CountryField().formfield(
+        error_messages={"required": "no_company_country_selected"}
+    )
+
+    def clean(self):
+        if not self.cleaned_data.get("company_number") and not self.cleaned_data.get("post_code"):
+            self.add_error('company_number', "no_company_post_code_or_number_entered")
+            self.add_error('post_code', "no_company_post_code_or_number_entered")
+        return self.cleaned_data
+
+
+class OrganisationFurtherDetailsForm(CustomValidationForm):
+    company_website = forms.URLField(
+        required=False,
+        error_messages={"invalid": "incorrect_url"}
+    )
+    company_vat_number = forms.CharField(required=False)
+    company_eori_number = forms.CharField(
+        required=False,
+        max_length=17,
+        error_messages={"max_length": "incorrect_eori_format"},
+        validators=[
+            RegexValidator(r"[a-zA-Z]{2}[0-9]{1,15}", "incorrect_eori_format")
+        ]
+    )
+    company_duns_number = forms.CharField(
+        required=False,
+        validators=[
+            RegexValidator(r"^[0-9]{9}$", "incorrect_duns_format")
+        ]
     )
