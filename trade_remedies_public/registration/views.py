@@ -18,7 +18,7 @@ from django.views.generic import FormView, TemplateView
 from django_countries import countries
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from trade_remedies_public.registration.forms import (
+from registration.forms import (
     NonUkEmployerForm,
     OrganisationFurtherDetailsForm,
     PasswordForm,
