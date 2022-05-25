@@ -1,4 +1,4 @@
-git+https://github.com/uktrade/trade-remedies-client.git
+git+https://github.com/uktrade/trade-remedies-client.git@v2feature/trsv2-206/v2-registration-journey-unhappy-path#egg=trade-remedies-client
 boto3==1.17.89
 django-basicauth==0.5.2
 django-countries==7.2.1
