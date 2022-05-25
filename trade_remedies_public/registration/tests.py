@@ -3,15 +3,16 @@ import json
 from django.test import TestCase
 from django.urls import reverse
 
-from .forms import *
+from forms import (RegistrationStartForm, TwoFactorChoiceForm, UkEmployerForm, YourEmployerForm,
+                   PasswordForm, NonUkEmployerForm, OrganisationFurtherDetailsForm)
 
 
 class TestRegistrationStartForm(TestCase):
     def setUp(self) -> None:
         self.mock_data = {
-            "email": "test@example.com",
+            "email": "test@example.com",  # /PS-IGNORE
             "name": "test",
-            "terms_and_conditions_accept": "yes"
+            "terms_and_conditions_accept": "yes",
         }
 
     def test_start_form_email(self):
@@ -36,7 +37,7 @@ class TestRegistrationStartForm(TestCase):
 
 class TestPasswordForm(TestCase):
     def test_password_valid(self):
-        form = PasswordForm(data={"password": "J438jfd!@£xfk1:)"})
+        form = PasswordForm(data={"password": "J438jfd!@£xfk1:)"})  # /PS-IGNORE
         self.assertTrue(form.is_valid())
 
     def test_password_invalid_no_uppercase(self):
@@ -61,7 +62,7 @@ class TestTwoFactorChoiceForm(TestCase):
         self.mock_data = {
             "two_factor_choice": "mobile",
             "mobile_country_code": "GB",
-            "mobile": "02072222222"
+            "mobile": "02072222222",
         }
 
     def test_valid_form(self):
@@ -69,9 +70,11 @@ class TestTwoFactorChoiceForm(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_valid_email_selected(self):
-        self.mock_data.update({
-            "two_factor_choice": "email",
-        })
+        self.mock_data.update(
+            {
+                "two_factor_choice": "email",
+            }
+        )
         self.mock_data.pop("mobile_country_code")
         self.mock_data.pop("mobile")
         form = TwoFactorChoiceForm(data=self.mock_data)
@@ -115,40 +118,32 @@ class TestYourEmployerForm(TestCase):
 class TestUkEmployerForm(TestCase):
     def setUp(self) -> None:
         self.mock_data = {
-            "company_data": json.dumps({
-                'address': {
-                    'postal_code': 'NNN NNN',
-                    'locality': 'London',
-                    'address_line_1': '1 TEST ROAD',
-                    'country': 'United Kingdom',
-                    'premises': '1'
-                },
-                'kind': 'searchresults#company',
-                'title': 'TEST COMPANY',
-                'address_snippet': '1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM',
-                'company_number': '000000',
-            })
+            "company_data": json.dumps(
+                {
+                    "address": {
+                        "postal_code": "NNN NNN",
+                        "locality": "London",
+                        "address_line_1": "1 TEST ROAD",
+                        "country": "United Kingdom",
+                        "premises": "1",
+                    },
+                    "kind": "searchresults#company",
+                    "title": "TEST COMPANY",
+                    "address_snippet": "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM",
+                    "company_number": "000000",
+                }
+            )
         }
 
     def test_valid_form(self):
         form = UkEmployerForm(data=self.mock_data)
         self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data["country"], "GB")
         self.assertEqual(
-            form.cleaned_data["country"],
-            "GB"
+            form.cleaned_data["address_snippet"], "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM"
         )
-        self.assertEqual(
-            form.cleaned_data["address_snippet"],
-            "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM"
-        )
-        self.assertEqual(
-            form.cleaned_data["company_number"],
-            "000000"
-        )
-        self.assertEqual(
-            form.cleaned_data["company_name"],
-            "TEST COMPANY"
-        )
+        self.assertEqual(form.cleaned_data["company_number"], "000000")
+        self.assertEqual(form.cleaned_data["company_name"], "TEST COMPANY")
 
     def test_invalid_form_not_selected(self):
         self.mock_data["input-autocomplete"] = "trying to search for test"
@@ -169,7 +164,7 @@ class TestNonUkEmployerForm(TestCase):
             "address_snippet": "1 test road, london, nnnnnn",
             "post_code": "nnnnnnn",
             "company_number": "000000",
-            "country": "GB"
+            "country": "GB",
         }
 
     def test_valid(self):
@@ -246,41 +241,23 @@ class TestOrganisationFurtherDetailsForm(TestCase):
 
 class TestV2BaseRegisterView(TestCase):
     def test_session_update(self):
-        self.assertNotIn(
-            "registration",
-            self.client.session
-        )
+        self.assertNotIn("registration", self.client.session)
         post_data = {
-            "email": "test@example.com",
+            "email": "test@example.com",  # /PS-IGNORE
             "name": "test",
-            "terms_and_conditions_accept": True
+            "terms_and_conditions_accept": True,
         }
-        self.client.post(
-            reverse("v2_register_start"),
-            data=post_data
-        )
-        self.assertIn(
-            "registration",
-            self.client.session
-        )
-        self.assertEqual(
-            self.client.session["registration"],
-            post_data
-        )
+        self.client.post(reverse("v2_register_start"), data=post_data)
+        self.assertIn("registration", self.client.session)
+        self.assertEqual(self.client.session["registration"], post_data)
 
     def test_V2RegistrationViewYourEmployer_next_url(self):
-        response = self.client.post(reverse("v2_register_your_employer"), data={
-            "uk_employer": "yes"
-        })
-        self.assertEqual(
-            response.url,
-            reverse("v2_register_your_uk_employer")
+        response = self.client.post(
+            reverse("v2_register_your_employer"), data={"uk_employer": "yes"}
         )
+        self.assertEqual(response.url, reverse("v2_register_your_uk_employer"))
 
-        response = self.client.post(reverse("v2_register_your_employer"), data={
-            "uk_employer": "no"
-        })
-        self.assertEqual(
-            response.url,
-            reverse("v2_register_your_non_uk_employer")
+        response = self.client.post(
+            reverse("v2_register_your_employer"), data={"uk_employer": "no"}
         )
+        self.assertEqual(response.url, reverse("v2_register_your_non_uk_employer"))

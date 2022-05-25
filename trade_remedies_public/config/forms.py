@@ -23,7 +23,7 @@ class CustomValidationForm(forms.Form, TradeRemediesAPIClientMixin):
                             # only one. Because some of the errors have multiple values for the
                             # field key, i.e. the same text should be displayed on top of multiple
                             # fields
-                            fields = (field, )
+                            fields = (field,)
                         for field in fields:
                             try:
                                 request.session["form_errors"][field].append(error_text)
