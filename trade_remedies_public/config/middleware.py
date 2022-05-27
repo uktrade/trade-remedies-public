@@ -126,7 +126,7 @@ class PublicRequestMiddleware:
                 back_link_url = reverse(
                     "reset_password",
                     kwargs={
-                        "user_pk": previous_path.split("/")[-3],
+                        "request_id": previous_path.split("/")[-3],
                         "token": previous_path.split("/")[-2],
                     },
                 )

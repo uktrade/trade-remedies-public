@@ -142,7 +142,7 @@ urlpatterns = [
         name="forgot_password",
     ),
     path(
-        "accounts/password/reset/<uuid:user_pk>/<str:token>/",
+        "accounts/password/reset/<uuid:request_id>/<str:token>/",
         password_views.ResetPasswordView.as_view(),
         name="reset_password",
     ),
