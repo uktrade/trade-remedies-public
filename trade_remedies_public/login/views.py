@@ -1,6 +1,7 @@
 # Views to handle the login and logout functionality
 
 from core.utils import internal_redirect
+from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
@@ -36,7 +37,6 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
         if response and response.get("token"):
             request.session.clear()
             request.session["application"] = {}
-            request.session["force_2fa"] = True  # Force 2fa for every public login
             request.session["token"] = response["token"]
             request.session["user"] = response["user"]
             redirection_url = request.POST.get("next", reverse("dashboard"))
@@ -44,9 +44,14 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
                 request.session["organisation_id"] = request.session["user"]["organisations"][0][
                     "id"
                 ]
-            # sending the two_factor code
-            r = Client(response["token"]).two_factor_request()
-            request.session["two_factor_delivery_type"] = r["delivery_type"]
+            if settings.USE_2FA:
+                # sending the two_factor code if necessary
+                r = Client(response["token"]).two_factor_request()
+                request.session["two_factor_delivery_type"] = r["delivery_type"]
+                request.session["force_2fa"] = True
+            else:
+                request.session["force_2fa"] = False
+
             request.session.modified = True
             request.session.cycle_key()
             return internal_redirect(redirection_url, reverse("dashboard"))

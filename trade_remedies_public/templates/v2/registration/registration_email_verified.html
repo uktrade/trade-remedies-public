@@ -15,7 +15,7 @@
 
         <p class="govuk-body">Your email address has been verified and your account is fully activated.</p>
         <p class="govuk-body">You can now apply to take part in a trade remedy investigation.</p>
-        <a class="govuk-button" data-module="govuk-button" href="{% url 'landing' %}">
+        <a class="govuk-button" data-module="govuk-button" href="{% if request.user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'landing' %}{% endif %}">
             Continue
         </a>
     </div>

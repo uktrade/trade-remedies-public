@@ -143,8 +143,14 @@
         <ul class="login-nav__list">
             {% if user.is_authenticated %}
                 {# The user is logged in #}
+                <li class="login-nav__list-item">
+                    <a href="{% url 'logout' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link"
+                       id="sign_out_link_header">
+                        Sign out
+                    </a>
+                </li>
             {% else %}
-                {# The user is not logged on #}
+                {# The user is not logged in #}
                 <li class="login-nav__list-item">
                     <a href="{% url 'login' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link"
                        id="sign_in_link_header">
