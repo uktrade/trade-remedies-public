@@ -1,11 +1,8 @@
 # Views to handle the forgotten and reset password functionality
-from http import HTTPStatus
-
 import requests
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
-from requests import HTTPError
 
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
