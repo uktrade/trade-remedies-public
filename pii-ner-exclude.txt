@@ -1,3 +1,7 @@
+charset="utf-8"/
+information{% endblock %
+Logout
+Licence</a></p>
 Invite 3rd party{%
 name="2fa_code" type="text
 the Trade Remedies Service to:</p

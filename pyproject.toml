@@ -51,6 +51,7 @@ ignore = '''
     | E231
     | F841
     | E722
+    | C901
 )/
 '''
 application-import-names = '''
