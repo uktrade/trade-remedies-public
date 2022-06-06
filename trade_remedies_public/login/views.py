@@ -66,7 +66,7 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
 
     @v2_error_handling()
     def post(self, request, *args, **kwargs):
-        two_factor_code = request.POST["2fa_code"]
+        two_factor_code = request.POST["code"]
         response = self.client(request.user).two_factor_auth(
             code=two_factor_code,
             user_agent=request.META["HTTP_USER_AGENT"],
