@@ -17,6 +17,12 @@ from .decorators import v2_error_handling
 class LandingView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "v2/landing.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse("dashboard"))
+        else:
+            return super().dispatch(request, *args, **kwargs)
+
 
 class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/login/login.html"
