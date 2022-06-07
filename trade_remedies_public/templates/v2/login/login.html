@@ -76,6 +76,10 @@
                 $(this).find('span').text('Show')
             }
         })
+
+        {% if request.session.login_email %}
+            $("#email").val("{{ request.session.login_email }}")
+        {% endif %}
     </script>
 
 {% endblock %}

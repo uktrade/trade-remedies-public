@@ -24,6 +24,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
     @v2_error_handling()
     def post(self, request, *args, **kwargs):
         email = request.POST["email"]
+        request.session["login_email"] = email
         password = request.POST["password"]
         invitation_code = kwargs.get("invitation_code", None)
         response = self.trusted_client.authenticate(
