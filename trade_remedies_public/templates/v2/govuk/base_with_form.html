@@ -13,7 +13,7 @@
                     <ul class="govuk-list govuk-error-summary__list">
                         {% for error in form_errors.error_summaries %}
                             <li>
-                                <p>{{ error }}</p>
+                                <a href="#{{ error.0 }}">{{ error.1 }}</a>
                             </li>
                         {% endfor %}
                     </ul>
@@ -21,13 +21,9 @@
             </div>
         {% endif %}
         <form method="post" novalidate="novalidate">
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                    <h1 class="govuk-fieldset__heading">
-                        {% block fieldset_heading %}{% endblock fieldset_heading %}
-                    </h1>
-                </legend>
-            </fieldset>
+            <h1 class="govuk-heading-xl">
+                {% block fieldset_heading %}{% endblock fieldset_heading %}
+            </h1>
             {% csrf_token %}
             {% block form_content %}{% endblock form_content %}
         </form>

@@ -16,9 +16,7 @@
 {% block form_content %}
     <p aria-live="polite" id="password-text" class="sr-only">Password hidden.</p>
     <p class="govuk-body">
-        To request a Trade Remedies investigation or participate in an existing case, sign in to the Trade
-        Remedies
-        Service.
+        Sign in to request a new investigation or participate in an existing case.
     </p>
     <input type="hidden" name="next" value="{{ next|default:'' }}">
     {% include 'v2/component_macros/text_input.html' with label="Email address" id="email" name="email" type="email" width="20" %}
@@ -54,13 +52,13 @@
 
     </div>
     <p class="govuk-body">
-        <a class="govuk-link" href="{% url 'forgot_password' %}" id="forgot_password_link">Forgotten password</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'forgot_password' %}">Forgot your password?</a>
     </p>
     <button class="govuk-button" data-module="govuk-button">
         Sign in
     </button>
     <p class="govuk-body">
-        <a class="govuk-link" href="{% url 'register' %}">Create an account</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'register' %}">Create an account</a>
     </p>
 {% endblock form_content %}
 
@@ -78,6 +76,10 @@
                 $(this).find('span').text('Show')
             }
         })
+
+        {% if request.session.login_email %}
+            $("#email").val("{{ request.session.login_email }}")
+        {% endif %}
     </script>
 
 {% endblock %}

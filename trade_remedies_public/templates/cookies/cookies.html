@@ -34,8 +34,8 @@
                 <input
                     type="radio"
                     id="accept_gi_yes"
-                    name="accept_gi"
-                    value="on"
+                    name="cookies"
+                    value="accept"
                     {% if cookie_policy.accept_gi == 'on' %}checked{% endif %}
                 />
                 <label for="case_unassigned_{{forloop.counter}}" class="form-label">On</label>
@@ -44,8 +44,8 @@
                 <input
                     type="radio"
                     id="accept_gi_no"
-                    name="accept_gi"
-                    value="off"
+                    name="cookies"
+                    value="reject"
                     {% if cookie_policy.accept_gi == 'off' %}checked{% endif %}
                 />
                 <label for="case_unassigned_{{forloop.counter}}" class="form-label">Off</label>
