@@ -29,7 +29,12 @@ urlpatterns = [
     path("health/", core_views.HealthCheckView.as_view(), name="healthcheck"),
     path("holding_page/", core_views.HoldingView.as_view(), name="holdingpage"),
     # path('start/', core_views.StartView.as_view(), name='start'),
-    path("twofactor/", core_views.TwoFactorView.as_view(), name="2fa"),
+    path("twofactor/", login_views.TwoFactorView.as_view(), name="two_factor"),
+    path(
+        "request_new_two_factor/",
+        login_views.RequestNewTwoFactorView.as_view(),
+        name="request_new_two_factor",
+    ),
     path("email/verify/", core_views.EmailVerifyView.as_view(), name="email_verify"),
     path(
         "public/cases/", core_views.PublicCaseListView.as_view(archive=False), name="public_cases"
@@ -118,7 +123,6 @@ urlpatterns = [
         register_views.AccessibilityStatementView.as_view(),
         name="accessibility_statement",
     ),
-    path("accounts/login/choice/", login_views.LoginChoiceView.as_view(), name="login_choice"),
     path("accounts/login/", login_views.LoginView.as_view(), name="login"),
     path(
         "accounts/login/<uuid:code>/<uuid:case_id>/",

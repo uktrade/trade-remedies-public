@@ -22,7 +22,7 @@ def user_context(request):
         "token": token,
         "current_organisation": None,
         "session": request.session,
-        "within_2fa": request.path == reverse("2fa"),
+        "within_2fa": request.path == reverse("two_factor"),
         "within_verify": request.path == reverse("email_verify"),
     }
     request_kwargs = request.resolver_match.kwargs if request.resolver_match else {}
