@@ -22,7 +22,7 @@
         {% endif %}
         <form method="post" novalidate="novalidate">
             <h1 class="govuk-heading-xl">
-                {% block fieldset_heading %}{% endblock fieldset_heading %}
+                {% block heading %}{% endblock heading %}
             </h1>
             {% csrf_token %}
             {% block form_content %}{% endblock form_content %}

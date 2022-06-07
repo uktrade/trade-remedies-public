@@ -6,7 +6,7 @@ from requests import HTTPError
 from trade_remedies_client.exceptions import APIException
 
 
-def v2_error_handling(redirection_url_resolver=None):
+def v2_error_handling(redirection_url_resolver=None):  # noqa: C901
     """Decorator that adds custom APIException V2 error handling to a view method.
     CustomValidationException errors thrown on the API side will be passed back to the public site,
     and errors summary/text will be added to the request.session for rendering in the front-end"""
@@ -20,27 +20,19 @@ def v2_error_handling(redirection_url_resolver=None):
             except (APIException, HTTPError) as exc:
                 if hasattr(exc, "response"):
                     request.request.session["form_errors"] = exc.response.json()
-                    request.request.session.is_modified = True
-                    if redirection_url_resolver:
-                        try:
-                            redirection_url = reverse(redirection_url_resolver)
-                            return redirect(redirection_url)
-                        except NoReverseMatch:
-                            pass
                 elif hasattr(exc, "detail"):
                     request.request.session["form_errors"] = exc.detail
-                    request.request.session.is_modified = True
-                    if redirection_url_resolver:
-                        try:
-                            redirection_url = reverse(redirection_url_resolver)
-                            return redirect(redirection_url)
-                        except NoReverseMatch:
-                            pass
                 else:
                     # We're dealing with an unhandled error, let it (unfortunately) propagate and
                     # sentry will pick it up
                     raise exc
-
+                request.request.session.is_modified = True
+                if redirection_url_resolver:
+                    try:
+                        redirection_url = reverse(redirection_url_resolver)
+                        return redirect(redirection_url)
+                    except NoReverseMatch:
+                        pass
                 return redirect(request.request.path)
 
         return _wrapped_view_func

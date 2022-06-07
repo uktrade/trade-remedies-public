@@ -2,15 +2,15 @@
 {% load static %}
 
 {% block page_title %}
-    Sign in or create account
+Sign in or create account
 {% endblock %}
 
-{% block fieldset_heading %}
-    Sign in to Trade Remedies
-{% endblock fieldset_heading %}
+{% block heading %}
+Sign in to Trade Remedies
+{% endblock heading %}
 
 {% block extra_css %}
-    <link href="{% static 'v2/css/login.css' %}" rel="stylesheet">
+<link href="{% static 'v2/css/login.css' %}" rel="stylesheet">
 {% endblock extra_css %}
 
 {% block form_content %}
@@ -47,8 +47,8 @@
                 </div>
 
 
-            </div>
-        {% endwith %}
+    </div>
+    {% endwith %}
 
     </div>
     <p class="govuk-body">
@@ -64,22 +64,11 @@
 
 {% block scripts %}
 
-    <script type="text/javascript">
-        $('#show_password').click(function () {
-            if ($(this).attr('aria-checked') === 'false') {
-                $(this).attr('aria-checked', 'true')
-                $('#password').attr('type', 'text')
-                $(this).find('span').text('Hide')
-            } else {
-                $(this).attr('aria-checked', 'false')
-                $('#password').attr('type', 'password')
-                $(this).find('span').text('Show')
-            }
-        })
-
-        {% if request.session.login_email %}
-            $("#email").val("{{ request.session.login_email }}")
-        {% endif %}
-    </script>
+<script src="{% static 'v2/js/show_password.js' %}"></script>
+<script type="text/javascript">
+    {% if request.session.login_email %}
+        $("#email").val("{{ request.session.login_email }}")
+    {% endif %}
+</script>
 
 {% endblock %}
