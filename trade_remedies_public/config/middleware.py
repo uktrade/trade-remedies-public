@@ -1,4 +1,5 @@
 import time
+from urllib.parse import urlparse
 
 from django.shortcuts import redirect
 from django.urls import reverse, NoReverseMatch
@@ -106,13 +107,35 @@ class APIUserMiddleware:
         request.session["show_back_button"] = request.path not in get_evaluated_non_back_urls(
             url_kwargs
         )
+        previous_path = urlparse(request.META.get("HTTP_REFERER")).path
         back_link_url = reverse("landing")
         if request.path == reverse("login"):
-            back_link_url = reverse("landing")
+            try:
+                back_link_url = reverse(
+                    "reset_password",
+                    kwargs={
+                        "user_pk": previous_path.split("/")[-3],
+                        "token": previous_path.split("/")[-2],
+                    },
+                )
+            except (IndexError, TypeError, NoReverseMatch):
+                if previous_path == reverse("reset_password_success"):
+                    back_link_url = reverse("reset_password_success")
+                else:
+                    back_link_url = reverse("landing")
         elif request.path == reverse("forgot_password"):
             back_link_url = reverse("login")
         elif request.path == reverse("forgot_password_requested"):
-            back_link_url = reverse("forgot_password")
+            try:
+                back_link_url = reverse(
+                    "reset_password",
+                    kwargs={
+                        "request_id": previous_path.split("/")[-3],
+                        "token": previous_path.split("/")[-2],
+                    },
+                )
+            except (IndexError, TypeError, NoReverseMatch):
+                back_link_url = reverse("forgot_password")
         request.session["back_link_url"] = back_link_url
 
 

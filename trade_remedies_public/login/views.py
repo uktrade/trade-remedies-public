@@ -17,12 +17,6 @@ from .decorators import v2_error_handling
 class LandingView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "v2/landing.html"
 
-    def dispatch(self, request, *args, **kwargs):
-        if request.user.is_authenticated:
-            return redirect(reverse("dashboard"))
-        else:
-            return super().dispatch(request, *args, **kwargs)
-
 
 class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/login/login.html"
@@ -30,6 +24,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
     @v2_error_handling()
     def post(self, request, *args, **kwargs):
         email = request.POST["email"]
+        request.session["login_email"] = email
         password = request.POST["password"]
         invitation_code = kwargs.get("invitation_code", None)
         response = self.trusted_client.authenticate(
