@@ -33,7 +33,9 @@ class CustomValidationForm(forms.Form, TradeRemediesAPIClientMixin):
                     if error_summary := validation_error.get("error_summary"):
                         # We don't want to show the same error_summary twice
                         if error_summary not in request.session["form_errors"]["error_summaries"]:
-                            request.session["form_errors"]["error_summaries"].append((field, error_summary))
+                            request.session["form_errors"]["error_summaries"].append(
+                                (field, error_summary)
+                            )
                 else:
                     # The key cannot be found, treat it as a normal validation error
                     for error_message in error.messages:

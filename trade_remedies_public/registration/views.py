@@ -4,7 +4,7 @@ import json
 from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
 from login.decorators import v2_error_handling
 from core.models import TransientUser
-from core.utils import (get, validate)
+from core.utils import get, validate
 from core.validators import (
     registration_validators,
 )

@@ -3,8 +3,15 @@ import json
 from django.test import TestCase
 from django.urls import reverse
 
-from forms import (RegistrationStartForm, TwoFactorChoiceForm, UkEmployerForm, YourEmployerForm,
-                   PasswordForm, NonUkEmployerForm, OrganisationFurtherDetailsForm)
+from .forms import (
+    RegistrationStartForm,
+    TwoFactorChoiceForm,
+    UkEmployerForm,
+    YourEmployerForm,
+    PasswordForm,
+    NonUkEmployerForm,
+    OrganisationFurtherDetailsForm,
+)
 
 
 class TestRegistrationStartForm(TestCase):
