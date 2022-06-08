@@ -1,4 +1,5 @@
 import time
+from urllib.parse import urlparse
 
 from django.shortcuts import redirect
 from django.urls import reverse, NoReverseMatch
@@ -22,6 +23,7 @@ NON_2FA_URLS = (
     reverse("accessibility_statement"),
 )
 
+# URLS that do not display the back button
 NON_BACK_URLS = [reverse("landing"), reverse("reset_password_success")]
 
 
@@ -40,8 +42,10 @@ class APIUserMiddleware:
 
     def should_2fa(self, request):
         """Return True/False if a request should trigger 2FA
+
         Arguments:
             request {object} -- Request
+
         Returns:
             bool -- True if should 2FA
         """
@@ -55,9 +59,11 @@ class APIUserMiddleware:
         )
 
     def should_verify_email(self, request):
-        """Return True/False if request shold trigger email verification
+        """Return True/False if request should trigger email verification
+
         Arguments:
             request {object} -- Request
+
         Returns:
             bool -- True if should email verify
         """
@@ -91,19 +97,8 @@ class APIUserMiddleware:
                 return redirect(reverse("email_verify"))
             if self.should_2fa(request):
                 return redirect(reverse("two_factor"))
-        response = self.get_response(request)
-        return response
-
-
-class PublicRequestMiddleware:
-    """
-    Middleware for public requests
-    """
-
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request, *args, **kwargs):
+        else:
+            request.session["back_link_url"] = reverse("landing")
         response = self.get_response(request)
         return response
 
@@ -112,13 +107,35 @@ class PublicRequestMiddleware:
         request.session["show_back_button"] = request.path not in get_evaluated_non_back_urls(
             url_kwargs
         )
+        previous_path = urlparse(request.META.get("HTTP_REFERER")).path
         back_link_url = reverse("landing")
         if request.path == reverse("login"):
-            back_link_url = reverse("landing")
+            try:
+                back_link_url = reverse(
+                    "reset_password",
+                    kwargs={
+                        "user_pk": previous_path.split("/")[-3],
+                        "token": previous_path.split("/")[-2],
+                    },
+                )
+            except (IndexError, TypeError, NoReverseMatch):
+                if previous_path == reverse("reset_password_success"):
+                    back_link_url = reverse("reset_password_success")
+                else:
+                    back_link_url = reverse("landing")
         elif request.path == reverse("forgot_password"):
             back_link_url = reverse("login")
         elif request.path == reverse("forgot_password_requested"):
-            back_link_url = reverse("forgot_password")
+            try:
+                back_link_url = reverse(
+                    "reset_password",
+                    kwargs={
+                        "request_id": previous_path.split("/")[-3],
+                        "token": previous_path.split("/")[-2],
+                    },
+                )
+            except (IndexError, TypeError, NoReverseMatch):
+                back_link_url = reverse("forgot_password")
         request.session["back_link_url"] = back_link_url
 
 

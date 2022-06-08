@@ -1,73 +1,11 @@
-uk_employer
-registration_organisation_further_details.html
-Plurinational State
-Sint Eustatius
-Indian Ocean
-African
-Keeling
-Southern
-Island
-McDonald
-Islamic
-Democratic People's Republic
-Democratic
-Yugoslav
-Federated States
-Mariana
-Territory
-Helena
-Martin
-French
-Pierre
-Maarten
-Dutch
-value="LK">Sri Lanka</option>
-Arab
-Caicos
-Islands
-value="WF">Wallis
-id="address_snippet" name="address_snippet
-name="post_code
-mobile_country_code
-02072222222
-073737213771723728
-UK00000000
-UK.</p
-aria-controls="conditional-mobile
-Barbuda
-value="CV">Cape Verde Islands
-Rica
-North
-South
-Salvador
-Guiana
-Polynesia (+689)</option>
-value="GU">Guam (+671)</option>
-value="HK">Hong Kong
-value="JO">Jordan
-Marianas (+670)</option>
-Rico
-value="SM">San Marino
-Tome &amp
-Arabia
-Africa
-value="LK">Sri Lanka
-Lucia
-Tobago
-Caicos Islands
-value="WF">Wallis &amp
-Futuna
-r"^(?=[^A-Z\n]*[A-Z])(?=[^a-z\n]*[a-z
-NON
-r"[a-zA-Z]{2}[0-9]{1,15
-form_errors.company_data
-name="company_data
-confirmOnBlur
-false
 Talkback
 International Trade
 Department
 it.{%
+charset="utf-8"/
+information{% endblock %
+Logout
+Licence</a></p>
 Invite 3rd party{%
 name="2fa_code" type="text
 the Trade Remedies Service to:</p
@@ -1340,14 +1278,6 @@ f'<li><a href="{spl_crum[1]}">{spl_crum[0]}</a></li
 sqlite:///db.sqlite3
 received_at
 f"""<a class="button
-class="govuk-button__start
-f'{self.live_server_url}/
-sign_in_button
-Department
-International Trade
-Talkback
-form_errors.error_summaries
-Remedies Authority
 ‘cookies�
 form_errors.error_summaries
 Forgotten Password
@@ -1360,9 +1290,6 @@ BETA
 viewBox="0 0 483.2
 height="17
 8.7 39.7 21.8l42.7-27.2A97.63
-integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=
-name="2fa_code" type="text
-it.{%
 id="password
 aria-describedby="password-hints
 this).val().length
