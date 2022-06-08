@@ -167,7 +167,7 @@ class TestUkEmployerForm(TestCase):
 class TestNonUkEmployerForm(TestCase):
     def setUp(self) -> None:
         self.mock_data = {
-            "name": "test company",
+            "organisation_name": "test company",
             "address_snippet": "1 test road, london, nnnnnn",
             "post_code": "nnnnnnn",
             "company_number": "000000",
@@ -179,7 +179,7 @@ class TestNonUkEmployerForm(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_invalid_missing_name(self):
-        self.mock_data.pop("name")
+        self.mock_data.pop("organisation_name")
         form = NonUkEmployerForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
 
