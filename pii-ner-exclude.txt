@@ -1,3 +1,37 @@
+id="address_snippet" name="address_snippet
+name="post_code
+UK.</p
+aria-controls="conditional-mobile
+Barbuda
+value="CV">Cape Verde Islands
+Rica
+North
+South
+Salvador
+Guiana
+Polynesia (+689)</option>
+value="GU">Guam (+671)</option>
+value="HK">Hong Kong
+value="JO">Jordan
+Marianas (+670)</option>
+Rico
+value="SM">San Marino
+Tome &amp
+Arabia
+Africa
+value="LK">Sri Lanka
+Lucia
+Tobago
+Caicos Islands
+value="WF">Wallis &amp
+Futuna
+forward_button_text="Create
+must:</p
+form_errors.company_data
+Search Companies House
+name="company_data
+confirmOnBlur
+false
 Plurinational State
 Sint Eustatius
 Indian Ocean

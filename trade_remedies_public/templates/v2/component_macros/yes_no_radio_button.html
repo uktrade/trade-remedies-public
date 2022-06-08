@@ -4,7 +4,7 @@
     <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                Is your employer a registered UK company?
+                {{ label }}
             </legend>
             {% if error %}
                 <p id="{{ name }}-error" class="govuk-error-message">

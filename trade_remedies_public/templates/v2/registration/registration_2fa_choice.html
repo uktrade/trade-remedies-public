@@ -6,13 +6,12 @@
     Two-factor authentication
 {% endblock %}
 
-{% block fieldset_heading %}
+{% block heading %}
     Two-factor authentication
-{% endblock fieldset_heading %}
+{% endblock heading %}
 
 {% block form_content %}
-    <p class="govuk-body">When you sign in, we will send you a code as part of our two-factor authentication. This helps
-        ensure that your account is kept safe and secure.</p>
+    <p class="govuk-body">The next time you sign in, you will receive a code to verify that it’s really you. This provides an extra layer of security.</p>
     {% with form_errors|get_item:'2fa-choice' as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
             <fieldset class="govuk-fieldset">

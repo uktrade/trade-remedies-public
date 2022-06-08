@@ -5,10 +5,6 @@
     Your employer
 {% endblock %}
 
-{% block fieldset_heading %}
-    Your employers details
-{% endblock fieldset_heading %}
-
 {% block extra_css %}
     <link href="{% static 'v2/css/accessible-autocomplete.min.css' %}" rel="stylesheet">
 {% endblock %}
@@ -16,8 +12,13 @@
 {% block form_content %}
     {% with form_errors.company_data as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--xl" for="search-reg-org">
+                    Your employers details
+                </label>
+            </h1>
             <div id="sort-hint" class="govuk-hint">
-                Search the Companies House register for your employer
+                Search Companies House to find registered company details.
             </div>
             {% if error %}
                 <p class="govuk-error-message">
@@ -38,15 +39,14 @@
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
-              I can't find my employer
+              If you can’t find your employer
             </span>
         </summary>
         <div class="govuk-details__text">
-            <p class="govuk-body">You can search for your organisation on the <a
+            <p class="govuk-body">Search for your organisation on the <a
                     href="https://www.gov.uk/get-information-about-a-company" target="_blank" rel="noopener noreferrer"
                     class="govuk-link">Companies House register (opens in a new tab).</a></p>
-            <p>If the organisation is not on the register you need to return to the previous page and select "No" your
-                employer is not registered in the UK.</p>
+            <p>If the organisation is not on the register, go back to the previous page and select "No". Your employer is not registered in the UK.</p>
         </div>
     </details>
     {% include "v2/component_macros/form_button_group.html" with forward_button_text="I confirm these are the correct details" %}

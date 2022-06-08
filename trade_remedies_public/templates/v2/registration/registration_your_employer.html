@@ -5,14 +5,13 @@
     Your employer
 {% endblock %}
 
-{% block fieldset_heading %}
+{% block heading %}
     Your employer
-{% endblock fieldset_heading %}
+{% endblock heading %}
 
 {% block form_content %}
-    <p class="govuk-body">This is who employs you directly and not an organisation you are representing. You should have
-        permission to create this account on behalf of your employer.</p>
-    {% include "v2/component_macros/yes_no_radio_button.html" with id_yes="uk_employer" id_no="non_uk_employer" name="uk_employer" %}
+    <p class="govuk-body">We ask for the details of your direct employer, not a company you may be representing. You should have permission to create this account on behalf of your employer.</p>
+    {% include "v2/component_macros/yes_no_radio_button.html" with id_yes="uk_employer" id_no="non_uk_employer" name="uk_employer" label="Is your employer a UK registered company?" %}
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
@@ -20,12 +19,11 @@
     </span>
         </summary>
         <div class="govuk-details__text">
-            <p class="govuk-body">You can find this on the <a href="https://www.gov.uk/get-information-about-a-company"
+            <p class="govuk-body">Search the <a href="https://www.gov.uk/get-information-about-a-company"
                                                               target="_blank" rel="noopener noreferrer"
                                                               class="govuk-link">Companies House register (opens in a
                 new tab).</a></p>
-            <p>If you cannot find your organisation on the register you need to select "No" your employer is not
-                registered in the UK.</p>
+            <p>If you cannot find your company in the register, it’s not registered in the UK.</p>
         </div>
     </details>
     {% include "v2/component_macros/form_button_group.html" with forward_button_text="Continue" %}
