@@ -1,4 +1,4 @@
-$('#show-password').click(function () {
+$('#show_password').click(function () {
         if ($(this).attr('aria-checked') === 'false') {
             $(this).attr('aria-checked', 'true')
             $('#password').attr('type', 'text')

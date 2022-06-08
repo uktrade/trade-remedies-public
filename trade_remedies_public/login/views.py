@@ -1,7 +1,6 @@
 # Views to handle the login and logout functionality
 
 from core.utils import internal_redirect
-from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
@@ -12,7 +11,7 @@ from registration.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from config.decorators import v2_error_handling
+from .decorators import v2_error_handling
 
 
 class LandingView(TemplateView, TradeRemediesAPIClientMixin):
@@ -25,6 +24,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
     @v2_error_handling()
     def post(self, request, *args, **kwargs):
         email = request.POST["email"]
+        request.session["login_email"] = email
         password = request.POST["password"]
         invitation_code = kwargs.get("invitation_code", None)
         response = self.trusted_client.authenticate(
@@ -37,6 +37,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
         if response and response.get("token"):
             request.session.clear()
             request.session["application"] = {}
+            request.session["force_2fa"] = True  # Force 2fa for every public login
             request.session["token"] = response["token"]
             request.session["user"] = response["user"]
             redirection_url = request.POST.get("next", reverse("dashboard"))
@@ -44,14 +45,9 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
                 request.session["organisation_id"] = request.session["user"]["organisations"][0][
                     "id"
                 ]
-            if settings.USE_2FA:
-                # sending the two_factor code if necessary
-                r = Client(response["token"]).two_factor_request()
-                request.session["two_factor_delivery_type"] = r["delivery_type"]
-                request.session["force_2fa"] = True
-            else:
-                request.session["force_2fa"] = False
-
+            # sending the two_factor code
+            r = Client(response["token"]).two_factor_request()
+            request.session["two_factor_delivery_type"] = r["delivery_type"]
             request.session.modified = True
             request.session.cycle_key()
             return internal_redirect(redirection_url, reverse("dashboard"))
@@ -71,7 +67,7 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
 
     @v2_error_handling()
     def post(self, request, *args, **kwargs):
-        two_factor_code = request.POST["2fa_code"]
+        two_factor_code = request.POST["code"]
         response = self.client(request.user).two_factor_auth(
             code=two_factor_code,
             user_agent=request.META["HTTP_USER_AGENT"],

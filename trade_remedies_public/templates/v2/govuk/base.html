@@ -8,7 +8,7 @@
     {% block head %}
         {% analytics %}
         <meta charset="utf-8">
-        <title>{% block page_title %}{% endblock page_title %} - GOV.UK Trade Remedies Service</title>
+        <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - GOV.UK Trade Remedies Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="theme-color" content="blue">
 

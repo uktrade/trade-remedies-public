@@ -64,7 +64,15 @@ form_errors.company_data
 name="company_data
 confirmOnBlur
 false
+Talkback
+International Trade
+Department
+it.{%
 Invite 3rd party{%
+name="2fa_code" type="text
+the Trade Remedies Service to:</p
+Remedies Authority
+sign_in_button
 contact.organisation.companies_house_id
 Invite 3rd Party
 the Third Party's
@@ -1332,6 +1340,14 @@ f'<li><a href="{spl_crum[1]}">{spl_crum[0]}</a></li
 sqlite:///db.sqlite3
 received_at
 f"""<a class="button
+class="govuk-button__start
+f'{self.live_server_url}/
+sign_in_button
+Department
+International Trade
+Talkback
+form_errors.error_summaries
+Remedies Authority
 ‘cookies�
 form_errors.error_summaries
 Forgotten Password
@@ -1344,6 +1360,9 @@ BETA
 viewBox="0 0 483.2
 height="17
 8.7 39.7 21.8l42.7-27.2A97.63
+integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=
+name="2fa_code" type="text
+it.{%
 id="password
 aria-describedby="password-hints
 this).val().length

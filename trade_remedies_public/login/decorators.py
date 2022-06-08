@@ -32,7 +32,10 @@ def v2_error_handling(redirection_url_resolver=None):
                     # sentry will pick it up
                     raise exc
 
-                return redirect(request.request.path)
+                # We're setting an empty HTML anchor as 302 redirects preserve anchors between
+                # requests, and if the user has clicked on the anchor link in the error summaries
+                # box, we don't want the browser to continuously focus on that troublesome input
+                return redirect(f"{request.request.path}#")
 
         return _wrapped_view_func
 
