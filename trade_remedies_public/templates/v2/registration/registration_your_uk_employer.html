@@ -9,6 +9,8 @@
     <link href="{% static 'v2/css/accessible-autocomplete.min.css' %}" rel="stylesheet">
 {% endblock %}
 
+{% block noheader %}{% endblock %}
+
 {% block form_content %}
     {% with form_errors.company_data as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">

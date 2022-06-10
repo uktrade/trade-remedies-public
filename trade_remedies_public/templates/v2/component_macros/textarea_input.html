@@ -15,10 +15,8 @@
         <textarea class="govuk-textarea govuk-input--width-20" id="{{ id }}"
                   name="{{ name }}" rows="{{ rows }}"
                   {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
-        >
-        {% if form.cleaned_data|get_item:name %}
-            {{ form.cleaned_data|get_item:name }}
-        {% endif %}
-        </textarea>
+        >{% if form.cleaned_data|get_item:name %}{{ form.cleaned_data|get_item:name }}{% endif %}</textarea>
+
+
     </div>
 {% endwith %}
