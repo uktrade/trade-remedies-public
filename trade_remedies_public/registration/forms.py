@@ -1,11 +1,11 @@
-from config.forms import CustomValidationForm
+from config.forms import ValidationForm
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
 
-class RegistrationStartForm(CustomValidationForm):
+class RegistrationStartForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_name_entered"})
     email = forms.CharField(
         error_messages={"required": "no_email_entered"},
@@ -18,7 +18,7 @@ class RegistrationStartForm(CustomValidationForm):
     )
 
 
-class PasswordForm(CustomValidationForm):
+class PasswordForm(ValidationForm):
     password = forms.CharField(
         error_messages={"required": "no_password_entered"},
         validators=[
@@ -31,7 +31,7 @@ class PasswordForm(CustomValidationForm):
     )
 
 
-class TwoFactorChoiceForm(CustomValidationForm):
+class TwoFactorChoiceForm(ValidationForm):
     two_factor_choice = forms.ChoiceField(
         choices=(("mobile", "mobile"), ("email", "email")),
         error_messages={"required": "no_two_factor_selected"},
@@ -56,14 +56,14 @@ class TwoFactorChoiceForm(CustomValidationForm):
         return self.cleaned_data
 
 
-class YourEmployerForm(CustomValidationForm):
+class YourEmployerForm(ValidationForm):
     uk_employer = forms.ChoiceField(
         error_messages={"required": "organisation_registered_country_not_selected"},
         choices=(("no", False), ("yes", True)),
     )
 
 
-class UkEmployerForm(CustomValidationForm):
+class UkEmployerForm(ValidationForm):
     company_data = forms.JSONField(error_messages={"required": "companies_house_not_searched"})
 
     def clean(self):
@@ -94,7 +94,7 @@ class UkEmployerForm(CustomValidationForm):
                 return self.cleaned_data
 
 
-class NonUkEmployerForm(CustomValidationForm):
+class NonUkEmployerForm(ValidationForm):
     organisation_name = forms.CharField(error_messages={"required": "no_company_name_entered"})
     address_snippet = forms.CharField(error_messages={"required": "no_company_address_entered"})
     post_code = forms.CharField(required=False)
@@ -108,7 +108,7 @@ class NonUkEmployerForm(CustomValidationForm):
         return self.cleaned_data
 
 
-class OrganisationFurtherDetailsForm(CustomValidationForm):
+class OrganisationFurtherDetailsForm(ValidationForm):
     company_website = forms.URLField(required=False, error_messages={"invalid": "incorrect_url"})
     company_vat_number = forms.CharField(required=False)
     company_eori_number = forms.CharField(
