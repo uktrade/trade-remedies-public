@@ -1,0 +1,27 @@
+{% extends "v2/govuk/base_with_form.html" %}
+
+{% block form_content %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge edit-item" data-section="27">
+                <span class="heading-secondary">1. Which case are you interested in?</span>
+                Select case
+            </h1>
+            <p>If you register after the first 15 days, you may not be eligible to receive a questionnaire. Registering
+                later may restrict your opportunities to participate in the process.</p>
+        </div>
+        <div class="column-one-third">
+            <div class="rh-box">
+                <p class="bold margin-bottom-1">Do you need help?</p>
+                <div class="font-xsmall double-spaced">
+                    <span>
+                        <a class="link"
+                           href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
+                           target="_blank">Read the guidance documents &nbsp;<i class="icon16 icon-outlink"
+                                                                                title="Opens in a new tab"></i></a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock form_content %}
