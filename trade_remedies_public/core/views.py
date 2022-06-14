@@ -210,21 +210,27 @@ class PublicCaseView(TemplateView, TradeRemediesAPIClientMixin):
 
     def get(self, request, case_number, submission_id=None, *args, **kwargs):
         case = self.trusted_client.get_public_case_record(case_number)
-        case_submissions = self.trusted_client.get_submissions_public(
-            case_id=case.get("id"), private=False, get_global=True
-        )
-        case_submissions = [
-            submission for submission in case_submissions if submission.get("issued_at")
-        ]
-        case["submissions"] = sorted(
-            case_submissions, key=lambda su: su.get("issued_at") or "", reverse=True
-        )
-        # Get a specific set of states for rendering
-        fields = ["PRODUCT_DESCRIPTION", "TARIFF_CLASSIFICATION", "REGISTRATION_OF_INTEREST_TIMER"]
-        case_state = self.trusted_client.get_case_state(
-            case_ids=[case.get("id")], fields=fields
-        ).get(case.get("id"))
-        return render(request, self.template_name, {"case": case, "state": case_state})
+        if case:
+            case_submissions = self.trusted_client.get_submissions_public(
+                case_id=case.get("id"), private=False, get_global=True
+            )
+            case_submissions = [
+                submission for submission in case_submissions if submission.get("issued_at")
+            ]
+            case["submissions"] = sorted(
+                case_submissions, key=lambda su: su.get("issued_at") or "", reverse=True
+            )
+            # Get a specific set of states for rendering
+            fields = [
+                "PRODUCT_DESCRIPTION",
+                "TARIFF_CLASSIFICATION",
+                "REGISTRATION_OF_INTEREST_TIMER",
+            ]
+            case_state = self.trusted_client.get_case_state(
+                case_ids=[case.get("id")], fields=fields
+            ).get(case.get("id"))
+            return render(request, self.template_name, {"case": case, "state": case_state})
+        return redirect(reverse("public_cases"))
 
 
 @method_decorator(cache_page(settings.PUBLIC_FILE_CACHE_MINUTES * 60), name="dispatch")
@@ -311,7 +317,7 @@ class InvitationConfirmOrganisation(BaseRegisterView, TradeRemediesAPIClientMixi
         return context
 
     def post(self, request, code, case_id, *args, **kwargs):
-        if request.POST["confirm_invited_org"] == "true":
+        if request.POST.get("confirm_invited_org", None) == "true":
             # The user have verified they are the user the invitation is meant for
             self.update_session(request, {"confirm_invited_org": True})
         else:
@@ -402,7 +408,8 @@ class DashboardView(
                 "pre_manage_team": client.get_system_boolean("PRE_MANAGE_TEAM"),
                 "pre_applications": client.get_system_boolean("PRE_APPLICATIONS"),
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
-                "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER in request.user.groups,
+                "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
+                in request.user.organisation_groups,
             },
         )
 

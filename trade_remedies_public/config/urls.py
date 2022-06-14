@@ -25,11 +25,16 @@ from password import views as password_views
 from registration import views as register_views
 
 urlpatterns = [
-    path("", core_views.HomeView.as_view(), name="initial"),
+    path("", login_views.LandingView.as_view(), name="landing"),
     path("health/", core_views.HealthCheckView.as_view(), name="healthcheck"),
     path("holding_page/", core_views.HoldingView.as_view(), name="holdingpage"),
     # path('start/', core_views.StartView.as_view(), name='start'),
-    path("twofactor/", core_views.TwoFactorView.as_view(), name="2fa"),
+    path("twofactor/", login_views.TwoFactorView.as_view(), name="two_factor"),
+    path(
+        "request_new_two_factor/",
+        login_views.RequestNewTwoFactorView.as_view(),
+        name="request_new_two_factor",
+    ),
     path("email/verify/", core_views.EmailVerifyView.as_view(), name="email_verify"),
     path(
         "public/cases/", core_views.PublicCaseListView.as_view(archive=False), name="public_cases"
@@ -109,16 +114,15 @@ urlpatterns = [
     path(
         "termsofuse-privacypolicy/",
         register_views.TermsAndConditionsView.as_view(),
-        name="Terms and conditions",
+        name="terms_and_conditions_and_privacy",
     ),
-    path("cookies/", cookie_views.CookieSettingsView.as_view(), name="Cookie preferences"),
+    path("cookies/", cookie_views.CookieSettingsView.as_view(), name="cookie_preferences"),
     path("cookiepolicy/", cookie_views.CookiePolicyView.as_view(), name="Cookie policy"),
     path(
         "accessibilitystatement/",
         register_views.AccessibilityStatementView.as_view(),
-        name="Accessibility statement",
+        name="accessibility_statement",
     ),
-    path("accounts/login/choice/", login_views.LoginChoiceView.as_view(), name="login_choice"),
     path("accounts/login/", login_views.LoginView.as_view(), name="login"),
     path(
         "accounts/login/<uuid:code>/<uuid:case_id>/",
@@ -142,9 +146,14 @@ urlpatterns = [
         name="forgot_password",
     ),
     path(
-        "accounts/password/reset/<uuid:user_pk>/<str:token>/",
+        "accounts/password/reset/<uuid:request_id>/<str:token>/",
         password_views.ResetPasswordView.as_view(),
         name="reset_password",
+    ),
+    path(
+        "accounts/password/reset/success/",
+        password_views.ResetPasswordSuccessView.as_view(),
+        name="reset_password_success",
     ),
     path("accounts/info/", core_views.AccountInfo.as_view(), name="account_info"),
     path(

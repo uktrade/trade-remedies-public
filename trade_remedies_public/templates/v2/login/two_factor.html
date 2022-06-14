@@ -1,0 +1,36 @@
+{% extends 'v2/govuk/base_with_form.html' %}
+
+{% block page_title %}
+    Two-factor authentication
+{% endblock page_title %}
+
+{% block heading %}
+    Two-factor authentication
+{% endblock heading %}
+
+{% block form_content %}
+    <p class="govuk-body">
+        We have sent an authentication code to {% if request.session.two_factor_delivery_type == "email" %}{{ request.user.email }}{% else %}{{ request.user.phone }}{% endif %}.
+    </p>
+    <p class="govuk-body">
+        This code will be valid for {% if request.session.two_factor_delivery_type == "email" %}20{% else %}10{% endif %} minutes. You can request a new code if you need more time.
+    </p>
+    {% include "v2/component_macros/text_input.html" with label="Enter your code" id="code" name="code" type="text" width="5" %}
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              I have a problem with my code
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>If you have not received a code or it has expired, you can request a new code using this link:</p>
+            <p><a href="{% url 'request_new_two_factor' %}?delivery_type=sms" class="govuk-link--no-visited-state">Send a new code</a></p>
+            <p>If you request a new code too many times, your account may be temporarily locked. It will be automatically re-enabled shortly.</p>
+            <p>Receiving your code by text message is sometimes less reliable:</p>
+            <p><a href="{% url 'request_new_two_factor' %}?delivery_type=email" class="govuk-link--no-visited-state">Email my code</a></p>
+        </div>
+    </details>
+    <button class="govuk-button" data-module="govuk-button">
+        Submit code
+    </button>
+{% endblock form_content %}

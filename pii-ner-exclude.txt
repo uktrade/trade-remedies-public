@@ -1,4 +1,16 @@
+Talkback
+International Trade
+Department
+it.{%
+charset="utf-8"/
+information{% endblock %
+Logout
+Licence</a></p>
 Invite 3rd party{%
+name="2fa_code" type="text
+the Trade Remedies Service to:</p
+Remedies Authority
+sign_in_button
 contact.organisation.companies_house_id
 Invite 3rd Party
 the Third Party's
@@ -1266,3 +1278,20 @@ f'<li><a href="{spl_crum[1]}">{spl_crum[0]}</a></li
 sqlite:///db.sqlite3
 received_at
 f"""<a class="button
+‘cookies�
+form_errors.error_summaries
+Forgotten Password
+class="govuk-button__start
+Trade Remedies</h2>
+>View cookies</a>
+height="30" width="36">
+7.7-.2
+BETA
+viewBox="0 0 483.2
+height="17
+8.7 39.7 21.8l42.7-27.2A97.63
+id="password
+aria-describedby="password-hints
+this).val().length
+length").addClass("valid
+letter").addClass("valid

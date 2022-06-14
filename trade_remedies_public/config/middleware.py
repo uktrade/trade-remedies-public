@@ -1,20 +1,39 @@
 import time
+from urllib.parse import urlparse
 
 from django.shortcuts import redirect
-from django.urls import reverse
+from django.urls import reverse, NoReverseMatch
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth.models import AnonymousUser
 from core.models import TransientUser
+from django_audit_log_middleware import AuditLogMiddleware
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-
 SESSION_TIMEOUT_KEY = "_session_init_timestamp_"
+
+# URLS that will not redirect to either 2fa or email_verify
 NON_2FA_URLS = (
     reverse("email_verify"),
-    reverse("2fa"),
+    reverse("two_factor"),
     reverse("logout"),
+    reverse("request_new_two_factor"),
+    reverse("cookie_preferences"),
+    reverse("terms_and_conditions_and_privacy"),
+    reverse("accessibility_statement"),
 )
+
+# URLS that do not display the back button
+NON_BACK_URLS = [reverse("landing"), reverse("reset_password_success")]
+
+
+def get_evaluated_non_back_urls(kwargs):
+    urls = NON_BACK_URLS
+    try:
+        urls.append(reverse("reset_password", kwargs=kwargs))
+    except NoReverseMatch:
+        pass
+    return urls
 
 
 class APIUserMiddleware:
@@ -31,7 +50,7 @@ class APIUserMiddleware:
             bool -- True if should 2FA
         """
         is_public = self.public_request(request)
-        should_two_factor = request.user.should_two_factor or request.session.get("force_2fa")
+        should_two_factor = request.session.get("force_2fa")
         return (
             settings.USE_2FA
             and not is_public
@@ -40,7 +59,7 @@ class APIUserMiddleware:
         )
 
     def should_verify_email(self, request):
-        """Return True/False if request shold trigger email verification
+        """Return True/False if request should trigger email verification
 
         Arguments:
             request {object} -- Request
@@ -60,32 +79,64 @@ class APIUserMiddleware:
         return request.path.startswith("/public")
 
     def __call__(self, request, *args, **kwargs):
+        request.session["show_back_button"] = request.path not in NON_BACK_URLS
         if request.session and request.session.get("token") and request.session.get("user"):
+            back_link_url = request.META.get("HTTP_REFERER", reverse("dashboard"))
+            if request.path in back_link_url:
+                back_link_url = reverse("dashboard")
+            request.session["back_link_url"] = back_link_url
+            if request.path in NON_2FA_URLS:
+                request.session["back_link_url"] = reverse("logout")
+
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)
             request.args = args
             request.kwargs = kwargs
             request.token = request.session["token"]
             if self.should_verify_email(request):
-                return redirect("/email/verify/")
+                return redirect(reverse("email_verify"))
             if self.should_2fa(request):
-                return redirect("/twofactor/")
+                return redirect(reverse("two_factor"))
+        else:
+            request.session["back_link_url"] = reverse("landing")
         response = self.get_response(request)
         return response
 
-
-class PublicRequestMiddleware:
-    """
-    Middleware for public requests
-    """
-
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request, *args, **kwargs):
-
-        response = self.get_response(request)
-        return response
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        url_kwargs = view_kwargs
+        request.session["show_back_button"] = request.path not in get_evaluated_non_back_urls(
+            url_kwargs
+        )
+        previous_path = urlparse(request.META.get("HTTP_REFERER")).path
+        back_link_url = reverse("landing")
+        if request.path == reverse("login"):
+            try:
+                back_link_url = reverse(
+                    "reset_password",
+                    kwargs={
+                        "user_pk": previous_path.split("/")[-3],
+                        "token": previous_path.split("/")[-2],
+                    },
+                )
+            except (IndexError, TypeError, NoReverseMatch):
+                if previous_path == reverse("reset_password_success"):
+                    back_link_url = reverse("reset_password_success")
+                else:
+                    back_link_url = reverse("landing")
+        elif request.path == reverse("forgot_password"):
+            back_link_url = reverse("login")
+        elif request.path == reverse("forgot_password_requested"):
+            try:
+                back_link_url = reverse(
+                    "reset_password",
+                    kwargs={
+                        "request_id": previous_path.split("/")[-3],
+                        "token": previous_path.split("/")[-2],
+                    },
+                )
+            except (IndexError, TypeError, NoReverseMatch):
+                back_link_url = reverse("forgot_password")
+        request.session["back_link_url"] = back_link_url
 
 
 class SessionTimeoutMiddleware(MiddlewareMixin):
@@ -155,3 +206,22 @@ class HoldingPageMiddleware(TradeRemediesAPIClientMixin):
                 return redirect("/dashboard/")
 
         return self.get_response(request)
+
+
+class CustomAuditLogMiddleware(AuditLogMiddleware):
+    def _get_first_name(self):
+        if self.request.user.is_authenticated:
+            try:
+                return self.request.user.first_name
+            except AttributeError:
+                pass
+
+        return ""
+
+    def _get_last_name(self):
+        if self.request.user.is_authenticated:
+            try:
+                return self.request.user.last_name
+            except AttributeError:
+                pass
+        return ""

@@ -22,7 +22,7 @@ def user_context(request):
         "token": token,
         "current_organisation": None,
         "session": request.session,
-        "within_2fa": request.path == reverse("2fa"),
+        "within_2fa": request.path == reverse("two_factor"),
         "within_verify": request.path == reverse("email_verify"),
     }
     request_kwargs = request.resolver_match.kwargs if request.resolver_match else {}
@@ -62,3 +62,10 @@ def cookie_management(request):
         "cookie_policy_updated": cookie_updated,
         "cookie_policy_set": cookie_policy_set,
     }
+
+
+def v2_error_handling(request):
+    """Pops the errors from the request.session for front-end rendering."""
+    if form_errors := request.session.pop("form_errors", None):
+        return {"form_errors": form_errors}
+    return {}

@@ -3,6 +3,7 @@
 import json
 import re
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.generic import TemplateView
 
 from core.utils import internal_redirect, set_cookie
@@ -32,11 +33,12 @@ class CookieSettingsView(BaseRegisterView):
         )
 
     def post(self, request, *args, **kwargs):
-        accept_gi = request.POST.get("accept_gi")
-        redirect_url = request.POST.get("redirect_url") or "/dashboard/"
+        action = request.POST.get("cookies", "reject")
+        accept_gi = "on" if action == "accept" else "off"
+        redirect_url = request.POST.get("redirect_url") or reverse("landing")
         separator = "?" if redirect_url.find("?") == -1 else "#"
         redirect_url = f"{redirect_url}{separator}cookie-policy-updated=1"
-        response = internal_redirect(redirect_url, "/dashboard/")
+        response = internal_redirect(redirect_url, reverse("landing"))
         policy = json.dumps({"accept_gi": accept_gi})
 
         if accept_gi != "on":
