@@ -48,11 +48,18 @@ class TwoFactorChoiceForm(ValidationForm):
     )
 
     def clean(self):
-        if self.cleaned_data["two_factor_choice"] == "mobile":
+        if self.cleaned_data.get("two_factor_choice") == "mobile":
             if not self.cleaned_data.get("mobile_country_code"):
-                raise ValidationError(message="no_country_selected")
+                self.add_error(
+                    'mobile_country_code',
+                    ValidationError(message="no_country_selected")
+                )
             if not self.cleaned_data.get("mobile"):
-                raise ValidationError(message="no_mobile_entered")
+                self.add_error(
+                    'mobile',
+                    ValidationError(message="no_mobile_entered")
+                )
+
         return self.cleaned_data
 
 

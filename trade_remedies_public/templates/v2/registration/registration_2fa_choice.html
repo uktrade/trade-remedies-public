@@ -11,8 +11,9 @@
 {% endblock heading %}
 
 {% block form_content %}
-    <p class="govuk-body">The next time you sign in, you will receive a code to verify that it’s really you. This provides an extra layer of security.</p>
-    {% with form_errors|get_item:'2fa-choice' as error %}
+    <p class="govuk-body">The next time you sign in, you will receive a code to verify that it’s really you. This
+        provides an extra layer of security.</p>
+    {% with form_errors|get_item:'two_factor_choice' as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -29,8 +30,10 @@
                 {% endif %}
                 <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="mobile" name="two_factor_choice" type="radio" value="mobile"
-                               aria-controls="conditional-mobile" aria-expanded="true">
+                        <input class="govuk-radios__input" name="two_factor_choice" type="radio"
+                               value="mobile"
+                               aria-controls="conditional-mobile" aria-expanded="true"
+                               {% if form.cleaned_data.two_factor_choice == "mobile" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="mobile">
                             Mobile
                         </label>
@@ -40,12 +43,10 @@
                             <label class="govuk-label" for="mobile_country_code">
                                 Country code
                             </label>
-                            <select id="int-mobile" name="mobile_country_code" value="" class="govuk-select"
+                            <select id="mobile_country_code" name="mobile_country_code" value="" class="govuk-select"
                                     autocomplete="tel-country-code">
-                                <option value="">Please select</option>
-                                <option value="">----------</option>
                                 <option value="GB">United Kingdom (+44)</option>
-                                <option value="">----------</option>
+                                <option value="" selected>------</option>
                                 <option value="DZ">Algeria (+213)</option>
                                 <option value="AD">Andorra (+376)</option>
                                 <option value="AO">Angola (+244)</option>
@@ -261,16 +262,12 @@
                                 <option value="ZW">Zimbabwe (+263)</option>
                             </select>
                         </div>
-                        <div class="govuk-form-group">
-                            <label class="govuk-label" for="mobile">
-                                Enter your mobile number
-                            </label>
-                            <input class="govuk-input govuk-!-width-one-third" id="mobile" name="mobile" type="tel"
-                                   autocomplete="tel-national">
-                        </div>
+                        {% include "v2/component_macros/text_input.html" with id="mobile" name="mobile" label="Enter your mobile number" type="tel" input_class="govuk-!-width-one-third" %}
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="email" name="two_factor_choice" type="radio" value="email">
+                        <input class="govuk-radios__input" id="email" name="two_factor_choice" type="radio"
+                               value="email"
+                               {% if form.cleaned_data.two_factor_choice == "email" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="email">
                             Email address: <strong>{{ request.session.registration.email }}</strong>
                         </label>
@@ -291,6 +288,6 @@
             } else {
                 $('#conditional-mobile').hide()
             }
-        })
+        }).trigger("change");
     </script>
 {% endblock %}

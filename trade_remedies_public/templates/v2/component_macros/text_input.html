@@ -18,7 +18,7 @@
                 {% endfor %}
             </p>
         {% endif %}
-        <input class="govuk-input govuk-input--width-{{ width }} {% if error %}govuk-input--error{% endif %}"
+        <input class="govuk-input {% if width %}govuk-input--width-{{ width }}{% endif %}{% if input_class %}{{ input_class }}{% endif %} {% if error %}govuk-input--error{% endif %}"
                id="{{ id }}" name="{{ name }}" type="{{ type }}" {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
                autocomplete="off"
                 {% if form.cleaned_data|get_item:name %}
