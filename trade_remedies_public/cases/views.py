@@ -233,6 +233,19 @@ class InterestDraftConfirmDeleteView(LoginRequiredMixin, GroupRequiredMixin, Bas
         )
 
 
+class InterestDraftDeleteView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    case_page = True
+
+    def get(self, request, *args, **kwargs):
+        organisation_id = request.GET.get("organisation_id")
+        submission_id = request.GET.get("submission_id")
+        case_id = request.GET.get("case_id")
+        self._client.remove_submission(case_id, organisation_id, submission_id)
+        return redirect("/dashboard/")
+
+
 class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     """
     Task list view of a case submission
