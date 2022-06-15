@@ -1,0 +1,117 @@
+/*  Accessible table taken from w3c: https://w3c.github.io/aria-practices/examples/table/sortable-table.html */
+table.sortable1 th {
+    position: relative;
+}
+
+table.sortable1 th button {
+    padding: 0px;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 0px 0 #929191;
+    margin: 0px;
+}
+
+.govuk-button:active, .govuk-button:hover, .govuk-button:focus {
+    border-color: #f3f2f1;
+    outline: #f3f2f1;
+    box-shadow: none;
+}
+
+table.sortable1 th button span.indicator {
+    position: absolute;
+    margin-left: 3px;
+}
+
+table.sortable1 th[aria-sort=descending] span.indicator::before {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-bottom: 7px solid #b1b4b6;
+}
+
+table.sortable1 th[aria-sort=descending] span.indicator::after {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-top: 7px solid #0b0c0c;
+}
+
+table.sortable1 th[aria-sort=ascending] span.indicator::before {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-bottom: 7px solid #0b0c0c;
+}
+
+table.sortable1 th[aria-sort=ascending] span.indicator::after {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-top: 7px solid #b1b4b6;
+}
+
+table.sortable1 th .span-indicator::before {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-bottom: 7px solid #b1b4b6;
+}
+
+table.sortable1 th .span-indicator::after {
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-top: 7px solid #b1b4b6;
+}
+
+table.show-unsorted-icon th:not([aria-sort]) button span.indicator::after {
+    content: "♢";
+    color: currentcolor;
+    font-size: 100%;
+    position: relative;
+    top: -3px;
+    left: -4px;
+}
+
+/* Focus and hover styling */
+table.sortable1 th:not([aria-sort]) button:focus span::before,
+table.sortable1 th:not([aria-sort]) button:hover span::before {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-bottom: 7px solid #b1b4b6;
+}
+
+table.sortable1 th:not([aria-sort]) button:focus span::after,
+table.sortable1 th:not([aria-sort]) button:hover span::after {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-top: 7px solid #b1b4b6;
+}
+
+/* For the hiddlen select for sorting on mobile*/
+.table-sort-select {
+    float: left;
+    padding-right: 20px;
+}
+
+#table-sort .govuk-button--secondary {
+    width: initial;
+}

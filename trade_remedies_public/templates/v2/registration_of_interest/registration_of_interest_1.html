@@ -1,27 +1,127 @@
-{% extends "v2/govuk/base_with_form.html" %}
+{% extends "v2/govuk/base.html" %}
+{% load static %}
 
-{% block form_content %}
-    <div class="grid-row">
-        <div class="column-two-thirds">
-            <h1 class="heading-xlarge edit-item" data-section="27">
-                <span class="heading-secondary">1. Which case are you interested in?</span>
-                Select case
-            </h1>
-            <p>If you register after the first 15 days, you may not be eligible to receive a questionnaire. Registering
-                later may restrict your opportunities to participate in the process.</p>
-        </div>
-        <div class="column-one-third">
-            <div class="rh-box">
-                <p class="bold margin-bottom-1">Do you need help?</p>
-                <div class="font-xsmall double-spaced">
-                    <span>
-                        <a class="link"
-                           href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
-                           target="_blank">Read the guidance documents &nbsp;<i class="icon16 icon-outlink"
-                                                                                title="Opens in a new tab"></i></a>
-                    </span>
+{% block extra_css %}
+    <link href="{% static 'v2/css/table.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block main_content %}
+    <div class="govuk-grid-column-full">
+        <span class="govuk-caption-xl">1. Your case</span>
+        <h1 class="govuk-heading-xl">Select a Trade Remedies case</h1>
+        <p>Select the case you would like to participate in.</p>
+    </div>
+    <div class="govuk-grid-column-full">
+        <form>
+            <div id="table-sort" class="govuk-visually-hidden--desktop">
+                <div class="govuk-form-group table-sort-select">
+                    <label class="govuk-label govuk-!-display-inline" for="sort-cases">
+                        Sort by
+                    </label>
+                    <select class="govuk-select" id="sort-cases" name="sort-cases">
+                        <option value="No." selected="">Case No.</option>
+                        <option value="Case">Case</option>
+                        <option value="Type">Type</option>
+                        <option value="Status">Status</option>
+                        <option value="Started">Started</option>
+                        <option value="Status">Status</option>
+                        <option value="Reg due">Reg due</option>
+                    </select>
+
+                    <label class="govuk-label govuk-visually-hidden" for="direction-cases">
+                        Direction
+                    </label>
+                    <select class="govuk-select" id="direction-cases" name="direction-cases">
+                        <option value="Decending" selected="">Decending</option>
+                        <option value="Accending">Accending</option>
+                    </select>
+
+
+                    <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                        Sort
+                    </button>
+
                 </div>
             </div>
-        </div>
+        </form>
+
+        <table class="govuk-table sortable1 table-border" id="table-header">
+            <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden">
+                A table listing all of the open Trade Remedies cases
+            </caption>
+            <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+                <th class="govuk-table__header" aria-sort="ascending">
+                    <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>No.
+                        <span class="indicator" aria-hidden="true"></span>
+                    </button>
+                </th>
+                <th class="govuk-table__header">
+                    <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Case
+                        <span class="indicator" aria-hidden="true"></span>
+                    </button>
+                </th>
+                <th class="govuk-table__header">
+                    <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Type
+                        <span class="indicator" aria-hidden="true"></span>
+                    </button>
+                </th>
+                <th class="govuk-table__header">
+                    <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
+                        <span class="indicator" aria-hidden="true"></span>
+                    </button>
+                </th>
+                <th class="govuk-table__header">
+                    <button class="govuk-button govuk-button--secondary" data-column-index="4">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Started
+                        <span class="indicator" aria-hidden="true"></span>
+                    </button>
+                </th>
+                <th class="govuk-table__header">
+                    <button class="govuk-button govuk-button--secondary" data-column-index="5">
+                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Reg due
+                        <span class="indicator" aria-hidden="true"></span>
+                    </button>
+                </th>
+                <th class="govuk-table__header no-sort">
+                    <span class="govuk-visually-hidden">Action: </span>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                <tr class="govuk-table__row no-border">
+                    <td class="govuk-table__cell">
+                        <span class="govuk-visually-hidden--desktop td-header">No. </span>AD2224
+                    </td>
+                    <td class="govuk-table__cell">
+                        <span class="govuk-visually-hidden--desktop td-header">Case: </span>Steel plate from Russia
+                    </td>
+                    <td class="govuk-table__cell">
+                        <span class="govuk-visually-hidden--desktop td-header">Type: </span>Anti-dumping
+                    </td>
+                    <td class="govuk-table__cell">
+                        <span class="govuk-visually-hidden--desktop td-header">Status: </span>Initiation notices published
+                    </td>
+                    <td class="govuk-table__cell">
+                        <span class="govuk-visually-hidden--desktop td-header">Start date: </span>12 May 2022
+                    </td>
+                    <td class="govuk-table__cell">
+                        <span class="govuk-visually-hidden--desktop td-header">Registration due: </span><span id="date">15 Jun 2022</span>
+                    </td>
+                    <td class="govuk-table__cell">
+                        <span class="govuk-visually-hidden--desktop td-header">Action:</span><a
+                            href="reginterest-tasks?regcase-task=complete&amp;case-ref=AD2224&amp;case-name=Steel plate from Russia&amp;case-type=Anti-dumping"
+                            class="govuk-link--no-visited-state"> Select <span class="govuk-visually-hidden td-header">AD2224</span></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+
+        <a class="govuk-back-link govuk-link--no-visited-state" href="reginterest-tasks">Back</a>
     </div>
-{% endblock form_content %}
+{% endblock main_content %}
