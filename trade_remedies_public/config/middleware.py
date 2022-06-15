@@ -125,6 +125,8 @@ class APIUserMiddleware:
                     back_link_url = reverse("landing")
         elif request.path == reverse("forgot_password"):
             back_link_url = reverse("login")
+        elif request.path == reverse("interest_draft_continue"):
+            back_link_url = reverse("dashboard")
         elif request.path == reverse("forgot_password_requested"):
             try:
                 back_link_url = reverse(

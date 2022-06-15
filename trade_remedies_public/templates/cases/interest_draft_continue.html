@@ -1,0 +1,106 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block main_content %}
+
+<div class="govuk-grid-column-two-thirds-from-desktop">
+    <h1 class="govuk-heading-xl">
+      Registration of Interest application
+    </h1>
+
+    <h2 class="govuk-heading-m">Your application</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Application status
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <p>
+            Draft<br>
+            <span id="date">{{ last_modified }}</span>
+          </p>
+        </dd>
+      </div>
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Case details
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <p>
+              {{case_reference }} - {{ case_name }}
+              <br>
+          </p>
+        </dd>
+      </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Registering for
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <!--if it is a complete app show address details-->
+
+        </dd>
+      </div>
+
+
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Letter of Authority
+          </dt>
+          <dd class="govuk-summary-list__value">
+            <!--if it is a complete app show doc details-->
+
+          </dd>
+        </div>
+
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Initial documentation
+        </dt>
+        <dd class="govuk-summary-list__value">
+          <!--if it is a complete app show doc details-->
+
+        </dd>
+      </div>
+    </dl>
+
+
+
+    <div class="govuk-button-group">
+
+
+
+
+
+
+<a href="reginterest-tasks?tasklist-type=reg-interest&amp;regcase-task=complete" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+  Continue application
+</a>
+
+      <a class="govuk-link govuk-link--no-visited-state" href="reginterest-delete-draft">Delete application</a>
+    </div>
+
+</div>
+
+  <div class="govuk-grid-column-one-third">
+    <aside class="app-related-items" role="complementary">
+      <h2 class="govuk-heading-m" id="subsection-title">Read the guidance documents</h2>
+      <nav role="navigation" aria-labelledby="subsection-title">
+        <ul class="govuk-list govuk-!-font-size-16">
+          <li>
+            <a class="link" href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process" target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
+          </li>
+
+          <li>
+            <br>
+            <strong>Email the case team</strong>
+
+                <a class="govuk-link govuk-link--no-visited-state" href="">{{ case_reference }}@traderemedies.gov.uk</a>
+
+          </li>
+        </ul>
+      </nav>
+    </aside>
+  </div>
+
+{% endblock main_content %}

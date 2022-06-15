@@ -185,6 +185,33 @@ class CaseSummaryView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         )
 
 
+class InterestDraftContinueView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "cases/interest_draft_continue.html"
+    case_page = True
+
+    def get(self, request, *args, **kwargs):
+        last_modified = request.GET.get("last_modified")
+        case_reference = request.GET.get("case_reference")
+        case_name = request.GET.get("case_name")
+        organisation_id = request.GET.get("organisation_id")
+        submission_id = request.GET.get("submission_id")
+        case_id = request.GET.get("case_id")
+        return render(
+            request,
+            self.template_name,
+            {
+                "case_name": case_name,
+                "case_reference": case_reference,
+                "last_modified": last_modified,
+                "case_id": case_id,
+                "submission_id": submission_id,
+                "organisation_id": organisation_id
+            },
+        )
+
+
 class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     """
     Task list view of a case submission

@@ -11,6 +11,11 @@ urlpatterns = [
         name="interest",
     ),
     path(
+        "interest/draft/continue/",
+        case_views.InterestDraftContinueView.as_view(),
+        name="interest_draft_continue",
+    ),
+    path(
         "interest/<uuid:case_id>/",
         case_views.TaskListView.as_view(submission_type_key="interest"),
         name="interest_case",

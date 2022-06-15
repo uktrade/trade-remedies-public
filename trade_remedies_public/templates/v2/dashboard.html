@@ -22,7 +22,7 @@
               Registration of Interest
             </h2>
               <p>
-                <a href="/case/{{case.case_id}}/organisation/{{case.user_organisations.0.id}}/submission/{{case.user_organisations.0.submission_id}}/" class="govuk-link govuk-link--no-visited-state">
+                <a href="/case/interest/draft/continue/?case_id={{case.case_id}}&organisation_id={{case.user_organisations.0.id}}&submission_id={{case.user_organisations.0.submission_id}}&last_modified={{ case.last_modified }}&case_reference={{ case.reference }}&case_name={{ case.name }}" class="govuk-link govuk-link--no-visited-state">
                 {{case.reference}} - {{case.name}}</a><br>
                   Status: Draft<br>
                 <span class="govuk-body-s"><span id="date">{{ case.last_modified }}</span></span>
