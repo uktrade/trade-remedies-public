@@ -345,7 +345,7 @@ class DashboardView(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
 ):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
-    template_name = "dashboard.html"
+    template_name = "v2/dashboard.html"
 
     @never_cache
     def get(self, request, *args, **kwargs):

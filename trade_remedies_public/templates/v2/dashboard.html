@@ -1,0 +1,84 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block main_content %}
+<div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">
+        Welcome
+      </h1>
+
+
+
+      <p>This is your Trade Remedies Service (TRS) dashboard.</p>
+
+
+
+      <!-- Reg interest -->
+    {% if interest_cases_draft %}
+        {% for id,case in interest_cases_draft.items %}
+        <div class="address-card">
+          <div class="address-container">
+            <h2 class="govuk-heading-m">
+              Registration of Interest
+            </h2>
+              <p>
+                <a href="/case/{{case.case_id}}/organisation/{{case.user_organisations.0.id}}/submission/{{case.user_organisations.0.submission_id}}/" class="govuk-link govuk-link--no-visited-state">
+                {{case.reference}} - {{case.name}}</a><br>
+                  Status: Draft<br>
+                <span class="govuk-body-s"><span id="date">{{ case.last_modified }}</span></span>
+              </p>
+          </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+
+      <!-- Invites in progress -->
+
+    </div>
+<div class="govuk-grid-column-one-third">
+
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Quick links
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a class="govuk-link govuk-link--no-visited-state" href="/case/interest/">Register interest in a case</a>
+            </li>
+            <li>
+              <a class="govuk-link govuk-link--no-visited-state" href="/case/">Apply for an investigation</a>
+            </li>
+
+              <li>
+                <a class="govuk-link govuk-link--no-visited-state" href="/accounts/team/">Manage team</a>
+              </li>
+              <li>
+                <a class="govuk-link govuk-link--no-visited-state" href="/accounts/team/user/">Invite user to join this account</a>
+              </li>
+
+          </ul>
+        </nav>
+      </aside>
+      <br>
+      <aside class="app-related-items" role="complementary">
+        <h2 class="govuk-heading-m" id="subsection-title">
+          Read the guidance documents
+        </h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+          <ul class="govuk-list govuk-!-font-size-16">
+            <li>
+              <a class="govuk-link--no-visited-state" href="https://www.gov.uk/government/organisations/trade-remedies-authority" target="_blank">Trade Remedies Authority news (opens in a new window or tab)</a>
+            </li>
+            <li>
+              <a class="govuk-link--no-visited-state" href="https://www.gov.uk/government/organisations/trade-remedies-authority/about" target="_blank">Who is the Trade Remedies Authority (opens in a new window or tab)</a>
+            </li>
+            <li>
+              <a class="govuk-link--no-visited-state" href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process" target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
+            </li>
+          </ul>
+        </nav>
+      </aside>
+    </div>
+{% endblock main_content %}

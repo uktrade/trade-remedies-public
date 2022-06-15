@@ -76,6 +76,9 @@ def decorate_rois(interests, date_warnings=None):
             "user_organisations": [],
             "due_state": {"submission_count": 0, "due_at": interest.get("due_at")},
             "organisation_case_role": organisation_case_role.get("key"),
+            "last_modified": datetime.datetime.strptime(
+                interest.get("last_modified"), "%Y-%m-%dT%H:%M:%S%z"
+            ).strftime("%d %b %Y"),
         }
         if date_warnings:
             interest_cases[case_id]["due_state"] = decorate_due_status(interest.get("due_at"))
