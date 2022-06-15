@@ -1,0 +1,27 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block main_content %}
+<div class="govuk-grid-column-two-thirds-from-desktop">
+    <h1 class="govuk-heading-xl">
+      Delete Registration of Interest?
+    </h1>
+    <p>Are you sure you want to delete this draft Registration of Interest? This cannot be undone.</p>
+
+      <div class="govuk-button-group">
+
+
+
+
+
+
+
+
+<a href="../dashboard?reginterest-task=null" role="button" draggable="false" class="govuk-button govuk-button--warning" data-module="govuk-button">
+  Delete application
+</a>
+
+        <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Cancel</a>
+
+      </div>
+</div>
+{% endblock main_content %}
