@@ -212,16 +212,13 @@ class InterestDraftContinueView(LoginRequiredMixin, GroupRequiredMixin, BasePubl
         )
 
 
-class InterestDraftDeleteView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestDraftConfirmDeleteView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
 
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
-    template_name = "v2/registration_of_interest/delete.html"
+    template_name = "v2/registration_of_interest/confirm_delete.html"
     case_page = True
 
     def get(self, request, *args, **kwargs):
-        last_modified = request.GET.get("last_modified")
-        case_reference = request.GET.get("case_reference")
-        case_name = request.GET.get("case_name")
         organisation_id = request.GET.get("organisation_id")
         submission_id = request.GET.get("submission_id")
         case_id = request.GET.get("case_id")
@@ -229,9 +226,6 @@ class InterestDraftDeleteView(LoginRequiredMixin, GroupRequiredMixin, BasePublic
             request,
             self.template_name,
             {
-                "case_name": case_name,
-                "case_reference": case_reference,
-                "last_modified": last_modified,
                 "case_id": case_id,
                 "submission_id": submission_id,
                 "organisation_id": organisation_id

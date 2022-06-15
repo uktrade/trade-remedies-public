@@ -16,9 +16,9 @@ urlpatterns = [
         name="interest_draft_continue",
     ),
     path(
-        "interest/draft/delete/",
-        case_views.InterestDraftDeleteView.as_view(),
-        name="interest_draft_delete",
+        "interest/draft/confirm/delete/",
+        case_views.InterestDraftConfirmDeleteView.as_view(),
+        name="interest_draft_confirm_delete",
     ),
     path(
         "interest/<uuid:case_id>/",

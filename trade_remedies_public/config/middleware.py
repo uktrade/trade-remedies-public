@@ -127,7 +127,7 @@ class APIUserMiddleware:
             back_link_url = reverse("login")
         elif request.path == reverse("interest_draft_continue"):
             back_link_url = reverse("dashboard")
-        elif request.path == reverse("interest_draft_delete"):
+        elif request.path == reverse("interest_draft_confirm_delete"):
             back_link_url = request.META.get("HTTP_REFERER")
         elif request.path == reverse("forgot_password_requested"):
             try:
