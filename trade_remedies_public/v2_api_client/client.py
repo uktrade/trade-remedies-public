@@ -1,6 +1,6 @@
 from apiclient import APIClient, HeaderAuthentication
 from apiclient.response_handlers import BaseResponseHandler, JsonResponseHandler
-
+from django.conf import settings
 
 class V2APIClient(APIClient):
 

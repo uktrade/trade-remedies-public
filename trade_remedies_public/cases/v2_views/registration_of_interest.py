@@ -6,5 +6,7 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration_of_interest/registration_of_interest_1.html"
 
     def get_context_data(self, **kwargs):
-        cases = self.client(self.request.user).get_all_cases("registration-of-interest")
-        print("ads")
+        context = super().get_context_data(**kwargs)
+        cases = self.client(self.request.user).v2_get_all_cases()
+        context["cases"] = cases
+        return context

@@ -93,9 +93,12 @@
             </tr>
             </thead>
             <tbody class="govuk-table__body">
+
+            {% for case in cases %}
+
                 <tr class="govuk-table__row no-border">
                     <td class="govuk-table__cell">
-                        <span class="govuk-visually-hidden--desktop td-header">No. </span>AD2224
+                        <span class="govuk-visually-hidden--desktop td-header">No. </span>AD2224 {{ case }}
                     </td>
                     <td class="govuk-table__cell">
                         <span class="govuk-visually-hidden--desktop td-header">Case: </span>Steel plate from Russia
@@ -104,7 +107,8 @@
                         <span class="govuk-visually-hidden--desktop td-header">Type: </span>Anti-dumping
                     </td>
                     <td class="govuk-table__cell">
-                        <span class="govuk-visually-hidden--desktop td-header">Status: </span>Initiation notices published
+                        <span class="govuk-visually-hidden--desktop td-header">Status: </span>Initiation notices
+                        published
                     </td>
                     <td class="govuk-table__cell">
                         <span class="govuk-visually-hidden--desktop td-header">Start date: </span>12 May 2022
@@ -118,6 +122,10 @@
                             class="govuk-link--no-visited-state"> Select <span class="govuk-visually-hidden td-header">AD2224</span></a>
                     </td>
                 </tr>
+
+
+            {% endfor %}
+
             </tbody>
         </table>
 
