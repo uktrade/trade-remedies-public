@@ -305,7 +305,7 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             else:
                 template_name = f"cases/submissions/{tasklist_template}/view.html"
         else:
-            template_name = f"cases/submissions/{tasklist_template}/tasklist.html"
+            template_name = f"v2/registration_of_interest/tasklist.html"
         _context = {
             "all_organisations": True
             if not self.organisation

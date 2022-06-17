@@ -1,0 +1,197 @@
+{% extends "v2/govuk/base.html" %}
+{% block main_content %}
+
+<div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">
+      Register interest in a case
+    </h1>
+    <p class="govuk-body">Complete all the steps to register your interest in an active Trade Remedies investigation.  </p>
+
+    <p class="govuk-body govuk-!-margin-bottom-7">Return to your dashboard at another time to continue if you leave before you finish.</p>
+
+    <ol class="app-task-list">
+      <li>
+        <h2 class="app-task-list__section">
+          <span class="app-task-list__section-number">1. </span>Your case
+        </h2>
+        <ul class="app-task-list__items">
+
+          <!--If the user is trying to reg interest show: -->
+
+
+
+    <li class="app-task-list__item">
+      <span class="app-task-list__task-name">
+        <a href="/case/select/?redirect=interest" class="govuk-link--no-visited-state" aria-describedby="case-selected-status">
+          Select a Trade Remedies case
+        </a>
+      </span>
+      {% if case %}
+        <strong class="govuk-tag app-task-list__tag" id="case-selected-status">Complete</strong>
+      {% else %}
+        <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+      {% endif %}
+    </li>
+
+
+
+
+
+        </ul>
+      </li>
+
+
+      <li>
+        <h2 class="app-task-list__section">
+          <span class="app-task-list__section-number">2. </span>About you
+        </h2>
+        <ul class="app-task-list__items">
+
+          <!--If the user is trying to reg interest show: -->
+<!--If the user is trying to reg interest show: -->
+<!--If the user is trying to reg interest show: -->
+
+
+  <!-- Public - reginterest org - organisation - if the user has completed section 2 show: -->
+
+      <!-- If the user has started section 2 show: -->
+
+        <!-- If the user has not started section 2 show -->
+
+        <li class="app-task-list__item">
+<!--          <span class="app-task-list__task-name">-->
+<!--            <a href="reginterest-which-org?which-org-task=started" class="govuk-link&#45;&#45;no-visited-state" aria-describedby="organisation-selected-status">-->
+<!--              Organisation details-->
+<!--            </a>-->
+<!--          </span>-->
+          <span class="app-task-list__task-name" aria-describedby="organisation-selected-status">
+            Organisation details
+          </span>
+          <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Cannot start yet</strong>
+        </li>
+
+
+
+
+
+
+
+        </ul>
+      </li>
+      <li>
+        <h2 class="app-task-list__section">
+          <span class="app-task-list__section-number">3. </span>Registration documentation
+        </h2>
+        <ul class="app-task-list__items">
+
+          <!-- Reg Interest -->
+<!-- Reg Interest -->
+
+
+
+<!-- If the user has completed org details show: -->
+
+
+  <!-- If the user has completed Uploads show: -->
+  <!-- If the user has completed Uploads show: -->
+
+      <!-- If the user has visited Uploads show: -->
+
+          <!-- If the user has not started Uploads but has completed section 2 show: -->
+
+                <li class="app-task-list__item">
+                  <span class="app-task-list__task-name" aria-describedby="pre-sampling-upload-status">
+                    Initial documentation
+                  </span>
+                  <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="pre-sampling-upload-status">Cannot start yet</strong>
+                </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </ul>
+      </li>
+
+      <li>
+        <h2 class="app-task-list__section">
+          <span class="app-task-list__section-number">4. </span>Register interest
+        </h2>
+        <ul class="app-task-list__items">
+
+          <!--If the user is trying to reg interest show: -->
+<!--If the user is trying to reg interest show: -->
+<!--If the user is trying to reg interest show: -->
+
+  <!-- If the user has completed Check and submit show: -->
+
+      <!-- If the user has started Check and submit show: -->
+
+      <!-- If the user not started Check and it is not their org loa and pre docs are uploaded -->
+
+          <!-- If the user not started Check and it is their org and pre docs are uploaded -->
+
+          <li class="app-task-list__item">
+            <span class="app-task-list__task-name">
+                Check and submit
+            </span>
+            <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="check-status">Cannot start yet</strong>
+          </li>
+
+
+
+
+
+
+
+        </ul>
+      </li>
+    </ol>
+
+    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'dashboard' %}">Back to Dashboard</a>
+
+  </div>
+
+<div class="govuk-grid-column-one-third">
+    <aside class="app-related-items" role="complementary">
+      <h2 class="govuk-heading-m" id="subsection-title">Read the guidance documents</h2>
+      <nav role="navigation" aria-labelledby="subsection-title">
+        <ul class="govuk-list govuk-!-font-size-16">
+          <li>
+            <a href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process" target="_blank" class="govuk-link govuk-link--no-visited-state">Trade remedies investigations process (opens in a new window or tab)</a>
+          </li>
+          <li>
+            <a href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process/an-introduction-to-our-investigations-process#confidential-information-and-non-confidential-summaries" target="_blank" class="govuk-link govuk-link--no-visited-state">Creating confidential and non-confidential documents (opens in a new window or tab)</a>
+          </li>
+          <li>
+            <a href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process/an-introduction-to-our-investigations-process#about-our-questionnaires" target="_blank" class="govuk-link govuk-link--no-visited-state">About our questionnaires (opens in a new window or tab)</a>
+          </li>
+          {% if case %}
+          <li>
+            <br>
+            <strong>Email the case team</strong>
+
+                <a class="govuk-link govuk-link--no-visited-state" href="">{{ case.reference }}@traderemedies.gov.uk</a>
+
+          </li>
+          {% endif %}
+        </ul>
+      </nav>
+    </aside>
+  </div>
+
+{% endblock main_content %}
