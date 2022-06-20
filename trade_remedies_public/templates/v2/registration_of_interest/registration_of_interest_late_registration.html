@@ -1,0 +1,33 @@
+{% extends "v2/govuk/base.html" %}
+{% load format_date %}
+
+
+{% block main_content %}
+
+    <div class="govuk-grid-column-two-thirds">
+        <form method="POST">
+            <span class="govuk-caption-xl">1. Your case</span>
+            <h1 class="govuk-heading-xl">Select a Trade Remedies case</h1>
+            <h2 class="govuk-heading-m">{{ case_reference }} - {{ case_name }}</h2>
+            <p>Registration due date: {% format_date case_registration_deadline '%d %b %Y' %}</p>
+            <p>The due date has now passed. You can still register interest, but your opportunities to participate may
+                be
+                limited.</p>
+            <p>We encourage anyone with an interest to register.</p>
+            <div class="govuk-button-group">
+                <button
+                        type="submit"
+                   class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+            </div>
+            <input name="confirmed_okay_to_proceed" value="yes" type="hidden">
+            <input name="selected_case_id" value="{{ case_id }}" type="hidden">
+            <input name="case_registration_deadline" value="{{ case_registration_deadline }}" type="hidden">
+            <input name="case_information" value="{{ case_information }}" type="hidden">
+            {% csrf_token %}
+        </form>
+    </div>
+
+
+{% endblock main_content %}

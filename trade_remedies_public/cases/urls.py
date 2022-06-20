@@ -1,5 +1,6 @@
 from django.urls import path
 from cases import views as case_views
+
 from cases.v2_views import registration_of_interest as roi_views
 
 urlpatterns = [
