@@ -184,9 +184,9 @@ class CacheControlMiddleware:
 
     def __call__(self, request, *args, **kwargs):
         response = self.get_response(request)
-        response["Cache-Control"] = "no-store"
+        """response["Cache-Control"] = "no-store"
         response["Pragma"] = "no-cache"
-        response["X-Robots-Tag"] = "noindex"
+        response["X-Robots-Tag"] = "noindex"""
         return response
 
 

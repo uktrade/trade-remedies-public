@@ -37,7 +37,6 @@ class TwoFactorChoiceForm(ValidationForm):
         error_messages={"required": "no_two_factor_selected"},
     )
     mobile_country_code = CountryField().formfield(required=False)
-    # mobile_country_code = forms.ChoiceField(choices=sorted(COUNTRIES.items()))
     mobile = forms.CharField(
         max_length=13,
         validators=[
@@ -49,12 +48,18 @@ class TwoFactorChoiceForm(ValidationForm):
 
     def clean(self):
         if self.cleaned_data.get("two_factor_choice") == "mobile":
-            if not self.cleaned_data.get("mobile_country_code"):
+            # We want to check that both the country code and mobile input have been provided if
+            # the user wants Mobile 2FA. However, we also want to check if errors have not already
+            # been raised against the values in each field, as if they have, they will not be in
+            # self.cleaned_data
+            if not self.cleaned_data.get(
+                    "mobile_country_code"
+            ) and "mobile_country_code" not in self.errors:
                 self.add_error(
                     'mobile_country_code',
                     ValidationError(message="no_country_selected")
                 )
-            if not self.cleaned_data.get("mobile"):
+            if not self.cleaned_data.get("mobile") and "mobile" not in self.errors:
                 self.add_error(
                     'mobile',
                     ValidationError(message="no_mobile_entered")
