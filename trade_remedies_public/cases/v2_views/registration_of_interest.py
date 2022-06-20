@@ -12,8 +12,15 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cases = self.client(self.request.user).v2_get_all_cases({"open_to_roi": True})
+        if not cases:
+            self.request.session["form_errors"] = {}
+            self.request.session["form_errors"]["error_summaries"] = [[
+                "table-header",
+                "There are no active cases to join"
+            ]]
         context["cases"] = cases
         return context
+
 
     def post(self, request, *args, **kwargs):
         case_information = request.POST["case_information"].split("*-*")
