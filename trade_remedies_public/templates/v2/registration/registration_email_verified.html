@@ -1,0 +1,30 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block page_title %}
+    Email address is verified
+{% endblock %}
+
+{% block main_content %}
+
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Email address is verified
+            </h1>
+        </div>
+
+        <p class="govuk-body">You can now:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>add a someone to your account or an open case</li>
+            <li>request a new trade investigation</li>
+            <li>ask to participate in an open trade remedy case</li>
+            <li>invite another party to represent you in an open case</li>
+        </ul>
+        <a class="govuk-button" data-module="govuk-button"
+           href="{% if request.user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'landing' %}{% endif %}">
+            Continue
+        </a>
+    </div>
+
+
+{% endblock main_content %}

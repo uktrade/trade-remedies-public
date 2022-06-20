@@ -1,24 +1,39 @@
 # Views to handle the registration functionality and legal pages
+import json
 
-from django.conf import settings
-from django.shortcuts import render, redirect
-from django.views.decorators.cache import never_cache
-from django.views.generic import TemplateView
-from django_countries import countries
-
+from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
+from login.decorators import v2_error_handling
 from core.models import TransientUser
-from core.utils import (
-    validate,
-    get,
-)
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from core.utils import get, validate
 from core.validators import (
     registration_validators,
 )
-from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
+from django.conf import settings
+from django.http import QueryDict
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.views import View
+from django.views.decorators.cache import never_cache
+from django.views.generic import FormView, TemplateView
+from django_countries import countries
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+
+from registration.forms import (
+    NonUkEmployerForm,
+    OrganisationFurtherDetailsForm,
+    PasswordForm,
+    RegistrationStartForm,
+    TwoFactorChoiceForm,
+    UkEmployerForm,
+    YourEmployerForm,
+)
 
 
 class BaseRegisterView(TemplateView):
+    def dispatch(self, *args, **kwargs):
+        self.default_session(self.request)
+        return super().dispatch(*args, **kwargs)
+
     def reset_session(self, request, initial_data=None):
         initial_data = initial_data or {}
         request.session["registration"] = initial_data
@@ -27,6 +42,12 @@ class BaseRegisterView(TemplateView):
 
     def update_session(self, request, update_data):
         request.session.setdefault("registration", {})
+        if isinstance(update_data, QueryDict):
+            # If it's a QueryDict, we need to convert it to a normal dictionary as Django's
+            # internal representation of QueryDicts store individual values as lists, regardless
+            # of how many elements are in that list:
+            # https://www.ianlewis.org/en/querydict-and-update
+            update_data = update_data.dict()
         request.session["registration"].update(update_data)
         request.session.modified = True
         return request.session
@@ -371,3 +392,120 @@ class TermsAndConditionsView(TemplateView):
 class AccessibilityStatementView(TemplateView):
     def get(self, request, *args, **kwargs):
         return render(request, "registration/accessibility_statement.html", {})
+
+
+# ------------------------------------------V2 REGISTRATION JOURNEY--------------------------------#
+class V2BaseRegisterView(FormView):
+    next_url_resolver = ""
+
+    def dispatch(self, *args, **kwargs):
+        if "registration" not in self.request.session:
+            self.request.session["registration"] = {}
+        self.request.session.modified = True
+        return super().dispatch(*args, **kwargs)
+
+    def reset_session(self, request, initial_data=None):
+        initial_data = initial_data or {}
+        request.session["registration"] = initial_data
+        request.session.modified = True
+        return request.session
+
+    def update_session(self, request, update_data):
+        request.session.setdefault("registration", {})
+        if isinstance(update_data, QueryDict):
+            # If it's a QueryDict, we need to convert it to a normal dictionary as Django's
+            # internal representation of QueryDicts store individual values as lists, regardless
+            # of how many elements are in that list:
+            # https://www.ianlewis.org/en/querydict-and-update
+            update_data = update_data.dict()
+        request.session["registration"].update(update_data)
+        request.session.modified = True
+        return request.session
+
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return super().form_invalid(form)
+
+    def form_valid(self, form):
+        self.update_session(self.request, form.cleaned_data)
+        return redirect(self.get_next_url(form))
+
+    def get_next_url(self, form=None):
+        return reverse(self.next_url_resolver)
+
+
+class V2RegistrationViewStart(V2BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_start.html"
+    form_class = RegistrationStartForm
+    next_url_resolver = "v2_register_set_password"
+
+    def get(self, request, *args, **kwargs):
+        self.reset_session(request)
+        return super().get(request, *args, **kwargs)
+
+
+class V2RegistrationViewSetPassword(V2BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_set_password.html"
+    form_class = PasswordForm
+    next_url_resolver = "v2_register_2fa_choice"
+
+
+class V2RegistrationView2FAChoice(V2BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_2fa_choice.html"
+    form_class = TwoFactorChoiceForm
+    next_url_resolver = "v2_register_your_employer"
+
+
+class V2RegistrationViewYourEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_your_employer.html"
+    form_class = YourEmployerForm
+
+    def get_next_url(self, form=None):
+        if form.cleaned_data["uk_employer"] == "yes":
+            return reverse("v2_register_your_uk_employer")
+        else:
+            return reverse("v2_register_your_non_uk_employer")
+
+
+class V2RegistrationViewUkEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_your_uk_employer.html"
+    form_class = UkEmployerForm
+    next_url_resolver = "v2_register_organisation_further_details"
+
+
+class V2RegistrationViewNonUkEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_your_non_uk_employer.html"
+    next_url_resolver = "v2_register_organisation_further_details"
+    form_class = NonUkEmployerForm
+
+
+class V2RegistrationViewOrganisationFurtherDetails(V2BaseRegisterView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_organisation_further_details.html"
+    form_class = OrganisationFurtherDetailsForm
+
+    @v2_error_handling()
+    def form_valid(self, form):
+        # we're done, let's create the new user
+        self.update_session(self.request, form.cleaned_data)
+        registration_data = {"registration_data": json.dumps(self.request.session["registration"])}
+        response = self.trusted_client.v2_register(registration_data)
+        self.update_session(self.request, response)
+        return redirect(reverse("v2_register_complete"))
+
+
+class V2RegistrationComplete(TemplateView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/registration_complete.html"
+
+
+class RequestEmailVerifyCode(View, TradeRemediesAPIClientMixin):
+    def get(self, request, user_pk, *args, **kwargs):
+        self.trusted_client.send_email_verification_link(user_pk)
+        request.session["email_verification_link_resent"] = True
+        return redirect(reverse("v2_register_complete"))
+
+
+class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
+    @v2_error_handling(redirection_url_resolver="landing")
+    def get(self, request, user_pk, email_verify_code, *args, **kwargs):
+        response = self.trusted_client.verify_email_verification_link(user_pk, email_verify_code)
+        return render(request, "v2/registration/registration_email_verified.html")

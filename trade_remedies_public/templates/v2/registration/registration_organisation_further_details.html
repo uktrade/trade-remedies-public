@@ -1,0 +1,20 @@
+{% extends "v2/govuk/base_with_form.html" %}
+{% load static %}
+
+{% block page_title %}
+    Further details about your organisation
+{% endblock %}
+
+{% block heading %}
+    Further details about your organisation
+{% endblock heading %}
+
+{% block form_content %}
+    <p class="govuk-body">Provide as many details as you can to help us understand your organisation.</p>
+    {% include "v2/component_macros/text_input.html" with id="company_website" name="company_website" label="Website (optional)" hint="Provide your organisation’s website if it has one." type="text" width="20" strong=True %}
+    {% include "v2/component_macros/text_input.html" with id="company_vat_number" name="company_vat_number" label="VAT registration number (optional)" hint="Most UK registered companies are registered for Value Added Tax (VAT)." type="text" width="20" strong=True %}
+    {% include "v2/component_macros/text_input.html" with id="company_eori_number" name="company_eori_number" label="EORI number (optional)" hint="Your organisation will have an EORI number if you have brought goods into the UK or EU." type="text" width="20" strong=True %}
+    {% include "v2/component_macros/text_input.html" with id="company_duns_number" name="company_duns_number" label="DUNS Number (optional)" hint="Your organisation might have a 9-digit Data Universal Numbering System (DUNS) identifier." type="text" width="20" strong=True %}
+
+    {% include "v2/component_macros/form_button_group.html" with forward_button_text="Create my account" %}
+{% endblock form_content %}

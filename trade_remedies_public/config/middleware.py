@@ -24,7 +24,11 @@ NON_2FA_URLS = (
 )
 
 # URLS that do not display the back button
-NON_BACK_URLS = [reverse("landing"), reverse("reset_password_success")]
+NON_BACK_URLS = [
+    reverse("landing"),
+    reverse("reset_password_success"),
+    reverse("v2_register_complete"),
+]
 
 
 def get_evaluated_non_back_urls(kwargs):

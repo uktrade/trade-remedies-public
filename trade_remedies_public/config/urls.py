@@ -252,4 +252,52 @@ urlpatterns = [
     path(
         "companieshouse/search/", core_views.CompaniesHouseSearch.as_view(), name="companieshouse"
     ),
+    path(
+        "register/start", register_views.V2RegistrationViewStart.as_view(), name="v2_register_start"
+    ),
+    path(
+        "register/set_password",
+        register_views.V2RegistrationViewSetPassword.as_view(),
+        name="v2_register_set_password",
+    ),
+    path(
+        "register/2fa_choice",
+        register_views.V2RegistrationView2FAChoice.as_view(),
+        name="v2_register_2fa_choice",
+    ),
+    path(
+        "register/your_employer",
+        register_views.V2RegistrationViewYourEmployer.as_view(),
+        name="v2_register_your_employer",
+    ),
+    path(
+        "register/your_uk_employer",
+        register_views.V2RegistrationViewUkEmployer.as_view(),
+        name="v2_register_your_uk_employer",
+    ),
+    path(
+        "register/your_non_uk_employer",
+        register_views.V2RegistrationViewNonUkEmployer.as_view(),
+        name="v2_register_your_non_uk_employer",
+    ),
+    path(
+        "register/organisation_further_details",
+        register_views.V2RegistrationViewOrganisationFurtherDetails.as_view(),
+        name="v2_register_organisation_further_details",
+    ),
+    path(
+        "register/complete",
+        register_views.V2RegistrationComplete.as_view(),
+        name="v2_register_complete",
+    ),
+    path(
+        "register/verify_email/<uuid:user_pk>",
+        register_views.RequestEmailVerifyCode.as_view(),
+        name="request_email_verify_code",
+    ),
+    path(
+        "register/verify_email/<uuid:user_pk>/<str:email_verify_code>",
+        register_views.VerifyEmailVerifyCode.as_view(),
+        name="email_verify_code",
+    ),
 ]

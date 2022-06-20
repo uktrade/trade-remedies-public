@@ -32,6 +32,7 @@ jobs:
   code_quality:
     docker:
       - image: cimg/python:3.9.5
+      - image: cimg/redis:7.0.0
     steps:
       - checkout
       - restore_dependency_cache
