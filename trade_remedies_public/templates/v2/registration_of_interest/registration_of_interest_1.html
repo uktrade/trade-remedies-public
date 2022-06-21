@@ -1,0 +1,195 @@
+{% extends "v2/govuk/base.html" %}
+{% load static %}
+{% load format_date %}
+
+{% block page_title %}Select Trade Remedies Case{% endblock page_title %}
+
+{% block extra_css %}
+    <link href="{% static 'v2/css/table.css' %}" rel="stylesheet">
+
+    <style>
+        /* This is the select button in the case table */
+        .link_button {
+            padding: 0px;
+            text-align: left;
+            cursor: pointer;
+            box-shadow: none;
+            margin: 0px;
+            color: #1d70b8;
+            background: none;
+            text-decoration: underline;
+            text-underline-offset: 0.1em;
+        }
+    </style>
+{% endblock extra_css %}
+
+{% block main_content %}
+    <div class="govuk-grid-column-full">
+        <span class="govuk-caption-xl">1. Your case</span>
+        <h1 class="govuk-heading-xl">Select a Trade Remedies case</h1>
+        <p>Select the case you would like to participate in.</p>
+    </div>
+    <div class="govuk-grid-column-full">
+        {% include "v2/component_macros/error_summaries.html" %}
+        <div id="table-sort" class="govuk-visually-hidden--desktop">
+            <div class="govuk-form-group table-sort-select">
+                <label class="govuk-label govuk-!-display-inline" for="mobile_sort_cases">
+                    Sort by
+                </label>
+                <select class="govuk-select" id="mobile_sort_cases" name="mobile_sort_cases">
+                    <option value="0" selected="">Case No.</option>
+                    <option value="1">Case</option>
+                    <option value="2">Type</option>
+                    <option value="3">Status</option>
+                    <option value="4">Started</option>
+                    <option value="5">Status</option>
+                    <option value="6">Reg due</option>
+                </select>
+
+                <label class="govuk-label govuk-visually-hidden" for="mobile_sort_direction">
+                    Direction
+                </label>
+                <select class="govuk-select" id="mobile_sort_direction" name="mobile_sort_direction">
+                    <option value="desc" selected="">Descending</option>
+                    <option value="asc">Ascending</option>
+                </select>
+
+
+                <button class="govuk-button govuk-button--secondary" data-module="govuk-button" type="button"
+                        id="mobile_sort_button">
+                    Sort
+                </button>
+
+            </div>
+        </div>
+        <form method="post">
+            <div class="govuk-form-group {% if not cases %}govuk-form-group--error{% endif %}">
+                {% if not cases %}
+                    <p id="table-header-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> There are no active cases to join at present
+                    </p>
+                {% endif %}
+                <table class="govuk-table sortable1 table-border" id="table-header">
+                    <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden">
+                        A table listing all of the open Trade Remedies cases
+                    </caption>
+                    <thead class="govuk-table__head">
+                    <tr class="govuk-table__row govuk-visually-hidden--mobile">
+                        <th class="govuk-table__header" aria-sort="ascending">
+                            <button class="govuk-button govuk-button--secondary" data-column-index="0" type="button">
+                                <span class="govuk-visually-hidden--desktop">Sort by: </span>No.
+                                <span class="indicator" aria-hidden="true"></span>
+                            </button>
+                        </th>
+                        <th class="govuk-table__header">
+                            <button class="govuk-button govuk-button--secondary" data-column-index="1" type="button">
+                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Case
+                                <span class="indicator" aria-hidden="true"></span>
+                            </button>
+                        </th>
+                        <th class="govuk-table__header">
+                            <button class="govuk-button govuk-button--secondary" data-column-index="2" type="button">
+                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Type
+                                <span class="indicator" aria-hidden="true"></span>
+                            </button>
+                        </th>
+                        <th class="govuk-table__header">
+                            <button class="govuk-button govuk-button--secondary" data-column-index="3" type="button">
+                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
+                                <span class="indicator" aria-hidden="true"></span>
+                            </button>
+                        </th>
+                        <th class="govuk-table__header">
+                            <button class="govuk-button govuk-button--secondary" data-column-index="4" type="button">
+                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Started
+                                <span class="indicator" aria-hidden="true"></span>
+                            </button>
+                        </th>
+                        <th class="govuk-table__header">
+                            <button class="govuk-button govuk-button--secondary" data-column-index="5" type="button">
+                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Reg due
+                                <span class="indicator" aria-hidden="true"></span>
+                            </button>
+                        </th>
+                        <th class="govuk-table__header">
+                            <span class="govuk-visually-hidden">Action: </span>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+
+                    {% for case in cases %}
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">No. </span>{{ case.reference }}
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case: </span>{{ case.name }}
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Type: </span>{{ case.type.name }}
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Status: </span>{{ case.case_status.stage }}
+                            </td>
+                            <td class="govuk-table__cell" data-order="{% format_date case.initiated_at '%s' %}">
+                                <span class="govuk-visually-hidden--desktop td-header">Start date: </span>{% format_date case.initiated_at '%d %b %Y' %}
+                            </td>
+                            <td class="govuk-table__cell"
+                                data-order="{% format_date case.registration_deadline '%s' %}">
+                                <span class="govuk-visually-hidden--desktop td-header">Registration due: </span>{% format_date case.registration_deadline '%d %b %Y' %}
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Action:</span>
+                                <button type="submit"
+                                        class="govuk-button govuk-button--secondary link_button"
+                                        value="{{ case.reference }}*-*{{ case.id }}*-*{{ case.name }}*-*{{ case.registration_deadline }}"
+                                        name="case_information">
+                                    Select<span class="govuk-visually-hidden td-header">{{ case.reference }}</span>
+                                </button>
+                            </td>
+                        </tr>
+                        {% csrf_token %}
+
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            {% csrf_token %}
+        </form>
+        <a class="govuk-back-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
+    </div>
+{% endblock main_content %}
+
+{% block scripts %}
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let data_table = $('#table-header').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "reference", "orderable": "true"},
+                    {"name": "name", "orderable": "true"},
+                    {"name": "type", "orderable": "true"},
+                    {"name": "status", "orderable": "true"},
+                    {"name": "date_initiated", "orderable": "true"},
+                    {"name": "registration_due", "orderable": "true"},
+                    {"name": "select", "orderable": "false"},
+                ],
+                order: [[5, 'asc']],
+                responsive: true,
+            });
+
+            $("#mobile_sort_button").click(function () {
+                let column_index = Number($('#mobile_sort_cases').val())
+                let sort_direction = $("#mobile_sort_direction").val()
+
+                data_table.order([[column_index, sort_direction]]).draw();
+            })
+
+        });
+    </script>
+{% endblock scripts %}
