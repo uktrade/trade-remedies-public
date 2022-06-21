@@ -28,7 +28,6 @@ NON_BACK_URLS = [
     reverse("landing"),
     reverse("reset_password_success"),
     reverse("v2_register_complete"),
-
 ]
 
 

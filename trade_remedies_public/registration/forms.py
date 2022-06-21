@@ -52,18 +52,15 @@ class TwoFactorChoiceForm(ValidationForm):
             # the user wants Mobile 2FA. However, we also want to check if errors have not already
             # been raised against the values in each field, as if they have, they will not be in
             # self.cleaned_data
-            if not self.cleaned_data.get(
-                    "mobile_country_code"
-            ) and "mobile_country_code" not in self.errors:
+            if (
+                not self.cleaned_data.get("mobile_country_code")
+                and "mobile_country_code" not in self.errors
+            ):
                 self.add_error(
-                    'mobile_country_code',
-                    ValidationError(message="no_country_selected")
+                    "mobile_country_code", ValidationError(message="no_country_selected")
                 )
             if not self.cleaned_data.get("mobile") and "mobile" not in self.errors:
-                self.add_error(
-                    'mobile',
-                    ValidationError(message="no_mobile_entered")
-                )
+                self.add_error("mobile", ValidationError(message="no_mobile_entered"))
 
         return self.cleaned_data
 

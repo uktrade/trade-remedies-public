@@ -20,13 +20,16 @@ class ValidationForm(forms.Form, TradeRemediesAPIClientMixin):
                         if isinstance(field, list):
                             fields = field
                         else:
-                            fields = [field, ]
+                            fields = [
+                                field,
+                            ]
                         for field in fields:
                             request.session["form_errors"][field].append(error_text)
                     if error_summary := validation_error.get("error_summary"):
                         # We don't want to show the same error_summary twice
-                        if error_summary not in [each[1] for each in
-                                                 request.session["form_errors"]["error_summaries"]]:
+                        if error_summary not in [
+                            each[1] for each in request.session["form_errors"]["error_summaries"]
+                        ]:
                             request.session["form_errors"]["error_summaries"].append(
                                 (field, error_summary)
                             )
