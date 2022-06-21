@@ -510,10 +510,10 @@ class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
         response = self.trusted_client.verify_email_verification_link(user_pk, email_verify_code)
         # Getting the organisation security groups of this user, so we know what permissions we
         # tell them they have
-        if response["organisations"][0]["security_group"] == "Organisation Owner":
-            owner = True
-        else:
-            owner = False
+        owner = False
+        if "organisations" in response and response["organisations"]:
+            if response["organisations"][0]["security_group"] == "Organisation Owner":
+                owner = True
         return render(
             request,
             "v2/registration/registration_email_verified.html",
