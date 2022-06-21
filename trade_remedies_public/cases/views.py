@@ -415,8 +415,6 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         )
 
     def post(self, request, case_id=None, submission_id=None, *args, **kwargs):  # noqa: C901
-        print('hello world')
-        print(request.POST)
 
         page = request.POST.get("page")
         if page == "role":
