@@ -1,0 +1,93 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block main_content %}
+
+<div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-xl">2. About you</span>
+
+    <form method="post" novalidate="novalidate">
+
+
+        <!-- Set the name of the org if is is "my org" whether from regsitering or default-->
+
+        {% csrf_token %}
+        <div class="govuk-form-group">
+
+            <fieldset class="govuk-fieldset">
+
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+
+                    <h1 class="govuk-fieldset__heading">
+                        Who is registering interest in this case?
+                    </h1>
+
+                </legend>
+
+
+                <div class="govuk-radios" data-module="govuk-radios">
+
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="reginterest-what-org" name="reginterest-what-org"
+                               type="radio" value="my-org">
+                        <label class="govuk-label govuk-radios__label" for="reginterest-what-org">
+
+
+                            My organisation: BlueSteel Partners
+
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="reginterest-what-org-2" name="reginterest-what-org"
+                               type="radio" value="existing-org">
+                        <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
+                            An existing client: someone I have previously represented using the Trade Remedies Service
+                        </label>
+
+                    </div>
+
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="reginterest-what-org-3" name="reginterest-what-org"
+                               type="radio" value="new-org">
+                        <label class="govuk-label govuk-radios__label" for="reginterest-what-org-3">
+                            A new client: someone I am representing for the first time using the Trade Remedies Service
+                        </label>
+
+                    </div>
+
+
+                </div>
+
+
+            </fieldset>
+
+
+        </div>
+
+
+        <div class="govuk-button-group">
+
+
+            <button class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
+
+            <a class="govuk-link govuk-link--no-visited-state" href="reginterest-tasks">Back</a>
+        </div>
+
+    </form>
+    <!-- Test data -->
+    <!--<div class="govuk-inset-text">
+      Test data: <br>
+      Which org started?: yes<br>
+      Type of reg org:
+    </div>
+  -->
+</div>
+
+{% endblock main_content %}
