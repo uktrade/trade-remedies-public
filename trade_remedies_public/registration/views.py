@@ -77,7 +77,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         confirm_invited_org = request.session["registration"].get("confirm_invited_org")
         template_name = self.template_name
         if (
-            "error" not in request.GET and confirm_invited_org is None
+                "error" not in request.GET and confirm_invited_org is None
         ):  # Only clear the session if this is not a return with 'error' set on the url
             self.reset_session(request)
         initial_context = {
@@ -113,7 +113,7 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         request.session["registration"].update(request.POST.dict())
         errors = validate(request.session["registration"], registration_validators)
         if request.session["registration"].get("password") != request.session["registration"].get(
-            "password_confirm"
+                "password_confirm"
         ):
             errors["password_confirm"] = "Passwords do not match"
         if not request.session["registration"].get("email"):
@@ -121,9 +121,9 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         if not errors:
             session_reg = request.session.get("registration", {})
             if (
-                session_reg.get("code")
-                and session_reg.get("case_id")
-                and session_reg.get("confirm_invited_org") is True
+                    session_reg.get("code")
+                    and session_reg.get("case_id")
+                    and session_reg.get("confirm_invited_org") is True
             ):
                 invitee_sec_group = get(
                     request.session["registration"], "invite/organisation_security_group"
@@ -154,9 +154,9 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
                     return redirect("/accounts/register/3/")
                 return redirect("/accounts/register/2/")
             elif (
-                session_reg.get("code")
-                and session_reg.get("case_id")
-                and not session_reg.get("confirm_invited_org")
+                    session_reg.get("code")
+                    and session_reg.get("case_id")
+                    and not session_reg.get("confirm_invited_org")
             ):
                 return redirect(f"/accounts/register/2/{redirect_postfix}")
             return redirect("/accounts/register/2/")
@@ -272,7 +272,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             "key": "organisation_website",
             "message": "Your website should be a complete, valid URL.",
             "re": "^(?:http(s)?:\\/\\/[\\w.-]+(?:\\.[\\w\\.-]+)"
-            "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
+                  "+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+)?$",
             # noqa: E501
         },
     ]
@@ -299,7 +299,7 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
             if "countries" in request.session["registration"]:
                 del request.session["registration"]["countries"]
             if all(
-                [bool(request.session["registration"].get(key)) for key in self.required_fields]
+                    [bool(request.session["registration"].get(key)) for key in self.required_fields]
             ):
                 session_reg = request.session["registration"]
                 response = self.trusted_client.register_public(**session_reg)
@@ -415,7 +415,7 @@ class V2BaseRegisterView(FormView):
         if isinstance(update_data, QueryDict):
             # If it's a QueryDict, we need to convert it to a normal dictionary as Django's
             # internal representation of QueryDicts store individual values as lists, regardless
-            # of how many elements are in that list:
+            # of how many elements are in that list
             # https://www.ianlewis.org/en/querydict-and-update
             update_data = update_data.dict()
         request.session["registration"].update(update_data)
@@ -508,4 +508,14 @@ class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
     @v2_error_handling(redirection_url_resolver="landing")
     def get(self, request, user_pk, email_verify_code, *args, **kwargs):
         response = self.trusted_client.verify_email_verification_link(user_pk, email_verify_code)
-        return render(request, "v2/registration/registration_email_verified.html")
+        # Getting the organisation security groups of this user, so we know what permissions we
+        # tell them they have
+        if response["organisations"][0]["security_group"] == "Organisation Owner":
+            owner = True
+        else:
+            owner = False
+        return render(
+            request,
+            "v2/registration/registration_email_verified.html",
+            context={"owner": owner}
+        )

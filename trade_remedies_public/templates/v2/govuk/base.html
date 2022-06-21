@@ -176,9 +176,9 @@
         </span>
         </p>
     </div>
-    {% if request.session.show_back_button %}
+    {% block back_button %}
         <a class="govuk-back-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
-    {% endif %}
+    {% endblock %}
     <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
         <div class="govuk-grid-row">
             {% block main_content %}{% endblock main_content %}
