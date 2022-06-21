@@ -176,8 +176,9 @@
         </span>
         </p>
     </div>
-    <a class="govuk-back-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
-
+    {% if request.session.show_back_button %}
+        <a class="govuk-back-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
+    {% endif %}
     <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
         <div class="govuk-grid-row">
             {% block main_content %}{% endblock main_content %}
@@ -236,7 +237,7 @@
 
 {% block scripts %}{% endblock scripts %}
 <script type="text/javascript">
-    $(function () {
+    $(document).ready(function () {
         // Remove the # from the hash, as different browsers may or may not include it
         var hash = location.hash.replace('#', '');
 
@@ -244,7 +245,11 @@
             // Clear the hash in the URL
             location.hash = '';
         }
-    });
+
+        // Clearing any input focus
+        $("form select, form input, form textarea").blur();
+
+    })
 </script>
 </body>
 
