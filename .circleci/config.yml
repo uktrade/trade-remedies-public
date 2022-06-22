@@ -33,8 +33,8 @@ jobs:
     docker:
       - image: cimg/python:3.9.5
         environment:
-            REDIS_BASE_URL: redis://redis:6379
-      - image: cimg/redis:7.0.0
+            REDIS_BASE_URL: redis://localhost:6379
+      - image: redis:alpine
     steps:
       - checkout
       - restore_dependency_cache
