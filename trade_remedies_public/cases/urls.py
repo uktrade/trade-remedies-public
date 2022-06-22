@@ -1,8 +1,6 @@
 from django.urls import path
 from cases import views as case_views
 
-from cases.v2_views import registration_of_interest as roi_views
-
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
     # interest in a case
@@ -222,11 +220,5 @@ urlpatterns = [
         "<uuid:case_id>/organisation/<uuid:organisation_id>/summary/",
         case_views.CaseSummaryView.as_view(),
         name="case_summary",
-    ),
-    # REGISTRATION OF INTEREST
-    path(
-        "registration_of_interest_start/",
-        roi_views.RegistrationOfInterest1.as_view(),
-        name="registration_of_interest_1",
-    ),
+    )
 ]
