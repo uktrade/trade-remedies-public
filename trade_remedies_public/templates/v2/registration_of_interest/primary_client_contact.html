@@ -8,9 +8,9 @@
     <p>This is the main person you work with from the organisation you are representing.</p>
 
 
-    <form action="reginterest-uk-reg" novalidate="" method="post" id="reginterest-contact-name-form">
+    <form method="post" novalidate="novalidate">
 
-
+        {% csrf_token %}
         <div class="govuk-form-group">
             <label class="govuk-label govuk-label--s" for="reginterest-client-name">
                 Contact name
@@ -40,7 +40,7 @@
                 Continue
             </button>
 
-            <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_client_type' case_id %}">Back</a>
 
 
         </div>

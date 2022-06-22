@@ -1,0 +1,106 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block main_content %}
+
+<div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-xl">2. About you</span>
+
+    <form action="reginterest-the-org-dets" method="post" id="reginterest-the-org-dets-form">
+        {% csrf_token %}
+        <div class="govuk-form-group">
+            <h1 class="govuk-label-wrapper">
+                <label class="govuk-label govuk-label--xl" for="search-reg-org">
+                    Who are you representing?
+                </label>
+            </h1>
+            <div id="sort-hint" class="govuk-hint">
+                Search Companies House to find registered company details.
+            </div>
+            <div>
+                <div class="autocomplete__wrapper">
+                    <div style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin-bottom: -1px; margin-right: -1px; overflow: hidden; padding: 0px; position: absolute; white-space: nowrap; width: 1px;">
+                        <div id="search-reg-org__status--A" role="status" aria-atomic="true" aria-live="polite"></div>
+                        <div id="search-reg-org__status--B" role="status" aria-atomic="true" aria-live="polite"></div>
+                    </div>
+                    <input aria-expanded="false" aria-owns="search-reg-org__listbox" aria-autocomplete="both"
+                           aria-describedby="search-reg-org__assistiveHint" autocomplete="off"
+                           class="autocomplete__input autocomplete__input--default" id="search-reg-org" name=""
+                           placeholder="Enter a registered company name or number" type="text" role="combobox">
+                    <ul class="autocomplete__menu autocomplete__menu--inline autocomplete__menu--hidden"
+                        id="search-reg-org__listbox" role="listbox"></ul>
+                    <span id="search-reg-org__assistiveHint" style="display: none;">When autocomplete results are available use up and down arrows to review and enter to select.  Touch device users, explore by touch or with swipe gestures.</span>
+                </div>
+            </div>
+            <select class="govuk-select" id="search-reg-org-select" name="search-reg-org"
+                    onchange="showDiv('hidden_div', this); update()" style="display: none;">
+                <option value="" class="selected"></option>
+                <option value="STEEL UK (49069784) 20 Highbury Place, Bramley, Leeds, LS13 4PW, United Kingdom">STEEL UK
+                    (49069784)
+                </option>
+                <option value="ALUMINUM TRADE LTD (05850450) Suite 19 Old Anglo House, Mitton Street, Stourport-On-Severn, Worcestershire, DY13 9AQ">
+                    ALUMINUM TRADE LTD (05850450)
+                </option>
+                <option value="ALUMINUM ELECTRICS LIMITED (05337101) 20 Highbury Place, Bramley, Leeds, United Kingdom, LS13 4PW">
+                    ALUMINUM ELECTRICS LIMITED (05337101)
+                </option>
+                <option value="ALUMINUM SQUIRREL LIMITED (SOUTH WALES) (08199303) 16 Bracken Park, Bingley, United Kingdom, BD16 3LG">
+                    ALUMINUM SQUIRREL LIMITED (SOUTH WALES) (08199303)
+                </option>
+                <option value="ALUMINIUM PROFILE SERVICES LIMITED (09849849) Clock Cottage, Corneybury Farm, Royston Road, Buntingford, Hertfordshire, England, SG9 9RS">
+                    ALUMINIUM PROFILE SERVICES LIMITED (09849849)
+                </option>
+                <option value="ALUMINIUM INTEGRATED SOLUTIONS LIMITED (09424974) 61 Great North Road, Newcastle Upon Tyne, Tyne And Wear, United Kingdom, NE3 2DQ">
+                    ALUMINIUM INTEGRATED SOLUTIONS LIMITED (09424974)
+                </option>
+                <option value="ALUMINIUM STAR LIMITED (07751077) 21 Princess Mary House, Vincent Street Westminster, London, England, SW1P 4HL">
+                    ALUMINIUM STAR LIMITED (07751077)
+                </option>
+                <option value="ALUMINUMNOW LIMITED (07650927) 29 Belfont Walk, London, 29 Belfont Walk, London, Greater London, England, N7 0SN">
+                    ALUMINUMNOW LIMITED (07650927)
+                </option>
+                <option value="ALUMINUMNOW MARITIME SOLUTIONS LTD. (08567105) 29 Belfont Walk 29 Belfont Walk, London, Greater London, England, N7 0SN">
+                    ALUMINUMNOW MARITIME SOLUTIONS LTD. (08567105)
+                </option>
+                <option value="AEROSPACE ALUMINUM CO., LTD (08667181) Unit G25 Waterfront Studios, 1 Dock Road, London, United Kingdom, E16 1AH">
+                    AEROSPACE ALUMINUM CO., LTD (08667181)
+                </option>
+            </select>
+        </div>
+
+        <div style="display:none;" id="selected_company_wrapper">
+            <p>Check the company details carefully. If they do not match your client’s, go back and select ‘No’ and
+                enter the correct information.</p>
+            <div class="govuk-inset-text" id="selected_company"></div>
+        </div>
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      If you can’t find your client’s company
+    </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body">Search for your client’s company&nbsp;on the <a
+                        href="https://www.gov.uk/get-information-about-a-company" target="_blank"
+                        rel="noopener noreferrer" class="govuk-link">Companies House register (opens in a new tab)</a>.
+                </p>
+                <p>If you cannot find the company on the register, go back and select ‘No’ and enter the correct
+                    information. This means your client’s company is not registered in the UK.</p>
+            </div>
+        </details>
+
+
+        <div class="govuk-button-group">
+
+
+            <button class="govuk-button" data-module="govuk-button">
+                I confirm these details are correct
+            </button>
+
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_uk' case_id contact_id%}">Back</a>
+        </div>
+
+    </form>
+</div>
+
+{% endblock main_content %}

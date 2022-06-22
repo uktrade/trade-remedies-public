@@ -379,6 +379,90 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         )
 
 
+class InterestClientTypeStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    case_page = True
+
+    def get(self, request, case_id=None):
+        return render(
+            request,
+            "v2/registration_of_interest/who_is_registering.html",
+            {
+                "case_id": case_id,
+            },
+        )
+
+    def post(self, request, case_id=None):
+        if request.POST.get("reginterest-what-org") == "new-org":
+            return redirect(
+                f"/case/interest/{case_id}/contact/"  # noqa: E501
+            )
+
+
+class InterestPrimaryContactStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    case_page = True
+
+    def get(self, request, case_id=None):
+        return render(
+            request,
+            "v2/registration_of_interest/primary_client_contact.html",
+            {
+                "case_id": case_id
+            }
+        )
+
+    def post(self, request, case_id=None):
+        response = self._client.create_contact({'contact_email': request.POST.get("reginterest-client-email"),
+                                                'contact_name': request.POST.get("reginterest-client-name")})
+        contact_id = response['id']
+        # do this at the end of step 2
+        # self._client.update_submission(
+        #     case_id=case_id,
+        #     submission_id=submission_id,
+        #     contact_id=contact_id,
+        # )
+        return redirect(
+            f"/case/interest/{case_id}/{contact_id}/uk/"  # noqa: E501
+        )
+
+
+class InterestUkClientYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    case_page = True
+
+    def get(self, request, case_id=None, contact_id=None):
+        return render(
+            request,
+            "v2/registration_of_interest/is_client_uk_company.html",
+            {
+                "case_id": case_id,
+                "contact_id": contact_id
+            }
+        )
+
+    def post(self, request, case_id=None, contact_id=None):
+        if request.POST.get("reginterest-uk-reg") == "yes":
+            return redirect(
+                f"/case/interest/{case_id}/{contact_id}/uk/yes/"  # noqa: E501
+            )
+
+
+class InterestIsUkClientStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    case_page = True
+
+    def get(self, request, case_id=None, contact_id=None):
+        return render(
+            request,
+            "v2/registration_of_interest/who_you_representing.html",
+            {
+                "case_id": case_id,
+                "contact_id": contact_id
+            }
+        )
+
+
 class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     required_keys = ["representing"]
@@ -390,7 +474,9 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         sub_type_key = self.submission_type_key or "application"
         template_name = f"cases/submissions/{sub_type_key}/company_info.html"
         if sub_type_key == "interest":
-            template_name = "v2/registration_of_interest/who_is_registering.html"
+            return redirect(
+                f"/case/interest/{case_id}/type/"  # noqa: E501
+            )
 
         page = request.GET.get("page") or 1
         return render(
@@ -415,7 +501,6 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         )
 
     def post(self, request, case_id=None, submission_id=None, *args, **kwargs):  # noqa: C901
-
         page = request.POST.get("page")
         if page == "role":
             params = request.session["organisation"]
@@ -433,26 +518,6 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             return redirect(
                 f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"  # noqa: E501
             )
-        elif request.POST.get("reginterest-what-org"):
-            if request.POST.get("reginterest-what-org") == "new-org":
-                return render(
-                    request,
-                    "v2/registration_of_interest/primary_client_contact.html",
-                    {
-                        "case_id": case_id,
-                        "case": self.case,
-                        "submission_id": submission_id,
-                        "submission": self.submission,
-                        "errors": kwargs.get("errors"),
-                        "org_indicator_type": self.org_indicator_type,
-                        "org_parties": get_org_parties(self._client, request.user),
-                        "page": page,
-                        "no_context_back_link": "/case/",
-                        "representing_value": kwargs.get("representing_value"),
-                        **kwargs,
-                        **self.get_submission_context(),
-                    },
-                )
         else:
             representing_value = request.POST.get("representing_value")
             # check for a no-js save, and show the selected page if so

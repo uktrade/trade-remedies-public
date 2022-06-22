@@ -16,6 +16,26 @@ urlpatterns = [
         name="interest_case",
     ),
     path(
+        "interest/<uuid:case_id>/type/",
+        case_views.InterestClientTypeStep2.as_view(),
+        name="interest_client_type",
+    ),
+    path(
+        "interest/<uuid:case_id>/contact/",
+        case_views.InterestPrimaryContactStep2.as_view(),
+        name="interest_primary_contact",
+    ),
+    path(
+        "interest/<uuid:case_id>/<uuid:contact_id>/uk/",
+        case_views.InterestUkClientYesNoStep2.as_view(),
+        name="interest_uk",
+    ),
+    path(
+        "interest/<uuid:case_id>/<uuid:contact_id>/uk/yes/",
+        case_views.InterestIsUkClientStep2.as_view(),
+        name="interest_uk_yes",
+    ),
+    path(
         "interest/<uuid:case_id>/company/",
         case_views.CompanyView.as_view(submission_type_key="interest"),
         name="interest_org",
