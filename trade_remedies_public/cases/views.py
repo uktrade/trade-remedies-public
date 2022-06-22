@@ -431,6 +431,29 @@ class InterestUkClientYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, BasePub
     def post(self, request, case_id=None, contact_id=None):
         if request.POST.get("reginterest-uk-reg") == "yes":
             return redirect(f"/case/interest/{case_id}/{contact_id}/uk/yes/")  # noqa: E501
+        elif request.POST.get("reginterest-uk-reg") == "no":
+            return redirect(f"/case/interest/{case_id}/{contact_id}/uk/no/")  # noqa: E501
+
+
+class InterestNonUkClientStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    case_page = True
+
+    def get(self, request, case_id=None, contact_id=None):
+        return render(
+            request,
+            "v2/registration_of_interest/your_client_details.html",
+            {"case_id": case_id, "contact_id": contact_id},
+        )
+
+    def post(self, request, case_id=None, contact_id=None):
+        return redirect(
+            f"/case/interest/{case_id}/{contact_id}/uk/yes/submit/?organisation_name="
+            f"{request.POST.get('reginterest-org-name')}&companies_house_id="
+            f"{request.POST.get('reginterest-reg-org-number')}&"
+            f"organisation_post_code={request.POST.get('reginterest-org-zip')}&"
+            f"organisation_address={request.POST.get('reginterest-org-address')}&country={request.POST.get('country')}"  # noqa: E501
+        )
 
 
 class InterestIsUkClientStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
@@ -468,7 +491,7 @@ class InterestUkSubmitStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
                 "companies_house_id": request.GET.get("companies_house_id"),
                 "organisation_post_code": request.GET.get("organisation_post_code"),
                 "organisation_address": request.GET.get("organisation_address"),
-                "organisation_country": "GB",
+                "organisation_country": "GB" or request.GET.get("country"),
             },
         )
 
