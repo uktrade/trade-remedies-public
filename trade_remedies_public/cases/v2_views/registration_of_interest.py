@@ -14,13 +14,11 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
         cases = self.client(self.request.user).v2_get_all_cases({"open_to_roi": True})
         if not cases:
             self.request.session["form_errors"] = {}
-            self.request.session["form_errors"]["error_summaries"] = [[
-                "table-header",
-                "There are no active cases to join"
-            ]]
+            self.request.session["form_errors"]["error_summaries"] = [
+                ["table-header", "There are no active cases to join"]
+            ]
         context["cases"] = cases
         return context
-
 
     def post(self, request, *args, **kwargs):
         case_information = request.POST["case_information"].split("*-*")
@@ -30,8 +28,7 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
         case_registration_deadline = case_information[3]
 
         if datetime.datetime.strptime(
-                case_registration_deadline,
-                "%Y-%m-%dT%H:%M:%S%z"
+            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
         ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,
@@ -42,7 +39,7 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
                     "case_reference": case_reference,
                     "case_id": case_id,
                     "case_information": request.POST["case_information"],
-                }
+                },
             )
         # REDIRECT to next stage
         return redirect(reverse("landing"))

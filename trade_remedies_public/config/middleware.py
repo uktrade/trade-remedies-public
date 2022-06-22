@@ -26,7 +26,7 @@ NON_2FA_URLS = (
 NON_EMAIL_VERIFY_URLS = NON_2FA_URLS + (
     "dashboard",
     "request_email_verify_code",
-    "email_verify_code"
+    "email_verify_code",
 )
 
 # URLS that do not display the back button
