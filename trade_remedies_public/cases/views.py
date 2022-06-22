@@ -471,11 +471,34 @@ class InterestUkSubmitStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
                 "organisation_country": "GB",
             },
         )
-    # self._client.update_submission(
-    #     case_id=case_id,
-    #     submission_id=submission_id,
-    #     contact_id=contact_id,
-    # )
+
+    def post(self, request, case_id=None, contact_id=None):
+        eori_number = request.POST.get("reginterest-eori")
+        duns_number = request.POST.get("reginterest-duns")
+        organisation_website = request.POST.get("reginterest-web")
+        vat_number = request.POST.get("reginterest-vat")
+        organisation_name = request.GET.get("organisation_name")
+        companies_house_id = request.GET.get("companies_house_id")
+        organisation_post_code = request.GET.get("organisation_post_code")
+        organisation_address = request.GET.get("organisation_address")
+        response = self._client.register_interest_in_case(
+            case_id=case_id,
+            representing="other",
+            eori_number=eori_number,
+            duns_number=duns_number,
+            organisation_website=organisation_website,
+            vat_number=vat_number,
+            organisation_name=organisation_name,
+            companies_house_id=companies_house_id,
+            organisation_post_code=organisation_post_code,
+            organisation_address=organisation_address,
+        )
+        self._client.update_submission(
+            case_id=case_id,
+            submission_id=response["submission"]["id"],
+            contact_id=contact_id,
+        )
+        return redirect(f"/case/interest/{case_id}/")
 
 
 class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):

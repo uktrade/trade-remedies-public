@@ -7,9 +7,8 @@
 </div>
 <div class="govuk-grid-column-two-thirds">
 
-    <form action="reginterest-tasks?which-org-task=complete" method="post" id="reginterest-your-org-dets-form">
-
-
+    <form novalidate="novalidate" method="post" id="reginterest-your-org-dets-form">
+        {% csrf_token %}
         <fieldset class="govuk-fieldset">
 
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
@@ -96,7 +95,7 @@
                     Continue
                 </button>
 
-                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_uk' case_id contact_id%}">Back</a>
+                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_uk_yes' case_id contact_id%}">Back</a>
             </div>
 
 
