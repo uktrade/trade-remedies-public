@@ -32,9 +32,6 @@ jobs:
   code_quality:
     docker:
       - image: cimg/python:3.9.5
-        environment:
-            REDIS_BASE_URL: redis://localhost:6379
-      - image: redis:alpine
     steps:
       - checkout
       - restore_dependency_cache
@@ -64,7 +61,7 @@ jobs:
       - image: cimg/python:3.9.5
         environment:
           DATABASE_URL: sqlite:///db.sqlite3
-          DJANGO_SETTINGS_MODULE: config.settings.local
+          DJANGO_SETTINGS_MODULE: config.settings.test
           DJANGO_SECRET_KEY: used_for_testing
           ALLOWED_HOSTS: "*"
     steps:
