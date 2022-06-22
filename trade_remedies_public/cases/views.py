@@ -470,7 +470,8 @@ class InterestIsUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, BasePu
     def post(self, request, case_id=None, contact_id=None):
         return redirect(
             f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
-            f"{request.POST.get('organisation_name')}&companies_house_id={request.POST.get('companies_house_id')}&"
+            f"{request.POST.get('organisation_name')}&"
+            f"companies_house_id={request.POST.get('companies_house_id')}&"
             f"organisation_post_code={request.POST.get('organisation_post_code')}&"
             f"organisation_address={request.POST.get('organisation_address')}"  # noqa: E501
         )
