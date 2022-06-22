@@ -36,6 +36,11 @@ urlpatterns = [
         name="interest_uk_yes",
     ),
     path(
+        "interest/<uuid:case_id>/<uuid:contact_id>/uk/yes/submit/",
+        case_views.InterestUkSubmitStep2.as_view(),
+        name="interest_uk_submit",
+    ),
+    path(
         "interest/<uuid:case_id>/company/",
         case_views.CompanyView.as_view(submission_type_key="interest"),
         name="interest_org",
