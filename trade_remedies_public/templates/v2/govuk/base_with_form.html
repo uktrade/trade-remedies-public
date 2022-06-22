@@ -21,9 +21,12 @@
             </div>
         {% endif %}
         <form method="post" novalidate="novalidate">
-            <h1 class="govuk-heading-xl">
-                {% block heading %}{% endblock heading %}
-            </h1>
+            {# Sometimes we don't want a header on the page, so we can override this block in the child template with an empty space, e.g. {% block noheader %}{% endblock %} #}
+            {% block noheader %}
+                <h1 class="govuk-heading-xl">
+                    {% block heading %}{% endblock heading %}
+                </h1>
+            {% endblock noheader %}
             {% csrf_token %}
             {% block form_content %}{% endblock form_content %}
         </form>

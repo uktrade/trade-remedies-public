@@ -1,0 +1,29 @@
+{% load get_item %}
+
+{% with form_errors|get_item:id as error %}
+    <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                <h1 class="govuk-fieldset__heading">
+                    Terms of Use and Privacy Notice
+                </h1>
+            </legend>
+            {% if error %}
+                <p id="{{ name }}-error" class="govuk-error-message">
+                    {% for error in error %}
+                        <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                    {% endfor %}
+                </p>
+            {% endif %}
+            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="{{ id }}"
+                           name="{{ name }}" type="checkbox" value="yes">
+                    <label class="govuk-label govuk-checkboxes__label" for="{{ name }}">
+                        {{ label }}
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+{% endwith %}

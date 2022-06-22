@@ -1,0 +1,39 @@
+{% extends "v2/govuk/base.html" %}
+{% block back_button %}{% endblock back_button %}
+{% block page_title %}
+    Email address is verified
+{% endblock %}
+
+{% block main_content %}
+
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Email address is verified
+            </h1>
+        </div>
+
+        <p class="govuk-body">You can now sign in and access your organisation's Trade Remedies account.</p>
+        <p class="govuk-body">With <strong>{% if owner %}Admin{% else %}Regular user{% endif %}</strong> permissions you
+            can</p>
+        <ul class="govuk-list govuk-list--bullet">
+            {% if owner %}
+                <li>add a someone to your account or an open case</li>
+                <li>request a new trade investigation</li>
+                <li>ask to participate in an open trade remedy case</li>
+                <li>invite another party to represent you in an open case</li>
+            {% else %}
+                <li>request a new trade investigation</li>
+                <li>ask to participate in an open trade remedy case</li>
+                <li>participate in a case assigned to you</li>
+                <li>invite another party to represent you in an open case</li>
+            {% endif %}
+        </ul>
+        <a class="govuk-button" data-module="govuk-button"
+           href="{% if request.user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'landing' %}{% endif %}">
+            Continue
+        </a>
+    </div>
+
+
+{% endblock main_content %}

@@ -8,7 +8,8 @@
     {% block head %}
         {% analytics %}
         <meta charset="utf-8">
-        <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - GOV.UK Trade Remedies Service</title>
+        <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - GOV.UK Trade
+            Remedies Service</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="theme-color" content="blue">
 
@@ -175,10 +176,9 @@
         </span>
         </p>
     </div>
-    {% if request.session.show_back_button %}
-        <a class="govuk-back-link govuk-link--no-visited-state" href="{{ request.session.back_link_url }}">Back</a>
-    {% endif %}
-
+    {% block back_button %}
+        <a class="govuk-back-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
+    {% endblock %}
     <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
         <div class="govuk-grid-row">
             {% block main_content %}{% endblock main_content %}
@@ -236,6 +236,21 @@
         crossorigin="anonymous"></script>
 
 {% block scripts %}{% endblock scripts %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Remove the # from the hash, as different browsers may or may not include it
+        var hash = location.hash.replace('#', '');
+
+        if (hash != '') {
+            // Clear the hash in the URL
+            location.hash = '';
+        }
+
+        // Clearing any input focus
+        $("form select, form input, form textarea").blur();
+
+    })
+</script>
 </body>
 
 </html>

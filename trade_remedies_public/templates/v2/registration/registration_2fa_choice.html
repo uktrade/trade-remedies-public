@@ -1,0 +1,95 @@
+{% extends "v2/govuk/base_with_form.html" %}
+{% load static %}
+{% load get_item %}
+{% load get_country_dialling_code %}
+{% load countries %}
+
+{% block page_title %}
+    Two-factor authentication
+{% endblock %}
+
+{% block heading %}
+    Two-factor authentication
+{% endblock heading %}
+
+{% block form_content %}
+    <p class="govuk-body">The next time you sign in, you will receive a code to verify that it’s really you. This
+        provides an extra layer of security.</p>
+    {% with form_errors|get_item:'two_factor_choice' as error %}
+        <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h1 class="govuk-fieldset__heading">
+                        How would you like to receive your code?
+                    </h1>
+                </legend>
+                {% if error %}
+                    <p id="{{ name }}-error" class="govuk-error-message">
+                        {% for error in error %}
+                            <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" name="two_factor_choice" id="two_factor_choice" type="radio"
+                               value="mobile"
+                               {% if form.cleaned_data.two_factor_choice == "mobile" %}checked{% endif %}>
+                        <label class="govuk-label govuk-radios__label" for="two_factor_choice">
+                            Mobile
+                        </label>
+                    </div>
+                    <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-mobile">
+                        {% with form_errors|get_item:"mobile_country_code" as error %}
+                            <div class="govuk-form-group" {% if error %}govuk-form-group--error{% endif %}>
+                                <label class="govuk-label" for="mobile_country_code">
+                                    Country code
+                                </label>
+                                {% if error %}
+                                    <p id="mobile_country_code-error" class="govuk-error-message">
+                                        {% for error in error %}
+                                            <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                                        {% endfor %}
+                                    </p>
+                                {% endif %}
+
+                                <select id="mobile_country_code" name="mobile_country_code" value=""
+                                        class="govuk-select"
+                                        autocomplete="tel-country-code">
+                                        {% get_countries as countries %}
+                                        {% for country in countries %}
+                                             <option value="{{ country.code }}"
+                        {% if form.cleaned_data|get_item:"mobile_country_code" == country.code %}selected{% endif %}>{{ country.name }} {% with country.code|get_country_dialling_code as dialling_code %}{% if dialling_code %}(+{{ dialling_code }}){% endif %}{% endwith %}</option>
+                                        {% endfor %}
+                                </select>
+                            </div>
+                        {% endwith %}
+                        {% include "v2/component_macros/text_input.html" with id="mobile" name="mobile" label="Enter your mobile number" type="tel" input_class="govuk-!-width-one-third" %}
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="email" name="two_factor_choice" type="radio"
+                               value="email"
+                               {% if form.cleaned_data.two_factor_choice == "email" %}checked{% endif %}>
+                        <label class="govuk-label govuk-radios__label" for="email">
+                            Email address: <strong>{{ request.session.registration.email }}</strong>
+                        </label>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    {% endwith %}
+    {% include "v2/component_macros/form_button_group.html" with forward_button_text="Continue" %}
+    </div>
+{% endblock form_content %}
+
+{% block scripts %}
+    <script type="text/javascript">
+        $('[name="two_factor_choice"]').change(function () {
+            if ($('[name="two_factor_choice"]:checked').val() === "mobile") {
+                $('#conditional-mobile').show()
+            } else {
+                $('#conditional-mobile').hide()
+            }
+        }).trigger("change");
+    </script>
+{% endblock %}
