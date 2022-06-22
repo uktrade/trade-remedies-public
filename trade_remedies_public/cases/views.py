@@ -493,12 +493,15 @@ class InterestUkSubmitStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
             organisation_post_code=organisation_post_code,
             organisation_address=organisation_address,
         )
+        submission = response["submission"]
+        submission_id = submission["id"]
+        organisation_id = submission['organisation']['id']
         self._client.update_submission(
             case_id=case_id,
-            submission_id=response["submission"]["id"],
+            submission_id=submission_id,
             contact_id=contact_id,
         )
-        return redirect(f"/case/interest/{case_id}/")
+        return redirect(f"/case/{case_id}/organisation/{organisation_id}/submission/{submission_id}/")
 
 
 class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
