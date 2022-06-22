@@ -414,10 +414,10 @@ class InterestPrimaryContactStep2(LoginRequiredMixin, GroupRequiredMixin, BasePu
             }
         )
         contact_id = response["id"]
-        return redirect(f"/case/interest/{case_id}/{contact_id}/uk/")  # noqa: E501
+        return redirect(f"/case/interest/{case_id}/{contact_id}/ch/")  # noqa: E501
 
 
-class InterestUkClientYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestUkRegisteredYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     case_page = True
 
@@ -430,12 +430,12 @@ class InterestUkClientYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, BasePub
 
     def post(self, request, case_id=None, contact_id=None):
         if request.POST.get("reginterest-uk-reg") == "yes":
-            return redirect(f"/case/interest/{case_id}/{contact_id}/uk/yes/")  # noqa: E501
+            return redirect(f"/case/interest/{case_id}/{contact_id}/ch/yes/")  # noqa: E501
         elif request.POST.get("reginterest-uk-reg") == "no":
-            return redirect(f"/case/interest/{case_id}/{contact_id}/uk/no/")  # noqa: E501
+            return redirect(f"/case/interest/{case_id}/{contact_id}/ch/no/")  # noqa: E501
 
 
-class InterestNonUkClientStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestNonUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     case_page = True
 
@@ -448,15 +448,15 @@ class InterestNonUkClientStep2(LoginRequiredMixin, GroupRequiredMixin, BasePubli
 
     def post(self, request, case_id=None, contact_id=None):
         return redirect(
-            f"/case/interest/{case_id}/{contact_id}/uk/yes/submit/?organisation_name="
+            f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
             f"{request.POST.get('reginterest-org-name')}&companies_house_id="
             f"{request.POST.get('reginterest-reg-org-number')}&"
-            f"organisation_post_code={request.POST.get('reginterest-org-zip')}&"
+            f"organisation_post_code={request.POST.get('reginterest-org-zip')}&uk_registered=false&"
             f"organisation_address={request.POST.get('reginterest-org-address')}&country={request.POST.get('country')}"  # noqa: E501
         )
 
 
-class InterestIsUkClientStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestIsUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     case_page = True
 
@@ -469,7 +469,7 @@ class InterestIsUkClientStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublic
 
     def post(self, request, case_id=None, contact_id=None):
         return redirect(
-            f"/case/interest/{case_id}/{contact_id}/uk/yes/submit/?organisation_name="
+            f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
             f"{request.POST.get('organisation_name')}&companies_house_id={request.POST.get('companies_house_id')}&"
             f"organisation_post_code={request.POST.get('organisation_post_code')}&"
             f"organisation_address={request.POST.get('organisation_address')}"  # noqa: E501
@@ -491,7 +491,8 @@ class InterestUkSubmitStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
                 "companies_house_id": request.GET.get("companies_house_id"),
                 "organisation_post_code": request.GET.get("organisation_post_code"),
                 "organisation_address": request.GET.get("organisation_address"),
-                "organisation_country": request.GET.get("country", "not selected") or "GB",
+                "organisation_country": request.GET.get("country", "GB"),
+                "uk_registered": request.GET.get("uk_registered")
             },
         )
 
