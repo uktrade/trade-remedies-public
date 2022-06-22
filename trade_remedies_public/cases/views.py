@@ -491,7 +491,7 @@ class InterestUkSubmitStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
                 "companies_house_id": request.GET.get("companies_house_id"),
                 "organisation_post_code": request.GET.get("organisation_post_code"),
                 "organisation_address": request.GET.get("organisation_address"),
-                "organisation_country": "GB" or request.GET.get("country"),
+                "organisation_country": request.GET.get("country", "not selected") or "GB",
             },
         )
 

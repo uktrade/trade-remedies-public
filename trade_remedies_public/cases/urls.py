@@ -38,7 +38,7 @@ urlpatterns = [
     path(
         "interest/<uuid:case_id>/<uuid:contact_id>/uk/no/",
         case_views.InterestNonUkClientStep2.as_view(),
-        name="interest_uk_non",
+        name="interest_non_uk",
     ),
     path(
         "interest/<uuid:case_id>/<uuid:contact_id>/uk/yes/submit/",

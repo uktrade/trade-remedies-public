@@ -94,8 +94,11 @@
                 <button class="govuk-button" data-module="govuk-button">
                     Continue
                 </button>
-
-                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_uk_yes' case_id contact_id%}">Back</a>
+                {% if organisation_country == 'GB' %}
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_uk_yes' case_id contact_id%}">Back</a>
+                {% else %}
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_non_uk' case_id contact_id%}">Back</a>
+                {% endif %}
             </div>
 
 
