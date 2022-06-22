@@ -220,5 +220,5 @@ urlpatterns = [
         "<uuid:case_id>/organisation/<uuid:organisation_id>/summary/",
         case_views.CaseSummaryView.as_view(),
         name="case_summary",
-    )
+    ),
 ]
