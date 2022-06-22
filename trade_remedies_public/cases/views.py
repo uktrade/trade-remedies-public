@@ -462,6 +462,21 @@ class InterestIsUkClientStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublic
             }
         )
 
+    def post(self, request, case_id=None, contact_id=None):
+        return render(
+            request,
+            "v2/registration_of_interest/about_your_client.html",
+            {
+                "case_id": case_id,
+                "contact_id": contact_id,
+                "organisation_name": request.POST.get("organisation_name"),
+                "companies_house_id": request.POST.get("companies_house_id"),
+                "organisation_post_code": request.POST.get("organisation_post_code"),
+                "organisation_address": request.POST.get("organisation_address"),
+                "organisation_country": "GB"
+            }
+        )
+
 
 class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]

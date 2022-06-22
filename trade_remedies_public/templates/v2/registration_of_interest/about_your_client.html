@@ -1,0 +1,110 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block main_content %}
+
+<div class="govuk-grid-column-full">
+    <span class="govuk-caption-xl">2. About you</span>
+</div>
+<div class="govuk-grid-column-two-thirds">
+
+    <form action="reginterest-tasks?which-org-task=complete" method="post" id="reginterest-your-org-dets-form">
+
+
+        <fieldset class="govuk-fieldset">
+
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+
+                <h1 class="govuk-fieldset__heading">
+                    About your client
+                </h1>
+
+            </legend>
+
+
+            <p>Provide as many details as you can to help us understand your client’s organisation.</p>
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="reginterest-web">
+                    Organisation website (optional)
+                </label>
+
+
+                <div id="reginterest-web-hint" class="govuk-hint">
+                    Provide your client’s website if it has one.
+                </div>
+
+                <input class="govuk-input govuk-input--width-20" id="reginterest-web" name="reginterest-web" type="text"
+                       aria-describedby="reginterest-web-hint"
+                       style="background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;">
+
+            </div>
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="reginterest-vat">
+                    VAT registration number (optional)
+                </label>
+
+
+                <div id="reginterest-vat-hint" class="govuk-hint">
+                    Most companies are registered for VAT (Value Added Tax) or an international equivalent.
+                </div>
+
+                <input class="govuk-input govuk-input--width-20" id="reginterest-vat" name="reginterest-vat" type="text"
+                       aria-describedby="reginterest-vat-hint">
+
+            </div>
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="reginterest-eori">
+                    EORI number (optional)
+                </label>
+
+
+                <div id="reginterest-eori-hint" class="govuk-hint">
+                    Your client’s organisation will have an EORI number if you have brought goods into the UK or EU.
+                </div>
+
+                <input class="govuk-input govuk-input--width-20" id="reginterest-eori" name="reginterest-eori"
+                       type="text" aria-describedby="reginterest-eori-hint">
+
+            </div>
+
+
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="reginterest-duns">
+                    DUNS number (optional)
+                </label>
+
+
+                <div id="reginterest-duns-hint" class="govuk-hint">
+                    Your client’s organisation might have a 9-digit DUNS (Data Universal Numbering System) identifier.
+                </div>
+
+                <input class="govuk-input govuk-input--width-20" id="reginterest-duns" name="reginterest-duns"
+                       type="text" aria-describedby="reginterest-duns-hint">
+
+            </div>
+
+
+            <div class="govuk-button-group">
+
+
+                <button class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+
+                <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
+            </div>
+
+
+        </fieldset>
+
+
+    </form>
+
+</div>
+
+{% endblock main_content %}
