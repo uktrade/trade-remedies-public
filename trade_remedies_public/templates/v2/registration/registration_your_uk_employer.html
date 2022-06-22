@@ -51,7 +51,7 @@
             <p>If the organisation is not on the register, go back to the previous page and select "No". Your employer is not registered in the UK.</p>
         </div>
     </details>
-    {% include "v2/component_macros/form_button_group.html" with forward_button_text="I confirm these are the correct details" %}
+    {% include "v2/component_macros/form_button_group.html" with forward_button_text="I confirm these details are correct" %}
     <input type="hidden" name="company_data">
 {% endblock form_content %}
 
@@ -61,6 +61,7 @@
         var proposed_names = {}
         accessibleAutocomplete({
             element: document.querySelector('#company_search_container'),
+            placeholder: "Enter a registered company name or number",
             id: 'my-autocomplete',
             autoselect: true,
             minLength: 3,

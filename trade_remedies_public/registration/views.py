@@ -415,7 +415,7 @@ class V2BaseRegisterView(FormView):
         if isinstance(update_data, QueryDict):
             # If it's a QueryDict, we need to convert it to a normal dictionary as Django's
             # internal representation of QueryDicts store individual values as lists, regardless
-            # of how many elements are in that list:
+            # of how many elements are in that list
             # https://www.ianlewis.org/en/querydict-and-update
             update_data = update_data.dict()
         request.session["registration"].update(update_data)
@@ -508,4 +508,12 @@ class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
     @v2_error_handling(redirection_url_resolver="landing")
     def get(self, request, user_pk, email_verify_code, *args, **kwargs):
         response = self.trusted_client.verify_email_verification_link(user_pk, email_verify_code)
-        return render(request, "v2/registration/registration_email_verified.html")
+        # Getting the organisation security groups of this user, so we know what permissions we
+        # tell them they have
+        owner = False
+        if "organisations" in response and response["organisations"]:
+            if response["organisations"][0]["security_group"] == "Organisation Owner":
+                owner = True
+        return render(
+            request, "v2/registration/registration_email_verified.html", context={"owner": owner}
+        )
