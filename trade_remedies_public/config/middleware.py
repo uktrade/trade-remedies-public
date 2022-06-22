@@ -24,7 +24,11 @@ NON_2FA_URLS = (
 )
 
 # URLS that do not display the back button
-NON_BACK_URLS = [reverse("landing"), reverse("reset_password_success")]
+NON_BACK_URLS = [
+    reverse("landing"),
+    reverse("reset_password_success"),
+    reverse("v2_register_complete"),
+]
 
 
 def get_evaluated_non_back_urls(kwargs):
@@ -79,7 +83,6 @@ class APIUserMiddleware:
         return request.path.startswith("/public")
 
     def __call__(self, request, *args, **kwargs):
-        request.session["show_back_button"] = request.path not in NON_BACK_URLS
         if request.session and request.session.get("token") and request.session.get("user"):
             back_link_url = request.META.get("HTTP_REFERER", reverse("dashboard"))
             if request.path in back_link_url:
@@ -180,9 +183,9 @@ class CacheControlMiddleware:
 
     def __call__(self, request, *args, **kwargs):
         response = self.get_response(request)
-        response["Cache-Control"] = "no-store"
+        """response["Cache-Control"] = "no-store"
         response["Pragma"] = "no-cache"
-        response["X-Robots-Tag"] = "noindex"
+        response["X-Robots-Tag"] = "noindex"""
         return response
 
 

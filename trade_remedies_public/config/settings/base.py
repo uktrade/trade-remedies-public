@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "registration",
     "feedback",
     "sass_processor",
+    "django_countries",
 ]
 
 MIDDLEWARE = [
@@ -358,3 +359,6 @@ ENVIRONMENT_LOGGING = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+COUNTRIES_FIRST = ["GB"]
+COUNTRIES_FIRST_BREAK = "------"
