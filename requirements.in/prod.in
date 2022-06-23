@@ -1,4 +1,5 @@
 -r base.in
 
+git+https://github.com/uktrade/trade-remedies-client.git@develop#egg=trade-remedies-client
 gevent==21.1.2
 gunicorn==20.0.4

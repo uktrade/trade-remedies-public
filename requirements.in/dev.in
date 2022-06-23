@@ -1,5 +1,6 @@
 -r base.in
 
+git+https://github.com/uktrade/trade-remedies-client.git@develop#egg=trade-remedies-client
 behave-django==1.4.0
 black
 coverage
