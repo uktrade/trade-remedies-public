@@ -29,7 +29,7 @@
         <!-- Set the name of the org if is is "my org" whether from regsitering or default-->
 
         {% csrf_token %}
-        {% with form_errors.org_type as error %}
+        {% with form_errors.org as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
 
             <fieldset class="govuk-fieldset">
@@ -50,7 +50,7 @@
                 {% endif %}
 
 
-                <div class="govuk-radios" id="org_type" data-module="govuk-radios">
+                <div class="govuk-radios" id="org" data-module="govuk-radios">
 
 
                     <div class="govuk-radios__item">
