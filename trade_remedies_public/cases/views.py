@@ -57,7 +57,7 @@ from core.validators import (
 )
 import dpath
 
-from cases.forms import ClientTypeForm, PrimaryContactForm, YourEmployerForm
+from cases.forms import ClientTypeForm, PrimaryContactForm, YourEmployerForm, UkEmployerForm
 
 logger = logging.getLogger(__name__)
 
@@ -496,24 +496,40 @@ class InterestNonUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, BaseP
         )
 
 
-class InterestIsUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestIsUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/who_you_representing.html"
+    form_class = UkEmployerForm
     case_page = True
+
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                case_id=self.extra_context.get("case_id"),
+                contact_id=self.extra_context.get("contact_id"),
+            )
+        )
 
     def get(self, request, case_id=None, contact_id=None):
         return render(
             request,
-            "v2/registration_of_interest/who_you_representing.html",
+            self.template_name,
             {"case_id": case_id, "contact_id": contact_id},
         )
 
     def post(self, request, case_id=None, contact_id=None):
+        self.extra_context = {"case_id": case_id, "contact_id": contact_id}
+        form = self.get_form()
+        if not form.is_valid():
+            return self.form_invalid(form)
         return redirect(
             f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
-            f"{request.POST.get('organisation_name')}&"
-            f"companies_house_id={request.POST.get('companies_house_id')}&"
-            f"organisation_post_code={request.POST.get('organisation_post_code')}&"
-            f"organisation_address={request.POST.get('organisation_address')}"  # noqa: E501
+            f"{form.cleaned_data.get('organisation_name')}&"
+            f"companies_house_id={form.cleaned_data.get('companies_house_id')}&"
+            f"organisation_post_code={form.cleaned_data.get('organisation_post_code')}&"
+            f"organisation_address={form.cleaned_data.get('organisation_address')}"  # noqa: E501
         )
 
 
