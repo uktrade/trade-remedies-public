@@ -57,7 +57,14 @@ from core.validators import (
 )
 import dpath
 
-from cases.forms import ClientTypeForm, PrimaryContactForm, YourEmployerForm, UkEmployerForm, NonUkEmployerForm, ClientFurtherDetailsForm
+from cases.forms import (
+    ClientTypeForm,
+    PrimaryContactForm,
+    YourEmployerForm,
+    UkEmployerForm,
+    NonUkEmployerForm,
+    ClientFurtherDetailsForm,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -441,7 +448,9 @@ class InterestPrimaryContactStep2(
             return redirect(f"/case/interest/{case_id}/{contact_id}/ch/")  # noqa: E501
 
 
-class InterestUkRegisteredYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView):
+class InterestUkRegisteredYesNoStep2(
+    LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView
+):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/is_client_uk_company.html"
     form_class = YourEmployerForm
@@ -475,7 +484,9 @@ class InterestUkRegisteredYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, For
             return redirect(f"/case/interest/{case_id}/{contact_id}/ch/no/")  # noqa: E501
 
 
-class InterestNonUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView):
+class InterestNonUkRegisteredStep2(
+    LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView
+):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/your_client_details.html"
     form_class = NonUkEmployerForm
@@ -512,7 +523,9 @@ class InterestNonUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, FormM
         )
 
 
-class InterestIsUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView):
+class InterestIsUkRegisteredStep2(
+    LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView
+):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/who_you_representing.html"
     form_class = UkEmployerForm

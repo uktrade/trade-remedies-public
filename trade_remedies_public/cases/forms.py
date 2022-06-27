@@ -66,7 +66,9 @@ class NonUkEmployerForm(ValidationForm):
 
 
 class ClientFurtherDetailsForm(ValidationForm):
-    company_website = forms.URLField(required=False, error_messages={"invalid": "incorrect_client_url"})
+    company_website = forms.URLField(
+        required=False, error_messages={"invalid": "incorrect_client_url"}
+    )
     company_vat_number = forms.CharField(required=False)
     company_eori_number = forms.CharField(
         required=False,
