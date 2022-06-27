@@ -57,7 +57,7 @@ from core.validators import (
 )
 import dpath
 
-from cases.forms import Step2StartForm
+from cases.forms import ClientTypeForm
 
 logger = logging.getLogger(__name__)
 
@@ -384,7 +384,7 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
 class InterestClientTypeStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/who_is_registering.html"
-    form_class = Step2StartForm
+    form_class = ClientTypeForm
     case_page = True
 
     def form_invalid(self, form):
@@ -404,7 +404,7 @@ class InterestClientTypeStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin,
         form = self.get_form()
         if not form.is_valid():
             return self.form_invalid(form)
-        elif request.POST.get("org") == "new-org":
+        elif form.cleaned_data.get("org") == "new-org":
             return redirect(f"/case/interest/{case_id}/contact/")  # noqa: E501
 
 
