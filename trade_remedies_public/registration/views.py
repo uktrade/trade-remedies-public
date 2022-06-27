@@ -501,8 +501,11 @@ class RequestEmailVerifyCode(TemplateView, TradeRemediesAPIClientMixin):
         # Sometimes we just want to show the user the page to resend their code and not send it yet.
         if not request.GET.get("dont_send"):
             response = self.trusted_client.send_email_verification_link(kwargs["user_pk"])
-            request.session["email_verification_link_resent"] = True
             request.session["email"] = response["email"] if response else None
+        if request.GET.get("resent"):
+            # If we're resending, we want to show the bit of text that lets the user know it's been
+            # resent
+            request.session["email_verification_link_resent"] = True
         return super().get(request, *args, **kwargs)
 
 
