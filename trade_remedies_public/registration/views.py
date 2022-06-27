@@ -490,18 +490,20 @@ class V2RegistrationViewOrganisationFurtherDetails(V2BaseRegisterView, TradeReme
         registration_data = {"registration_data": json.dumps(self.request.session["registration"])}
         response = self.trusted_client.v2_register(registration_data)
         self.update_session(self.request, response)
-        return redirect(reverse("v2_register_complete"))
+        self.request.session["account_created"] = True
+        return redirect(reverse("request_email_verify_code", kwargs={"user_pk": response["pk"]}))
 
 
-class V2RegistrationComplete(TemplateView, TradeRemediesAPIClientMixin):
-    template_name = "v2/registration/registration_complete.html"
+class RequestEmailVerifyCode(TemplateView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/email_verification.html"
 
-
-class RequestEmailVerifyCode(View, TradeRemediesAPIClientMixin):
-    def get(self, request, user_pk, *args, **kwargs):
-        self.trusted_client.send_email_verification_link(user_pk)
-        request.session["email_verification_link_resent"] = True
-        return redirect(reverse("v2_register_complete"))
+    def get(self, request, *args, **kwargs):
+        # Sometimes we just want to show the user the page to resend their code and not send it yet.
+        if not request.GET.get("dont_send"):
+            response = self.trusted_client.send_email_verification_link(kwargs["user_pk"])
+            request.session["email_verification_link_resent"] = True
+            request.session["email"] = response["email"] if response else None
+        return super().get(request, *args, **kwargs)
 
 
 class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
@@ -514,6 +516,8 @@ class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
         if "organisations" in response and response["organisations"]:
             if response["organisations"][0]["security_group"] == "Organisation Owner":
                 owner = True
+        if request.user.is_authenticated:
+            request.user.reload(request)  # Getting the new email_verified_at fields from the API
         return render(
             request, "v2/registration/registration_email_verified.html", context={"owner": owner}
         )
