@@ -3,6 +3,23 @@
 {% block main_content %}
 
 <div class="govuk-grid-column-full">
+    {% if form_errors.error_summaries %}
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+         data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                {% for error in form_errors.error_summaries %}
+                <li>
+                    <a href="#{{ error.0 }}">{{ error.1 }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
     <span class="govuk-caption-xl">2. About you</span>
 </div>
 <div class="govuk-grid-column-two-thirds">
@@ -22,70 +39,11 @@
 
             <p>Provide as many details as you can to help us understand your client’s organisation.</p>
 
+            {% include "v2/component_macros/text_input.html" with id="company_website" name="company_website" label="Organisation website (optional)" hint="Provide your organisation’s website if it has one." type="text" width="20" strong=True %}
+            {% include "v2/component_macros/text_input.html" with id="company_vat_number" name="company_vat_number" label="VAT registration number (optional)" hint="Most companies are registered for VAT (Value Added Tax) or an international equivalent." type="text" width="20" strong=True %}
+            {% include "v2/component_macros/text_input.html" with id="company_eori_number" name="company_eori_number" label="EORI number (optional)" hint="Your client’s organisation will have an EORI number if you have brought goods into the UK or EU." type="text" width="20" strong=True %}
+            {% include "v2/component_macros/text_input.html" with id="company_duns_number" name="company_duns_number" label="DUNS number (optional)" hint="Your client’s organisation might have a 9-digit DUNS (Data Universal Numbering System) identifier." type="text" width="20" strong=True %}
 
-            <div class="govuk-form-group">
-                <label class="govuk-label govuk-label--s" for="reginterest-web">
-                    Organisation website (optional)
-                </label>
-
-
-                <div id="reginterest-web-hint" class="govuk-hint">
-                    Provide your client’s website if it has one.
-                </div>
-
-                <input class="govuk-input govuk-input--width-20" id="reginterest-web" name="reginterest-web" type="text"
-                       aria-describedby="reginterest-web-hint"
-                       style="background-repeat: no-repeat; background-attachment: scroll; background-size: 16px 18px; background-position: 98% 50%;">
-
-            </div>
-
-
-            <div class="govuk-form-group">
-                <label class="govuk-label govuk-label--s" for="reginterest-vat">
-                    VAT registration number (optional)
-                </label>
-
-
-                <div id="reginterest-vat-hint" class="govuk-hint">
-                    Most companies are registered for VAT (Value Added Tax) or an international equivalent.
-                </div>
-
-                <input class="govuk-input govuk-input--width-20" id="reginterest-vat" name="reginterest-vat" type="text"
-                       aria-describedby="reginterest-vat-hint">
-
-            </div>
-
-
-            <div class="govuk-form-group">
-                <label class="govuk-label govuk-label--s" for="reginterest-eori">
-                    EORI number (optional)
-                </label>
-
-
-                <div id="reginterest-eori-hint" class="govuk-hint">
-                    Your client’s organisation will have an EORI number if you have brought goods into the UK or EU.
-                </div>
-
-                <input class="govuk-input govuk-input--width-20" id="reginterest-eori" name="reginterest-eori"
-                       type="text" aria-describedby="reginterest-eori-hint">
-
-            </div>
-
-
-            <div class="govuk-form-group">
-                <label class="govuk-label govuk-label--s" for="reginterest-duns">
-                    DUNS number (optional)
-                </label>
-
-
-                <div id="reginterest-duns-hint" class="govuk-hint">
-                    Your client’s organisation might have a 9-digit DUNS (Data Universal Numbering System) identifier.
-                </div>
-
-                <input class="govuk-input govuk-input--width-20" id="reginterest-duns" name="reginterest-duns"
-                       type="text" aria-describedby="reginterest-duns-hint">
-
-            </div>
 
 
             <div class="govuk-button-group">

@@ -57,7 +57,7 @@ from core.validators import (
 )
 import dpath
 
-from cases.forms import ClientTypeForm, PrimaryContactForm, YourEmployerForm, UkEmployerForm, NonUkEmployerForm
+from cases.forms import ClientTypeForm, PrimaryContactForm, YourEmployerForm, UkEmployerForm, NonUkEmployerForm, ClientFurtherDetailsForm
 
 logger = logging.getLogger(__name__)
 
@@ -549,9 +549,21 @@ class InterestIsUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, FormMi
         )
 
 
-class InterestUkSubmitStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestUkSubmitStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/about_your_client.html"
+    form_class = ClientFurtherDetailsForm
     case_page = True
+
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                case_id=self.extra_context.get("case_id"),
+                contact_id=self.extra_context.get("contact_id"),
+            )
+        )
 
     def get(self, request, case_id=None, contact_id=None):
         return render(
@@ -570,10 +582,14 @@ class InterestUkSubmitStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
         )
 
     def post(self, request, case_id=None, contact_id=None):
-        eori_number = request.POST.get("reginterest-eori")
-        duns_number = request.POST.get("reginterest-duns")
-        organisation_website = request.POST.get("reginterest-web")
-        vat_number = request.POST.get("reginterest-vat")
+        self.extra_context = {"case_id": case_id, "contact_id": contact_id}
+        form = self.get_form()
+        if not form.is_valid():
+            return self.form_invalid(form)
+        eori_number = form.cleaned_data.get("company_eori_number")
+        duns_number = form.cleaned_data.get("company_duns_number")
+        organisation_website = form.cleaned_data.get("company_website")
+        vat_number = form.cleaned_data.get("company_vat_number")
         organisation_name = request.GET.get("organisation_name")
         companies_house_id = request.GET.get("companies_house_id")
         organisation_post_code = request.GET.get("organisation_post_code")
