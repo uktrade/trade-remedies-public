@@ -3,6 +3,7 @@ import logging
 import json
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from django.utils import timezone
@@ -56,6 +57,7 @@ from core.validators import (
 )
 import dpath
 
+from cases.forms import Step2StartForm
 
 logger = logging.getLogger(__name__)
 
@@ -379,21 +381,30 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         )
 
 
-class InterestClientTypeStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestClientTypeStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/who_is_registering.html"
+    form_class = Step2StartForm
     case_page = True
+
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return super().form_invalid(form)
 
     def get(self, request, case_id=None):
         return render(
             request,
-            "v2/registration_of_interest/who_is_registering.html",
+            self.template_name,
             {
                 "case_id": case_id,
             },
         )
 
     def post(self, request, case_id=None):
-        if request.POST.get("reginterest-what-org") == "new-org":
+        form = self.get_form()
+        if not form.is_valid():
+            return self.form_invalid(form)
+        elif request.POST.get("org") == "new-org":
             return redirect(f"/case/interest/{case_id}/contact/")  # noqa: E501
 
 

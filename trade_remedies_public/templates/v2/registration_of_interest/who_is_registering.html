@@ -1,9 +1,28 @@
 {% extends "v2/govuk/base.html" %}
+{% load get_item %}
 
 {% block main_content %}
 
 <div class="govuk-grid-column-two-thirds">
+    {% if form_errors.error_summaries %}
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+         data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                {% for error in form_errors.error_summaries %}
+                <li>
+                    <a href="#{{ error.0 }}">{{ error.1 }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
     <span class="govuk-caption-xl">2. About you</span>
+
 
     <form method="post" novalidate="novalidate">
 
@@ -11,7 +30,8 @@
         <!-- Set the name of the org if is is "my org" whether from regsitering or default-->
 
         {% csrf_token %}
-        <div class="govuk-form-group">
+        {% with form_errors.org as error %}
+        <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
 
             <fieldset class="govuk-fieldset">
 
@@ -22,13 +42,20 @@
                     </h1>
 
                 </legend>
+                {% if error %}
+                <p id="org-error" class="govuk-error-message">
+                    {% for error in error %}
+                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
 
 
-                <div class="govuk-radios" data-module="govuk-radios">
+                <div class="govuk-radios" id="org" data-module="govuk-radios">
 
 
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="reginterest-what-org" name="reginterest-what-org"
+                        <input class="govuk-radios__input" id="reginterest-what-org" name="org"
                                type="radio" value="my-org">
                         <label class="govuk-label govuk-radios__label" for="reginterest-what-org">
 
@@ -42,7 +69,7 @@
 
 
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="reginterest-what-org-2" name="reginterest-what-org"
+                        <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
                                type="radio" value="existing-org">
                         <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
                             An existing client: someone I have previously represented using the Trade Remedies Service
@@ -52,7 +79,7 @@
 
 
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="reginterest-what-org-3" name="reginterest-what-org"
+                        <input class="govuk-radios__input" id="reginterest-what-org-3" name="org"
                                type="radio" value="new-org">
                         <label class="govuk-label govuk-radios__label" for="reginterest-what-org-3">
                             A new client: someone I am representing for the first time using the Trade Remedies Service
@@ -68,7 +95,7 @@
 
 
         </div>
-
+        {% endwith %}
 
         <div class="govuk-button-group">
 

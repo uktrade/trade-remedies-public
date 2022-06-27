@@ -9,7 +9,6 @@ services:
       - "8002:8000"
     volumes:
       - ./trade_remedies_public:/app/
-      - ./trade_remedies_client:/app/trade_remedies_client/
       - ./requirements.in:/app/requirements.in/
       - ./requirements:/app/requirements/
     command: python manage.py runserver 0.0.0.0:8000
