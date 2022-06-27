@@ -64,8 +64,12 @@ def cookie_management(request):
     }
 
 
-def v2_error_handling(request):
-    """Pops the errors from the request.session for front-end rendering."""
-    if form_errors := request.session.pop("form_errors", None):
-        return {"form_errors": form_errors}
-    return {}
+def add_form_errors(request):
+    """Pops the form errors from the request.session for front-end rendering.
+
+    This "form_errors" key is then checked in the govuk/base_with_form.html BASE template, and is
+    looped over to display the errors in the error summaries box at the top of the page. Individual
+    elements can also access this dictionary to retrieve the specific error for that field, e.g. in
+    component_macros/text_input.html
+    """
+    return {"form_errors": request.session.pop("form_errors", None)}
