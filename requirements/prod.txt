@@ -134,7 +134,7 @@ six==1.16.0
     #   python-dateutil
 sqlparse==0.4.2
     # via django
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@develop
     # via -r requirements.in/prod.in
 urllib3==1.26.5
     # via
