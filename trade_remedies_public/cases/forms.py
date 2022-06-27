@@ -29,7 +29,7 @@ class YourEmployerForm(ValidationForm):
 
 
 class UkEmployerForm(ValidationForm):
-    company_search_container = forms.BooleanField()
+    company_search_container = forms.CharField(max_length=0, required=False)
     organisation_name = forms.CharField()
     companies_house_id = forms.CharField()
     organisation_post_code = forms.CharField()
