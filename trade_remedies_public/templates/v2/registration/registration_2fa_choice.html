@@ -36,7 +36,7 @@
                                value="mobile"
                                {% if form.cleaned_data.two_factor_choice == "mobile" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="two_factor_choice">
-                            Mobile
+                            By text message
                         </label>
                     </div>
                     <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-mobile">
@@ -71,7 +71,7 @@
                                value="email"
                                {% if form.cleaned_data.two_factor_choice == "email" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="email">
-                            Email address: <strong>{{ request.session.registration.email }}</strong>
+                            By email: <strong>{{ request.session.registration.email }}</strong>
                         </label>
                     </div>
                 </div>

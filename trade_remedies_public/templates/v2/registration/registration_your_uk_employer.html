@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block page_title %}
-    Your employer
+    Your organisation
 {% endblock %}
 
 {% block extra_css %}
@@ -16,11 +16,11 @@
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
             <h1 class="govuk-label-wrapper">
                 <label class="govuk-label govuk-label--xl" for="search-reg-org">
-                    Your employers details
+                    Your organisation details
                 </label>
             </h1>
             <div id="sort-hint" class="govuk-hint">
-                Search Companies House to find registered company details.
+                Search Companies House to find your UK registered company details.
             </div>
             {% if error %}
                 <p class="govuk-error-message">
@@ -33,22 +33,20 @@
         </div>
     {% endwith %}
     <div style="display:none;" id="selected_company_wrapper">
-        <p class="govuk-body">Check the organisation details below carefully. If it does not match the registered
-            details of your employer,
-            you should return to the previous step and choose the "New" organisation option.</p>
+        <p class="govuk-body">Check the details below carefully. If it does not match the details of your organisation, you should go back to the previous page and select "No".</p>
         <div class="govuk-inset-text" id="selected_company"></div>
     </div>
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
-              If you can’t find your employer
+              If you can’t find your organisation
             </span>
         </summary>
         <div class="govuk-details__text">
             <p class="govuk-body">Search for your organisation on the <a
                     href="https://www.gov.uk/get-information-about-a-company" target="_blank" rel="noopener noreferrer"
                     class="govuk-link">Companies House register (opens in a new tab).</a></p>
-            <p>If the organisation is not on the register, go back to the previous page and select "No". Your employer is not registered in the UK.</p>
+            <p>If the organisation is not on the register, it is not a UK registered company. Go back to the previous page and select "No".</p>
         </div>
     </details>
     {% include "v2/component_macros/form_button_group.html" with forward_button_text="I confirm these details are correct" %}
