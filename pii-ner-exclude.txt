@@ -1,3 +1,16 @@
+v2/registration_of_interest/about_your_client.html
+v2/registration_of_interest/about_your_client.html
+v2/registration_of_interest/who_you_representing.html
+v2/registration_of_interest/your_client_details.html
+v2/registration_of_interest/is_client_uk_company.html
+v2/registration_of_interest
+v2/registration_of_interest/who_is_registering.html
+company_data.address_snippet
+form_errors.company_search_container
+form_errors.org
+default--
+House Register
+interest_ch
 && cd trade_remedies_public &&
 VAT (Value Added Tax
 organisation's Trade Remedies
