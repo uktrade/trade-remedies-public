@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from password.decorators import v2_error_handling
+from core.decorators import catch_form_errors
 
 from config.settings.base import API_BASE_URL, HEALTH_CHECK_TOKEN, ENVIRONMENT_KEY
 
@@ -34,7 +34,7 @@ class ForgotPasswordRequested(TemplateView, TradeRemediesAPIClientMixin):
 class ForgotPasswordView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "password/reset_password_request.html"
 
-    @v2_error_handling()
+    @catch_form_errors()
     def post(self, request, *args, **kwargs):
         email = request.POST.get("email")
         self.trusted_client.request_password_reset(email)
@@ -70,7 +70,7 @@ class ResetPasswordView(TemplateView, TradeRemediesAPIClientMixin):
             },
         )
 
-    @v2_error_handling()
+    @catch_form_errors()
     def post(self, request, request_id, token, *args, **kwargs):
         password = request.POST.get("password")
         url = f"{API_BASE_URL}/api/v2/accounts/password/reset_form/"

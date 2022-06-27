@@ -24,6 +24,7 @@ from login import views as login_views
 from password import views as password_views
 from registration import views as register_views
 
+# todo - config/urls.py should not contain anything, put these URLs in their relevant apps
 urlpatterns = [
     path("", login_views.LandingView.as_view(), name="landing"),
     path("health/", core_views.HealthCheckView.as_view(), name="healthcheck"),
@@ -51,7 +52,8 @@ urlpatterns = [
         name="public_submission",
     ),
     path(
-        "public/case/<str:case_number>/submission/<uuid:submission_id>/document/<uuid:document_id>/",  # noqa: E501
+        "public/case/<str:case_number>/submission/<uuid:submission_id>"
+        "/document/<uuid:document_id>/",
         core_views.PublicDownloadView.as_view(),
         name="public_document_download",
     ),
@@ -230,7 +232,8 @@ urlpatterns = [
         name="assign_user_to_case_contact",
     ),
     path(
-        "accounts/team/assign/<uuid:user_id>/case/<uuid:case_id>/submission/<uuid:submission_id>/contact/",  # noqa: E501
+        "accounts/team/assign/<uuid:user_id>/case/<uuid:case_id>"
+        "/submission/<uuid:submission_id>/contact/",
         core_views.AssignUserToCaseContactView.as_view(),
         name="assign_user_to_case_contact_inv",
     ),
@@ -281,11 +284,6 @@ urlpatterns = [
         "register/organisation_further_details",
         register_views.V2RegistrationViewOrganisationFurtherDetails.as_view(),
         name="v2_register_organisation_further_details",
-    ),
-    path(
-        "register/complete",
-        register_views.V2RegistrationComplete.as_view(),
-        name="v2_register_complete",
     ),
     path(
         "register/verify_email/<uuid:user_pk>",

@@ -308,11 +308,10 @@ tomli==1.2.1
     #   black
     #   pep517
     #   pyproject-flake8
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@v2feature/trsv2-206/v2-registration-journey-unhappy-path
-    # via -r requirements.in/base.in
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@develop
+    # via -r requirements.in/dev.in
 traitlets==4.3.3
     # via
-    #   -r requirements.in/dev.in
     #   ipython
     #   matplotlib-inline
 typing-extensions==3.10.0.2

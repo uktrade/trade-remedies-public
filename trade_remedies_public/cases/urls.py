@@ -1,7 +1,6 @@
 from django.urls import path
 from cases import views as case_views
 
-
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
     # interest in a case

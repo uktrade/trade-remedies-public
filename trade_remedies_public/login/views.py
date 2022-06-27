@@ -11,17 +11,23 @@ from registration.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from .decorators import v2_error_handling
+from core.decorators import catch_form_errors
 
 
 class LandingView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "v2/landing.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(reverse("dashboard"))
+        else:
+            return super().dispatch(request, *args, **kwargs)
+
 
 class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/login/login.html"
 
-    @v2_error_handling()
+    @catch_form_errors()
     def post(self, request, *args, **kwargs):
         email = request.POST["email"]
         request.session["login_email"] = email
@@ -54,7 +60,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
 
 
 class RequestNewTwoFactorView(LoginRequiredMixin, TradeRemediesAPIClientMixin, View):
-    @v2_error_handling(redirection_url_resolver="two_factor")
+    @catch_form_errors(redirection_url_resolver="two_factor")
     def get(self, request, *args, **kwargs):
         delivery_type = request.GET.get("delivery_type", "sms")
         r = self.client(request.user).two_factor_request(delivery_type=delivery_type)
@@ -65,7 +71,7 @@ class RequestNewTwoFactorView(LoginRequiredMixin, TradeRemediesAPIClientMixin, V
 class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixin):
     template_name = "v2/login/two_factor.html"
 
-    @v2_error_handling()
+    @catch_form_errors()
     def post(self, request, *args, **kwargs):
         two_factor_code = request.POST["code"]
         response = self.client(request.user).two_factor_auth(

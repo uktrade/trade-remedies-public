@@ -8126,10 +8126,6 @@ th {
   padding-left: 2px;
 }
 
-.no-sort:after {
-  content: "◆";
-  color: #b1b4b6;
-}
 
 .A-to-Z:after {
   content: "▲";
