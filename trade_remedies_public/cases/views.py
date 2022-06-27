@@ -57,7 +57,7 @@ from core.validators import (
 )
 import dpath
 
-from cases.forms import ClientTypeForm, PrimaryContactForm, YourEmployerForm, UkEmployerForm
+from cases.forms import ClientTypeForm, PrimaryContactForm, YourEmployerForm, UkEmployerForm, NonUkEmployerForm
 
 logger = logging.getLogger(__name__)
 
@@ -475,24 +475,40 @@ class InterestUkRegisteredYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, For
             return redirect(f"/case/interest/{case_id}/{contact_id}/ch/no/")  # noqa: E501
 
 
-class InterestNonUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestNonUkRegisteredStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/your_client_details.html"
+    form_class = NonUkEmployerForm
     case_page = True
+
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                case_id=self.extra_context.get("case_id"),
+                contact_id=self.extra_context.get("contact_id"),
+            )
+        )
 
     def get(self, request, case_id=None, contact_id=None):
         return render(
             request,
-            "v2/registration_of_interest/your_client_details.html",
+            self.template_name,
             {"case_id": case_id, "contact_id": contact_id},
         )
 
     def post(self, request, case_id=None, contact_id=None):
+        self.extra_context = {"case_id": case_id, "contact_id": contact_id}
+        form = self.get_form()
+        if not form.is_valid():
+            return self.form_invalid(form)
         return redirect(
             f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
-            f"{request.POST.get('reginterest-org-name')}&companies_house_id="
-            f"{request.POST.get('reginterest-reg-org-number')}&"
-            f"organisation_post_code={request.POST.get('reginterest-org-zip')}&uk_registered=false&"
-            f"organisation_address={request.POST.get('reginterest-org-address')}&country={request.POST.get('country')}"  # noqa: E501
+            f"{form.cleaned_data.get('organisation_name')}&companies_house_id="
+            f"{form.cleaned_data.get('company_number')}&"
+            f"organisation_post_code={form.cleaned_data.get('post_code')}&uk_registered=false&"
+            f"organisation_address={form.cleaned_data.get('address_snippet')}&country={request.POST.get('country')}"  # noqa: E501
         )
 
 
