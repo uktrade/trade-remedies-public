@@ -312,7 +312,6 @@ trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
     # via -r requirements.in/dev.in
 traitlets==4.3.3
     # via
-    #   -r requirements.in/dev.in
     #   ipython
     #   matplotlib-inline
 typing-extensions==3.10.0.2

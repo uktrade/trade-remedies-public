@@ -2,7 +2,7 @@
 import json
 
 from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
-from login.decorators import v2_error_handling
+from core.decorators import catch_form_errors
 from core.models import TransientUser
 from core.utils import get, validate
 from core.validators import (
@@ -483,7 +483,7 @@ class V2RegistrationViewOrganisationFurtherDetails(V2BaseRegisterView, TradeReme
     template_name = "v2/registration/registration_organisation_further_details.html"
     form_class = OrganisationFurtherDetailsForm
 
-    @v2_error_handling()
+    @catch_form_errors()
     def form_valid(self, form):
         # we're done, let's create the new user
         self.update_session(self.request, form.cleaned_data)
@@ -507,7 +507,7 @@ class RequestEmailVerifyCode(TemplateView, TradeRemediesAPIClientMixin):
 
 
 class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
-    @v2_error_handling(redirection_url_resolver="landing")
+    @catch_form_errors(redirection_url_resolver="landing")
     def get(self, request, user_pk, email_verify_code, *args, **kwargs):
         response = self.trusted_client.verify_email_verification_link(user_pk, email_verify_code)
         # Getting the organisation security groups of this user, so we know what permissions we
