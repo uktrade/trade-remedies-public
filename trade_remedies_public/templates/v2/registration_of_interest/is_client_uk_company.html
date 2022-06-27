@@ -3,12 +3,30 @@
 {% block main_content %}
 
 <div class="govuk-grid-column-two-thirds">
+    {% if form_errors.error_summaries %}
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+         data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                {% for error in form_errors.error_summaries %}
+                <li>
+                    <a href="#{{ error.0 }}">{{ error.1 }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
     <span class="govuk-caption-xl">2. About you</span>
 
     <form method="post" novalidate="novalidate">
 
         {% csrf_token %}
-        <div class="govuk-form-group">
+        {% with form_errors.uk_employer as error %}
+        <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
 
             <fieldset class="govuk-fieldset">
 
@@ -20,14 +38,20 @@
 
                 </legend>
 
-
+                {% if error %}
+                <p id="uk_employer-error" class="govuk-error-message">
+                    {% for error in error %}
+                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
                 <div class="govuk-radios govuk-radioss" data-module="govuk-radios">
 
 
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="reginterest-uk-reg" name="reginterest-uk-reg"
+                        <input class="govuk-radios__input" id="uk_employer" name="uk_employer"
                                type="radio" value="yes">
-                        <label class="govuk-label govuk-radios__label" for="reginterest-uk-reg">
+                        <label class="govuk-label govuk-radios__label" for="uk_employer">
                             Yes
                         </label>
 
@@ -35,7 +59,7 @@
 
 
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="reginterest-uk-reg-2" name="reginterest-uk-reg"
+                        <input class="govuk-radios__input" id="reginterest-uk-reg-2" name="uk_employer"
                                type="radio" value="no">
                         <label class="govuk-label govuk-radios__label" for="reginterest-uk-reg-2">
                             No
@@ -51,7 +75,7 @@
 
 
         </div>
-
+        {% endwith %}
 
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">

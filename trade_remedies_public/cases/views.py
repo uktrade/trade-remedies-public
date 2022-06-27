@@ -57,7 +57,7 @@ from core.validators import (
 )
 import dpath
 
-from cases.forms import ClientTypeForm, PrimaryContactForm
+from cases.forms import ClientTypeForm, PrimaryContactForm, YourEmployerForm
 
 logger = logging.getLogger(__name__)
 
@@ -441,21 +441,37 @@ class InterestPrimaryContactStep2(
             return redirect(f"/case/interest/{case_id}/{contact_id}/ch/")  # noqa: E501
 
 
-class InterestUkRegisteredYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestUkRegisteredYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/is_client_uk_company.html"
+    form_class = YourEmployerForm
     case_page = True
+
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return self.render_to_response(
+            self.get_context_data(
+                form=form,
+                case_id=self.extra_context.get("case_id"),
+                contact_id=self.extra_context.get("contact_id"),
+            )
+        )
 
     def get(self, request, case_id=None, contact_id=None):
         return render(
             request,
-            "v2/registration_of_interest/is_client_uk_company.html",
+            self.template_name,
             {"case_id": case_id, "contact_id": contact_id},
         )
 
     def post(self, request, case_id=None, contact_id=None):
-        if request.POST.get("reginterest-uk-reg") == "yes":
+        self.extra_context = {"case_id": case_id, "contact_id": contact_id}
+        form = self.get_form()
+        if not form.is_valid():
+            return self.form_invalid(form)
+        elif form.cleaned_data.get("uk_employer") == "yes":
             return redirect(f"/case/interest/{case_id}/{contact_id}/ch/yes/")  # noqa: E501
-        elif request.POST.get("reginterest-uk-reg") == "no":
+        elif form.cleaned_data.get("uk_employer") == "no":
             return redirect(f"/case/interest/{case_id}/{contact_id}/ch/no/")  # noqa: E501
 
 
