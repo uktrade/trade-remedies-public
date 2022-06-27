@@ -57,7 +57,7 @@ from core.validators import (
 )
 import dpath
 
-from cases.forms import ClientTypeForm
+from cases.forms import ClientTypeForm, PrimaryContactForm
 
 logger = logging.getLogger(__name__)
 
@@ -408,24 +408,37 @@ class InterestClientTypeStep2(LoginRequiredMixin, GroupRequiredMixin, FormMixin,
             return redirect(f"/case/interest/{case_id}/contact/")  # noqa: E501
 
 
-class InterestPrimaryContactStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
+class InterestPrimaryContactStep2(
+    LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView
+):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/primary_client_contact.html"
+    form_class = PrimaryContactForm
     case_page = True
 
-    def get(self, request, case_id=None):
-        return render(
-            request, "v2/registration_of_interest/primary_client_contact.html", {"case_id": case_id}
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return self.render_to_response(
+            self.get_context_data(form=form, case_id=self.extra_context.get("case_id"))
         )
 
+    def get(self, request, case_id=None):
+        return render(request, self.template_name, {"case_id": case_id})
+
     def post(self, request, case_id=None):
-        response = self._client.create_contact(
-            {
-                "contact_email": request.POST.get("reginterest-client-email"),
-                "contact_name": request.POST.get("reginterest-client-name"),
-            }
-        )
-        contact_id = response["id"]
-        return redirect(f"/case/interest/{case_id}/{contact_id}/ch/")  # noqa: E501
+        self.extra_context = {"case_id": case_id}
+        form = self.get_form()
+        if not form.is_valid():
+            return self.form_invalid(form)
+        else:
+            response = self._client.create_contact(
+                {
+                    "contact_email": form.cleaned_data.get("email"),
+                    "contact_name": form.cleaned_data.get("name"),
+                }
+            )
+            contact_id = response["id"]
+            return redirect(f"/case/interest/{case_id}/{contact_id}/ch/")  # noqa: E501
 
 
 class InterestUkRegisteredYesNoStep2(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
