@@ -179,8 +179,7 @@ class TestNonUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "no_client_name_entered",'
-            ' "code": "required"}]}',
+            '{"organisation_name": [{"message": "no_client_name_entered",' ' "code": "required"}]}',
         )
 
     def test_missing_address(self):
@@ -245,8 +244,7 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_website": [{"message": "incorrect_client_url",'
-            ' "code": "invalid"}]}',
+            '{"company_website": [{"message": "incorrect_client_url",' ' "code": "invalid"}]}',
         )
 
     def test_invalid_company_eori_number(self):
