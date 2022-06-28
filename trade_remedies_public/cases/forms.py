@@ -29,13 +29,15 @@ class YourEmployerForm(ValidationForm):
 
 
 class UkEmployerForm(ValidationForm):
-    company_search_container = forms.CharField(max_length=0, required=False)
     organisation_name = forms.CharField()
     companies_house_id = forms.CharField()
     organisation_post_code = forms.CharField()
     organisation_address = forms.CharField()
+    # Need a field to match element id in the form html template to add error message
+    company_search_container = forms.CharField(widget=forms.HiddenInput(), required=False)
 
     def clean(self):
+        # The user has entered something in the autocomplete box but not selected an option
         if (
             self.data.get("input-autocomplete")
             and not self.cleaned_data.get("organisation_name")
@@ -43,8 +45,8 @@ class UkEmployerForm(ValidationForm):
             and not self.cleaned_data.get("organisation_post_code")
             and not self.cleaned_data.get("organisation_address")
         ):
-            # The user has entered something in the autocomplete box but not selected an option
             self.add_error("company_search_container", "companies_house_not_selected")
+        # Nothing has been entered by the user
         elif not self.data.get("input-autocomplete"):
             self.add_error("company_search_container", "companies_house_not_searched")
         else:
