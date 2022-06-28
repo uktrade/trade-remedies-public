@@ -1,7 +1,13 @@
 from unittest import TestCase
 
-from .forms import PrimaryContactForm, ClientTypeForm, YourEmployerForm, UkEmployerForm, NonUkEmployerForm, \
-    ClientFurtherDetailsForm
+from .forms import (
+    PrimaryContactForm,
+    ClientTypeForm,
+    YourEmployerForm,
+    UkEmployerForm,
+    NonUkEmployerForm,
+    ClientFurtherDetailsForm,
+)
 
 
 class TestClientTypeForm(TestCase):
@@ -161,7 +167,7 @@ class TestNonUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "no_client_name_entered", "code": "required"}]}'
+            '{"organisation_name": [{"message": "no_client_name_entered", "code": "required"}]}',
         )
 
     def test_missing_address(self):
@@ -170,7 +176,7 @@ class TestNonUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"address_snippet": [{"message": "no_client_address_entered", "code": "required"}]}'
+            '{"address_snippet": [{"message": "no_client_address_entered", "code": "required"}]}',
         )
 
     def test_missing_post_code_and_company_number(self):
@@ -181,7 +187,7 @@ class TestNonUkEmployerForm(TestCase):
         self.assertEqual(
             form.errors.as_json(),
             '{"company_number": [{"message": "no_client_post_code_or_number_entered", "code": ""}], '
-            '"post_code": [{"message": "no_client_post_code_or_number_entered", "code": ""}]}'
+            '"post_code": [{"message": "no_client_post_code_or_number_entered", "code": ""}]}',
         )
 
     def test_missing_company_number(self):
@@ -202,7 +208,7 @@ class TestNonUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"country": [{"message": "no_client_country_selected", "code": "required"}]}'
+            '{"country": [{"message": "no_client_country_selected", "code": "required"}]}',
         )
 
 
@@ -225,7 +231,7 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_website": [{"message": "incorrect_client_url", "code": "invalid"}]}'
+            '{"company_website": [{"message": "incorrect_client_url", "code": "invalid"}]}',
         )
 
     def test_invalid_company_eori_number(self):
@@ -234,14 +240,14 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_eori_number": [{"message": "incorrect_client_eori_format", "code": "invalid"}]}'
+            '{"company_eori_number": [{"message": "incorrect_client_eori_format", "code": "invalid"}]}',
         )
         self.mock_data["company_eori_number"] = "4223333333333"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_eori_number": [{"message": "incorrect_client_eori_format", "code": "invalid"}]}'
+            '{"company_eori_number": [{"message": "incorrect_client_eori_format", "code": "invalid"}]}',
         )
 
     def test_invalid_company_duns_number(self):
@@ -250,11 +256,10 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_duns_number": [{"message": "incorrect_client_duns_format", "code": "invalid"}]}'
+            '{"company_duns_number": [{"message": "incorrect_client_duns_format", "code": "invalid"}]}',
         )
 
     def test_valid_all_optional(self):
         self.mock_data = {}
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertTrue(form.is_valid())
-
