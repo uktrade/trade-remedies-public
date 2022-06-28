@@ -124,7 +124,7 @@ class TestUkEmployerForm(TestCase):
             },
         )
 
-    def test_companies_house_not_searched(self):
+    def test_companies_house_searched_but_not_selected(self):
         form = UkEmployerForm(data={"input-autocomplete": "TEST"})
         self.assertFalse(form.is_valid())
         self.assertEqual(
@@ -141,7 +141,7 @@ class TestUkEmployerForm(TestCase):
             ' "code": ""}]}',
         )
 
-    def test_companies_house_searched_but_not_selected(self):
+    def test_companies_house_not_searched(self):
         form = UkEmployerForm(data={})
         self.assertFalse(form.is_valid())
         self.assertEqual(
