@@ -55,7 +55,7 @@ class TestPrimaryContactForm(TestCase):
         )
 
     def test_no_name(self):
-        self.mock_data.update({"name": "", "email": "test@example.com"})
+        self.mock_data.update({"name": "", "email": "test@example.com"})  # /PS-IGNORE
         form = PrimaryContactForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
