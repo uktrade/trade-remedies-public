@@ -97,6 +97,8 @@ libsass==0.21.0
     # via -r requirements.in/base.in
 marshmallow==3.6.1
     # via kubi-ecs-logger
+phonenumbers==8.12.50
+    # via -r requirements.in/base.in
 psycopg2-binary==2.9.1
     # via feed-gov-back
 py==1.10.0
@@ -132,8 +134,8 @@ six==1.16.0
     #   python-dateutil
 sqlparse==0.4.2
     # via django
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@feature/trsv2-207/public_registration_of_interest_1
-    # via -r requirements.in/base.in
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@develop
+    # via -r requirements.in/prod.in
 urllib3==1.26.5
     # via
     #   -r requirements.in/base.in

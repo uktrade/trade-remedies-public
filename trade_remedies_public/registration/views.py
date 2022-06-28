@@ -2,7 +2,7 @@
 import json
 
 from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
-from login.decorators import v2_error_handling
+from core.decorators import catch_form_errors
 from core.models import TransientUser
 from core.utils import get, validate
 from core.validators import (
@@ -415,7 +415,7 @@ class V2BaseRegisterView(FormView):
         if isinstance(update_data, QueryDict):
             # If it's a QueryDict, we need to convert it to a normal dictionary as Django's
             # internal representation of QueryDicts store individual values as lists, regardless
-            # of how many elements are in that list:
+            # of how many elements are in that list
             # https://www.ianlewis.org/en/querydict-and-update
             update_data = update_data.dict()
         request.session["registration"].update(update_data)
@@ -483,29 +483,44 @@ class V2RegistrationViewOrganisationFurtherDetails(V2BaseRegisterView, TradeReme
     template_name = "v2/registration/registration_organisation_further_details.html"
     form_class = OrganisationFurtherDetailsForm
 
-    @v2_error_handling()
+    @catch_form_errors()
     def form_valid(self, form):
         # we're done, let's create the new user
         self.update_session(self.request, form.cleaned_data)
         registration_data = {"registration_data": json.dumps(self.request.session["registration"])}
         response = self.trusted_client.v2_register(registration_data)
         self.update_session(self.request, response)
-        return redirect(reverse("v2_register_complete"))
+        self.request.session["account_created"] = True
+        return redirect(reverse("request_email_verify_code", kwargs={"user_pk": response["pk"]}))
 
 
-class V2RegistrationComplete(TemplateView, TradeRemediesAPIClientMixin):
-    template_name = "v2/registration/registration_complete.html"
+class RequestEmailVerifyCode(TemplateView, TradeRemediesAPIClientMixin):
+    template_name = "v2/registration/email_verification.html"
 
-
-class RequestEmailVerifyCode(View, TradeRemediesAPIClientMixin):
-    def get(self, request, user_pk, *args, **kwargs):
-        self.trusted_client.send_email_verification_link(user_pk)
-        request.session["email_verification_link_resent"] = True
-        return redirect(reverse("v2_register_complete"))
+    def get(self, request, *args, **kwargs):
+        # Sometimes we just want to show the user the page to resend their code and not send it yet.
+        if not request.GET.get("dont_send"):
+            response = self.trusted_client.send_email_verification_link(kwargs["user_pk"])
+            request.session["email"] = response["email"] if response else None
+        if request.GET.get("resent"):
+            # If we're resending, we want to show the bit of text that lets the user know it's been
+            # resent
+            request.session["email_verification_link_resent"] = True
+        return super().get(request, *args, **kwargs)
 
 
 class VerifyEmailVerifyCode(View, TradeRemediesAPIClientMixin):
-    @v2_error_handling(redirection_url_resolver="landing")
+    @catch_form_errors(redirection_url_resolver="landing")
     def get(self, request, user_pk, email_verify_code, *args, **kwargs):
         response = self.trusted_client.verify_email_verification_link(user_pk, email_verify_code)
-        return render(request, "v2/registration/registration_email_verified.html")
+        # Getting the organisation security groups of this user, so we know what permissions we
+        # tell them they have
+        owner = False
+        if "organisations" in response and response["organisations"]:
+            if response["organisations"][0]["security_group"] == "Organisation Owner":
+                owner = True
+        if request.user.is_authenticated:
+            request.user.reload(request)  # Getting the new email_verified_at fields from the API
+        return render(
+            request, "v2/registration/registration_email_verified.html", context={"owner": owner}
+        )

@@ -1,5 +1,7 @@
 {% extends "v2/govuk/base.html" %}
 
+{% block back_button %}{% endblock back_button %}
+
 {% block page_title %}
     Start
 {% endblock %}
@@ -24,13 +26,12 @@
         <h2 class="govuk-heading-m">Using the Trade Remedies Service</h2>
         <p class="govuk-body">You can use the Trade Remedies Service to:</p>
         <ul class="govuk-list govuk-list--bullet">
-            <li>request a new trade investigation</li>
-            <li>ask to participate in an open trade remedy case</li>
-            <li>add a colleague to an open case</li>
-            <li>invite another party to represent you in an open case</li>
+            <li>request a new trade remedies investigation or review</li>
+            <li>participate in an active trade remedies case</li>
+            <li>invite an organisation or individual to represent you in an active case</li>
+            <li>add a colleague to your account or an active case</li>
         </ul>
-        <p class="govuk-body">YYou will need to create an account to use the service. If your organisation is a
-            registered company, please have your registration number ready. It takes about 10 minutes.</p>
+        <p class="govuk-body">You will need to create an account to use the service. Please have any registration details for your organisation ready. It takes about 10 minutes.</p>
 
         <div class="govuk-button-group">
             {% url 'login' as button_url %}

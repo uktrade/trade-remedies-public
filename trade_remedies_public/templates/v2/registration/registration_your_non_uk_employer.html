@@ -2,11 +2,11 @@
 {% load static %}
 
 {% block page_title %}
-    Your employers details
+    Your organisation details
 {% endblock %}
 
 {% block heading %}
-    Your employers details
+    Your organisation details
 {% endblock heading %}
 
 {% block extra_css %}
@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block form_content %}
-    <p class="govuk-body">We ask for the details of your direct employer, not a company you may be representing. You should have permission to create this account on behalf of your employer.</p>
+    <p class="govuk-body">You are creating an account for this organisation and you will be the primary contact. This is the organisation you are directly employed by.</p>
     {% include 'v2/component_macros/text_input.html' with autocomplete="organization" label="Name of your organisation" id="organisation_name" name="organisation_name" type="text" width="20" strong=True %}
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -27,6 +27,6 @@
         {% include "v2/component_macros/text_input.html" with label="Postcode or zip code" id="post_code" name="post_code" width="5" autocomplete="postal-code" type="text"%}
         {% include "v2/component_macros/country_dropdown.html" with id="country" name="country" %}
     </fieldset>
-    {% include 'v2/component_macros/text_input.html' with label="Registered company number" id="company_number" name="company_number" type="text" width="10" hint="Most companies have an official registration number from the country they are based in." strong=True %}
+    {% include 'v2/component_macros/text_input.html' with label="Organisation registration number" id="company_number" name="company_number" type="text" width="10" hint="Some organisations have an official registration number from the country they are based in." strong=True %}
     {% include "v2/component_macros/form_button_group.html" with forward_button_text="Continue" %}
 {% endblock form_content %}

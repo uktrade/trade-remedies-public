@@ -1,5 +1,5 @@
 {% extends "v2/govuk/base.html" %}
-
+{% block back_button %}{% endblock back_button %}
 {% block page_title %}
     Email address is verified
 {% endblock %}
@@ -13,15 +13,27 @@
             </h1>
         </div>
 
-        <p class="govuk-body">You can now:</p>
+        <p class="govuk-body">You can now{% if not request.user.is_authenticated %} sign in and{% endif %} access your
+            organisation's Trade Remedies account.</p>
+        {% if owner %}
+            <p class="govuk-body">You are the primary contact for this account and can:</p>
+        {% else %}
+            <p class="govuk-body">With this account you can:</p>
+        {% endif %}
         <ul class="govuk-list govuk-list--bullet">
-            <li>add a someone to your account or an open case</li>
-            <li>request a new trade investigation</li>
-            <li>ask to participate in an open trade remedy case</li>
-            <li>invite another party to represent you in an open case</li>
+            {% if owner %}
+                <li>request a new trade remedies investigation or review</li>
+                <li>participate in an active trade remedies case</li>
+                <li>invite an organisation or individual to represent you in an active case</li>
+                <li>add a colleague to your account or an active case</li>
+            {% else %}
+                <li>request a new trade remedies investigation or review</li>
+                <li>participate in an active trade remedies case</li>
+                <li>invite an organisation or individual to represent you in an active case</li>
+            {% endif %}
         </ul>
         <a class="govuk-button" data-module="govuk-button"
-           href="{% if request.user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'landing' %}{% endif %}">
+           href="{% if request.user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
             Continue
         </a>
     </div>

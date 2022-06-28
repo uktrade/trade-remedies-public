@@ -2,7 +2,7 @@ import time
 from urllib.parse import urlparse
 
 from django.shortcuts import redirect
-from django.urls import reverse, NoReverseMatch
+from django.urls import resolve, reverse, NoReverseMatch
 from django.conf import settings
 from django.utils.deprecation import MiddlewareMixin
 from django.contrib.auth.models import AnonymousUser
@@ -14,20 +14,27 @@ SESSION_TIMEOUT_KEY = "_session_init_timestamp_"
 
 # URLS that will not redirect to either 2fa or email_verify
 NON_2FA_URLS = (
-    reverse("email_verify"),
-    reverse("two_factor"),
-    reverse("logout"),
-    reverse("request_new_two_factor"),
-    reverse("cookie_preferences"),
-    reverse("terms_and_conditions_and_privacy"),
-    reverse("accessibility_statement"),
+    "email_verify",
+    "two_factor",
+    "logout",
+    "request_new_two_factor",
+    "cookie_preferences",
+    "terms_and_conditions_and_privacy",
+    "accessibility_statement",
+)
+
+NON_EMAIL_VERIFY_URLS = NON_2FA_URLS + (
+    "dashboard",
+    "request_email_verify_code",
+    "email_verify_code",
 )
 
 # URLS that do not display the back button
 NON_BACK_URLS = [
-    reverse("landing"),
-    reverse("reset_password_success"),
-    reverse("v2_register_complete"),
+    "landing",
+    "reset_password_success",
+    "v2_email_verification_page",
+    "login",
 ]
 
 
@@ -59,7 +66,7 @@ class APIUserMiddleware:
             settings.USE_2FA
             and not is_public
             and should_two_factor
-            and request.path not in NON_2FA_URLS
+            and resolve(request.path_info).url_name not in NON_2FA_URLS
         )
 
     def should_verify_email(self, request):
@@ -76,20 +83,19 @@ class APIUserMiddleware:
             settings.VERIFY_EMAIL
             and not is_public
             and not request.user.email_verified_at
-            and request.path not in NON_2FA_URLS
+            and resolve(request.path_info).url_name not in NON_EMAIL_VERIFY_URLS
         )
 
     def public_request(self, request):
         return request.path.startswith("/public")
 
     def __call__(self, request, *args, **kwargs):
-        request.session["show_back_button"] = request.path not in NON_BACK_URLS
         if request.session and request.session.get("token") and request.session.get("user"):
             back_link_url = request.META.get("HTTP_REFERER", reverse("dashboard"))
-            if request.path in back_link_url:
+            if resolve(request.path_info).url_name in back_link_url:
                 back_link_url = reverse("dashboard")
             request.session["back_link_url"] = back_link_url
-            if request.path in NON_2FA_URLS:
+            if resolve(request.path_info).url_name in NON_2FA_URLS:
                 request.session["back_link_url"] = reverse("logout")
 
             user = request.session["user"]
@@ -98,7 +104,7 @@ class APIUserMiddleware:
             request.kwargs = kwargs
             request.token = request.session["token"]
             if self.should_verify_email(request):
-                return redirect(reverse("email_verify"))
+                return redirect(reverse("dashboard"))
             if self.should_2fa(request):
                 return redirect(reverse("two_factor"))
         else:
@@ -184,9 +190,9 @@ class CacheControlMiddleware:
 
     def __call__(self, request, *args, **kwargs):
         response = self.get_response(request)
-        response["Cache-Control"] = "no-store"
+        """response["Cache-Control"] = "no-store"
         response["Pragma"] = "no-cache"
-        response["X-Robots-Tag"] = "noindex"
+        response["X-Robots-Tag"] = "noindex"""
         return response
 
 
