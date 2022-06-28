@@ -20,7 +20,8 @@ class TestClientTypeForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"org": [{"message": "Select a valid choice. bad-org is not one of the available choices.", '
+            '{"org": [{"message": "Select a valid choice. '
+            'bad-org is not one of the available choices.", '
             '"code": "invalid_choice"}]}',
         )
 
@@ -93,7 +94,8 @@ class TestYourEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"uk_employer": [{"message": "Select a valid choice. asd is not one of the available choices.", '
+            '{"uk_employer": [{"message": "Select a valid choice. '
+            'asd is not one of the available choices.", '
             '"code": "invalid_choice"}]}',
         )
 
@@ -127,11 +129,16 @@ class TestUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "This field is required.", "code": "required"}], '
-            '"companies_house_id": [{"message": "This field is required.", "code": "required"}], '
-            '"organisation_post_code": [{"message": "This field is required.", "code": "required"}], '
-            '"organisation_address": [{"message": "This field is required.", "code": "required"}], '
-            '"company_search_container": [{"message": "companies_house_not_selected", "code": ""}]}',
+            '{"organisation_name": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"companies_house_id": [{"message": "This field is required.", '
+            '"code": "required"}], '
+            '"organisation_post_code": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"organisation_address": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"company_search_container": [{"message": "companies_house_not_selected",'
+            ' "code": ""}]}',
         )
 
     def test_companies_house_searched_but_not_selected(self):
@@ -139,11 +146,16 @@ class TestUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "This field is required.", "code": "required"}], '
-            '"companies_house_id": [{"message": "This field is required.", "code": "required"}], '
-            '"organisation_post_code": [{"message": "This field is required.", "code": "required"}], '
-            '"organisation_address": [{"message": "This field is required.", "code": "required"}], '
-            '"company_search_container": [{"message": "companies_house_not_searched", "code": ""}]}',
+            '{"organisation_name": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"companies_house_id": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"organisation_post_code": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"organisation_address": [{"message": "This field is required.",'
+            ' "code": "required"}], '
+            '"company_search_container": [{"message": "companies_house_not_searched",'
+            ' "code": ""}]}',
         )
 
 
@@ -167,7 +179,8 @@ class TestNonUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "no_client_name_entered", "code": "required"}]}',
+            '{"organisation_name": [{"message": "no_client_name_entered",'
+            ' "code": "required"}]}',
         )
 
     def test_missing_address(self):
@@ -176,7 +189,8 @@ class TestNonUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"address_snippet": [{"message": "no_client_address_entered", "code": "required"}]}',
+            '{"address_snippet": [{"message": "no_client_address_entered",'
+            ' "code": "required"}]}',
         )
 
     def test_missing_post_code_and_company_number(self):
@@ -231,7 +245,8 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_website": [{"message": "incorrect_client_url", "code": "invalid"}]}',
+            '{"company_website": [{"message": "incorrect_client_url",'
+            ' "code": "invalid"}]}',
         )
 
     def test_invalid_company_eori_number(self):
@@ -240,14 +255,16 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_eori_number": [{"message": "incorrect_client_eori_format", "code": "invalid"}]}',
+            '{"company_eori_number": [{"message": "incorrect_client_eori_format",'
+            ' "code": "invalid"}]}',
         )
         self.mock_data["company_eori_number"] = "4223333333333"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_eori_number": [{"message": "incorrect_client_eori_format", "code": "invalid"}]}',
+            '{"company_eori_number": [{"message": "incorrect_client_eori_format",'
+            ' "code": "invalid"}]}',
         )
 
     def test_invalid_company_duns_number(self):
@@ -256,7 +273,8 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_duns_number": [{"message": "incorrect_client_duns_format", "code": "invalid"}]}',
+            '{"company_duns_number": [{"message": "incorrect_client_duns_format",'
+            ' "code": "invalid"}]}',
         )
 
     def test_valid_all_optional(self):

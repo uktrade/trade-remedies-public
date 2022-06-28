@@ -40,11 +40,11 @@
                 Search Companies House to find registered company details.
             </div>
             {% if error %}
-                <p id="uk_employer-error" class="govuk-error-message">
-                    {% for error in error %}
-                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
-                    {% endfor %}
-                </p>
+            <p id="uk_employer-error" class="govuk-error-message">
+                {% for error in error %}
+                <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                {% endfor %}
+            </p>
             {% endif %}
             <div id="company_search_container"></div>
         </div>
@@ -110,6 +110,9 @@
                             populateResults(names)
                         }
 
+                    },
+                    error: function() {
+                        alert("There was an error. Try again please!");
                     }
                 });
             },
@@ -144,6 +147,8 @@
                 }
             }
         })
+
+
 
 </script>
 
