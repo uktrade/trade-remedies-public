@@ -46,7 +46,7 @@ main {
 // 5. Force the scrollbar to always display in IE10/11
 
 html {
-  font-size: 62.5%; // 1
+  font-size: 100%; // 1
   overflow-y: scroll; // 2
   // Allow RGBA here, this line has been copied from govuk_template
   // scss-lint:disable ColorVariable

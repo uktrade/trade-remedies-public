@@ -22,7 +22,7 @@ def user_context(request):
         "token": token,
         "current_organisation": None,
         "session": request.session,
-        "within_2fa": request.path == reverse("2fa"),
+        "within_2fa": request.path == reverse("two_factor"),
         "within_verify": request.path == reverse("email_verify"),
     }
     request_kwargs = request.resolver_match.kwargs if request.resolver_match else {}
@@ -62,3 +62,14 @@ def cookie_management(request):
         "cookie_policy_updated": cookie_updated,
         "cookie_policy_set": cookie_policy_set,
     }
+
+
+def add_form_errors(request):
+    """Pops the form errors from the request.session for front-end rendering.
+
+    This "form_errors" key is then checked in the govuk/base_with_form.html BASE template, and is
+    looped over to display the errors in the error summaries box at the top of the page. Individual
+    elements can also access this dictionary to retrieve the specific error for that field, e.g. in
+    component_macros/text_input.html
+    """
+    return {"form_errors": request.session.pop("form_errors", None)}
