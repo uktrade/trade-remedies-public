@@ -12,11 +12,11 @@ class ClientTypeForm(ValidationForm):
 
 
 class PrimaryContactForm(ValidationForm):
-    name = forms.CharField(error_messages={"required": "no_name_entered"})
+    name = forms.CharField(error_messages={"required": "no_contact_name_entered"})
     email = forms.CharField(
-        error_messages={"required": "no_email_entered"},
+        error_messages={"required": "no_contact_email_entered"},
         validators=[
-            RegexValidator(r"\w+@\w+", "email_not_valid"),
+            RegexValidator(r"\w+@\w+", "contact_email_not_valid"),
         ],
     )
 
