@@ -51,7 +51,7 @@ class TestPrimaryContactForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"email": [{"message": "email_not_valid", ' '"code": "invalid"}]}',
+            '{"email": [{"message": "contact_email_not_valid", "code": "invalid"}]}',
         )
 
     def test_no_name(self):
@@ -60,7 +60,7 @@ class TestPrimaryContactForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"name": [{"message": "no_name_entered", ' '"code": "required"}]}',
+            '{"name": [{"message": "no_contact_name_entered", "code": "required"}]}',
         )
 
     def test_no_email(self):
@@ -69,7 +69,7 @@ class TestPrimaryContactForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"email": [{"message": "no_email_entered", ' '"code": "required"}]}',
+            '{"email": [{"message": "no_contact_email_entered", "code": "required"}]}',
         )
 
 
