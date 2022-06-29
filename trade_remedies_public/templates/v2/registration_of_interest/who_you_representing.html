@@ -49,7 +49,7 @@
             </div>
           </div>
             <div id="sort-hint" class="govuk-hint">
-                Search Companies House to find registered company details.
+                Search Companies House to find your client's UK registered company details.
             </div>
             {% if error %}
             <p id="uk_employer-error" class="govuk-error-message">
@@ -63,24 +63,22 @@
         {% endwith %}
 
         <div style="display:none;" id="selected_company_wrapper">
-            <p>Check the company details carefully. If they do not match your client’s, go back and select ‘No’ and
-                enter the correct information.</p>
+            <p>Check the details below carefully. If it does not match the details of the organisation, you should go back to the previous page and select "No".</p>
             <div class="govuk-inset-text" id="selected_company"></div>
         </div>
 
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
-      If you can’t find your client’s company
+      If you can’t find the organisation
     </span>
             </summary>
             <div class="govuk-details__text">
-                <p class="govuk-body">Search for your client’s company&nbsp;on the <a
+                <p class="govuk-body">Search for the organisation on the <a
                         href="https://www.gov.uk/get-information-about-a-company" target="_blank"
                         rel="noopener noreferrer" class="govuk-link">Companies House register (opens in a new tab)</a>.
                 </p>
-                <p>If you cannot find the company on the register, go back and select ‘No’ and enter the correct
-                    information. This means your client’s company is not registered in the UK.</p>
+                <p>If the organisation is not on the register, it is not a UK registered company. Go back to the previous page and select "No".</p>
             </div>
         </details>
 
