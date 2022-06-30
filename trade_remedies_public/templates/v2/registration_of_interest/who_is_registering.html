@@ -1,0 +1,86 @@
+{% extends "v2/registration_of_interest/base_form.html" %}
+
+{% block noheading %}
+{% endblock noheading %}
+
+{% block form_content %}
+
+        {% with form_errors.org as error %}
+        <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+
+            <fieldset class="govuk-fieldset">
+
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+
+                    <h1 class="govuk-fieldset__heading">
+                        Who is registering interest in this case?
+                    </h1>
+
+                </legend>
+                {% if error %}
+                <p id="org-error" class="govuk-error-message">
+                    {% for error in error %}
+                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+
+
+                <div class="govuk-radios" data-module="govuk-radios">
+
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="org" name="org"
+                               type="radio" value="my-org">
+                        <label class="govuk-label govuk-radios__label" for="org">
+
+
+                            My organisation: BlueSteel Partners
+
+
+                        </label>
+
+                    </div>
+
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
+                               type="radio" value="existing-org">
+                        <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
+                            An existing client: someone I have previously represented using the Trade Remedies Service
+                        </label>
+
+                    </div>
+
+
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="reginterest-what-org-3" name="org"
+                               type="radio" value="new-org">
+                        <label class="govuk-label govuk-radios__label" for="reginterest-what-org-3">
+                            A new client: someone I am representing for the first time using the Trade Remedies Service
+                        </label>
+
+                    </div>
+
+
+                </div>
+
+
+            </fieldset>
+
+
+        </div>
+        {% endwith %}
+
+        <div class="govuk-button-group">
+
+
+            <button class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
+
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest' %}">Back</a>
+        </div>
+
+
+{% endblock form_content %}

@@ -7,9 +7,9 @@
         <div class="govuk-error-summary__body">
             <ul class="govuk-list govuk-error-summary__list">
                 {% for error in form_errors.error_summaries %}
-                    <li>
-                        <a href="#{{ error.0 }}">{{ error.1 }}</a>
-                    </li>
+                <li>
+                    <a href="#{{ error.0 }}">{{ error.1 }}</a>
+                </li>
                 {% endfor %}
             </ul>
         </div>
