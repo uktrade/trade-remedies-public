@@ -1,4 +1,4 @@
-from config.forms import ValidationForm
+from config.forms import ValidationForm, BaseYourEmployerForm
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
@@ -65,11 +65,8 @@ class TwoFactorChoiceForm(ValidationForm):
         return self.cleaned_data
 
 
-class YourEmployerForm(ValidationForm):
-    uk_employer = forms.ChoiceField(
-        error_messages={"required": "organisation_registered_country_not_selected"},
-        choices=(("no", False), ("yes", True)),
-    )
+class YourEmployerForm(BaseYourEmployerForm):
+    pass
 
 
 class UkEmployerForm(ValidationForm):

@@ -1,0 +1,21 @@
+{% extends 'v2/govuk/base.html' %}
+
+
+{% block main_content %}
+<div class="govuk-grid-column-two-thirds">
+    {% include "v2/component_macros/error_summaries.html"%}
+    {% block nocaption %}
+    <span class="govuk-caption-xl">2. About you</span>
+    {% endblock nocaption %}
+    {% block noheading %}
+    <h1 class="govuk-heading-xl">
+        {% block heading %}{% endblock heading %}
+    </h1>
+    <p>{% block description %}{% endblock description %}</p>
+    {% endblock noheading %}
+    <form method="post" novalidate="novalidate" id="roi-step2-form">
+        {% csrf_token %}
+        {% block form_content %}{% endblock form_content %}
+    </form>
+</div>
+{% endblock main_content %}

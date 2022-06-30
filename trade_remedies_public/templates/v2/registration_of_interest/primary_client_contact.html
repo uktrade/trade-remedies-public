@@ -1,0 +1,29 @@
+{% extends "v2/registration_of_interest/base_form.html" %}
+
+{% block heading %}
+Who is your primary client contact?
+{% endblock heading %}
+
+{% block description %}
+This is the main person you work with from the organisation you are representing.
+{% endblock description %}
+
+{% block form_content %}
+
+{% include 'v2/component_macros/text_input.html' with label="Contact name" id="name" name="name" type="text" width="20" strong=True %}
+{% include 'v2/component_macros/text_input.html' with label="Contact email address" id="email" name="email" type="text" width="20" strong=True %} {# /PS-IGNORE #}
+
+
+<div class="govuk-button-group">
+
+
+    <button class="govuk-button" data-module="govuk-button">
+        Continue
+    </button>
+
+    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_client_type' case_id %}">Back</a>
+
+
+</div>
+
+{% endblock form_content %}
