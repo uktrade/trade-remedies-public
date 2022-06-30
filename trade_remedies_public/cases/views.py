@@ -409,36 +409,31 @@ class InterestClientTypeStep2(LoginRequiredMixin, GroupRequiredMixin, FormView):
 
 
 class InterestPrimaryContactStep2(
-    LoginRequiredMixin, GroupRequiredMixin, FormMixin, BasePublicView
+    LoginRequiredMixin, GroupRequiredMixin, TradeRemediesAPIClientMixin, FormView
 ):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/primary_client_contact.html"
     form_class = PrimaryContactForm
-    case_page = True
 
     def form_invalid(self, form):
         form.assign_errors_to_request(self.request)
-        return self.render_to_response(
-            self.get_context_data(form=form, case_id=self.extra_context.get("case_id"))
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.kwargs)
+        return context
+
+    def form_valid(self, form):
+        case_id = self.get_context_data()['case_id']
+        response = self.client(self.request.user).create_contact(
+            {
+                "contact_email": form.cleaned_data.get("email"),
+                "contact_name": form.cleaned_data.get("name"),
+            }
         )
-
-    def get(self, request, case_id=None):
-        return render(request, self.template_name, {"case_id": case_id})
-
-    def post(self, request, case_id=None):
-        self.extra_context = {"case_id": case_id}
-        form = self.get_form()
-        if not form.is_valid():
-            return self.form_invalid(form)
-        else:
-            response = self._client.create_contact(
-                {
-                    "contact_email": form.cleaned_data.get("email"),
-                    "contact_name": form.cleaned_data.get("name"),
-                }
-            )
-            contact_id = response["id"]
-            return redirect(f"/case/interest/{case_id}/{contact_id}/ch/")  # noqa: E501
+        contact_id = response["id"]
+        return redirect(f"/case/interest/{case_id}/{contact_id}/ch/")  # noqa: E501
 
 
 class InterestUkRegisteredYesNoStep2(
