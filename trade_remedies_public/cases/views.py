@@ -3,7 +3,7 @@ import logging
 import json
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from django.views.generic.edit import FormMixin, FormView
+from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from django.utils import timezone
