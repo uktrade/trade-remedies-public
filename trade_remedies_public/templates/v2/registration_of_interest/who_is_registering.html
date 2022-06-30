@@ -1,34 +1,10 @@
-{% extends "v2/govuk/base.html" %}
+{% extends "v2/registration_of_interest/base_form.html" %}
 
-{% block main_content %}
+{% block noheading %}
+{% endblock noheading %}
 
-<div class="govuk-grid-column-two-thirds">
-    {% if form_errors.error_summaries %}
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
-         data-module="govuk-error-summary">
-        <h2 class="govuk-error-summary__title" id="error-summary-title">
-            There is a problem
-        </h2>
-        <div class="govuk-error-summary__body">
-            <ul class="govuk-list govuk-error-summary__list">
-                {% for error in form_errors.error_summaries %}
-                <li>
-                    <a href="#{{ error.0 }}">{{ error.1 }}</a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-    {% endif %}
-    <span class="govuk-caption-xl">2. About you</span>
+{% block form_content %}
 
-
-    <form method="post" novalidate="novalidate">
-
-
-        <!-- Set the name of the org if is is "my org" whether from regsitering or default-->
-
-        {% csrf_token %}
         {% with form_errors.org as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
 
@@ -106,14 +82,5 @@
             <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest' %}">Back</a>
         </div>
 
-    </form>
-    <!-- Test data -->
-    <!--<div class="govuk-inset-text">
-      Test data: <br>
-      Which org started?: yes<br>
-      Type of reg org:
-    </div>
-  -->
-</div>
 
-{% endblock main_content %}
+{% endblock form_content %}

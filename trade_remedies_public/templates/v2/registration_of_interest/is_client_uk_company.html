@@ -1,110 +1,87 @@
-{% extends "v2/govuk/base.html" %}
+{% extends "v2/registration_of_interest/base_form.html" %}
 
-{% block main_content %}
+{% block noheading %}
+{% endblock noheading %}
 
-<div class="govuk-grid-column-two-thirds">
-    {% if form_errors.error_summaries %}
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
-         data-module="govuk-error-summary">
-        <h2 class="govuk-error-summary__title" id="error-summary-title">
-            There is a problem
-        </h2>
-        <div class="govuk-error-summary__body">
-            <ul class="govuk-list govuk-error-summary__list">
-                {% for error in form_errors.error_summaries %}
-                <li>
-                    <a href="#{{ error.0 }}">{{ error.1 }}</a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-    </div>
-    {% endif %}
-    <span class="govuk-caption-xl">2. About you</span>
+{% block form_content %}
 
-    <form method="post" novalidate="novalidate">
+{% with form_errors.uk_employer as error %}
+<div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
 
-        {% csrf_token %}
-        {% with form_errors.uk_employer as error %}
-        <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+    <fieldset class="govuk-fieldset">
 
-            <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
 
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+            <h1 class="govuk-fieldset__heading">
+                Is your client a UK registered company?
+            </h1>
 
-                    <h1 class="govuk-fieldset__heading">
-                        Is your client a UK registered company?
-                    </h1>
+        </legend>
 
-                </legend>
-
-                {% if error %}
-                <p id="uk_employer-error" class="govuk-error-message">
-                    {% for error in error %}
-                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
-                    {% endfor %}
-                </p>
-                {% endif %}
-                <div class="govuk-radios govuk-radioss" data-module="govuk-radios">
+        {% if error %}
+        <p id="uk_employer-error" class="govuk-error-message">
+            {% for error in error %}
+            <span class="govuk-visually-hidden">Error:</span> {{ error }}
+            {% endfor %}
+        </p>
+        {% endif %}
+        <div class="govuk-radios govuk-radioss" data-module="govuk-radios">
 
 
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="uk_employer" name="uk_employer"
-                               type="radio" value="yes">
-                        <label class="govuk-label govuk-radios__label" for="uk_employer">
-                            Yes
-                        </label>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="uk_employer" name="uk_employer"
+                       type="radio" value="yes">
+                <label class="govuk-label govuk-radios__label" for="uk_employer">
+                    Yes
+                </label>
 
-                    </div>
-
-
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="reginterest-uk-reg-2" name="uk_employer"
-                               type="radio" value="no">
-                        <label class="govuk-label govuk-radios__label" for="reginterest-uk-reg-2">
-                            No
-                        </label>
-
-                    </div>
+            </div>
 
 
-                </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="reginterest-uk-reg-2" name="uk_employer"
+                       type="radio" value="no">
+                <label class="govuk-label govuk-radios__label" for="reginterest-uk-reg-2">
+                    No
+                </label>
 
-
-            </fieldset>
+            </div>
 
 
         </div>
-        {% endwith %}
 
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
+
+    </fieldset>
+
+
+</div>
+{% endwith %}
+
+<details class="govuk-details" data-module="govuk-details">
+    <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
       How do I find out if my client is a UK Registered company?
     </span>
-            </summary>
-            <div class="govuk-details__text">
-                <p class="govuk-body">Search for the organisation on the <a href="https://www.gov.uk/get-information-about-a-company"
-                                                    target="_blank" rel="noopener noreferrer" class="govuk-link">Companies
-                    House Register (opens in a new tab)</a>.</p>
-                <p>If the organisation is not on the register, it is not a UK registered company. Select "No".</p>
-            </div>
-        </details>
+    </summary>
+    <div class="govuk-details__text">
+        <p class="govuk-body">Search for the organisation on the <a
+                href="https://www.gov.uk/get-information-about-a-company"
+                target="_blank" rel="noopener noreferrer" class="govuk-link">Companies
+            House Register (opens in a new tab)</a>.</p>
+        <p>If the organisation is not on the register, it is not a UK registered company. Select "No".</p>
+    </div>
+</details>
 
 
-        <div class="govuk-button-group">
+<div class="govuk-button-group">
 
 
-            <button class="govuk-button" data-module="govuk-button">
-                Continue
-            </button>
+    <button class="govuk-button" data-module="govuk-button">
+        Continue
+    </button>
 
-            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_primary_contact' case_id %}">Back</a>
-        </div>
-
-    </form>
-
+    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_primary_contact' case_id %}">Back</a>
 </div>
 
 
-{% endblock main_content %}
+{% endblock form_content %}
