@@ -115,23 +115,23 @@
                 if (typeof (confirmed_name) != "undefined") {
                     if (confirmed_name in proposed_names) {
                         let company_data = proposed_names[confirmed_name]
-                        $("#reginterest-the-org-dets-form").submit( function() {
+                        $("#roi-step2-form").submit( function() {
                             $("<input />").attr("type", "hidden")
                             .attr("name", "organisation_name")
                             .attr("value", company_data.title)
-                            .appendTo("#reginterest-the-org-dets-form");
+                            .appendTo($(this));
                             $("<input />").attr("type", "hidden")
                             .attr("name", "companies_house_id")
                             .attr("value", company_data.company_number)
-                            .appendTo("#reginterest-the-org-dets-form");
+                            .appendTo($(this));
                             $("<input />").attr("type", "hidden")
                             .attr("name", "organisation_post_code")
                             .attr("value", company_data.address.postal_code)
-                            .appendTo("#reginterest-the-org-dets-form");
+                            .appendTo($(this));
                             $("<input />").attr("type", "hidden")
                             .attr("name", "organisation_address")
                             .attr("value", company_data.address_snippet)
-                            .appendTo("#reginterest-the-org-dets-form");
+                            .appendTo($(this));
                          });
                         $('#selected_company_wrapper').show();
                         $('#selected_company').text(`${company_data.title} (${company_data.company_number}) ${company_data.address_snippet}`)

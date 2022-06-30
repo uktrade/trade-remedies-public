@@ -13,7 +13,7 @@
     </h1>
     <p>{% block description %}{% endblock description %}</p>
     {% endblock noheading %}
-    <form method="post" novalidate="novalidate">
+    <form method="post" novalidate="novalidate" id="roi-step2-form">
         {% csrf_token %}
         {% block form_content %}{% endblock form_content %}
     </form>

@@ -499,6 +499,7 @@ class InterestUkSubmitStep2(TradeRemediesAPIClientMixin, InterestStep2BaseView):
         companies_house_id = context["companies_house_id"]
         organisation_post_code = context["organisation_post_code"]
         organisation_address = context["organisation_address"]
+        organisation_country = context["organisation_country"]
         eori_number = form.cleaned_data.get("company_eori_number")
         duns_number = form.cleaned_data.get("company_duns_number")
         organisation_website = form.cleaned_data.get("company_website")
@@ -515,6 +516,7 @@ class InterestUkSubmitStep2(TradeRemediesAPIClientMixin, InterestStep2BaseView):
             companies_house_id=companies_house_id,
             organisation_post_code=organisation_post_code,
             organisation_address=organisation_address,
+            organisation_country=organisation_country,
         )
         submission = response["submission"]
         submission_id = submission["id"]
