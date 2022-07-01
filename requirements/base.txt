@@ -34,12 +34,15 @@ django==3.2.13
     #   django-timezone-field
     #   djangorestframework
     #   feed-gov-back
+    #   trade-remedies-client
 django-appconf==1.0.4
     # via django-compressor
 django-audit-log-middleware==0.0.4
     # via -r requirements.in/base.in
 django-basicauth==0.5.2
     # via -r requirements.in/base.in
+django-cache-memoize==0.1.10
+    # via trade-remedies-client
 django-chunk-upload-handlers==0.0.11
     # via -r requirements.in/base.in
 django-compressor==2.4.1
@@ -108,7 +111,9 @@ redis==3.2.0
     #   -r requirements.in/base.in
     #   django-redis
 requests==2.25.1
-    # via -r requirements.in/base.in
+    # via
+    #   -r requirements.in/base.in
+    #   trade-remedies-client
 rjsmin==1.1.0
     # via django-compressor
 s3transfer==0.4.2
@@ -123,6 +128,8 @@ six==1.16.0
     #   python-dateutil
 sqlparse==0.4.2
     # via django
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
+    # via -r requirements.in/base.in
 urllib3==1.26.5
     # via
     #   -r requirements.in/base.in
