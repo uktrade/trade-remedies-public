@@ -1,0 +1,151 @@
+{% extends "v2/registration_of_interest/base_form.html" %}
+{% load static %}
+
+{% block noheading %}
+{% endblock noheading %}
+
+{% block extra_css %}
+<link href="{% static 'v2/css/accessible-autocomplete.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block form_content %}
+{% with form_errors.company_search_container as error %}
+<div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+    <h1 class="govuk-label-wrapper">
+        <label class="govuk-label govuk-label--xl" for="search-reg-org">
+            Who are you representing?
+        </label>
+    </h1>
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+         data-module="govuk-error-summary" id="companies-house-error" style="display:none;">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                <li>
+                    The Companies House search is currently not working. Try again shortly, or go back to the previous
+                    page and select "No" to add your details manually.
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="sort-hint" class="govuk-hint">
+        Search Companies House to find your client's UK registered company details.
+    </div>
+    {% if error %}
+    <p id="uk_employer-error" class="govuk-error-message">
+        {% for error in error %}
+        <span class="govuk-visually-hidden">Error:</span> {{ error }}
+        {% endfor %}
+    </p>
+    {% endif %}
+    <div id="company_search_container"></div>
+</div>
+{% endwith %}
+
+<div style="display:none;" id="selected_company_wrapper">
+    <p>Check the details below carefully. If it does not match the details of the organisation, you should go back to
+        the previous page and select "No".</p>
+    <div class="govuk-inset-text" id="selected_company"></div>
+</div>
+
+<details class="govuk-details" data-module="govuk-details">
+    <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      If you can’t find the organisation
+    </span>
+    </summary>
+    <div class="govuk-details__text">
+        <p class="govuk-body">Search for the organisation on the <a
+                href="https://www.gov.uk/get-information-about-a-company" target="_blank"
+                rel="noopener noreferrer" class="govuk-link">Companies House register (opens in a new tab)</a>.
+        </p>
+        <p>If the organisation is not on the register, it is not a UK registered company. Go back to the previous page
+            and select "No".</p>
+    </div>
+</details>
+
+
+<div class="govuk-button-group">
+
+
+    <button class="govuk-button" data-module="govuk-button">
+        I confirm these details are correct
+    </button>
+
+    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_ch' case_id contact_id%}">Back</a>
+</div>
+
+{% endblock form_content %}
+
+{% block scripts %}
+<script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
+<script type="text/javascript">
+        var proposed_names = {}
+        accessibleAutocomplete({
+            element: document.querySelector('#company_search_container'),
+            placeholder: "Enter a registered company name or number",
+            id: 'my-autocomplete',
+            autoselect: true,
+            minLength: 3,
+            confirmOnBlur: false,
+            source: function (query, populateResults) {
+                $.ajax
+                ({
+                    type: "GET",
+                    url: `{% url 'companieshouse' %}?term=${query}`,
+                    success: function (data) {
+                        if (data) {
+                            let names = data.map(result => `${result.title} (${result.company_number})`)
+                            proposed_names = Object.fromEntries(data.map(result => [`${result.title} (${result.company_number})`, result]));
+                            populateResults(names)
+                        }
+
+                    },
+                    error: function() {
+
+                    }
+                })
+                .fail(function() {
+                    $('#companies-house-error').show()
+                })
+            },
+            onConfirm: function (confirmed_name) {
+                if (typeof (confirmed_name) != "undefined") {
+                    if (confirmed_name in proposed_names) {
+                        let company_data = proposed_names[confirmed_name]
+                        $("#roi-step2-form").submit( function() {
+                            $("<input />").attr("type", "hidden")
+                            .attr("name", "organisation_name")
+                            .attr("value", company_data.title)
+                            .appendTo($(this));
+                            $("<input />").attr("type", "hidden")
+                            .attr("name", "companies_house_id")
+                            .attr("value", company_data.company_number)
+                            .appendTo($(this));
+                            $("<input />").attr("type", "hidden")
+                            .attr("name", "organisation_post_code")
+                            .attr("value", company_data.address.postal_code)
+                            .appendTo($(this));
+                            $("<input />").attr("type", "hidden")
+                            .attr("name", "organisation_address")
+                            .attr("value", company_data.address_snippet)
+                            .appendTo($(this));
+                         });
+                        $('#selected_company_wrapper').show();
+                        $('#selected_company').text(`${company_data.title} (${company_data.company_number}) ${company_data.address_snippet}`)
+                        return true
+                    }
+                    $('#selected_company_wrapper').hide();
+                    $('#selected_company').text('')
+                }
+            }
+        })
+
+
+
+
+</script>
+
+{% endblock %}
