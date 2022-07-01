@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "registration",
     "feedback",
     "sass_processor",
+    "django_countries",
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # "config.middleware.PublicRequestMiddleware",
     "config.middleware.APIUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -115,6 +117,7 @@ TEMPLATES = [
                 "config.context_processors.version_context",
                 "config.context_processors.motd_context",
                 "config.context_processors.cookie_management",
+                "config.context_processors.add_form_errors",
             ],
         },
     },
@@ -356,3 +359,6 @@ ENVIRONMENT_LOGGING = {
 }
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+COUNTRIES_FIRST = ["GB"]
+COUNTRIES_FIRST_BREAK = "------"

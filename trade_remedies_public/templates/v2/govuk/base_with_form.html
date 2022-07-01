@@ -1,0 +1,34 @@
+{% extends 'v2/govuk/base.html' %}
+
+
+{% block main_content %}
+    <div class="govuk-grid-column-two-thirds">
+        {% if form_errors.error_summaries %}
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+                 data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        {% for error in form_errors.error_summaries %}
+                            <li>
+                                <a href="#{{ error.0 }}">{{ error.1 }}</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+        <form method="post" novalidate="novalidate">
+            {# Sometimes we don't want a header on the page, so we can override this block in the child template with an empty space, e.g. {% block noheader %}{% endblock %} #}
+            {% block noheader %}
+                <h1 class="govuk-heading-xl">
+                    {% block heading %}{% endblock heading %}
+                </h1>
+            {% endblock noheader %}
+            {% csrf_token %}
+            {% block form_content %}{% endblock form_content %}
+        </form>
+    </div>
+{% endblock main_content %}
