@@ -92,7 +92,9 @@ class APIUserMiddleware:
     def __call__(self, request, *args, **kwargs):
         if request.session and request.session.get("token") and request.session.get("user"):
             back_link_url = request.META.get("HTTP_REFERER", reverse("dashboard"))
-            if resolve(request.path_info).url_name in back_link_url:
+            if not resolve(request.path_info).url_name:
+                pass
+            elif resolve(request.path_info).url_name in back_link_url:
                 back_link_url = reverse("dashboard")
             request.session["back_link_url"] = back_link_url
             if resolve(request.path_info).url_name in NON_2FA_URLS:
