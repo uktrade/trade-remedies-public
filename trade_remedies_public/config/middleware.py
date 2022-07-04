@@ -76,7 +76,7 @@ class APIUserMiddleware:
             request {object} -- Request
 
         Returns:
-            bool -- True if should email verify
+            bool -- True if user should verify email
         """
         is_public = self.public_request(request)
         return (
@@ -92,8 +92,9 @@ class APIUserMiddleware:
     def __call__(self, request, *args, **kwargs):
         if request.session and request.session.get("token") and request.session.get("user"):
             back_link_url = request.META.get("HTTP_REFERER", reverse("dashboard"))
-            if resolve(request.path_info).url_name in back_link_url:
-                back_link_url = reverse("dashboard")
+            if resolved_url := resolve(request.path_info).url_name:
+                if resolved_url in back_link_url:
+                    back_link_url = reverse("dashboard")
             request.session["back_link_url"] = back_link_url
             if resolve(request.path_info).url_name in NON_2FA_URLS:
                 request.session["back_link_url"] = reverse("logout")
