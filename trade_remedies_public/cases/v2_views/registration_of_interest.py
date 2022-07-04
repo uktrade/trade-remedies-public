@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 import datetime
 
-from config.settings.base import API_BASE_URL, ENVIRONMENT_KEY
+from config.settings.base import API_BASE_URL
 
 
 class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
