@@ -1,9 +1,11 @@
+import requests as requests
 from django.shortcuts import redirect, render
-from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import TemplateView
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 import datetime
+
+from config.settings.base import API_BASE_URL, ENVIRONMENT_KEY
 
 
 class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
@@ -11,16 +13,22 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cases = self.client(self.request.user).v2_get_all_cases({"open_to_roi": True})
+        response = requests.get(
+            f"{API_BASE_URL}/api/v2/cases/",
+            headers={
+                "Authorization": f"Token {self.request.user.token}",  # /PS-IGNORE
+            },
+            params={"open_to_roi": True},
+        )
+        response.raise_for_status()
+        cases = response.json()
         if not cases:
             self.request.session["form_errors"] = {}
-            self.request.session["form_errors"]["error_summaries"] = [[
-                "table-header",
-                "There are no active cases to join"
-            ]]
+            self.request.session["form_errors"]["error_summaries"] = [
+                ["table-header", "There are no active cases to join"]
+            ]
         context["cases"] = cases
         return context
-
 
     def post(self, request, *args, **kwargs):
         case_information = request.POST["case_information"].split("*-*")
@@ -30,8 +38,7 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
         case_registration_deadline = case_information[3]
 
         if datetime.datetime.strptime(
-                case_registration_deadline,
-                "%Y-%m-%dT%H:%M:%S%z"
+            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
         ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,
@@ -42,7 +49,7 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
                     "case_reference": case_reference,
                     "case_id": case_id,
                     "case_information": request.POST["case_information"],
-                }
+                },
             )
         # REDIRECT to next stage
-        return redirect(reverse("landing"))
+        return redirect(f"/case/interest/{case_id}/")

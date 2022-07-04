@@ -69,7 +69,7 @@
                         <span class="govuk-visually-hidden">Error:</span> There are no active cases to join at present
                     </p>
                 {% endif %}
-                <table class="govuk-table sortable1 table-border" id="table-header">
+                <table class="govuk-table sortable1 table-border mobile-table-border desktop-table-border" id="table-header">
                     <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden">
                         A table listing all of the open Trade Remedies cases
                     </caption>
@@ -158,7 +158,7 @@
             </div>
             {% csrf_token %}
         </form>
-        <a class="govuk-back-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
+        <a class="govuk-back-link govuk-link--no-visited-state" href="{% url 'interest' %}">Back</a>
     </div>
 {% endblock main_content %}
 
