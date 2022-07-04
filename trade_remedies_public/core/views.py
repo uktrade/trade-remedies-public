@@ -332,8 +332,8 @@ class InvitationConfirmOrganisation(BaseRegisterView, TradeRemediesAPIClientMixi
             # so we can add them to this case
             self.update_session(request, {"user_already_exists": True, "registering_user": user})
             return redirect(reverse("login_invite", kwargs={"code": code, "case_id": case_id}))
-        except HTTPError as e:
-            if e.response.status_code == 404:
+        except APIException as e:
+            if e.status_code == 404:
                 # The user was not found, continue with the invitation as normal
                 return redirect(
                     reverse("register_invite", kwargs={"code": code, "case_id": case_id})

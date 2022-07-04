@@ -17,7 +17,6 @@ pytest-xdist
 pytest-pythonpath
 pre-commit
 selenium==3.141.0
-traitlets==4.3.3
 
 # ipython dep - for CVE-2021-27291
 pygments==2.8.1

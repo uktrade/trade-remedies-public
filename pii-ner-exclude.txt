@@ -1,3 +1,166 @@
+Companies House
+UK Registered
+Email
+abc
+v2/registration_of_interest/about_your_client.html
+v2/registration_of_interest/about_your_client.html
+v2/registration_of_interest/who_you_representing.html
+v2/registration_of_interest/your_client_details.html
+v2/registration_of_interest/is_client_uk_company.html
+v2/registration_of_interest
+v2/registration_of_interest/who_is_registering.html
+company_data.address_snippet
+form_errors.company_search_container
+form_errors.org
+default--
+House Register
+interest_ch
+&& cd trade_remedies_public &&
+VAT (Value Added Tax
+organisation's Trade Remedies
+No".</p
+Select Trade Remedies Case{%
+selected="">Case No.</option
+value="desc
+info
+v2/registration_of_interest/registration_of_interest_1.html
+Y-%m-%dT%H:%M:%S%z
+v2/registration_of_interest/registration_of_interest_late_registration.html
+ARIA Authoring Practices
+buttonNode.addEventListener('click
+this.optionCheckbox.addEventListener
+function compareValues(a
+function dateSort(a
+aria-labelledby="govuk
+back_button
+n){o.o(e
+Object.prototype.hasOwnProperty.call(e
+e&w
+null),(o="function"!=typeof
+u===c?u=[r]:u.push(r),n
+u):e.removeEventListener(t
+t||(t=""),"string"==typeof t||"number"==typeof
+t.nodeName;if("function"==typeof
+I(t);for(;o&&!s&&(o
+l,3,n
+l,1,n
+h(e
+t?document.createElementNS("http://www.w3.org/2000
+r;for(r
+j);for(r
+g(t
+e.constructor.getDerivedStateFromProps&&(!e.base||o?e.componentWillMount&&e.componentWillMount():e.componentWillReceiveProps&&e.componentWillReceiveProps(t
+f;if(e.constructor.getDerivedStateFromProps&&(s
+e.getSnapshotBeforeUpdate(c
+e?e(this.state
+n(8),o
+n){if(o(e),t
+n)}catch(r){}if("get"in
+S+r
+n(2),o
+i?o.createElement(e):{}}},function(e
+n;o&&(a(n,"name")||u(n,"name",t)),e[t]!==n&&(o&&(a(n
+r.call(o
+function(){return r.apply(o
+TypeError(e+
+n(6),o
+n(0),o=n(32)(1);r(r
+y=5==p||v
+u[l],l
+n(0),o
+S,"Object",{create
+strict";t.__esModule=!0,t["default"]=void
+t.textContent||t.innerText}n.name===undefined&&(n.name=""),n.id===undefined&&(n.selectElement.id===undefined?n.id="":n.id
+r;if(t&&"function"==typeof(n
+n)&&i.push(n);for(;t.length
+t?t(e):e},t.handleComponentBlur
+t})},t.handleOptionClick
+this.state.selected))},t.handlePrintableKey
+u+"__assistiveHint",z
+r(9),i
+e):a(n
+e.apply(n
+RegExp(e)[o](String(t))},e]})},function(e
+u.call(e
+r(o
+u||o.apply(e
+i),r&&o.apply(e
+strict";t.__esModule=!0,t["default"]=void 0;var
+focusable:"false"},(0,r.createElement)("g",{stroke:"none",fill:"none","fill-rule":"evenodd"},(0,r.createElement)("polygon",{fill:"#000000",points:"0
+form_errors|get_item:'two_factor_choice
+type="radio
+Mobile
+Admin{%
+now:</p
+id="address_snippet" name="address_snippet
+name="post_code
+UK.</p
+aria-controls="conditional-mobile
+Barbuda
+value="CV">Cape Verde Islands
+Rica
+North
+South
+Salvador
+Guiana
+Polynesia (+689)</option>
+value="GU">Guam (+671)</option>
+value="HK">Hong Kong
+value="JO">Jordan
+Marianas (+670)</option>
+Rico
+value="SM">San Marino
+Tome &amp
+Arabia
+Africa
+value="LK">Sri Lanka
+Lucia
+Tobago
+Caicos Islands
+value="WF">Wallis &amp
+Futuna
+forward_button_text="Create
+must:</p
+form_errors.company_data
+Search Companies House
+name="company_data
+confirmOnBlur
+false
+Plurinational State
+Sint Eustatius
+Indian Ocean
+African
+Keeling
+Southern
+Island
+McDonald
+Islamic
+Democratic People's Republic
+Democratic
+Yugoslav
+Federated States
+Mariana
+Territory
+Helena
+Martin
+French
+Pierre
+Maarten
+Dutch
+value="LK">Sri Lanka</option>
+Arab
+Caicos
+Islands
+value="WF">Wallis
+r"^(?=[^A-Z\n]*[A-Z])(?=[^a-z\n]*[a-z
+mobile_country_code
+NON
+r"[a-zA-Z]{2}[0-9]{1,15
+uk_employer
+registration_organisation_further_details.html
+02072222222
+073737213771723728
+UK00000000
 Talkback
 International Trade
 Department
