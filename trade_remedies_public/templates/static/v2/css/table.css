@@ -115,3 +115,74 @@ table.sortable1 th:not([aria-sort]) button:hover span::after {
 #table-sort .govuk-button--secondary {
     width: initial;
 }
+
+@media (max-width: 40.0525em) {
+  /*  Turn table in blocks */
+  tr,
+th,
+td {
+    display: block;
+  }
+
+  th {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    -webkit-clip-path: inset(50%) !important;
+    clip-path: inset(50%) !important;
+    border: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f3f2f1;
+  }
+
+  tr:last-child {
+    border-bottom: none;
+  }
+
+  tr:first-child {
+    border-top: none;
+  }
+
+  tr {
+    border-bottom: 1px #b1b4b6 solid;
+  }
+
+  .govuk-visually-hidden--mobile {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    -webkit-clip-path: inset(50%) !important;
+    clip-path: inset(50%) !important;
+    border: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  /* border for all mobile tables*/
+  .mobile-table-border {
+    border: solid 1px #b1b4b6;
+  }
+
+  .govuk-table__cell {
+    border: none;
+  }
+}
+/**** Normal size viewport ****/
+/* This border only gets used if the table is NOT in tabs*/
+@media (min-width: 40.0625em) {
+  .desktop-table-border {
+    border-top: solid 1px #b1b4b6;
+    border-left: solid 1px #b1b4b6;
+    border-right: solid 1px #b1b4b6;
+  }
+}
