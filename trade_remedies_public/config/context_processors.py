@@ -38,7 +38,10 @@ def user_context(request):
             resolved_case_id, resolved_submission_id
         )
         # context['current_organisation'] = context['submission']['organisation']
-    if resolved_organisation_id and not context["current_organisation"]:
+    if resolved_organisation_id and not context["current_organisation"] and hasattr(
+            request.user,
+            "token"
+    ):
         client = Client(request.user.token) if not client else client
         context["current_organisation"] = client.get_organisation(resolved_organisation_id)
     return context
