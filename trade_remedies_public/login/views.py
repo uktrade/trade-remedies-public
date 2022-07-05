@@ -1,7 +1,9 @@
 # Views to handle the login and logout functionality
 
+from core.decorators import catch_form_errors
 from core.utils import internal_redirect
 from django.contrib.auth import logout
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -11,11 +13,8 @@ from registration.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from core.decorators import catch_form_errors
-from v2_api_client.client import APIClient
-from v2_api_client.mixins import APIClientMixin
 
-class LandingView(TemplateView, APIClientMixin):
+class LandingView(TemplateView):
     template_name = "v2/landing.html"
 
     def dispatch(self, request, *args, **kwargs):
@@ -27,7 +26,7 @@ class LandingView(TemplateView, APIClientMixin):
             return super().dispatch(request, *args, **kwargs)
 
 
-class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
+class LoginView(BaseRegisterView):
     template_name = "v2/login/login.html"
 
     @catch_form_errors()
@@ -36,12 +35,10 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
         request.session["login_email"] = email
         password = request.POST["password"]
         invitation_code = kwargs.get("invitation_code", None)
-        response = self.trusted_client.authenticate(
+        response = self.client.login(
             email=email,
             password=password,
-            user_agent=request.META["HTTP_USER_AGENT"],
-            ip_address=request.META["REMOTE_ADDR"],
-            invitation_code=invitation_code,
+            invitation_code=invitation_code
         )
         if response and response.get("token"):
             request.session.clear()

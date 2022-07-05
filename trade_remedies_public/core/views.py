@@ -36,7 +36,6 @@ from cases.constants import CASE_TYPE_REPAYMENT
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from trade_remedies_client.exceptions import APIException
 from registration.views import BaseRegisterView
-from v2_api_client.client import APIClient
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
