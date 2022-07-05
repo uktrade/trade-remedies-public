@@ -1,5 +1,6 @@
 from django.urls import path
 from cases import views as case_views
+from cases.v2_views import registration_of_interest
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
@@ -96,6 +97,11 @@ urlpatterns = [
     path("review/", case_views.CaseReviewView.as_view(), name="case_review"),
     # Case Selector
     path("select/", case_views.SelectCaseView.as_view(), name="select_case"),
+    path(
+        "v2/select/",
+        registration_of_interest.RegistrationOfInterest1.as_view(),
+        name="v2_select_case",
+    ),
     path(
         "select/organisation/",
         case_views.SelectOrganisationCaseView.as_view(),

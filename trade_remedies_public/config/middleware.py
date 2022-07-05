@@ -78,7 +78,7 @@ class APIUserMiddleware:
             request {object} -- Request
 
         Returns:
-            bool -- True if should email verify
+            bool -- True if user should verify email
         """
         is_public = self.public_request(request)
         return (
