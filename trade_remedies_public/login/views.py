@@ -12,7 +12,7 @@ from django.views.generic import TemplateView
 from registration.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-
+from trs_v2_api_client.mixins import APIClientMixin
 
 class LandingView(TemplateView):
     template_name = "v2/landing.html"
@@ -26,7 +26,7 @@ class LandingView(TemplateView):
             return super().dispatch(request, *args, **kwargs)
 
 
-class LoginView(BaseRegisterView):
+class LoginView(BaseRegisterView, APIClientMixin):
     template_name = "v2/login/login.html"
 
     @catch_form_errors()
