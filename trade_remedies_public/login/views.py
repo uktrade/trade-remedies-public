@@ -12,15 +12,18 @@ from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 from core.decorators import catch_form_errors
+from v2_api_client.client import APIClient
+from v2_api_client.mixins import APIClientMixin
 
-
-class LandingView(TemplateView, TradeRemediesAPIClientMixin):
+class LandingView(TemplateView, APIClientMixin):
     template_name = "v2/landing.html"
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(reverse("dashboard"))
         else:
+            x = self.client.get_cases()
+
             return super().dispatch(request, *args, **kwargs)
 
 
