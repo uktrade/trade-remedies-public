@@ -22,7 +22,7 @@
 
     <li class="app-task-list__item">
       <span class="app-task-list__task-name">
-        <a href="/case/select/?redirect=interest" class="govuk-link--no-visited-state" aria-describedby="case-selected-status">
+        <a href="/case/v2/select/" class="govuk-link--no-visited-state" aria-describedby="case-selected-status">
           Select a Trade Remedies case
         </a>
       </span>
@@ -64,10 +64,18 @@
 <!--              Organisation details-->
 <!--            </a>-->
 <!--          </span>-->
-          <span class="app-task-list__task-name" aria-describedby="organisation-selected-status">
-            Organisation details
-          </span>
-          <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Cannot start yet</strong>
+
+            {% if case %}
+                <a href="/case/interest/{{case.id}}/company/" class="govuk-link--no-visited-state" aria-describedby="case-selected-status">
+                  Organisation details
+                </a>
+                <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+            {% else %}
+                <span class="app-task-list__task-name" aria-describedby="organisation-selected-status">
+                Organisation details
+                </span>
+                <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Cannot start yet</strong>
+            {% endif %}
         </li>
 
 
