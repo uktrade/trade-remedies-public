@@ -8094,7 +8094,7 @@ th {
 
 #table-header tr.govuk-table__row td {
   padding-left: 0.4em;
-  padding-right: 0.4em;
+  padding-right: 1em;
 }
 
 #table-header th {
