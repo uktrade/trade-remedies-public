@@ -15,21 +15,23 @@
 
       <!-- Reg interest -->
     {% if interest_cases_draft %}
-        {% for id,case in interest_cases_draft.items %}
+
         <div class="address-card">
           <div class="address-container">
             <h2 class="govuk-heading-m">
               Registration of Interest
             </h2>
+              {% for id,case in interest_cases_draft.items %}
               <p>
                 <a href="/case/interest/draft/continue/?case_id={{case.case_id}}&organisation_id={{case.user_organisations.0.id}}&submission_id={{case.user_organisations.0.submission_id}}&last_modified={{ case.last_modified }}&case_reference={{ case.reference }}&case_name={{ case.name }}" class="govuk-link govuk-link--no-visited-state">
                 {{case.reference}} - {{case.name}}</a><br>
                   Status: Draft<br>
                 <span class="govuk-body-s"><span id="date">{{ case.last_modified }}</span></span>
               </p>
+              {% endfor %}
           </div>
         </div>
-        {% endfor %}
+
     {% else %}
         <p>View cases you are involved in on this page. Click on the case to see more information and a record of your interactions with the TRA.</p>
           <div class="address-card">
