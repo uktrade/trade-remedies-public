@@ -59,17 +59,15 @@
         <!-- If the user has not started section 2 show -->
 
         <li class="app-task-list__item">
-<!--          <span class="app-task-list__task-name">-->
-<!--            <a href="reginterest-which-org?which-org-task=started" class="govuk-link&#45;&#45;no-visited-state" aria-describedby="organisation-selected-status">-->
-<!--              Organisation details-->
-<!--            </a>-->
-<!--          </span>-->
-
             {% if case %}
                 <a href="/case/interest/{{case.id}}/company/" class="govuk-link--no-visited-state" aria-describedby="case-selected-status">
                   Organisation details
                 </a>
-                <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+                {% if submission.organisation.name %}
+                    <strong class="govuk-tag app-task-list__tag" id="organisation-selected-status">Complete</strong>
+                {% else %}
+                    <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+                {% endif %}
             {% else %}
                 <span class="app-task-list__task-name" aria-describedby="organisation-selected-status">
                 Organisation details
