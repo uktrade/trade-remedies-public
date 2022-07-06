@@ -108,7 +108,7 @@
 
                 {% if submission.organisation != submission.contact.organisation %}
                 <li class="app-task-list__item">
-                  <a href="/case/{{case_id}}/submission/{{submission.id}}/upload/loa/">
+                  <a class="govuk-link--no-visited-state" aria-describedby="loa-upload-status" href="/case/{{case_id}}/submission/{{submission.id}}/upload/loa/">
                     Letter of Authority
                   </a>
                         {% if loa_is_uploaded %}
@@ -121,7 +121,7 @@
                 {% endif %}
 
                 <li class="app-task-list__item">
-                  <a href="/case/{{case_id}}/submission/{{submission.id}}/upload/">
+                  <a class="govuk-link--no-visited-state" aria-describedby="pre-sampling-upload-status" href="/case/{{case_id}}/submission/{{submission.id}}/upload/">
                     Initial documentation
                   </a>
                     {% if submission.organisation.name %}
@@ -180,10 +180,15 @@
           <!-- If the user not started Check and it is their org and pre docs are uploaded -->
 
           <li class="app-task-list__item">
-            <span class="app-task-list__task-name">
-                Check and submit
-            </span>
-            <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="check-status">Cannot start yet</strong>
+              {% if loa_is_uploaded and count_customer_docs == 2 %}
+                    <a class="govuk-link--no-visited-state" aria-describedby="check-status" href="/case/{{case_id}}/submission/{{submission.id}}/submit/">Check and submit</a>
+                    <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+              {% else %}
+                    <span class="app-task-list__task-name">
+                        Check and submit
+                    </span>
+                    <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="check-status">Cannot start yet</strong>
+              {% endif %}
           </li>
 
 
