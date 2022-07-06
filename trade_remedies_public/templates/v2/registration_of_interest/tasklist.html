@@ -1,4 +1,5 @@
 {% extends "v2/govuk/base.html" %}
+
 {% block main_content %}
 
 <div class="govuk-grid-column-two-thirds">
@@ -105,12 +106,27 @@
 
           <!-- If the user has not started Uploads but has completed section 2 show: -->
 
+                {% if submission.organisation != submission.contact.organisation %}
+                <li class="app-task-list__item">
+                  <span class="app-task-list__task-name" aria-describedby="pre-sampling-upload-status">
+                    Letter of Authority
+                  </span>
+                        <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+                </li>
+                {% endif %}
+
                 <li class="app-task-list__item">
                   <span class="app-task-list__task-name" aria-describedby="pre-sampling-upload-status">
                     Initial documentation
                   </span>
-                  <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="pre-sampling-upload-status">Cannot start yet</strong>
+                    {% if submission.organisation.name %}
+                        <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+                    {% else %}
+                        <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="pre-sampling-upload-status">Cannot start yet</strong>
+                    {% endif %}
+
                 </li>
+
 
 
 
