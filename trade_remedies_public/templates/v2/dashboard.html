@@ -29,6 +29,14 @@
                 <span class="govuk-body-s"><span id="date">{{ case.last_modified }}</span></span>
               </p>
               {% endfor %}
+              {% for id,case in interest_cases.items %}
+              <p>
+                <a href="/case/interest/draft/continue/?case_id={{case.case_id}}&organisation_id={{case.user_organisations.0.id}}&submission_id={{case.user_organisations.0.submission_id}}&last_modified={{ case.last_modified }}&case_reference={{ case.reference }}&case_name={{ case.name }}" class="govuk-link govuk-link--no-visited-state">
+                {{case.reference}} - {{case.name}}</a><br>
+                  Status: Submitted<br>
+                <span class="govuk-body-s"><span id="submitted-case-date">{{ case.last_modified }}</span></span>
+              </p>
+              {% endfor %}
           </div>
         </div>
 
