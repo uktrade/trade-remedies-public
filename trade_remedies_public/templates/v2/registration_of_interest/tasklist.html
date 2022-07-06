@@ -108,19 +108,31 @@
 
                 {% if submission.organisation != submission.contact.organisation %}
                 <li class="app-task-list__item">
-                  <span class="app-task-list__task-name" aria-describedby="pre-sampling-upload-status">
+                  <a href="/case/{{case_id}}/submission/{{submission.id}}/upload/loa/">
                     Letter of Authority
-                  </span>
-                        <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+                  </a>
+                        {% if loa_is_uploaded %}
+                            <strong class="govuk-tag app-task-list__tag">Complete</strong>
+                        {% else %}
+                            <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+                        {% endif %}
+
                 </li>
                 {% endif %}
 
                 <li class="app-task-list__item">
-                  <span class="app-task-list__task-name" aria-describedby="pre-sampling-upload-status">
+                  <a href="/case/{{case_id}}/submission/{{submission.id}}/upload/">
                     Initial documentation
-                  </span>
+                  </a>
                     {% if submission.organisation.name %}
-                        <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+                        {% if count_customer_docs == 0 %}
+                            <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
+                        {% elif count_customer_docs == 1 %}
+                            <strong class="govuk-tag app-task-list__tag">1 Document Uploaded</strong>
+                        {% elif count_customer_docs == 2 %}
+                            <strong class="govuk-tag app-task-list__tag">Complete</strong>
+                        {% endif %}
+
                     {% else %}
                         <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="pre-sampling-upload-status">Cannot start yet</strong>
                     {% endif %}

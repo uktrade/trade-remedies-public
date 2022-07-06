@@ -315,6 +315,13 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 template_name = f"cases/submissions/{tasklist_template}/view.html"
         else:
             template_name = f"v2/registration_of_interest/tasklist.html"
+        loa_is_uploaded = False
+        count_customer_docs = 0
+        for document in self.submission.get("documents", []):
+            if document['type']['name'] == "Letter of Authority":
+                loa_is_uploaded = True
+            if document['type']['name'] == "Customer Document":
+                count_customer_docs += 1
         _context = {
             "all_organisations": True
             if not self.organisation
@@ -327,6 +334,8 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             "submission_id": submission_id,
             "documents": documents,
             "current_organisation": self.organisation,
+            "loa_is_uploaded": loa_is_uploaded,
+            "count_customer_docs": count_customer_docs,
             "organisation_name": self.organisation.get("name"),
             "case_role": org_case_role,
             "org_indicator_type": self.org_indicator_type,
