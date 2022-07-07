@@ -55,7 +55,7 @@ decorator==5.1.0
     #   traitlets
 distlib==0.3.4
     # via virtualenv
-django==3.2.13
+django==3.2.14
     # via
     #   -r requirements.in/base.in
     #   django-appconf
@@ -308,8 +308,8 @@ tomli==1.2.1
     #   black
     #   pep517
     #   pyproject-flake8
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@develop
-    # via -r requirements.in/dev.in
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
+    # via -r requirements.in/base.in
 traitlets==4.3.3
     # via
     #   ipython

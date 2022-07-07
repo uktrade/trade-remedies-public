@@ -20,7 +20,7 @@ certifi==2021.5.30
     #   sentry-sdk
 chardet==4.0.0
     # via requests
-django==3.2.13
+django==3.2.14
     # via
     #   -r requirements.in/base.in
     #   django-appconf
@@ -134,8 +134,8 @@ six==1.16.0
     #   python-dateutil
 sqlparse==0.4.2
     # via django
-trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@develop
-    # via -r requirements.in/prod.in
+trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
+    # via -r requirements.in/base.in
 urllib3==1.26.5
     # via
     #   -r requirements.in/base.in
