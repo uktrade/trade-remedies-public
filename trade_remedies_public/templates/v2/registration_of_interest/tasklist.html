@@ -121,10 +121,10 @@
                 {% endif %}
 
                 <li class="app-task-list__item">
-                  <a class="govuk-link--no-visited-state" aria-describedby="pre-sampling-upload-status" href="/case/{{case_id}}/submission/{{submission.id}}/upload/">
-                    Initial documentation
-                  </a>
                     {% if submission.organisation.name %}
+                        <a class="govuk-link--no-visited-state" aria-describedby="pre-sampling-upload-status" href="/case/{{case_id}}/submission/{{submission.id}}/upload/">
+                        Initial documentation
+                        </a>
                         {% if count_customer_docs == 0 %}
                             <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
                         {% elif count_customer_docs == 1 %}
@@ -134,6 +134,9 @@
                         {% endif %}
 
                     {% else %}
+                        <span class="app-task-list__task-name" aria-describedby="pre-sampling-upload-status">
+                        Initial documentation
+                        </span>
                         <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="pre-sampling-upload-status">Cannot start yet</strong>
                     {% endif %}
 
