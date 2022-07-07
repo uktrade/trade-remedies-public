@@ -3,7 +3,6 @@
 from core.decorators import catch_form_errors
 from core.utils import internal_redirect
 from django.contrib.auth import logout
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -12,7 +11,8 @@ from django.views.generic import TemplateView
 from registration.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from trs_v2_api_client.mixins import APIClientMixin
+from v2_api_client.mixins import APIClientMixin
+
 
 class LandingView(TemplateView):
     template_name = "v2/landing.html"
@@ -21,8 +21,6 @@ class LandingView(TemplateView):
         if request.user.is_authenticated:
             return redirect(reverse("dashboard"))
         else:
-            x = self.client.get_cases()
-
             return super().dispatch(request, *args, **kwargs)
 
 
