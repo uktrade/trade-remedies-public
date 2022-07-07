@@ -129,8 +129,10 @@
                             <strong class="govuk-tag govuk-tag--grey app-task-list__tag">Not started</strong>
                         {% elif count_customer_docs == 1 %}
                             <strong class="govuk-tag app-task-list__tag">1 Document Uploaded</strong>
-                        {% elif count_customer_docs == 2 %}
+                        {% elif customer_docs_paired %}
                             <strong class="govuk-tag app-task-list__tag">Complete</strong>
+                        {% elif count_customer_docs > 1 %}
+                            <strong class="govuk-tag app-task-list__tag">{{ count_customer_docs }} Documents Uploaded</strong>
                         {% endif %}
 
                     {% else %}

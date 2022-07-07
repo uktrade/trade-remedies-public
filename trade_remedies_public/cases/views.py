@@ -216,7 +216,7 @@ class InterestDraftContinueView(LoginRequiredMixin, GroupRequiredMixin, BasePubl
                 "last_modified": last_modified,
                 "case_id": case_id,
                 "submission_id": submission_id,
-                "organisation_id": organisation_id
+                "organisation_id": organisation_id,
             },
         )
 
@@ -237,7 +237,7 @@ class InterestDraftConfirmDeleteView(LoginRequiredMixin, GroupRequiredMixin, Bas
             {
                 "case_id": case_id,
                 "submission_id": submission_id,
-                "organisation_id": organisation_id
+                "organisation_id": organisation_id,
             },
         )
 
@@ -317,11 +317,18 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             template_name = f"v2/registration_of_interest/tasklist.html"
         loa_is_uploaded = False
         count_customer_docs = 0
+        private_customer_docs = set()
+        public_parent_docs = set()
         for document in self.submission.get("documents", []):
-            if document['type']['name'] == "Letter of Authority":
+            if document["type"]["name"] == "Letter of Authority":
                 loa_is_uploaded = True
-            if document['type']['name'] == "Customer Document":
+            if document["type"]["name"] == "Customer Document":
                 count_customer_docs += 1
+                if document["confidential"]:
+                    private_customer_docs.add(document["id"])
+                else:
+                    public_parent_docs.add(document['parent_id'])
+        customer_docs_paired = True if public_parent_docs == private_customer_docs and private_customer_docs else False
         _context = {
             "all_organisations": True
             if not self.organisation
@@ -335,6 +342,7 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             "documents": documents,
             "current_organisation": self.organisation,
             "loa_is_uploaded": loa_is_uploaded,
+            "customer_docs_paired": customer_docs_paired,
             "count_customer_docs": count_customer_docs,
             "organisation_name": self.organisation.get("name"),
             "case_role": org_case_role,
