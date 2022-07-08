@@ -10,7 +10,9 @@ class RegistrationStartForm(ValidationForm):
     email = forms.CharField(
         error_messages={"required": "no_email_entered"},
         validators=[
-            RegexValidator(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", "email_not_valid"),
+            RegexValidator(
+                r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", "email_not_valid"
+            ),
         ],
     )
     terms_and_conditions_accept = forms.BooleanField(

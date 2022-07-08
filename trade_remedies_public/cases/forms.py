@@ -16,7 +16,9 @@ class PrimaryContactForm(ValidationForm):
     email = forms.CharField(
         error_messages={"required": "no_contact_email_entered"},
         validators=[
-            RegexValidator(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", "contact_email_not_valid"),
+            RegexValidator(
+                r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", "contact_email_not_valid"
+            ),
         ],
     )
 
