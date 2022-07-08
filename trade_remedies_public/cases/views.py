@@ -1,6 +1,8 @@
 import logging
 
 import json
+
+import requests as requests
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -65,6 +67,8 @@ from cases.forms import (
     NonUkEmployerForm,
     ClientFurtherDetailsForm,
 )
+
+from config.settings.base import API_BASE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -541,8 +545,14 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         form_action = self.get_submit_urls("company", case_id=case_id, submission_id=submission_id)
         sub_type_key = self.submission_type_key or "application"
         template_name = f"cases/submissions/{sub_type_key}/company_info.html"
-        # TODO: Uncomment below to enable new registration of interest step 2
-        if sub_type_key == "interest":
+        feature_flag_enabled = requests.get(
+            f"{API_BASE_URL}/api/v1/core/users/{self.request.user.id}/is_user_in_group/",
+            headers={
+                "Authorization": f"Token {self.request.user.token}",  # /PS-IGNORE
+            },
+            params={"group_name": "FEATURE_FLAG_UAT_TEST"},
+        ).json()["user_is_in_group"]
+        if sub_type_key == "interest" and feature_flag_enabled:
             return redirect(f"/case/interest/{case_id}/type/")  # noqa: E501
 
         page = request.GET.get("page") or 1
