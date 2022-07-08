@@ -82,6 +82,29 @@
 {% block scripts %}
 <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
 <script type="text/javascript">
+        function clearCompany() {
+            $("#roi-step2-form").submit( function() {
+                $("<input />").attr("type", "hidden")
+                .attr("name", "organisation_name")
+                .attr("value", null)
+                .appendTo($(this));
+                $("<input />").attr("type", "hidden")
+                .attr("name", "companies_house_id")
+                .attr("value", null)
+                .appendTo($(this));
+                $("<input />").attr("type", "hidden")
+                .attr("name", "organisation_post_code")
+                .attr("value", null)
+                .appendTo($(this));
+                $("<input />").attr("type", "hidden")
+                .attr("name", "organisation_address")
+                .attr("value", null)
+                .appendTo($(this));
+            });
+            $('#selected_company_wrapper').hide();
+            $('#selected_company').text('')
+        }
+
         var proposed_names = {}
         accessibleAutocomplete({
             element: document.querySelector('#company_search_container'),
@@ -93,26 +116,7 @@
             source: function (query, populateResults) {
                 if (query.trim().length < 3){
                     populateResults([])
-                    $("#roi-step2-form").submit( function() {
-                            $("<input />").attr("type", "hidden")
-                            .attr("name", "organisation_name")
-                            .attr("value", null)
-                            .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                            .attr("name", "companies_house_id")
-                            .attr("value", null)
-                            .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                            .attr("name", "organisation_post_code")
-                            .attr("value", null)
-                            .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                            .attr("name", "organisation_address")
-                            .attr("value", null)
-                            .appendTo($(this));
-                         });
-                    $('#selected_company_wrapper').hide();
-                    $('#selected_company').text('')
+                    clearCompany()
                 }
                 else {
                     $.ajax
@@ -125,26 +129,7 @@
                                 proposed_names = Object.fromEntries(data.map(result => [`${result.title} (${result.company_number})`, result]));
                                 populateResults(names)
                                 if (names.length == 0) {
-                                    $("#roi-step2-form").submit( function() {
-                                        $("<input />").attr("type", "hidden")
-                                        .attr("name", "organisation_name")
-                                        .attr("value", null)
-                                        .appendTo($(this));
-                                        $("<input />").attr("type", "hidden")
-                                        .attr("name", "companies_house_id")
-                                        .attr("value", null)
-                                        .appendTo($(this));
-                                        $("<input />").attr("type", "hidden")
-                                        .attr("name", "organisation_post_code")
-                                        .attr("value", null)
-                                        .appendTo($(this));
-                                        $("<input />").attr("type", "hidden")
-                                        .attr("name", "organisation_address")
-                                        .attr("value", null)
-                                        .appendTo($(this));
-                                    });
-                                    $('#selected_company_wrapper').hide();
-                                    $('#selected_company').text('')
+                                    clearCompany()
                                 }
                             }
 
