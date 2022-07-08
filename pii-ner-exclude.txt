@@ -1,3 +1,5 @@
+r"(^+@+\.+$
+non_uk_registered
 Companies House
 UK Registered
 Email
