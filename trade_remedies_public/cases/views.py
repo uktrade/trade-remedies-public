@@ -455,7 +455,7 @@ class InterestNonUkRegisteredStep2(InterestStep2BaseView):
             f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
             f"{form.cleaned_data.get('organisation_name')}&companies_house_id="
             f"{form.cleaned_data.get('company_number')}&"
-            f"organisation_post_code={form.cleaned_data.get('post_code')}&uk_registered=false&"
+            f"organisation_post_code={form.cleaned_data.get('post_code')}&non_uk_registered=true&"
             f"organisation_address={form.cleaned_data.get('address_snippet')}&"
             f"organisation_country={form.cleaned_data.get('country')}"  # noqa: E501
         )
