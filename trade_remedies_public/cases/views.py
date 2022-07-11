@@ -1,6 +1,7 @@
 import logging
 
 import json
+
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -455,7 +456,7 @@ class InterestNonUkRegisteredStep2(InterestStep2BaseView):
             f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
             f"{form.cleaned_data.get('organisation_name')}&companies_house_id="
             f"{form.cleaned_data.get('company_number')}&"
-            f"organisation_post_code={form.cleaned_data.get('post_code')}&uk_registered=false&"
+            f"organisation_post_code={form.cleaned_data.get('post_code')}&non_uk_registered=true&"
             f"organisation_address={form.cleaned_data.get('address_snippet')}&"
             f"organisation_country={form.cleaned_data.get('country')}"  # noqa: E501
         )
@@ -541,9 +542,8 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         form_action = self.get_submit_urls("company", case_id=case_id, submission_id=submission_id)
         sub_type_key = self.submission_type_key or "application"
         template_name = f"cases/submissions/{sub_type_key}/company_info.html"
-        # TODO: Uncomment below to enable new registration of interest step 2
-        # if sub_type_key == "interest":
-        #     return redirect(f"/case/interest/{case_id}/type/")  # noqa: E501
+        if sub_type_key == "interest" and "FEATURE_FLAG_UAT_TEST" in request.user.groups:
+            return redirect(f"/case/interest/{case_id}/type/")  # noqa: E501
 
         page = request.GET.get("page") or 1
         return render(
