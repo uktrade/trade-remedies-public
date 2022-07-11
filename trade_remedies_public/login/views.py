@@ -34,9 +34,7 @@ class LoginView(BaseRegisterView, APIClientMixin):
         password = request.POST["password"]
         invitation_code = kwargs.get("invitation_code", None)
         response = self.client.login(
-            email=email,
-            password=password,
-            invitation_code=invitation_code
+            email=email, password=password, invitation_code=invitation_code
         )
         if response and response.get("token"):
             request.session.clear()
