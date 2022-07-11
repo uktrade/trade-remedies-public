@@ -1,13 +1,14 @@
 import time
 from urllib.parse import urlparse
 
-from django.shortcuts import redirect
-from django.urls import resolve, reverse, NoReverseMatch
-from django.conf import settings
-from django.utils.deprecation import MiddlewareMixin
-from django.contrib.auth.models import AnonymousUser
 from core.models import TransientUser
+from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
+from django.shortcuts import redirect
+from django.urls import NoReverseMatch, resolve, reverse
+from django.utils.deprecation import MiddlewareMixin
 from django_audit_log_middleware import AuditLogMiddleware
+from sentry_sdk import set_user
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 SESSION_TIMEOUT_KEY = "_session_init_timestamp_"
@@ -63,10 +64,10 @@ class APIUserMiddleware:
         is_public = self.public_request(request)
         should_two_factor = request.session.get("force_2fa")
         return (
-            settings.USE_2FA
-            and not is_public
-            and should_two_factor
-            and resolve(request.path_info).url_name not in NON_2FA_URLS
+                settings.USE_2FA
+                and not is_public
+                and should_two_factor
+                and resolve(request.path_info).url_name not in NON_2FA_URLS
         )
 
     def should_verify_email(self, request):
@@ -80,10 +81,10 @@ class APIUserMiddleware:
         """
         is_public = self.public_request(request)
         return (
-            settings.VERIFY_EMAIL
-            and not is_public
-            and not request.user.email_verified_at
-            and resolve(request.path_info).url_name not in NON_EMAIL_VERIFY_URLS
+                settings.VERIFY_EMAIL
+                and not is_public
+                and not request.user.email_verified_at
+                and resolve(request.path_info).url_name not in NON_EMAIL_VERIFY_URLS
         )
 
     def public_request(self, request):
@@ -236,3 +237,20 @@ class CustomAuditLogMiddleware(AuditLogMiddleware):
             except AttributeError:
                 pass
         return ""
+
+
+class SentryContextMiddleware:
+    """
+    Sets sentry context during each request/response so we can identify unique users
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.user.is_authenticated:
+            set_user({"id": request.user.id})
+        else:
+            set_user(None)
+        response = self.get_response(request)
+        return response
