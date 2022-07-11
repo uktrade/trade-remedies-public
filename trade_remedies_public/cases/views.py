@@ -2,7 +2,6 @@ import logging
 
 import json
 
-import requests as requests
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import FormView
@@ -67,8 +66,6 @@ from cases.forms import (
     NonUkEmployerForm,
     ClientFurtherDetailsForm,
 )
-
-from config.settings.base import API_BASE_URL
 
 logger = logging.getLogger(__name__)
 
