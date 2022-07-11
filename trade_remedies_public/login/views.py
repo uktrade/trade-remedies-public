@@ -11,7 +11,6 @@ from django.views.generic import TemplateView
 from registration.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from v2_api_client.mixins import APIClientMixin
 
 
 class LandingView(TemplateView):
@@ -24,7 +23,7 @@ class LandingView(TemplateView):
             return super().dispatch(request, *args, **kwargs)
 
 
-class LoginView(BaseRegisterView, APIClientMixin):
+class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/login/login.html"
 
     @catch_form_errors()
@@ -33,7 +32,7 @@ class LoginView(BaseRegisterView, APIClientMixin):
         request.session["login_email"] = email
         password = request.POST["password"]
         invitation_code = kwargs.get("invitation_code", None)
-        response = self.client.login(
+        response = self.trusted_client.authenticate(
             email=email, password=password, invitation_code=invitation_code
         )
         if response and response.get("token"):
