@@ -35,7 +35,18 @@
                         <label class="govuk-label govuk-radios__label" for="org">
 
 
-                            My organisation: BlueSteel Partners
+                            My organisation: {{ user.organisation.name }}
+                                                        <!-- Use the following to check for other/existing organisations??? -->
+                            <!-- Use the following to check for other/existing organisations??? -->
+                            <!-- { % for organisation in existing_clients % } -->
+                            <!-- {   % for organisation in user.organisations %   } -->
+										    <!-- {  {organisation.name}  }<br> -->
+										<!-- {  % endfor %  } -->
+                                        <!-- {  { existing_clients }  }<br> -->
+                            <!-- Use the above to check for other/existing organisations??? -->
+                            <!-- Use the above to check for other/existing organisations??? -->
+                            <!-- Use the above to check for other/existing organisations??? -->
+
 
 
                         </label>
@@ -43,14 +54,16 @@
                     </div>
 
 
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
-                               type="radio" value="existing-org">
-                        <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
-                            An existing client: someone I have previously represented using the Trade Remedies Service
-                        </label>
+                    {% if existing_clients %}
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
+                                type="radio" value="existing-org">
+                            <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
+                                An existing client: someone I have previously represented using the Trade Remedies Service
+                            </label>
 
-                    </div>
+                        </div>
+                    {% endif %}
 
 
                     <div class="govuk-radios__item">
