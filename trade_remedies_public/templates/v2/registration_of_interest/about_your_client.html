@@ -36,7 +36,7 @@
                 <button class="govuk-button" data-module="govuk-button">
                     Continue
                 </button>
-                {% if uk_registered == 'false' %}
+                {% if non_uk_registered %}
                     <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_ch_no' case_id contact_id%}">Back</a>
                 {% else %}
                     <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_ch_yes' case_id contact_id%}">Back</a>
