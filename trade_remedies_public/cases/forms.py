@@ -15,13 +15,13 @@ class ExistingClientForm(ValidationForm):
     # declare empty choices variable
     choices=[]
     def __init__(self, *args, **kwargs):
-        self.existing_clients = kwargs.pop("existing_clients", None)
+        existing_clients = kwargs.pop("existing_clients", None)
         super(ExistingClientForm, self).__init__(*args, **kwargs)
         # assign value to the choices variable
-        self.fields["org"].choices = self.existing_clients
+        self.fields["org"].choices = existing_clients
 
     org = forms.ChoiceField(
-        error_messages={"required": "no_org_chosen"},
+        error_messages={"required": "no_representative_org"},
         choices=[],  # use the choices variable
     )
 
