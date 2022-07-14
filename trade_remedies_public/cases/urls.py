@@ -1,6 +1,6 @@
-from django.urls import path
 from cases import views as case_views
 from cases.v2_views import registration_of_interest
+from django.urls import path
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
@@ -83,11 +83,6 @@ urlpatterns = [
     # Case Selector
     path("select/", case_views.SelectCaseView.as_view(), name="select_case"),
     path(
-        "v2/select/",
-        registration_of_interest.RegistrationOfInterest1.as_view(),
-        name="v2_select_case",
-    ),
-    path(
         "select/organisation/",
         case_views.SelectOrganisationCaseView.as_view(),
         name="select_organisation_cases",
@@ -131,7 +126,8 @@ urlpatterns = [
         name="create_submission",
     ),
     path(
-        "<uuid:case_id>/organisation/<uuid:organisation_id>/submission/create/<int:submission_type_id>/",  # noqa: E501
+        "<uuid:case_id>/organisation/<uuid:organisation_id>/submission/create/<int:submission_type_id>/",
+        # noqa: E501
         case_views.CreateSubmissionView.as_view(),
         name="create_submission_by_type",
     ),
@@ -256,5 +252,18 @@ urlpatterns = [
         "<uuid:case_id>/organisation/<uuid:organisation_id>/summary/",
         case_views.CaseSummaryView.as_view(),
         name="case_summary",
+    ),
+]
+
+urlpatterns += [
+    path(
+        "v2/select/",
+        registration_of_interest.RegistrationOfInterest1.as_view(),
+        name="roi_1",
+    ),
+    path(
+        "registration_of_interest/<uuid:submission_id>/check_and_submit",
+        registration_of_interest.RegistrationOfInterest4.as_view(),
+        name="roi_4",
     ),
 ]

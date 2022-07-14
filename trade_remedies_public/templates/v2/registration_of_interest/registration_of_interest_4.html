@@ -1,0 +1,80 @@
+{% extends "v2/registration_of_interest/base_form.html" %}
+
+{% block nocaption %}
+    <span class="govuk-caption-xl">4. Register interest</span>
+{% endblock nocaption %}
+
+{% block heading %}Review your answers{% endblock heading %}
+
+{% block form_content %}
+    <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Case details
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{ submission.case.reference }} - {{ submission.case.name }}
+            </dd>
+        </div>
+    </dl>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Registering interest for
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <p>My employer:</p>
+                {{ submission.organisation.name }}
+                <br>
+                {{ submission.organisation.address }} <br>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a href="reginterest-which-org">
+                    Change
+                    <span class="govuk-visually-hidden"> who is registering interest</span>
+                </a>
+            </dd>
+        </div>
+
+    </dl>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+    </dl>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Uploaded initial documentation
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {% for document in submission.documents %}
+                    {{ document.name }}<br>
+                {% endfor %}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a href="reginterest-upload-pre">
+                    Change
+                    <span class="govuk-visually-hidden"> initial documentation</span>
+                </a>
+            </dd>
+        </div>
+    </dl>
+
+    <h2 class="govuk-heading-m">Now send your application</h2>
+
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
+            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="waste" name="waste" type="checkbox" value="carcasses">
+                    <label class="govuk-label govuk-checkboxes__label" for="waste">
+                        I am authorised to provide this information.
+                    </label>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+
+
+    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Confirm and submit application" %}
+
+{% endblock form_content %}

@@ -1,11 +1,13 @@
+import datetime
+
 import requests as requests
+from config.settings.base import API_BASE_URL
 from django.shortcuts import redirect, render
 from django.utils import timezone
 from django.views.generic import TemplateView
+from django.views.generic.edit import FormMixin
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-import datetime
-
-from config.settings.base import API_BASE_URL
+from v2_api_client.mixins import APIClientMixin
 
 
 class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
@@ -38,7 +40,7 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
         case_registration_deadline = case_information[3]
 
         if datetime.datetime.strptime(
-            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
+                case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
         ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,
@@ -53,3 +55,15 @@ class RegistrationOfInterest1(TemplateView, TradeRemediesAPIClientMixin):
             )
         # REDIRECT to next stage
         return redirect(f"/case/interest/{case_id}/")
+
+
+class RegistrationOfInterest4(TemplateView, APIClientMixin):
+    template_name = "v2/registration_of_interest/registration_of_interest_4.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["submission"] = self.client.get_submission(kwargs["submission_id"])
+        return context
+
+    def post(self, request, submission_id, **kwargs):
+        print("Asd")
