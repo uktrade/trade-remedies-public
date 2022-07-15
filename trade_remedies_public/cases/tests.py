@@ -37,25 +37,27 @@ class TestClientTypeForm(TestCase):
 
 class TestExistingClientForm(TestCase):
     def setUp(self) -> None:
+        # "existing_clients" is data passed into the class - to build radio button choices
+        # "data" is data that is the response from the form (i.e., the selected radio button)
         self.mock_data = {
             "existing_clients": [("aor4nd0m-idoo-foro-test-purp05e5oooo", "A Test Organisation"),
                                  ("an0thero-idoo-t0oo-test-w1thoooooooo", "Another Test Org"),
                                  ("ando0n3o-m0re-t0oo-test-t1hisoc0d3oo", "Third Test org"),
-                                ],
+            ],
             "data": {"org": "aor4nd0m-idoo-foro-test-purp05e5oooo"},
         }
 
-    def test_valid_org_type(self):
+    def test_valid_org_type_selected(self):
         form = ExistingClientForm(**self.mock_data)
         self.assertTrue(form.is_valid())
 
-    def test_no_org_type(self):
+    def test_no_org_type_selected(self):
         form = ExistingClientForm(
             existing_clients=[
                 ("aor4nd0m-idoo-foro-test-purp05e5oooo", "A Test Organisation")
             ],
             data={"org": ""}
-            )
+        )
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
