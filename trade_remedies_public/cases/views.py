@@ -432,7 +432,6 @@ class InterestClientTypeStep2(BasePublicView, InterestStep2BaseView):
             api_client.update_submission(
                 case_id=case_id,
                 submission_id=submission_id,
-                # contact_id=contact_id,  # TODO: Is this required for 'own' or 'previous' organisations?
             )
             return redirect(
                 f"/case/{case_id}/organisation/{organisation_id}/submission/{submission_id}/"
