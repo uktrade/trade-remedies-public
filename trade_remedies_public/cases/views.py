@@ -401,7 +401,7 @@ class InterestStep2BaseView(LoginRequiredMixin, GroupRequiredMixin, FormView):
         return context
 
 
-class InterestClientTypeStep2(BasePublicView, InterestStep2BaseView):    
+class InterestClientTypeStep2(BasePublicView, InterestStep2BaseView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/who_is_registering.html"
     form_class = ClientTypeForm
@@ -416,7 +416,7 @@ class InterestClientTypeStep2(BasePublicView, InterestStep2BaseView):
 
     def form_valid(self, form):
         case_id = self.get_context_data()["case_id"]
-        
+
         if form.cleaned_data.get("org") == "new-org":
             return redirect(f"/case/interest/{case_id}/contact/")  # noqa: E501
         elif form.cleaned_data.get("org") == "my-org":
@@ -424,7 +424,7 @@ class InterestClientTypeStep2(BasePublicView, InterestStep2BaseView):
             response = api_client.register_interest_in_case(
                 case_id=case_id,
                 representing="own",
-                organisation_id = self.request.user.organisation.get("id"),
+                organisation_id=self.request.user.organisation.get("id"),
             )
             submission = response["submission"]
             submission_id = submission["id"]
@@ -448,7 +448,7 @@ class InterestExistingClientStep2(BasePublicView, InterestStep2BaseView):
 
     def get_existing_clients(self):
         org_parties = get_org_parties(self._client, self.request.user)
-        # extract and return tuples of id and name in a list (from a 
+        # extract and return tuples of id and name in a list (from a
         # list of dictionaries)
         return [(d["id"], d["name"]) for d in org_parties]
 

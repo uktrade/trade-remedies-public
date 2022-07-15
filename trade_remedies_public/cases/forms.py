@@ -13,7 +13,8 @@ class ClientTypeForm(ValidationForm):
 
 class ExistingClientForm(ValidationForm):
     # declare empty choices variable
-    choices=[]
+    choices = []
+
     def __init__(self, *args, **kwargs):
         existing_clients = kwargs.pop("existing_clients", None)
         super(ExistingClientForm, self).__init__(*args, **kwargs)

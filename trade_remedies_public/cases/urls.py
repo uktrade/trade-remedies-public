@@ -45,7 +45,7 @@ urlpatterns = [
         case_views.InterestUkSubmitStep2.as_view(),
         name="interest_submit",
     ),
-        path(
+    path(
         "interest/<uuid:case_id>/organisation/",
         case_views.InterestExistingClientStep2.as_view(),
         name="interest_existing_client",
