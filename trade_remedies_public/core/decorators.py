@@ -1,5 +1,6 @@
 from functools import wraps
 
+from apiclient.exceptions import APIClientError
 from django.shortcuts import redirect
 from django.urls import NoReverseMatch, reverse
 from requests import HTTPError
@@ -25,8 +26,10 @@ def catch_form_errors(redirection_url_resolver=None):  # noqa: C901
             try:
                 response = view_func(request, *args, **kwargs)
                 return response
-            except (APIException, HTTPError) as exc:
-                if hasattr(exc, "response"):
+            except (APIException, HTTPError, APIClientError) as exc:
+                if isinstance(exc, APIClientError):
+                    request.request.session["form_errors"] = exc.message
+                elif hasattr(exc, "response"):
                     request.request.session["form_errors"] = exc.response.json()
                 elif hasattr(exc, "detail"):
                     request.request.session["form_errors"] = exc.detail

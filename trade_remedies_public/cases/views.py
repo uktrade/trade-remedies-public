@@ -65,6 +65,7 @@ from cases.forms import (
     UkEmployerForm,
     NonUkEmployerForm,
     ClientFurtherDetailsForm,
+    ExistingClientForm,
 )
 
 logger = logging.getLogger(__name__)
@@ -386,6 +387,228 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 "inviting_organisation_name": inviting_organisation_name,
                 "alert_message": ALERT_MAP.get(self.request.GET.get("alert")),
             },
+        )
+
+
+class InterestStep2BaseView(LoginRequiredMixin, GroupRequiredMixin, FormView):
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.kwargs)
+        return context
+
+
+class InterestClientTypeStep2(BasePublicView, InterestStep2BaseView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/who_is_registering.html"
+    form_class = ClientTypeForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.request.GET)
+        # a list of dictionaries
+        existing_clients_list = get_org_parties(self._client, self.request.user)
+        context["existing_clients"] = True if existing_clients_list else False
+        return context
+
+    def form_valid(self, form):
+        case_id = self.get_context_data()["case_id"]
+
+        if form.cleaned_data.get("org") == "new-org":
+            return redirect(f"/case/interest/{case_id}/contact/")  # noqa: E501
+        elif form.cleaned_data.get("org") == "my-org":
+            api_client = self.client(self.request.user)
+            response = api_client.register_interest_in_case(
+                case_id=case_id,
+                representing="own",
+                organisation_id=self.request.user.organisation.get("id"),
+            )
+            submission = response["submission"]
+            submission_id = submission["id"]
+            organisation_id = submission["organisation"]["id"]
+            api_client.update_submission(
+                case_id=case_id,
+                submission_id=submission_id,
+            )
+            return redirect(
+                f"/case/{case_id}/organisation/{organisation_id}/submission/{submission_id}/"
+            )
+        elif form.cleaned_data.get("org") == "existing-org":
+            return redirect(f"/case/interest/{case_id}/organisation/")
+
+
+class InterestExistingClientStep2(BasePublicView, InterestStep2BaseView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/who_you_representing_existing.html"
+    form_class = ExistingClientForm
+
+    def get_existing_clients(self):
+        org_parties = get_org_parties(self._client, self.request.user)
+        # extract and return tuples of id and name in a list (from a
+        # list of dictionaries)
+        return [(d["id"], d["name"]) for d in org_parties]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.request.GET)
+        context["existing_clients"] = self.get_existing_clients()
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["existing_clients"] = self.get_existing_clients()
+        return kwargs
+
+    def form_valid(self, form):
+        case_id = self.get_context_data()["case_id"]
+        organisation_id = form.cleaned_data.get("org")
+        return redirect(f"/case/interest/{case_id}/{organisation_id}/contact/")
+
+
+class InterestPrimaryContactStep2(TradeRemediesAPIClientMixin, InterestStep2BaseView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/primary_client_contact.html"
+    form_class = PrimaryContactForm
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        case_id = context["case_id"]
+        # organisation_id only exists if registering ROI for existing client
+        organisation_id = context.get("organisation_id", "")
+        response = self.client(self.request.user).create_contact(
+            {
+                "contact_email": form.cleaned_data.get("email"),
+                "contact_name": form.cleaned_data.get("name"),
+            }
+        )
+        contact_id = response["id"]
+        # If ROI is for existing client
+        if organisation_id:
+            api_client = self.client(self.request.user)
+            response = api_client.register_interest_in_case(
+                case_id=case_id,
+                representing="previous",
+                organisation_id=organisation_id,
+            )
+            submission = response["submission"]
+            submission_id = submission["id"]
+            organisation_id = submission["organisation"]["id"]
+            api_client.update_submission(
+                case_id=case_id,
+                submission_id=submission_id,
+                contact_id=contact_id,
+            )
+            return redirect(
+                f"/case/{case_id}/organisation/{organisation_id}/submission/{submission_id}/"
+            )
+        else:
+            return redirect(f"/case/interest/{case_id}/{contact_id}/ch/")  # noqa: E501
+
+
+class InterestUkRegisteredYesNoStep2(InterestStep2BaseView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/is_client_uk_company.html"
+    form_class = YourEmployerForm
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        case_id = context["case_id"]
+        contact_id = context["contact_id"]
+        if form.cleaned_data.get("uk_employer") == "yes":
+            return redirect(f"/case/interest/{case_id}/{contact_id}/ch/yes/")  # noqa: E501
+        elif form.cleaned_data.get("uk_employer") == "no":
+            return redirect(f"/case/interest/{case_id}/{contact_id}/ch/no/")  # noqa: E501
+
+
+class InterestNonUkRegisteredStep2(InterestStep2BaseView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/your_client_details.html"
+    form_class = NonUkEmployerForm
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        case_id = context["case_id"]
+        contact_id = context["contact_id"]
+        return redirect(
+            f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
+            f"{form.cleaned_data.get('organisation_name')}&companies_house_id="
+            f"{form.cleaned_data.get('company_number')}&"
+            f"organisation_post_code={form.cleaned_data.get('post_code')}&non_uk_registered=true&"
+            f"organisation_address={form.cleaned_data.get('address_snippet')}&"
+            f"organisation_country={form.cleaned_data.get('country')}"  # noqa: E501
+        )
+
+
+class InterestIsUkRegisteredStep2(InterestStep2BaseView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/who_you_representing.html"
+    form_class = UkEmployerForm
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        case_id = context["case_id"]
+        contact_id = context["contact_id"]
+        return redirect(
+            f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
+            f"{form.cleaned_data.get('organisation_name')}&"
+            f"companies_house_id={form.cleaned_data.get('companies_house_id')}&"
+            f"organisation_post_code={form.cleaned_data.get('organisation_post_code')}&"
+            f"organisation_address={form.cleaned_data.get('organisation_address')}"  # noqa: E501
+        )
+
+
+class InterestUkSubmitStep2(TradeRemediesAPIClientMixin, InterestStep2BaseView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/about_your_client.html"
+    form_class = ClientFurtherDetailsForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.request.GET)
+        if not context.get("organisation_country"):
+            context["organisation_country"] = "GB"
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        case_id = context["case_id"]
+        contact_id = context["contact_id"]
+        organisation_name = context["organisation_name"]
+        companies_house_id = context["companies_house_id"]
+        organisation_post_code = context["organisation_post_code"]
+        organisation_address = context["organisation_address"]
+        organisation_country = context["organisation_country"]
+        eori_number = form.cleaned_data.get("company_eori_number")
+        duns_number = form.cleaned_data.get("company_duns_number")
+        organisation_website = form.cleaned_data.get("company_website")
+        vat_number = form.cleaned_data.get("company_vat_number")
+        api_client = self.client(self.request.user)
+        response = api_client.register_interest_in_case(
+            case_id=case_id,
+            representing="other",
+            eori_number=eori_number,
+            duns_number=duns_number,
+            organisation_website=organisation_website,
+            vat_number=vat_number,
+            organisation_name=organisation_name,
+            companies_house_id=companies_house_id,
+            organisation_post_code=organisation_post_code,
+            organisation_address=organisation_address,
+            organisation_country=organisation_country,
+        )
+        submission = response["submission"]
+        submission_id = submission["id"]
+        organisation_id = submission["organisation"]["id"]
+        api_client.update_submission(
+            case_id=case_id,
+            submission_id=submission_id,
+            contact_id=contact_id,
+        )
+        return redirect(
+            f"/case/{case_id}/organisation/{organisation_id}/submission/{submission_id}/"
         )
 
 

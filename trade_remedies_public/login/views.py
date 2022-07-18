@@ -1,5 +1,6 @@
 # Views to handle the login and logout functionality
 
+from core.decorators import catch_form_errors
 from core.utils import internal_redirect
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,10 +12,8 @@ from registration.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-from core.decorators import catch_form_errors
 
-
-class LandingView(TemplateView, TradeRemediesAPIClientMixin):
+class LandingView(TemplateView):
     template_name = "v2/landing.html"
 
     def dispatch(self, request, *args, **kwargs):
@@ -34,11 +33,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
         password = request.POST["password"]
         invitation_code = kwargs.get("invitation_code", None)
         response = self.trusted_client.authenticate(
-            email=email,
-            password=password,
-            user_agent=request.META["HTTP_USER_AGENT"],
-            ip_address=request.META["REMOTE_ADDR"],
-            invitation_code=invitation_code,
+            email=email, password=password, invitation_code=invitation_code
         )
         if response and response.get("token"):
             request.session.clear()

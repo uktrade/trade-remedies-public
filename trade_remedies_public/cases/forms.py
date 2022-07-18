@@ -11,6 +11,22 @@ class ClientTypeForm(ValidationForm):
     )
 
 
+class ExistingClientForm(ValidationForm):
+    # declare empty choices variable
+    choices = []
+
+    def __init__(self, *args, **kwargs):
+        existing_clients = kwargs.pop("existing_clients", None)
+        super(ExistingClientForm, self).__init__(*args, **kwargs)
+        # assign value to the choices variable
+        self.fields["org"].choices = existing_clients
+
+    org = forms.ChoiceField(
+        error_messages={"required": "no_representative_org"},
+        choices=[],  # use the choices variable
+    )
+
+
 class PrimaryContactForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_contact_name_entered"})
     email = forms.CharField(

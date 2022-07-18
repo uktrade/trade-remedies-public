@@ -34,23 +34,23 @@
                                type="radio" value="my-org">
                         <label class="govuk-label govuk-radios__label" for="org">
 
-
-                            My organisation: BlueSteel Partners
-
+                            My organisation: {{ user.organisation.name }}
 
                         </label>
 
                     </div>
 
 
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
-                               type="radio" value="existing-org">
-                        <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
-                            An existing client: someone I have previously represented using the Trade Remedies Service
-                        </label>
+                    {% if existing_clients %}
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
+                                type="radio" value="existing-org">
+                            <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
+                                An existing client: someone I have previously represented using the Trade Remedies Service
+                            </label>
 
-                    </div>
+                        </div>
+                    {% endif %}
 
 
                     <div class="govuk-radios__item">

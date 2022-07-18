@@ -1,0 +1,76 @@
+{% extends "v2/registration_of_interest/base_form.html" %}
+
+{% block noheading %}
+{% endblock noheading %}
+
+{% block form_content %}
+
+        {% with form_errors.org as error %}
+        <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+
+            <fieldset class="govuk-fieldset">
+
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+
+                    <h1 class="govuk-fieldset__heading">
+                        Who are you representing?
+                    </h1>
+
+                </legend>
+                {% if error %}
+                <p id="org-error" class="govuk-error-message">
+                    {% for error in error %}
+                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                    {% endfor %}
+                </p>
+                {% endif %}
+
+
+                <div class="govuk-radios" data-module="govuk-radios">
+
+                    {% for organisation in existing_clients %}
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="{{ organisation.1 }}" name="org"
+                                type="radio" value="{{ organisation.0 }}">
+                            <label class="govuk-label govuk-radios__label" for="{{ organisation.1 }}">
+
+                                {{ organisation.1 }}<br>
+
+                            </label>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </fieldset>
+
+        </div>
+        {% endwith %}
+
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                The organisation is not listed
+            </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p>This is a list of organisations you have previously represented using the Trade Remedies Service.</p>
+                <p>If you’re representing an organisation for the first time, go back and select ‘New client’.</p>
+            </div>
+        </details>
+
+        <div class="govuk-button-group">
+
+
+            <button class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
+
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_client_type' case_id %}">Back</a>
+        </div>
+
+
+{% endblock form_content %}
