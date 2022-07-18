@@ -16,34 +16,9 @@ urlpatterns = [
         name="interest_case",
     ),
     path(
-        "interest/<uuid:case_id>/type/",
-        case_views.InterestClientTypeStep2.as_view(),
-        name="interest_client_type",
-    ),
-    path(
-        "interest/<uuid:case_id>/contact/",
-        case_views.InterestPrimaryContactStep2.as_view(),
-        name="interest_primary_contact",
-    ),
-    path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/ch/",
-        case_views.InterestUkRegisteredYesNoStep2.as_view(),
-        name="interest_ch",
-    ),
-    path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/ch/yes/",
-        case_views.InterestIsUkRegisteredStep2.as_view(),
-        name="interest_ch_yes",
-    ),
-    path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/ch/no/",
-        case_views.InterestNonUkRegisteredStep2.as_view(),
-        name="interest_ch_no",
-    ),
-    path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/submit/",
-        case_views.InterestUkSubmitStep2.as_view(),
-        name="interest_submit",
+        "interest/<uuid:case_id>/<uuid:submission_id>/",
+        case_views.TaskListView.as_view(submission_type_key="interest"),
+        name="interest_case_submission_created",
     ),
     path(
         "interest/<uuid:case_id>/company/",
@@ -260,6 +235,36 @@ urlpatterns += [
         "v2/select/",
         registration_of_interest.RegistrationOfInterest1.as_view(),
         name="roi_1",
+    ),
+    path(
+        "interest/<uuid:case_id>/type/",
+        registration_of_interest.InterestClientTypeStep2.as_view(),
+        name="interest_client_type",
+    ),
+    path(
+        "interest/<uuid:case_id>/contact/",
+        registration_of_interest.InterestPrimaryContactStep2.as_view(),
+        name="interest_primary_contact",
+    ),
+    path(
+        "interest/<uuid:case_id>/<uuid:contact_id>/ch/",
+        registration_of_interest.InterestUkRegisteredYesNoStep2.as_view(),
+        name="interest_ch",
+    ),
+    path(
+        "interest/<uuid:case_id>/<uuid:contact_id>/ch/yes/",
+        registration_of_interest.InterestIsUkRegisteredStep2.as_view(),
+        name="interest_ch_yes",
+    ),
+    path(
+        "interest/<uuid:case_id>/<uuid:contact_id>/ch/no/",
+        registration_of_interest.InterestNonUkRegisteredStep2.as_view(),
+        name="interest_ch_no",
+    ),
+    path(
+        "interest/<uuid:case_id>/<uuid:contact_id>/submit/",
+        registration_of_interest.InterestUkSubmitStep2.as_view(),
+        name="interest_submit",
     ),
     path(
         "registration_of_interest/<uuid:submission_id>/check_and_submit",

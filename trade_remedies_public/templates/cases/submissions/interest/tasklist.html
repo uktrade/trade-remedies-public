@@ -92,8 +92,12 @@
             {% include "partials/task_list/section_heading.html" with section_heading='Register interest' section_counter=5 %}
             <ul class="task-list-items">
                 <li class="task-list-item">
-                    <a class="task-name" href="{% url 'roi_4' submission_id=submission_id %}">Check and submit</a>
-                    {% task_status submission.doc_reviewed_at True %}
+                    {% if submission_id %}
+                        <a class="task-name" href="{% url 'roi_4' submission_id=submission_id %}">Check and submit</a>
+                        {% task_status submission.doc_reviewed_at True %}
+                    {% else %}
+                        Check and submit
+                    {% endif %}
                 </li>
             </ul>
         </li>
