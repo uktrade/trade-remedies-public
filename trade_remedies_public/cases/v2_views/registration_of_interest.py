@@ -11,7 +11,7 @@ from v2_api_client.mixins import APIClientMixin
 from trade_remedies_public.cases.constants import SUBMISSION_TYPE_REGISTER_INTEREST
 from trade_remedies_public.cases.forms import ClientFurtherDetailsForm, ClientTypeForm, \
     ExistingClientForm, NonUkEmployerForm, \
-    PrimaryContactForm, UkEmployerForm, YourEmployerForm
+    PrimaryContactForm, RegistrationOfInterest4Form, UkEmployerForm, YourEmployerForm
 from trade_remedies_public.cases.utils import get_org_parties
 from trade_remedies_public.config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
     SECURITY_GROUP_ORGANISATION_USER
@@ -76,9 +76,7 @@ class RegistrationOfInterest1(LoginRequiredMixin, TemplateView, APIClientMixin):
 
 
 class InterestStep2BaseView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, FormView):
-    def dispatch(self, request, *args, **kwargs):
-        self.edit_submission_id = request.GET.get("submission_id", None)
-        return super().dispatch(request, *args, **kwargs)
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
 
     def form_invalid(self, form):
         form.assign_errors_to_request(self.request)
@@ -91,7 +89,6 @@ class InterestStep2BaseView(LoginRequiredMixin, GroupRequiredMixin, APIClientMix
 
 
 class InterestClientTypeStep2(InterestStep2BaseView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/who_is_registering.html"
     form_class = ClientTypeForm
 
@@ -135,7 +132,6 @@ class InterestClientTypeStep2(InterestStep2BaseView):
 
 
 class InterestPrimaryContactStep2(InterestStep2BaseView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/primary_client_contact.html"
     form_class = PrimaryContactForm
 
@@ -178,7 +174,6 @@ class InterestPrimaryContactStep2(InterestStep2BaseView):
 
 
 class InterestUkRegisteredYesNoStep2(InterestStep2BaseView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/is_client_uk_company.html"
     form_class = YourEmployerForm
 
@@ -203,7 +198,6 @@ class InterestUkRegisteredYesNoStep2(InterestStep2BaseView):
 
 
 class InterestNonUkRegisteredStep2(InterestStep2BaseView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/your_client_details.html"
     form_class = NonUkEmployerForm
 
@@ -221,7 +215,6 @@ class InterestNonUkRegisteredStep2(InterestStep2BaseView):
 
 
 class InterestIsUkRegisteredStep2(InterestStep2BaseView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/who_you_representing.html"
     form_class = UkEmployerForm
 
@@ -238,7 +231,6 @@ class InterestIsUkRegisteredStep2(InterestStep2BaseView):
 
 
 class InterestUkSubmitStep2(InterestStep2BaseView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/about_your_client.html"
     form_class = ClientFurtherDetailsForm
 
@@ -284,7 +276,6 @@ class InterestUkSubmitStep2(InterestStep2BaseView):
 
 
 class InterestExistingClientStep2(InterestStep2BaseView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/who_you_representing_existing.html"
     form_class = ExistingClientForm
 
@@ -313,38 +304,41 @@ class InterestExistingClientStep2(InterestStep2BaseView):
         }))
 
 
-class RegistrationOfInterest4(TemplateView, APIClientMixin):
+class RegistrationOfInterest4(InterestStep2BaseView):
     template_name = "v2/registration_of_interest/registration_of_interest_4.html"
+    form_class = RegistrationOfInterest4Form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["submission"] = self.client.get_submission(kwargs["submission_id"])
+        context["submission"] = self.client.get_submission(self.kwargs["submission_id"])
         return context
 
-    def post(self, request, submission_id, **kwargs):
-        if request.POST.get("authorised", None) == "yes":
-            submission = self.get_context_data(submission_id=submission_id)["submission"]
-
-            # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
-            organisation_case_role = self.client.get(
-                self.client.url(
-                    "organisation_case_roles",
-                    case_id=submission["case"]["id"],
-                    organisation_id=submission["organisation"]["id"]
-                )
+    def form_valid(self, form):
+        submission = self.get_context_data()["submission"]
+        # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
+        organisation_case_role = self.client.get(
+            self.client.url(
+                "organisation_case_roles",
+                case_id=submission["case"]["id"],
+                organisation_id=submission["organisation"]["id"]
             )
-            self.client.put(
-                self.client.url(f"organisation_case_roles/{organisation_case_role['id']}"),
-                data={
-                    "role_key": "awaiting_approval"
-                }
-            )
+        )
+        self.client.put(
+            self.client.url(f"organisation_case_roles/{organisation_case_role['id']}"),
+            data={
+                "role_key": "awaiting_approval"
+            }
+        )
 
-            # Now we update the status of the submission to received
-            self.client.update_submission_status(submission_id=submission_id, new_status="received")
-        else:
-            pass
-        return redirect(reverse("roi_complete", kwargs={"submission_id": submission_id}))
+        # Now we update the status of the submission to received
+        self.client.update_submission_status(
+            submission_id=self.kwargs["submission_id"],
+            new_status="received"
+        )
+        return redirect(reverse(
+            "roi_complete",
+            kwargs={"submission_id": self.kwargs["submission_id"]}
+        ))
 
 
 class RegistrationOfInterestComplete(

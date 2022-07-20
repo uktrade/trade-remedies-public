@@ -63,20 +63,7 @@
 
     <h2 class="govuk-heading-m">Now send your application</h2>
 
-    <div class="govuk-form-group">
-        <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
-            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="authorised" name="authorised" type="checkbox" value="yes">
-                    <label class="govuk-label govuk-checkboxes__label" for="authorised">
-                        I am authorised to provide this information.
-                    </label>
-                </div>
-            </div>
-        </fieldset>
-    </div>
-
-
+    {% include "v2/component_macros/checkbox.html" with name="authorised" id="authorised" label="I am authorised to provide this information." %}
     {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Confirm and submit application" %}
 
 {% endblock form_content %}
