@@ -1,0 +1,218 @@
+{% extends 'v2/registration_of_interest/base_loa.html' %}
+{% load static %}
+
+
+{% block main_content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-xl">3. Documentation</span>
+    <h1 class="govuk-heading-xl">
+      Upload a Letter of Authority
+    </h1>
+    <p>Download the Letter of Authority and ask your client to complete it.  This will confirm you have authority to act on their behalf.</p>
+    <p>Upload it when finished (max. file size 30MB). Your information is kept confidential.</p>
+    <ul class="govuk-list">
+        {% for document in caseworker_docs %}
+      <li>
+
+        <a href="/case/{{case_id}}/submission/{{document.submission_id|default:submission_id}}/document/{{document.id}}/download/" class="govuk-link--no-visited-state"><img src="/static/v2/assets/images/doc.png" alt="File icon" width="24px"> {{ document.name }} ({{ document.size }} MB) </a>
+          {% if document.downloads > 0 %}
+            <span>✓</span>
+          {% endif %}
+      </li>
+        {% endfor %}
+    </ul>
+
+  </div>
+</div>
+<form method="post" novalidate="novalidate" enctype="multipart/form-data" id="upload-form">
+    {% csrf_token %}
+    <!-- Add LOA -->
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+        Letter of Authority
+      </h2>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-half">
+      <div class="row-colour">
+        <div class="govuk-grid-column-full">
+
+          <div class="upload-card">
+    <div class="upload-container" id="upload-container">
+        <div class="waiting_for_upload" id="waiting-upload-5">
+            <p><img src="/static/v2/assets/images/download.png" alt="Upload icon"><br>
+            <input type="file" name="private-file" id="file_5" class="inputfile">
+                <label for="file_5" class="govuk-link">Choose a file</label> or drag it here</p>
+        </div>
+        <div class="scanning_file_for_virus" style="display:none" id="scan-file">
+            <label class="govuk-label" for="progress-1">
+                Scanning file:
+                <div class="file_name"></div>
+            </label>
+            <progress id="progress-scan"></progress>
+            <p><a href="#" class="govuk-link--no-visited-state" id="cancel-upload" onclick="cancelDoc()"> Cancel <span class="govuk-visually-hidden">file</span></a></p>
+        </div>
+
+        <div class="uploading_file" style="display:none" id="upload-file">
+            <label class="govuk-label" for="progress-10">
+                <div class="upload_percentage" id="upload-percentage">Uploading 10%:</div>
+                <div class="file_name" id="upload-name"></div>
+            </label>
+            <progress class="progress-10" max="100" value="10" id="10-percent"></progress>
+            <progress class="progress-40" max="100" value="40" style="display:none" id="40-percent"></progress>
+            <progress class="progress-70" max="100" value="70" style="display:none" id="70-percent"></progress>
+            <progress class="progress-100" max="100" value="100" style="display:none" id="100-percent"></progress>
+            <p><a href="#" class="govuk-link--no-visited-state" id="case-selected-status" onclick="cancelDoc()">Cancel <span class="govuk-visually-hidden">file</span></a></p>
+        </div>
+
+        <div class="upload_file_complete" style="display:none" id="complete-upload-5">
+            <label class="govuk-label" for="progress-complete">
+                <span class="govuk-visually-hidden">Upload complete:</span>
+            </label>
+            <p class="file_name" id="progress-complete"></p>
+            <p><a href="#doc-1" class="govuk-link govuk-link--no-visited-state" onclick="removeDoc()">Remove <span class="govuk-visually-hidden">file</span></a></p>
+        </div>
+
+    </div>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="govuk-button-group">
+
+
+
+
+
+
+<button class="govuk-button" data-module="govuk-button">
+  Continue
+</button>
+
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_case_submission_created' submission_id=submission_id case_id=case_id %}">Back</a>
+        </div>
+    </div>
+  </div>
+
+</form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="  {# /PS-IGNORE #}
+        crossorigin="anonymous"></script>
+<script type="text/javascript">
+
+  function showDoc2Panel() {
+    var x = document.getElementById("doc-2");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    }
+  }
+
+  function hideDoc2Panel() {
+    var x = document.getElementById("doc-2");
+    if (x.style.display === "block") {
+      x.style.display = "none";
+    }
+  }
+
+  function removeDoc() {
+    var x = document.getElementById("complete-upload-5");
+    var y = document.getElementById("waiting-upload-5");
+    if (x.style.display === "") {
+      x.style.display = "none";
+      y.style.display = "block";
+    }
+    var z = document.getElementById("file_5");
+    z.value = null
+  }
+
+  function cancelDoc() {
+    var highestTimeoutId = setTimeout(";");
+    for (var i = 0 ; i < highestTimeoutId ; i++) {
+        clearTimeout(i);
+    }
+    $("#scan-file").hide()
+    $("#upload-file").hide()
+    $("#waiting-upload-5").show()
+    var z = document.getElementById("file_5");
+    z.value = null
+  }
+
+  const pause = _ => new Promise(resolve => setTimeout(resolve, _))
+
+
+    function file_upload(upload_container, file_name){
+      upload_container.find('.file_name').html(file_name)
+      upload_container.find('.waiting_for_upload').hide()
+      upload_container.find('.scanning_file_for_virus').show()
+      setTimeout(function () {
+        upload_container.find('.scanning_file_for_virus').hide()
+        upload_container.find('.uploading_file').show()
+
+        setTimeout(function () {
+          upload_container.find('progress').hide()
+          upload_container.find('.progress-40').show()
+          upload_container.find('.upload_percentage').html('Uploading 40%:')
+          setTimeout(function () {
+            upload_container.find('progress').hide()
+            upload_container.find('.progress-70').show()
+            upload_container.find('.upload_percentage').html('Uploading 70%:')
+            setTimeout(function () {
+              upload_container.find('progress').hide()
+              upload_container.find('.progress-100').show()
+              upload_container.find('.upload_percentage').html('Uploading 100%:')
+              upload_container.find('.uploading_file').hide()
+              upload_container.find('.upload_file_complete').show()
+            }, 2000)
+          }, 2000)
+        }, 2000)
+      }, 2000)
+    }
+    $('input[type="file"]').change(function(){
+      let file_name = $(this).val().split(/(\\|\/)/g).pop()
+      let upload_container = $(this).closest('.upload-container')
+      file_upload(upload_container, file_name)
+    })
+
+    $('.upload-container').on('drop dragdrop', function (ev) {
+      $(this).closest('.upload-card').removeClass('upload-card-hover')
+      let original_event = ev.originalEvent
+      ev.preventDefault()
+      ev.stopPropagation()
+      console.log('dropped')
+
+      let file_name = original_event.dataTransfer.files[0].name
+      file_upload($(this), file_name)
+    })
+
+    $('.upload-container').on('dragover', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      console.log('dragged over')
+      $(this).closest('.upload-card').addClass('upload-card-hover')
+    })
+
+    $('.upload-container').on('dragleave', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      console.log('dragged left')
+      $(this).closest('.upload-card').removeClass('upload-card-hover')
+    })
+
+    $(document).ready(function () {
+      console.log('ready')
+    })
+
+</script>
+
+{% endblock main_content %}

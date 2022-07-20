@@ -884,10 +884,20 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
 
         case = self._client.get_case(case_id=case_id, organisation_id=organisation_id)
         template_grp = submission["type"]["key"]
-        public_url_str = ("_" + public_str) if public_str else ""
-        template_name = f"cases/submissions/{template_grp}/upload{public_url_str}.html"
+        if public_str == "loa":
+            template_name = "v2/registration_of_interest/upload_loa.html"
+        else:
+            public_url_str = ("_" + public_str) if public_str else ""
+            template_name = f"cases/submissions/{template_grp}/upload{public_url_str}.html"
 
         all_documents = self.submission.get("documents", [])
+        loa_is_uploaded = False
+        for doc in all_documents:
+            if doc["type"]["name"] == "Letter of Authority":
+                loa_is_uploaded = True
+        caseworker_docs = [doc for doc in all_documents if doc['type']['name'] == 'TRA Document']
+        for doc in caseworker_docs:
+            doc['size'] = round(doc['size'] * 0.000001, 3)
         respondant_docs = deep_index_items_by(all_documents, "is_tra").get("false", [])
         documents, doc_idx = structure_documents(respondant_docs)
         # Flag a document that's just been added so the pair can be shown in green rather than grey.
@@ -909,6 +919,8 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
                 "submission": submission,
                 "new_document": new_document,
                 "documents": documents,
+                "caseworker_docs": caseworker_docs,
+                "loa_is_uploaded": loa_is_uploaded,
                 "public": public,
                 "public_str": public_str,
                 "submission_document_type": "loa" if public_str == "loa" else None,
@@ -944,7 +956,7 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
                     document_id=replace_id,
                 )
             try:
-                for _file in request.FILES.getlist("file"):
+                for _file in request.FILES.getlist("file") or request.FILES.getlist("private-file"):
                     _file.readline()  # Important, will raise VirusFoundInFileException if infected
                     original_file_name = _file.original_name
                     data = {
@@ -956,7 +968,7 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
                         "document_name": original_file_name,
                         "file_name": _file.name,
                         "file_size": _file.file_size,
-                        "submission_document_type": request.POST.get("submission_document_type"),
+                        "submission_document_type": "loa" if request.FILES.getlist("private-file") else request.POST.get("submission_document_type"),
                     }
                     new_documents.extend(
                         self._client.upload_document(
@@ -976,7 +988,7 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
         new_docs = new_documents[0].get("id") if new_documents else None
         if redirect_path:
             return redirect(f"{redirect_path}?new={new_docs}")
-        return redirect(f"/case/{case_id}/submission/{submission_id}/upload/?new={new_docs}")
+        return redirect(f"/case/{case_id}/submission/{submission_id}/")
 
 
 class RemoveDocumentView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):

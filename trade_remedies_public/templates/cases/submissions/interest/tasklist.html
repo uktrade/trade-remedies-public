@@ -92,7 +92,7 @@
     {% if submission.contact.user.organisation.id != submission.organisation.id %}
         {% set 'upload_loa' True %}
     {% endif %}
-
+    {{submission }}
     {% include "partials/task_list/download_documents.html" with section_heading="Download templates to complete" item_heading="Download registration documents" section_counter=3 %}
 
     {% include "partials/task_list/upload_confidential_documents.html" with section_heading='Upload completed documents' item_heading="Upload registration documents" section_counter=4 enable=submission upload_loa=upload_loa %}

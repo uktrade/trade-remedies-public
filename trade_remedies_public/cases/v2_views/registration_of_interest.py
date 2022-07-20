@@ -8,14 +8,14 @@ from django.views.generic import FormView, TemplateView
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
 
-from trade_remedies_public.cases.constants import SUBMISSION_TYPE_REGISTER_INTEREST
-from trade_remedies_public.cases.forms import ClientFurtherDetailsForm, ClientTypeForm, \
+from cases.constants import SUBMISSION_TYPE_REGISTER_INTEREST
+from cases.forms import ClientFurtherDetailsForm, ClientTypeForm, \
     ExistingClientForm, NonUkEmployerForm, \
     PrimaryContactForm, UkEmployerForm, YourEmployerForm
-from trade_remedies_public.cases.utils import get_org_parties
-from trade_remedies_public.config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
+from cases.utils import get_org_parties
+from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
     SECURITY_GROUP_ORGANISATION_USER
-from trade_remedies_public.core.base import GroupRequiredMixin
+from core.base import GroupRequiredMixin
 
 
 class RegistrationOfInterest1(LoginRequiredMixin, TemplateView, APIClientMixin):
