@@ -283,4 +283,9 @@ urlpatterns += [
         registration_of_interest.InterestPrimaryContactStep2.as_view(),
         name="interest_existing_client_primary_contact",
     ),
+    path(
+        "interest/<uuid:submission_id>/complete/",
+        registration_of_interest.RegistrationOfInterestComplete.as_view(),
+        name="roi_complete",
+    ),
 ]

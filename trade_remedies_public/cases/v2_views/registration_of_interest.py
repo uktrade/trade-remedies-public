@@ -324,6 +324,8 @@ class RegistrationOfInterest4(TemplateView, APIClientMixin):
     def post(self, request, submission_id, **kwargs):
         if request.POST.get("authorised", None) == "yes":
             submission = self.get_context_data(submission_id=submission_id)["submission"]
+
+            # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
             organisation_case_role = self.client.get(
                 self.client.url(
                     "organisation_case_roles",
@@ -331,16 +333,30 @@ class RegistrationOfInterest4(TemplateView, APIClientMixin):
                     organisation_id=submission["organisation"]["id"]
                 )
             )
-            print("asd")
+            self.client.put(
+                self.client.url(f"organisation_case_roles/{organisation_case_role['id']}"),
+                data={
+                    "role_key": "awaiting_approval"
+                }
+            )
+
+            # Now we update the status of the submission to received
+            self.client.update_submission_status(submission_id=submission_id, new_status="received")
         else:
             pass
+        return redirect(reverse("roi_complete", kwargs={"submission_id": submission_id}))
 
-        SubmissionHelper = SUBMISSION_TYPE_HELPERS.get(self.submission_type_key)
-        if SubmissionHelper:
-            self.submission_helper = SubmissionHelper(
-                submission=self.submission,
-                user=self.request.user,
-                view=self,
-                case_id=self.case_id,
-            )
-        self.client.update_submission_status(submission_id, "received")
+
+class RegistrationOfInterestComplete(
+    LoginRequiredMixin,
+    APIClientMixin,
+    TemplateView
+):
+    template_name = "v2/registration_of_interest/registration_of_interest_complete.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context["submission"] = self.client.get(
+            self.client.url(f"submissions/{self.kwargs['submission_id']}")
+        )
+        return context

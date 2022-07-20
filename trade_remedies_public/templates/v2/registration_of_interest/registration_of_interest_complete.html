@@ -1,0 +1,50 @@
+{% extends "v2/govuk/base.html" %}
+{% load format_date %}
+
+{% block page_title %}
+    Your interest in the case has been submitted
+{% endblock page_title %}
+
+{% block main_content %}
+    {% with case=submission.case %}
+        <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-panel govuk-panel--confirmation">
+                <h1 class="govuk-panel__title">
+                    Registration complete
+                </h1>
+                <div class="govuk-panel__body">
+                    Case number:<br>
+                    <strong>
+                        {{ case.reference }}
+                    </strong>
+                </div>
+            </div>
+            <p>Thank you for your Registration of Interest. We have sent you a confirmation email.</p>
+            <p>Case:
+                {{ case.reference }} - {{ case.name }}
+                <br>
+                Interested party:
+                {{ submission.organisation.name }}
+                <br>
+                Received on: <span id="date">{{ submission.received_at|format_date:'%d %b %Y' }}</span>
+            </p>
+            <h2 class="govuk-heading-m">What happens next</h2>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>We will review your registration of interest, and let you know if your request to participate in
+                    this
+                    case is successful.
+                </li>
+                <li>You may be asked to complete a further questionnaire. We will contact you if so.</li>
+                <li>Organisations taking part in the investigation will all be placed on a public record of the case.
+                </li>
+            </ul>
+            <p>If you need to make any changes to your registration, contact us as soon as possible at <strong>{{ case.reference }}@traderemedies.gov.uk</strong>.
+            </p>
+            <a href="{% url 'dashboard' %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                Go to my dashboard
+            </a>
+        </div>
+    {% endwith %}
+{% endblock main_content %}
+
+

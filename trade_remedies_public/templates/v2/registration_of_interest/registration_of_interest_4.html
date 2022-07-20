@@ -47,7 +47,9 @@
             </dt>
             <dd class="govuk-summary-list__value">
                 {% for document in submission.documents %}
-                    {{ document.name }}<br>
+                    {% if not document.system %}
+                        {{ document.name }}<br>
+                    {% endif %}
                 {% endfor %}
             </dd>
             <dd class="govuk-summary-list__actions">
