@@ -10,8 +10,9 @@ from v2_api_client.mixins import APIClientMixin
 
 from trade_remedies_public.cases.constants import SUBMISSION_TYPE_REGISTER_INTEREST
 from trade_remedies_public.cases.forms import ClientFurtherDetailsForm, ClientTypeForm, \
-    NonUkEmployerForm, \
+    ExistingClientForm, NonUkEmployerForm, \
     PrimaryContactForm, UkEmployerForm, YourEmployerForm
+from trade_remedies_public.cases.utils import get_org_parties
 from trade_remedies_public.config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
     SECURITY_GROUP_ORGANISATION_USER
 from trade_remedies_public.core.base import GroupRequiredMixin
@@ -53,25 +54,32 @@ class RegistrationOfInterest1(LoginRequiredMixin, TemplateView, APIClientMixin):
                 },
             )
 
-        """# Creating the registration of interest
-        new_submission = self.client.create_submission(
-            case=case_id,
-            type=SUBMISSION_TYPE_REGISTER_INTEREST,
-            organisation=request.user.contact["organisation"]["id"],
-            contact=request.user.contact["id"],
-            documents=[],
-        )"""
+        # Creating the registration of interest
+        new_submission = self.client.post(
+            self.client.url("submissions"),
+            data={
+                "case": case_id,
+                "type": SUBMISSION_TYPE_REGISTER_INTEREST,
+                "documents": [],
+                "created_by": self.request.user.id
+            }
+        )
 
         # REDIRECT to next stage
         return redirect(reverse(
-            "interest_case",
+            "interest_case_submission_created",
             kwargs={
-                "case_id": case_id
+                "case_id": case_id,
+                "submission_id": new_submission["id"]
             }
         ))
 
 
-class InterestStep2BaseView(LoginRequiredMixin, GroupRequiredMixin, FormView):
+class InterestStep2BaseView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, FormView):
+    def dispatch(self, request, *args, **kwargs):
+        self.edit_submission_id = request.GET.get("submission_id", None)
+        return super().dispatch(request, *args, **kwargs)
+
     def form_invalid(self, form):
         form.assign_errors_to_request(self.request)
         return super().form_invalid(form)
@@ -87,27 +95,86 @@ class InterestClientTypeStep2(InterestStep2BaseView):
     template_name = "v2/registration_of_interest/who_is_registering.html"
     form_class = ClientTypeForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.request.GET)
+        # a list of dictionaries
+        existing_clients_list = get_org_parties(
+            TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
+        )
+        context["existing_clients"] = True if existing_clients_list else False
+        return context
+
     def form_valid(self, form):
-        case_id = self.get_context_data()["case_id"]
+        submission_id = self.kwargs["submission_id"]
         if form.cleaned_data.get("org") == "new-org":
-            return redirect(f"/case/interest/{case_id}/contact/")  # noqa: E501
+            return redirect(
+                reverse("interest_primary_contact", kwargs={"submission_id": submission_id})
+            )
+        elif form.cleaned_data.get("org") == "my-org":
+            submission = self.client.put(
+                self.client.url(
+                    f"submissions/{submission_id}/add_organisation_to_registration_of_interest"
+                ),
+                data={
+                    "organisation_id": self.request.user.organisation["id"]
+                }
+            )
+            return redirect(reverse(
+                "interest_case_submission_created",
+                kwargs={
+                    "case_id": submission["case"]["id"],
+                    "submission_id": submission_id
+                }
+            ))
+
+        elif form.cleaned_data.get("org") == "existing-org":
+            return redirect(
+                reverse("interest_existing_client", kwargs={"submission_id": submission_id})
+            )
 
 
-class InterestPrimaryContactStep2(TradeRemediesAPIClientMixin, InterestStep2BaseView):
+class InterestPrimaryContactStep2(InterestStep2BaseView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/primary_client_contact.html"
     form_class = PrimaryContactForm
 
     def form_valid(self, form):
-        case_id = self.get_context_data()["case_id"]
-        response = self.client(self.request.user).create_contact(
+        submission_id = self.kwargs["submission_id"]
+        response = TradeRemediesAPIClientMixin.client(self, self.request.user).create_contact(
             {
                 "contact_email": form.cleaned_data.get("email"),
                 "contact_name": form.cleaned_data.get("name"),
             }
         )
         contact_id = response["id"]
-        return redirect(f"/case/interest/{case_id}/{contact_id}/ch/")  # noqa: E501
+        # organisation_id only exists if registering ROI for existing client
+        organisation_id = self.kwargs.get("organisation_id", None)
+        if organisation_id:
+            submission = self.client.put(
+                self.client.url(
+                    f"submissions/{submission_id}/add_organisation_to_registration_of_interest"
+                ),
+                data={
+                    "organisation_id": organisation_id,
+                    "contact_id": contact_id,
+                }
+            )
+            return redirect(reverse(
+                "interest_case_submission_created",
+                kwargs={
+                    "case_id": submission["case"]["id"],
+                    "submission_id": submission["id"]
+                }
+            ))
+        else:
+            return redirect(reverse(
+                "interest_ch",
+                kwargs={
+                    "submission_id": submission_id,
+                    "contact_id": contact_id
+                }
+            ))
 
 
 class InterestUkRegisteredYesNoStep2(InterestStep2BaseView):
@@ -117,12 +184,22 @@ class InterestUkRegisteredYesNoStep2(InterestStep2BaseView):
 
     def form_valid(self, form):
         context = self.get_context_data()
-        case_id = context["case_id"]
         contact_id = context["contact_id"]
+        submission_id = self.kwargs["submission_id"]
         if form.cleaned_data.get("uk_employer") == "yes":
-            return redirect(f"/case/interest/{case_id}/{contact_id}/ch/yes/")  # noqa: E501
+            return redirect(
+                reverse("interest_ch_yes", kwargs={
+                    "submission_id": submission_id,
+                    "contact_id": contact_id
+                })
+            )
         elif form.cleaned_data.get("uk_employer") == "no":
-            return redirect(f"/case/interest/{case_id}/{contact_id}/ch/no/")  # noqa: E501
+            return redirect(
+                reverse("interest_ch_no", kwargs={
+                    "submission_id": submission_id,
+                    "contact_id": contact_id
+                })
+            )
 
 
 class InterestNonUkRegisteredStep2(InterestStep2BaseView):
@@ -131,16 +208,15 @@ class InterestNonUkRegisteredStep2(InterestStep2BaseView):
     form_class = NonUkEmployerForm
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        case_id = context["case_id"]
-        contact_id = context["contact_id"]
+        submission_id = self.kwargs["submission_id"]
+        contact_id = self.kwargs["contact_id"]
         return redirect(
-            f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
+            f"/case/interest/{submission_id}/{contact_id}/submit/?name="
             f"{form.cleaned_data.get('organisation_name')}&companies_house_id="
             f"{form.cleaned_data.get('company_number')}&"
-            f"organisation_post_code={form.cleaned_data.get('post_code')}&non_uk_registered=true&"
-            f"organisation_address={form.cleaned_data.get('address_snippet')}&"
-            f"organisation_country={form.cleaned_data.get('country')}"  # noqa: E501
+            f"post_code={form.cleaned_data.get('post_code')}&non_uk_registered=true&"
+            f"address={form.cleaned_data.get('address_snippet')}&"
+            f"country={form.cleaned_data.get('country')}"  # noqa: E501
         )
 
 
@@ -150,19 +226,18 @@ class InterestIsUkRegisteredStep2(InterestStep2BaseView):
     form_class = UkEmployerForm
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        case_id = context["case_id"]
-        contact_id = context["contact_id"]
+        submission_id = self.kwargs["submission_id"]
+        contact_id = self.kwargs["contact_id"]
         return redirect(
-            f"/case/interest/{case_id}/{contact_id}/submit/?organisation_name="
+            f"/case/interest/{submission_id}/{contact_id}/submit/?name="
             f"{form.cleaned_data.get('organisation_name')}&"
             f"companies_house_id={form.cleaned_data.get('companies_house_id')}&"
-            f"organisation_post_code={form.cleaned_data.get('organisation_post_code')}&"
-            f"organisation_address={form.cleaned_data.get('organisation_address')}"  # noqa: E501
+            f"post_code={form.cleaned_data.get('organisation_post_code')}&"
+            f"address={form.cleaned_data.get('organisation_address')}"  # noqa: E501
         )
 
 
-class InterestUkSubmitStep2(TradeRemediesAPIClientMixin, InterestStep2BaseView):
+class InterestUkSubmitStep2(InterestStep2BaseView):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "v2/registration_of_interest/about_your_client.html"
     form_class = ClientFurtherDetailsForm
@@ -175,43 +250,67 @@ class InterestUkSubmitStep2(TradeRemediesAPIClientMixin, InterestStep2BaseView):
         return context
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        case_id = context["case_id"]
-        contact_id = context["contact_id"]
-        organisation_name = context["organisation_name"]
-        companies_house_id = context["companies_house_id"]
-        organisation_post_code = context["organisation_post_code"]
-        organisation_address = context["organisation_address"]
-        organisation_country = context["organisation_country"]
-        eori_number = form.cleaned_data.get("company_eori_number")
-        duns_number = form.cleaned_data.get("company_duns_number")
-        organisation_website = form.cleaned_data.get("company_website")
-        vat_number = form.cleaned_data.get("company_vat_number")
-        api_client = self.client(self.request.user)
-        response = api_client.register_interest_in_case(
-            case_id=case_id,
-            representing="other",
-            eori_number=eori_number,
-            duns_number=duns_number,
-            organisation_website=organisation_website,
-            vat_number=vat_number,
-            organisation_name=organisation_name,
-            companies_house_id=companies_house_id,
-            organisation_post_code=organisation_post_code,
-            organisation_address=organisation_address,
-            organisation_country=organisation_country,
+        submission_id = self.kwargs["submission_id"]
+        contact_id = self.kwargs["contact_id"]
+
+        # Creating the new organisation
+        organisation = self.client.post(
+            self.client.url("organisations"),
+            data={
+                **self.request.GET,
+                **form.cleaned_data
+            }
         )
-        submission = response["submission"]
-        submission_id = submission["id"]
-        organisation_id = submission["organisation"]["id"]
-        api_client.update_submission(
-            case_id=case_id,
-            submission_id=submission_id,
-            contact_id=contact_id,
+
+        # Associating the ROI with the organisation
+        submission = self.client.put(
+            self.client.url(
+                f"submissions/{submission_id}/add_organisation_to_registration_of_interest"
+            ),
+            data={
+                "organisation_id": organisation["id"],
+                "contact_id": contact_id,
+            }
         )
-        return redirect(
-            f"/case/{case_id}/organisation/{organisation_id}/submission/{submission_id}/"
-        )
+
+        # Return to task list
+        return redirect(reverse(
+            "interest_case_submission_created",
+            kwargs={
+                "case_id": submission["case"]["id"],
+                "submission_id": submission["id"]
+            }
+        ))
+
+
+class InterestExistingClientStep2(InterestStep2BaseView):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+    template_name = "v2/registration_of_interest/who_you_representing_existing.html"
+    form_class = ExistingClientForm
+
+    def get_existing_clients(self):
+        org_parties = get_org_parties(TradeRemediesAPIClientMixin.client(self, self.request.user),
+                                      self.request.user)
+        # extract and return tuples of id and name in a list (from a
+        # list of dictionaries)
+        return [(d["id"], d["name"]) for d in org_parties]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.request.GET)
+        context["existing_clients"] = self.get_existing_clients()
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["existing_clients"] = self.get_existing_clients()
+        return kwargs
+
+    def form_valid(self, form):
+        return redirect(reverse("interest_existing_client_primary_contact", kwargs={
+            "submission_id": self.kwargs["submission_id"],
+            "organisation_id": form.cleaned_data.get("org")
+        }))
 
 
 class RegistrationOfInterest4(TemplateView, APIClientMixin):
@@ -223,4 +322,25 @@ class RegistrationOfInterest4(TemplateView, APIClientMixin):
         return context
 
     def post(self, request, submission_id, **kwargs):
+        if request.POST.get("authorised", None) == "yes":
+            submission = self.get_context_data(submission_id=submission_id)["submission"]
+            organisation_case_role = self.client.get(
+                self.client.url(
+                    "organisation_case_roles",
+                    case_id=submission["case"]["id"],
+                    organisation_id=submission["organisation"]["id"]
+                )
+            )
+            print("asd")
+        else:
+            pass
+
+        SubmissionHelper = SUBMISSION_TYPE_HELPERS.get(self.submission_type_key)
+        if SubmissionHelper:
+            self.submission_helper = SubmissionHelper(
+                submission=self.submission,
+                user=self.request.user,
+                view=self,
+                case_id=self.case_id,
+            )
         self.client.update_submission_status(submission_id, "received")

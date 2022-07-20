@@ -65,12 +65,21 @@
         </div>
         <ul class="task-list-items">
             <li class="task-list-item edit-item" data-section="27">
-                {% if case %}
+                {% if submission %}
                     {% if submission.organisation.name %}
-                        {{ submission.organisation.name }}
+                        {% if "FEATURE_FLAG_UAT_TEST" in request.user.groups %}
+                            <a href="{% url 'interest_client_type' submission_id=submission_id %}">{{ submission.organisation.name }}</a>
+                        {% else %}
+                            {{ submission.organisation.name }}
+                        {% endif %}
                         {% task_status 'COMPLETE' %}
                     {% else %}
-                        <a href="/case/interest/{{ case_id }}/company/">Company information</a>
+                        {% if "FEATURE_FLAG_UAT_TEST" in request.user.groups %}
+                            <a href="{% url 'interest_client_type' submission_id=submission_id %}">Company
+                                information</a>
+                        {% else %}
+                            <a href="/case/interest/{{ case_id }}/company/">Company information</a>
+                        {% endif %}
                     {% endif %}
                 {% else %}
                     Company information

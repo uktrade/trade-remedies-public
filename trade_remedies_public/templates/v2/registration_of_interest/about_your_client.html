@@ -37,9 +37,9 @@
                     Continue
                 </button>
                 {% if non_uk_registered %}
-                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_ch_no' case_id contact_id%}">Back</a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_ch_no' submission_id=submission_id contact_id=contact_id %}">Back</a>
                 {% else %}
-                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_ch_yes' case_id contact_id%}">Back</a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_ch_yes' submission_id=submission_id contact_id=contact_id %}">Back</a>
                 {% endif %}
             </div>
 

@@ -29,7 +29,7 @@
                 {{ submission.organisation.address }} <br>
             </dd>
             <dd class="govuk-summary-list__actions">
-                <a href="reginterest-which-org">
+                <a href="{% url 'interest_client_type' submission_id=submission_id %}">
                     Change
                     <span class="govuk-visually-hidden"> who is registering interest</span>
                 </a>
@@ -51,7 +51,7 @@
                 {% endfor %}
             </dd>
             <dd class="govuk-summary-list__actions">
-                <a href="reginterest-upload-pre">
+                <a href="{% url 'sub_upload' submission_id=submission_id case_id=submission.case.id %}">
                     Change
                     <span class="govuk-visually-hidden"> initial documentation</span>
                 </a>
@@ -65,8 +65,8 @@
         <fieldset class="govuk-fieldset" aria-describedby="waste-hint">
             <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="waste" name="waste" type="checkbox" value="carcasses">
-                    <label class="govuk-label govuk-checkboxes__label" for="waste">
+                    <input class="govuk-checkboxes__input" id="authorised" name="authorised" type="checkbox" value="yes">
+                    <label class="govuk-label govuk-checkboxes__label" for="authorised">
                         I am authorised to provide this information.
                     </label>
                 </div>

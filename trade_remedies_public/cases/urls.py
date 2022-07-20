@@ -21,16 +21,6 @@ urlpatterns = [
         name="interest_case_submission_created",
     ),
     path(
-        "interest/<uuid:case_id>/organisation/",
-        case_views.InterestExistingClientStep2.as_view(),
-        name="interest_existing_client",
-    ),
-    path(
-        "interest/<uuid:case_id>/<uuid:organisation_id>/contact/",
-        case_views.InterestPrimaryContactStep2.as_view(),
-        name="interest_existing_client_primary_contact",
-    ),
-    path(
         "interest/<uuid:case_id>/company/",
         case_views.CompanyView.as_view(submission_type_key="interest"),
         name="interest_org",
@@ -241,38 +231,40 @@ urlpatterns = [
 ]
 
 urlpatterns += [
+
+
     path(
         "v2/select/",
         registration_of_interest.RegistrationOfInterest1.as_view(),
         name="roi_1",
     ),
     path(
-        "interest/<uuid:case_id>/type/",
+        "interest/<uuid:submission_id>/type/",
         registration_of_interest.InterestClientTypeStep2.as_view(),
         name="interest_client_type",
     ),
     path(
-        "interest/<uuid:case_id>/contact/",
+        "interest/<uuid:submission_id>/contact/",
         registration_of_interest.InterestPrimaryContactStep2.as_view(),
         name="interest_primary_contact",
     ),
     path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/ch/",
+        "interest/<uuid:submission_id>/<uuid:contact_id>/ch/",
         registration_of_interest.InterestUkRegisteredYesNoStep2.as_view(),
         name="interest_ch",
     ),
     path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/ch/yes/",
+        "interest/<uuid:submission_id>/<uuid:contact_id>/ch/yes/",
         registration_of_interest.InterestIsUkRegisteredStep2.as_view(),
         name="interest_ch_yes",
     ),
     path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/ch/no/",
+        "interest/<uuid:submission_id>/<uuid:contact_id>/ch/no/",
         registration_of_interest.InterestNonUkRegisteredStep2.as_view(),
         name="interest_ch_no",
     ),
     path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/submit/",
+        "interest/<uuid:submission_id>/<uuid:contact_id>/submit/",
         registration_of_interest.InterestUkSubmitStep2.as_view(),
         name="interest_submit",
     ),
@@ -280,5 +272,15 @@ urlpatterns += [
         "registration_of_interest/<uuid:submission_id>/check_and_submit",
         registration_of_interest.RegistrationOfInterest4.as_view(),
         name="roi_4",
+    ),
+    path(
+        "interest/<uuid:submission_id>/organisation/",
+        registration_of_interest.InterestExistingClientStep2.as_view(),
+        name="interest_existing_client",
+    ),
+    path(
+        "interest/<uuid:submission_id>/<uuid:organisation_id>/contact/",
+        registration_of_interest.InterestPrimaryContactStep2.as_view(),
+        name="interest_existing_client_primary_contact",
     ),
 ]
