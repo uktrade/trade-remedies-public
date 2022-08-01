@@ -35,8 +35,7 @@
                 <span class="govuk-visually-hidden">Error:</span> <span class="file_error_message"></span>
             </p>
             <p><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
-                <input type="file"
-                       id="file-{{ unique_id }}" name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
+                <input type="file" id="file-{{ unique_id }}" data-type="{{ type }}" name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
                 <label for="file-{{ unique_id }}" class="govuk-link">Choose a file</label> or drag it here</p>
         </div>
 

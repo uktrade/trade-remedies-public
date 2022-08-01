@@ -3,8 +3,8 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from v2_api_client.mixins import APIClientMixin
 
-from trade_remedies_public.core.decorators import catch_form_errors
-from trade_remedies_public.documents.forms import DocumentForm
+from core.decorators import catch_form_errors
+from documents.forms import DocumentForm
 
 
 class DocumentView(View, APIClientMixin):

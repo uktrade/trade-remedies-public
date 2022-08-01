@@ -10,15 +10,15 @@ from django.views.generic.base import View
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
 
-from trade_remedies_public.cases.constants import SUBMISSION_TYPE_REGISTER_INTEREST
-from trade_remedies_public.cases.forms import ClientFurtherDetailsForm, ClientTypeForm, \
+from cases.constants import SUBMISSION_TYPE_REGISTER_INTEREST
+from cases.forms import ClientFurtherDetailsForm, ClientTypeForm, \
     ExistingClientForm, NonUkEmployerForm, \
     PrimaryContactForm, RegistrationOfInterest4Form, UkEmployerForm, YourEmployerForm
-from trade_remedies_public.cases.utils import get_org_parties
-from trade_remedies_public.config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
+from cases.utils import get_org_parties
+from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
     SECURITY_GROUP_ORGANISATION_USER
-from trade_remedies_public.config.utils import add_form_error_to_session
-from trade_remedies_public.core.base import GroupRequiredMixin
+from config.utils import add_form_error_to_session
+from core.base import GroupRequiredMixin
 
 
 class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, View):

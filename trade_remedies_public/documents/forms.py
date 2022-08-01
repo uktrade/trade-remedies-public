@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
 
-from trade_remedies_public.config.forms import ValidationForm
+from config.forms import ValidationForm
 
 
 class DocumentForm(forms.Form):
