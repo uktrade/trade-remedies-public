@@ -134,7 +134,12 @@
                         <h1 class="heading-medium">Other things you can do</h1>
                         <ul>
                             {% if pre_register_interest %}
-                                <li><a href="/case/interest/">Register interest in a case</a></li>{% endif %}
+                                {% if 'FEATURE_FLAG_UAT_TEST' in user.groups %}
+                                    <li><a href="{% url 'roi' %}">Register interest in a case</a></li>
+                                {% else %}
+                                    <li><a href="/case/interest/">Register interest in a case</a></li>
+                                {% endif %}
+                            {% endif %}
                             {% if pre_applications %}
                                 <li><a href="/case/">Apply for an investigation</a></li>{% endif %}
                             {% if pre_manage_team and is_org_owner %}

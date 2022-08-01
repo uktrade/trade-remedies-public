@@ -103,3 +103,8 @@ class RegistrationOfInterest4Form(ValidationForm):
     authorised = forms.BooleanField(
         required=True, error_messages={"required": "not_authorised_roi"}
     )
+
+
+class RegistrationOfInterest3Form(ValidationForm):
+    non_confidential_file = forms.FileField()
+    confidential_file = forms.FileField()

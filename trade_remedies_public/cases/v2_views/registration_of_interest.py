@@ -1,10 +1,12 @@
 import datetime
 
+from apiclient.exceptions import ClientError
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import FormView, TemplateView
+from django.views.generic.base import View
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
 
@@ -15,20 +17,213 @@ from trade_remedies_public.cases.forms import ClientFurtherDetailsForm, ClientTy
 from trade_remedies_public.cases.utils import get_org_parties
 from trade_remedies_public.config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
     SECURITY_GROUP_ORGANISATION_USER
+from trade_remedies_public.config.utils import add_form_error_to_session
 from trade_remedies_public.core.base import GroupRequiredMixin
 
 
-class RegistrationOfInterest1(LoginRequiredMixin, TemplateView, APIClientMixin):
+class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, View):
+    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
+
+    def dispatch(self, request, *args, **kwargs):
+        self.submission = None
+        if submission_id := self.kwargs.get("submission_id"):
+            self.submission = self.client.get_submission(submission_id)
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_invalid(self, form):
+        form.assign_errors_to_request(self.request)
+        return super().form_invalid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(self.kwargs)
+        if self.submission:
+            context["submission"] = self.submission
+        return context
+
+    def add_organisation_to_registration_of_interest(
+            self,
+            organisation_id: str,
+            submission_id: str = None,
+            contact_id: str = None
+    ) -> dict:
+        """
+        Amends the organisation of a ROI submission object.
+        Parameters
+        ----------
+        organisation_id : str - the UUID of the organisation object
+        submission_id : str - the UUID of the submission object, default to self.kwargs["submission"]
+        contact_id : str - the UUID of the contact object you want to set as the primary of this
+        org and this case, will create a new one if not specified
+
+        Returns
+        -------
+        dict - a redirection to the tasklist loaded with the updated submission
+        """
+        submission_id = submission_id or self.kwargs.get("submission_id", None)
+        if not submission_id:
+            raise Exception("You need to provide a submission ID to amend")
+
+        try:
+            submission = self.client.put(
+                self.client.url(
+                    f"submissions/{submission_id}/add_organisation_to_registration_of_interest"
+                ),
+                data={
+                    "organisation_id": organisation_id,
+                    "contact_id": contact_id
+                },
+            )
+            return redirect(reverse(
+                "roi_submission_exists",
+                kwargs={
+                    "submission_id": submission["id"]
+                }
+            ))
+        except ClientError as exc:
+            if exc.status_code == 409:
+                # There is a conflict as an ROI with this case and organisation already exists
+                return redirect(reverse("roi_already_exists", kwargs={
+                    "submission_id": exc.message[0]["id"]
+                }))
+
+
+class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
+    template_name = "v2/registration_of_interest/tasklist.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        submission = context.get("submission", {})
+        steps = [
+            {
+                "heading": "Your case",
+                "sub_steps": [
+                    {
+                        "link": reverse("roi_1"),
+                        "link_text": "Select a Trade Remedies case",
+                        "status": "Complete" if submission else "Not Started",
+                        "ready_to_do": False if submission else True
+                    }
+                ]
+            },
+            {
+                "heading": "About you",
+                "sub_steps": [
+                    {
+                        "link": reverse(
+                            "interest_client_type",
+                            kwargs={"submission_id": submission["id"]}
+                        ) if submission else None,
+                        "link_text": "Organisation details",
+                        "status": "Complete" if submission.get("organisation") else "Not Started",
+                    }
+                ]
+            }
+        ]
+
+        registration_documentation_status_text = ""
+        registration_documentation_status = "Not Started"
+        if submission:
+            if submission["paired_documents"] and not submission["orphaned_documents"]:
+                registration_documentation_status = "Complete"
+            elif orphaned_documents := submission["orphaned_documents"]:
+                registration_documentation_status_text = f"Documents uploaded: {len(orphaned_documents)}"
+                registration_documentation_status = "Incomplete"
+            else:
+                registration_documentation_status = "Not Started"
+        documentation_sub_steps = [
+            {
+                "link": reverse(
+                    "roi_3_registration_documentation",
+                    kwargs={"submission_id": submission["id"]}
+                ) if submission else None,
+                "link_text": "Registration documentation",
+                "status": registration_documentation_status,
+                "status_text": registration_documentation_status_text
+            }
+        ]
+
+        if submission and submission["organisation"] and submission["organisation"]["id"] != \
+                self.request.user.organisation["id"]:
+            # THe user is representing someone else, we should show the letter of authority
+            documentation_sub_steps.append({
+                "link": reverse(
+                    "roi_3_loa",
+                    kwargs={"submission_id": submission["id"]}
+                ),
+                "link_text": "Upload a Letter of Authority",
+                "status": "Complete" if any(each for each in submission["submission_documents"] if
+                                            each["type"]["key"] == "loa") else "Not Started"
+            })
+
+        steps.append({
+            "heading": "Documentation",
+            "sub_steps": documentation_sub_steps
+        })
+
+        steps.append({
+            "heading": "Register interest",
+            "sub_steps": [
+                {
+                    "link": reverse(
+                        "roi_4", kwargs={"submission_id": submission["id"]}
+                    ) if submission else None,
+                    "link_text": "Check and submit",
+                    "status": "Complete" if submission.get(
+                        "status", {}
+                    ).get("locking") is True else "Not Started",
+                }
+            ]
+        })
+
+        for number, step in enumerate(steps):
+            for sub_step_index, sub_step in enumerate(step["sub_steps"]):
+                if "ready_to_do" not in sub_step:
+                    try:
+                        previous_step = steps[number - 1]
+                        if len([sub_step for sub_step in previous_step["sub_steps"] if
+                                sub_step["status"] == "Complete"]) == len(
+                            previous_step["sub_steps"]):
+                            # All sub-steps in the previous step have been completed, the next state is now open
+                            for sub_step in step["sub_steps"]:
+                                sub_step["ready_to_do"] = True
+                        else:
+                            for sub_step in step["sub_steps"]:
+                                sub_step["ready_to_do"] = False
+                                sub_step["status"] = "Cannot Start Yet"
+
+                    except IndexError:
+                        raise Exception(
+                            "The first step in a tasklist should always define a 'ready_to_do' key"
+                        )
+
+        context["steps"] = steps
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if self.submission and self.submission["status"]["locking"]:
+            # The submission exists and has been submitted, show the user the overview page
+            return render(
+                request,
+                "v2/registration_of_interest/registration_of_interest_review.html",
+                context={"submission": self.submission}
+            )
+        # If not, show the normal tasklist
+        return super().get(request, *args, **kwargs)
+
+
+class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
     template_name = "v2/registration_of_interest/registration_of_interest_1.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cases = self.client.get_cases(open_to_roi=True)
         if not cases:
-            self.request.session["form_errors"] = {}
-            self.request.session["form_errors"]["error_summaries"] = [
-                ["table-header", "There are no active cases to join"]
-            ]
+            add_form_error_to_session(
+                "There are no active cases to join",
+                request=self.request,
+                field="table-header"
+            )
         context["cases"] = cases
         return context
 
@@ -67,28 +262,14 @@ class RegistrationOfInterest1(LoginRequiredMixin, TemplateView, APIClientMixin):
 
         # REDIRECT to next stage
         return redirect(reverse(
-            "interest_case_submission_created",
+            "roi_submission_exists",
             kwargs={
-                "case_id": case_id,
                 "submission_id": new_submission["id"]
             }
         ))
 
 
-class InterestStep2BaseView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, FormView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
-
-    def form_invalid(self, form):
-        form.assign_errors_to_request(self.request)
-        return super().form_invalid(form)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update(self.kwargs)
-        return context
-
-
-class InterestClientTypeStep2(InterestStep2BaseView):
+class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/who_is_registering.html"
     form_class = ClientTypeForm
 
@@ -109,21 +290,10 @@ class InterestClientTypeStep2(InterestStep2BaseView):
                 reverse("interest_primary_contact", kwargs={"submission_id": submission_id})
             )
         elif form.cleaned_data.get("org") == "my-org":
-            submission = self.client.put(
-                self.client.url(
-                    f"submissions/{submission_id}/add_organisation_to_registration_of_interest"
-                ),
-                data={
-                    "organisation_id": self.request.user.organisation["id"]
-                }
+            return self.add_organisation_to_registration_of_interest(
+                organisation_id=self.request.user.organisation["id"],
+                submission_id=submission_id
             )
-            return redirect(reverse(
-                "interest_case_submission_created",
-                kwargs={
-                    "case_id": submission["case"]["id"],
-                    "submission_id": submission_id
-                }
-            ))
 
         elif form.cleaned_data.get("org") == "existing-org":
             return redirect(
@@ -131,7 +301,7 @@ class InterestClientTypeStep2(InterestStep2BaseView):
             )
 
 
-class InterestPrimaryContactStep2(InterestStep2BaseView):
+class InterestPrimaryContactStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/primary_client_contact.html"
     form_class = PrimaryContactForm
 
@@ -147,22 +317,11 @@ class InterestPrimaryContactStep2(InterestStep2BaseView):
         # organisation_id only exists if registering ROI for existing client
         organisation_id = self.kwargs.get("organisation_id", None)
         if organisation_id:
-            submission = self.client.put(
-                self.client.url(
-                    f"submissions/{submission_id}/add_organisation_to_registration_of_interest"
-                ),
-                data={
-                    "organisation_id": organisation_id,
-                    "contact_id": contact_id,
-                }
+            return self.add_organisation_to_registration_of_interest(
+                organisation_id=organisation_id,
+                submission_id=submission_id,
+                contact_id=contact_id
             )
-            return redirect(reverse(
-                "interest_case_submission_created",
-                kwargs={
-                    "case_id": submission["case"]["id"],
-                    "submission_id": submission["id"]
-                }
-            ))
         else:
             return redirect(reverse(
                 "interest_ch",
@@ -173,7 +332,7 @@ class InterestPrimaryContactStep2(InterestStep2BaseView):
             ))
 
 
-class InterestUkRegisteredYesNoStep2(InterestStep2BaseView):
+class InterestUkRegisteredYesNoStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/is_client_uk_company.html"
     form_class = YourEmployerForm
 
@@ -197,7 +356,7 @@ class InterestUkRegisteredYesNoStep2(InterestStep2BaseView):
             )
 
 
-class InterestNonUkRegisteredStep2(InterestStep2BaseView):
+class InterestNonUkRegisteredStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/your_client_details.html"
     form_class = NonUkEmployerForm
 
@@ -214,7 +373,7 @@ class InterestNonUkRegisteredStep2(InterestStep2BaseView):
         )
 
 
-class InterestIsUkRegisteredStep2(InterestStep2BaseView):
+class InterestIsUkRegisteredStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/who_you_representing.html"
     form_class = UkEmployerForm
 
@@ -230,7 +389,7 @@ class InterestIsUkRegisteredStep2(InterestStep2BaseView):
         )
 
 
-class InterestUkSubmitStep2(InterestStep2BaseView):
+class InterestUkSubmitStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/about_your_client.html"
     form_class = ClientFurtherDetailsForm
 
@@ -254,28 +413,15 @@ class InterestUkSubmitStep2(InterestStep2BaseView):
             }
         )
 
-        # Associating the ROI with the organisation
-        submission = self.client.put(
-            self.client.url(
-                f"submissions/{submission_id}/add_organisation_to_registration_of_interest"
-            ),
-            data={
-                "organisation_id": organisation["id"],
-                "contact_id": contact_id,
-            }
+        # Associating the ROI with the organisation and redirecting to tasklist
+        return self.add_organisation_to_registration_of_interest(
+            organisation_id=organisation["id"],
+            submission_id=submission_id,
+            contact_id=contact_id
         )
 
-        # Return to task list
-        return redirect(reverse(
-            "interest_case_submission_created",
-            kwargs={
-                "case_id": submission["case"]["id"],
-                "submission_id": submission["id"]
-            }
-        ))
 
-
-class InterestExistingClientStep2(InterestStep2BaseView):
+class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/who_you_representing_existing.html"
     form_class = ExistingClientForm
 
@@ -304,23 +450,81 @@ class InterestExistingClientStep2(InterestStep2BaseView):
         }))
 
 
-class RegistrationOfInterest4(InterestStep2BaseView):
-    template_name = "v2/registration_of_interest/registration_of_interest_4.html"
-    form_class = RegistrationOfInterest4Form
+class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase, TemplateView):
+    template_name = "v2/registration_of_interest/registration_of_interest_3_registration_documentation.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["submission"] = self.client.get_submission(self.kwargs["submission_id"])
+        # Let's loop over the paired documents first, Then we have a look at the orphaned documents (those without a corresponding public/private pair
+        context["uploaded_documents"] = self.submission["paired_documents"] + self.submission[
+            "orphaned_documents"]
         return context
 
+    def post(self, request, *args, **kwargs):
+        if not self.submission["orphaned_documents"] and self.submission["paired_documents"]:
+            return redirect(reverse(
+                "roi_submission_exists",
+                kwargs={"submission_id": self.submission["id"]}
+            ))
+
+        elif orphaned_documents := self.submission["orphaned_documents"]:
+            missing = "private" if orphaned_documents[-1]["non_confidential"] else "public"
+            add_form_error_to_session(
+                f"You need to upload {missing} version of the the Pre-sampling documentation",
+                request
+            )
+        elif not self.submission["paired_documents"]:
+            add_form_error_to_session(
+                "You need to upload a Private and Public version of the the Pre-sampling documentation",
+                request
+            )
+        return redirect(request.path)
+
+
+class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
+    template_name = "v2/registration_of_interest/registration_of_interest_3_loa.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.submission:
+            # Getting the uploaded LOA document if it exists
+            loa_document = next(
+                filter(
+                    lambda document: document["type"]["key"] == "loa",
+                    self.submission["submission_documents"]
+                ),
+                None
+            )
+            if loa_document:
+                context["loa_document"] = loa_document["document"]
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if context.get("loa_document", None):
+            return redirect(reverse(
+                "roi_submission_exists",
+                kwargs={"submission_id": self.submission["id"]}
+            ))
+        else:
+            add_form_error_to_session(
+                "You need to upload a Letter of Authority to represent your client",
+                request
+            )
+        return redirect(request.path)
+
+
+class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
+    template_name = "v2/registration_of_interest/registration_of_interest_4.html"
+    form_class = RegistrationOfInterest4Form
+
     def form_valid(self, form):
-        submission = self.get_context_data()["submission"]
         # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
         organisation_case_role = self.client.get(
             self.client.url(
                 "organisation_case_roles",
-                case_id=submission["case"]["id"],
-                organisation_id=submission["organisation"]["id"]
+                case_id=self.submission["case"]["id"],
+                organisation_id=self.submission["organisation"]["id"]
             )
         )
         self.client.put(
@@ -342,15 +546,14 @@ class RegistrationOfInterest4(InterestStep2BaseView):
 
 
 class RegistrationOfInterestComplete(
-    LoginRequiredMixin,
-    APIClientMixin,
+    RegistrationOfInterestBase,
     TemplateView
 ):
     template_name = "v2/registration_of_interest/registration_of_interest_complete.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        context["submission"] = self.client.get(
-            self.client.url(f"submissions/{self.kwargs['submission_id']}")
-        )
-        return context
+
+class RegistrationOfInterestAlreadyExists(
+    RegistrationOfInterestBase,
+    TemplateView
+):
+    template_name = "v2/registration_of_interest/registration_of_interest_already_exists.html"

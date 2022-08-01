@@ -1,0 +1,39 @@
+{% load static %}
+{% load set %}
+
+{% load random_string_generator %}
+
+{% random_string_generator 5 as unique_row_id %}
+
+<div class="document_field">
+    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+        {{ header }} {{ loop_counter }}
+    </h2>
+
+    <div class="row-colour confidential_and_non_confidential_file_row">
+
+        {% if orphan %}
+            {# We're dealing with an orphaned document, update the parent_id accordingly #}
+            {% if document_pair.non_confidential %}
+                {% set "parent_document" document_pair.non_confidential.id %}
+            {% endif %}
+            {% if document_pair.confidential %}
+                {% set "parent_document" document_pair.confidential.id %}
+            {% endif %}
+        {% endif %}
+
+        <div class="govuk-grid-column-one-half non_confidential_file_row">
+            {% include 'v2/component_macros/file_upload_card.html' with confidential=False document=document_pair.non_confidential unique_row_id=unique_row_id %}
+        </div>
+        <div class="govuk-grid-column-one-half confidential_file_row">
+            {% include 'v2/component_macros/file_upload_card.html' with confidential=True document=document_pair.confidential unique_row_id=unique_row_id %}
+        </div>
+        <div class="remove_document_panel" style="display: none;">
+            <a href alt="Delete panel" title="Delete panel"
+               class="govuk-link govuk-link--no-visited-state remove_document_link">
+                Remove documents
+            </a>
+        </div>
+    </div>
+</div>
+

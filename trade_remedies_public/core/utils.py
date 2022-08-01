@@ -148,3 +148,4 @@ def internal_redirect(url, default_path):
         return redirect(default_path)
 
     return redirect(url)
+

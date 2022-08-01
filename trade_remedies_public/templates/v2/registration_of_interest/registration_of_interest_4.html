@@ -46,14 +46,13 @@
                 Uploaded initial documentation
             </dt>
             <dd class="govuk-summary-list__value">
-                {% for document in submission.documents %}
-                    {% if not document.system %}
-                        {{ document.name }}<br>
-                    {% endif %}
+                {% for document in submission.paired_documents %}
+                    {{ document.confidential.name }}<br>
+                    {{ document.non_confidential.name }}<br>
                 {% endfor %}
             </dd>
             <dd class="govuk-summary-list__actions">
-                <a href="{% url 'sub_upload' submission_id=submission_id case_id=submission.case.id %}">
+                <a href="{% url 'roi_3_registration_documentation' submission_id=submission_id %}">
                     Change
                     <span class="govuk-visually-hidden"> initial documentation</span>
                 </a>

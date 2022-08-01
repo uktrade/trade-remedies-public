@@ -1,0 +1,71 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_url %}
+{% load set %}
+{% block main_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl"> Register interest in a case </h1>
+        <p class="govuk-body">Complete all the steps to register your interest in an active Trade Remedies
+            investigation. </p>
+        <p class="govuk-body govuk-!-margin-bottom-7">If you leave before you finish, you can return later from your
+            dashboard.</p>
+        <ol class="app-task-list">
+            {% for step in steps %}
+                <li>
+                    <h2 class="app-task-list__section">
+                        <span class="app-task-list__section-number">{{ forloop.counter }}. </span>{{ step.heading }}
+                    </h2>
+                    <ul class="app-task-list__items">
+                        {% for sub_step in step.sub_steps %}
+                            <li class="app-task-list__item">
+                        <span class="app-task-list__task-name">
+                            {% if sub_step.ready_to_do %}
+                                <a href="{{ sub_step.link }}" class="govuk-link--no-visited-state"
+                                   aria-describedby="{{ forloop.counter }}_status">{{ sub_step.link_text }}</a>
+                            {% else %}
+                                {{ sub_step.link_text }}
+                            {% endif %}
+                        </span>
+                                <strong class="govuk-tag {% if sub_step.status == 'Complete' %}govuk-tag{% elif sub_step.status == 'Incomplete' %}govuk-tag--pink{% else %}govuk-tag--grey{% endif %} app-task-list__tag"
+                                        id="{{ forloop.counter }}_status">
+                                    {% if sub_step.status_text %}
+                                        {{ sub_step.status_text }}
+                                    {% else %}
+                                        {{ sub_step.status }}
+                                    {% endif %}</strong>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+
+            {% endfor %} </ol>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'dashboard' %}">Back to Dashboard</a>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <aside class="app-related-items" role="complementary">
+            <h2 class="govuk-heading-m" id="subsection-title">Read the guidance documents</h2>
+            <nav role="navigation" aria-labelledby="subsection-title">
+                <ul class="govuk-list govuk-!-font-size-16">
+                    <li>
+                        <a href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
+                           target="_blank" class="govuk-link govuk-link--no-visited-state">Trade remedies investigations
+                            process (opens in a new window or tab)</a>
+                    </li>
+                    <li>
+                        <a href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process/an-introduction-to-our-investigations-process#confidential-information-and-non-confidential-summaries"
+                           target="_blank" class="govuk-link govuk-link--no-visited-state">Creating confidential and
+                            non-confidential documents (opens in a new window or tab)</a>
+                    </li>
+                    <li>
+                        <a href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process/an-introduction-to-our-investigations-process#about-our-questionnaires"
+                           target="_blank" class="govuk-link govuk-link--no-visited-state">About our questionnaires
+                            (opens in a new window or tab)</a>
+                    </li> {% if submission %}
+                    <li>
+                        <br>
+                        <strong>Email the case team</strong>
+                        <a class="govuk-link govuk-link--no-visited-state" href="">{{ submission.case.reference }}@traderemedies.gov.uk</a>
+                    </li> {% endif %}
+                </ul>
+            </nav>
+        </aside>
+    </div> {% endblock main_content %}

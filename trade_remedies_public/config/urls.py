@@ -295,4 +295,5 @@ urlpatterns = [
         register_views.VerifyEmailVerifyCode.as_view(),
         name="email_verify_code",
     ),
+    path("documents/", include("documents.urls")),
 ]

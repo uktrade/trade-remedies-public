@@ -15,7 +15,8 @@
 
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-        <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'govuk/images/favicon.ico' %}" type="image/x-icon">
+        <link rel="shortcut icon" sizes="16x16 32x32 48x48" href="{% static 'govuk/images/favicon.ico' %}"
+              type="image/x-icon">
         <link rel="apple-touch-icon" sizes="180x180" href="{% static 'govuk/images/apple-touch-icon-180x180.png' %}">
         <link rel="apple-touch-icon" sizes="167x167" href="{% static 'govuk/images/apple-touch-icon-167x167.png' %}">
         <link rel="apple-touch-icon" sizes="152x152" href="{% static 'govuk/images/apple-touch-icon-152x152.png' %}">
@@ -51,7 +52,7 @@
     }
 </script>
 {% if not cookie_policy_set %}
-    <div class="govuk-cookie-banner " data-nosnippet role="region" aria-label="Cookies on [name of service]">
+    <div class="govuk-cookie-banner " data-nosnippet role="region" aria-label="Cookies on Trade Remedies">
         <div class="govuk-cookie-banner__message govuk-width-container">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
@@ -178,8 +179,25 @@
     {% block back_button %}
         <a class="govuk-back-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
     {% endblock %}
-    <main class="govuk-main-wrapper app-main-class" id="main-content" role="main">
+    <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
         <div class="govuk-grid-row">
+            {% if form_errors.error_summaries %}
+                <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+                     data-module="govuk-error-summary">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                        There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            {% for error in form_errors.error_summaries %}
+                                <li>
+                                    <a href="#{{ error.0 }}">{{ error.1 }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
             {% block main_content %}{% endblock main_content %}
 
         </div>
@@ -234,7 +252,6 @@
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="  {# /PS-IGNORE #}
         crossorigin="anonymous"></script>
 
-{% block scripts %}{% endblock scripts %}
 <script type="text/javascript">
     $(document).ready(function () {
         // Remove the # from the hash, as different browsers may or may not include it
@@ -250,6 +267,7 @@
 
     })
 </script>
+{% block scripts %}{% endblock scripts %}
 </body>
 
 </html>

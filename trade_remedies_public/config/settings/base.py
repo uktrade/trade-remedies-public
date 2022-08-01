@@ -9,14 +9,13 @@ https://docs.djangoproject.com/en/2.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
-import sys
 import json
 import os
+import sys
+
 import environ
-
-from django_log_formatter_ecs import ECSFormatter
-
 import sentry_sdk
+from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # We use django-environ but do not read a `.env` file. Locally we feed
@@ -41,7 +40,6 @@ SITE_ROOT = root()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -124,9 +122,7 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = "config.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -137,7 +133,6 @@ DATABASES = {
         "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -156,7 +151,6 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
@@ -311,7 +305,6 @@ LOGGING = {
     },
 }
 
-
 ENVIRONMENT_LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -363,3 +356,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 COUNTRIES_FIRST = ["GB"]
 COUNTRIES_FIRST_BREAK = "------"
+
+FILE_MAX_SIZE_BYTES = 30000000
+FILE_ALLOWED_TYPES = [
+    "application/pdf",  # .pdf
+    "application/msword",  # .doc and .docx
+    "application/excel",  # .xls
+    "application/vnd.ms-excel",  # .xls
+    "application/x-excel",  # .xls
+    "application/x-msexcel",  # .xls
+]

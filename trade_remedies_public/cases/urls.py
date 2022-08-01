@@ -1,6 +1,7 @@
 from cases import views as case_views
 from cases.v2_views import registration_of_interest
 from django.urls import path
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
@@ -232,7 +233,16 @@ urlpatterns = [
 
 urlpatterns += [
 
-
+    path(
+        "interest/start",
+        registration_of_interest.RegistrationOfInterestTaskList.as_view(),
+        name="roi",
+    ),
+    path(
+        "interest/submission/<uuid:submission_id>/",
+        registration_of_interest.RegistrationOfInterestTaskList.as_view(),
+        name="roi_submission_exists",
+    ),
     path(
         "v2/select/",
         registration_of_interest.RegistrationOfInterest1.as_view(),
@@ -284,8 +294,23 @@ urlpatterns += [
         name="interest_existing_client_primary_contact",
     ),
     path(
+        "interest/<uuid:submission_id>/upload_registration_documentation/",
+        registration_of_interest.RegistrationOfInterestRegistrationDocumentation.as_view(),
+        name="roi_3_registration_documentation",
+    ),
+    path(
+        "interest/<uuid:submission_id>/upload_loa/",
+        registration_of_interest.RegistrationOfInterestLOA.as_view(),
+        name="roi_3_loa",
+    ),
+    path(
         "interest/<uuid:submission_id>/complete/",
         registration_of_interest.RegistrationOfInterestComplete.as_view(),
         name="roi_complete",
     ),
+    path(
+        "interest/<uuid:submission_id>/already_exists/",
+        registration_of_interest.RegistrationOfInterestAlreadyExists.as_view(),
+        name="roi_already_exists",
+    )
 ]

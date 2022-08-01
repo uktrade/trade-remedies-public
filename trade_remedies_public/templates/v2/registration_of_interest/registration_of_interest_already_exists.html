@@ -1,0 +1,33 @@
+{% extends "v2/govuk/base.html" %}
+{% load format_date %}
+
+{% block back_button %}{% endblock %}
+
+{% block page_title %}Interest in the case has already been registered{% endblock page_title %}
+
+{% block main_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            There is a problem
+        </h1>
+
+        <p>Someone has already registered interest in the following case on-behalf of your organisation:</p>
+
+        <p><strong>{{ submission.case.reference }} - {{ submission.case.name }}</strong><br>
+            Submitted: <span id="date">{{ submission.received_at|format_date:'%d %b %Y' }}</span>
+        </p>
+        <h2 class="govuk-heading-m">What happens next</h2>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>If you are an admin for this account you can review all of your organsiations applications on your
+                dashboard.
+            </li>
+            <li>Otherwise please contact the admin for this account should you have any outstanding issues.</li>
+        </ul>
+
+        <a href="{% url 'dashboard' %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            Go to my dashboard
+        </a>
+
+
+    </div>
+{% endblock main_content %}
