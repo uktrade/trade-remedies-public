@@ -167,7 +167,7 @@ class TestUkEmployerForm(TestCase):
 class TestNonUkEmployerForm(TestCase):
     def setUp(self) -> None:
         self.mock_data = {
-            "organisation_name": "test company",
+            "company_name": "test company",
             "address_snippet": "1 test road, london, nnnnnn",
             "post_code": "nnnnnnn",
             "company_number": "000000",
