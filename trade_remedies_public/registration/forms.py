@@ -101,7 +101,7 @@ class UkEmployerForm(ValidationForm):
 
 
 class NonUkEmployerForm(ValidationForm):
-    organisation_name = forms.CharField(error_messages={"required": "no_company_name_entered"})
+    company_name = forms.CharField(error_messages={"required": "no_company_name_entered"})
     address_snippet = forms.CharField(error_messages={"required": "no_company_address_entered"})
     post_code = forms.CharField(required=False)
     company_number = forms.CharField(required=False)
