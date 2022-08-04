@@ -25,7 +25,7 @@
                         <input class="govuk-radios__input" id="org" name="org"
                                type="radio" value="my-org">
                         <label class="govuk-label govuk-radios__label" for="org">
-                            My organisation: {{ user.organisation.name }}
+                            {{ user.organisation.name }}
                         </label>
                     </div>
                     {% if existing_clients %}
@@ -33,8 +33,7 @@
                             <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
                                    type="radio" value="existing-org">
                             <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
-                                An existing client: someone I have previously represented using the Trade Remedies
-                                Service
+                                An organisation that I have previously represented using the Trade Remedies Service
                             </label>
                         </div>
                     {% endif %}
@@ -42,7 +41,7 @@
                         <input class="govuk-radios__input" id="reginterest-what-org-3" name="org"
                                type="radio" value="new-org">
                         <label class="govuk-label govuk-radios__label" for="reginterest-what-org-3">
-                            A new client: someone I am representing for the first time using the Trade Remedies Service
+                            An organisation that I am representing for the first time using the Trade Remedies Service
                         </label>
                     </div>
                 </div>

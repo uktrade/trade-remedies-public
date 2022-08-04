@@ -6,6 +6,8 @@
 
 {% block heading %}Review your answers{% endblock heading %}
 
+<h2 class="govuk-heading-m">Your registration of interest</h2>
+
 {% block form_content %}
     <dl class="govuk-summary-list govuk-!-margin-bottom-2">
         <div class="govuk-summary-list__row">
@@ -20,10 +22,15 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-2">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                Registering interest for
+                Interested party
             </dt>
             <dd class="govuk-summary-list__value">
-                <p>My employer:</p>
+                {% if user.organisation.id == submission.organisation.id %}
+                    <p>My employer:</p>
+                {% else %}
+                    <p>My client:</p>
+                {% endif %}
+
                 {{ submission.organisation.name }}
                 <br>
                 {{ submission.organisation.address }} <br>
@@ -38,12 +45,26 @@
 
     </dl>
     <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Letter of Authority
+            </dt>
+            <dd class="govuk-summary-list__value">
+                {{ submission.documents.loa_document.name }}<br>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a href="{% url 'roi_3_loa' submission_id=submission_id %}">
+                    Change
+                    <span class="govuk-visually-hidden"> Letter of Authority</span>
+                </a>
+            </dd>
+        </div>
     </dl>
 
     <dl class="govuk-summary-list govuk-!-margin-bottom-6">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                Uploaded initial documentation
+                Registration documentation
             </dt>
             <dd class="govuk-summary-list__value">
                 {% for document in submission.paired_documents %}
@@ -60,9 +81,30 @@
         </div>
     </dl>
 
-    <h2 class="govuk-heading-m">Now send your application</h2>
+    <h2 class="govuk-heading-m">Now send your registration of interest</h2>
 
     {% include "v2/component_macros/checkbox.html" with name="authorised" id="authorised" label="I am authorised to provide this information." %}
-    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Confirm and submit application" %}
+    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Confirm and submit registration" %}
+
+    <div class="govuk-grid-column-one-third">
+        <aside class="app-related-items" role="complementary">
+            <h2 class="govuk-heading-m" id="subsection-title">Read the guidance documents</h2>
+            <nav role="navigation" aria-labelledby="subsection-title">
+                <ul class="govuk-list govuk-!-font-size-16">
+                    <li>
+                        <a class="link"
+                           href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
+                           target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
+                    </li>
+
+                    <li>
+                        <br>
+                        <strong>Email the case team</strong>
+                        <a class="govuk-link govuk-link--no-visited-state" href="">{{ case.reference }}@traderemedies.gov.uk</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+    </div>
 
 {% endblock form_content %}
