@@ -177,7 +177,7 @@
         </p>
     </div>
     {% block back_button %}
-        <a class="govuk-back-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
+        <a class="govuk-back-link govuk-link--no-visited-state" href="{% block back_button_link %}javascript: window.history.go(-1){% endblock back_button_link %}">Back</a>
     {% endblock %}
     <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
         {% include "v2/component_macros/error_summaries.html" %}

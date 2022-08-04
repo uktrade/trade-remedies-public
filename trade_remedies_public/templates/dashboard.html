@@ -106,11 +106,16 @@
                 {% if user.email_verified_at %}
                     <p>Use your dashboard to:</p>
                     <ul class="list">
-                        <li><a class="link bold" href="/case/interest/">Register interest in a case</a>
-                            <p>This will allow you to; have a chance to submit evidence, get updates on important
-                                developments, comment on {% organisation_initialism %}’s findings before a final
-                                decision is
-                                made, as well as being able to request a reconsideration of a final determination.</p>
+                        <li>
+                            {% if 'FEATURE_FLAG_UAT_TEST' in user.groups %}
+                                <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
+                            {% else %}
+                                <li><a class="link bold" href="/case/interest/">Register interest in a case</a></li>
+                            {% endif %}
+                        <p>This will allow you to; have a chance to submit evidence, get updates on important
+                            developments, comment on {% organisation_initialism %}’s findings before a final
+                            decision is
+                            made, as well as being able to request a reconsideration of a final determination.</p>
                         </li>
                         {% if pre_manage_team and is_org_owner %}
                             <li><a class="link bold" href="/accounts/team/">Manage your team</a>

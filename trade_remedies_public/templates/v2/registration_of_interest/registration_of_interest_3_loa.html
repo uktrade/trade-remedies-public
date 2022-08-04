@@ -3,6 +3,8 @@
 {% load static %}
 
 {% block page_title %}Upload letter of authority{% endblock page_title %}
+{% block back_button_link %}{% url 'roi_submission_exists' submission_id=submission.id %}{% endblock back_button_link %}
+
 {% block main_content %}
 
 

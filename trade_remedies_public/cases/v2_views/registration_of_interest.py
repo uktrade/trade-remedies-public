@@ -1,15 +1,6 @@
 import datetime
 
 from apiclient.exceptions import ClientError
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.utils import timezone
-from django.views.generic import FormView, TemplateView
-from django.views.generic.base import View
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from v2_api_client.mixins import APIClientMixin
-
 from cases.constants import SUBMISSION_TYPE_REGISTER_INTEREST
 from cases.forms import ClientFurtherDetailsForm, ClientTypeForm, \
     ExistingClientForm, NonUkEmployerForm, \
@@ -19,6 +10,14 @@ from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
     SECURITY_GROUP_ORGANISATION_USER
 from config.utils import add_form_error_to_session
 from core.base import GroupRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils import timezone
+from django.views.generic import FormView, TemplateView
+from django.views.generic.base import View
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from v2_api_client.mixins import APIClientMixin
 
 
 class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, View):
@@ -468,14 +467,16 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
             ))
 
         elif orphaned_documents := self.submission["orphaned_documents"]:
-            missing = "private" if orphaned_documents[-1]["non_confidential"] else "public"
+            missing = "confidential" if orphaned_documents[-1][
+                "non_confidential"] else "non-confidential"
             add_form_error_to_session(
-                f"You need to upload {missing} version of the the Pre-sampling documentation",
+                f"You need to upload a {missing} version of the the Pre-sampling documentation",
                 request
             )
         elif not self.submission["paired_documents"]:
             add_form_error_to_session(
-                "You need to upload a Private and Public version of the the Pre-sampling documentation",
+                "You need to upload a confidential and non-confidential"
+                " version of the the Pre-sampling documentation",
                 request
             )
         return redirect(request.path)

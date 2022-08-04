@@ -4,6 +4,7 @@
     <span class="govuk-caption-xl">4. Register interest</span>
 {% endblock nocaption %}
 
+{% block back_button_link %}{% url 'roi_submission_exists' submission_id=submission.id %}{% endblock back_button_link %}
 {% block heading %}Review your answers{% endblock heading %}
 
 {% block form_content %}

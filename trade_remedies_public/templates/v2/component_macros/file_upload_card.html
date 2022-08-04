@@ -22,11 +22,12 @@
 {% endif %}
 <div class="upload-card">
     <div class="upload_container"
+         id="doc-{{ unique_id }}"
+         data-type="{{ type }}"
+
          {% if document_exists and document.parent %}data-parent-document="{{ document.parent }}"{% endif %}
          {% if submission_id %}data-submission-id="{{ submission_id }}"{% endif %}
-         data-type="{{ type }}"
          {% if parent_document %}data-parent-document="{{ parent_document }}"{% endif %}
-         id="doc-{{ unique_id }}"
          {% if submission_document_type %}data-submission-document-type="{{ submission_document_type }}"{% endif %}
     >
 
@@ -35,7 +36,8 @@
                 <span class="govuk-visually-hidden">Error:</span> <span class="file_error_message"></span>
             </p>
             <p><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
-                <input type="file" id="file-{{ unique_id }}" data-type="{{ type }}" name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
+                <input type="file" id="file-{{ unique_id }}" data-type="{{ type }}"
+                       name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
                 <label for="file-{{ unique_id }}" class="govuk-link">Choose a file</label> or drag it here</p>
         </div>
 
