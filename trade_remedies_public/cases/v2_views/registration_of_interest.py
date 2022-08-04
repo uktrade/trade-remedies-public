@@ -279,6 +279,8 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
         existing_clients_list = get_org_parties(
             TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
         )
+        # removing duplicates
+        existing_clients_list = [each for each in existing_clients_list if each["id"] != self.request.user.organisation.get("id")]
         context["existing_clients"] = True if existing_clients_list else False
         return context
 

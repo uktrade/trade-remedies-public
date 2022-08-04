@@ -1,7 +1,7 @@
 {% extends "v2/registration_of_interest/base_form.html" %}
 
-{% block noheading %}
-{% endblock noheading %}
+{% block back_button_link %}{% url 'roi_submission_exists' submission_id=submission.id %}{% endblock back_button_link %}
+{% block noheading %}{% endblock noheading %}
 
 {% block form_content %}
 
