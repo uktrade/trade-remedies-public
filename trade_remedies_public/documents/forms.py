@@ -5,6 +5,9 @@ from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
 
 
 class DocumentForm(forms.Form):
+    """
+    Generic form to validate document uploads.
+    """
     file = forms.FileField(required=False)
 
     def clean_file(self):
@@ -21,7 +24,7 @@ class DocumentForm(forms.Form):
 
         if file.content_type not in settings.FILE_ALLOWED_TYPES:
             raise ValidationError(
-                message=f"The selected file must be either a Doc, Excel, or PDF: "
+                message=f"The selected file must be either a Doc, Excel, PDF, or ZIP: "
                 f"{file.original_name}"
             )
 

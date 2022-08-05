@@ -365,4 +365,5 @@ FILE_ALLOWED_TYPES = [
     "application/vnd.ms-excel",  # .xls
     "application/x-excel",  # .xls
     "application/x-msexcel",  # .xls
+    "application/zip",  # .zip
 ]

@@ -37,6 +37,7 @@ function file_upload(upload_container, files, submission_id) {
             upload_container.find(".file_name").html(file_data.name)
         },
         xhr: function () {
+            // Progressing the progress bar as the upload happens
             var xhr = new window.XMLHttpRequest();
             xhr.upload.addEventListener('loadstart', function () {
                 upload_container.find(".file_upload_indicator").hide()
@@ -46,6 +47,8 @@ function file_upload(upload_container, files, submission_id) {
                 if (e.lengthComputable) {
                     var percentageComplete = (e.loaded / e.total) * 100;
                     if (percentageComplete === 100) {
+                        // Once complete, show the virus scanning indicator. This has technically already happened in
+                        // the backend.
                         upload_container.find('.file_upload_indicator').hide()
                         upload_container.find('.scanning_file').show()
                     } else {
@@ -64,6 +67,9 @@ function file_upload(upload_container, files, submission_id) {
 
             let part_of_pair = upload_container.closest('.confidential_and_non_confidential_file_row')
             if (part_of_pair) {
+                // If this file was uploaded as part of a pair of confidential and non-confidential files, we need
+                // to update the data-parent-document attribute of the other file upload field in the pair, so the
+                // backend is able to associate and link the 2 files together
                 let type_of_document = upload_container.data('type')
                 let type_reverse = {
                     'confidential': 'non_confidential',
@@ -149,16 +155,20 @@ $(document).on('click', '.delete_document_link', function (e) {
 })
 
 $('#add_document_button').click(function (e) {
+    // Cloning the last document field
     let new_document_field = $(".document_field").last().clone()
     new_document_field.appendTo("#registration_documents");
 
     $.each(new_document_field.find('.upload_container'), function(){
+        // For each of the upload containers in the new row, we want to change the ID and clear any previously
+        // set attributes
         let new_upload_container_id = Math.random().toString(36).slice(2, 7);
         $(this).prop("id", new_upload_container_id)
         $(this)[0].removeAttribute('data-parent-document')
         $(this).find('.delete_document_link').data('document-id', null).attr('data-document-id', null)
     })
 
+    // Creating 2 new random strings to set as the ID for each of the confidential and non-confidential file fields
     let random_1 = Math.random().toString(36).slice(2, 7);
     let random_2 = Math.random().toString(36).slice(2, 7);
 

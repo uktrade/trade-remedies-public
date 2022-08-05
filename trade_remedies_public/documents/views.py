@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from v2_api_client.mixins import APIClientMixin
@@ -7,18 +8,28 @@ from core.decorators import catch_form_errors
 from documents.forms import DocumentForm
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class DocumentView(View, APIClientMixin):
-    @csrf_exempt
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
+    """
+    Generic file upload view, validates and uploads the file. Can also delete provided an ID.
+
+    Documents are actually uploaded directly through the public platform to AWS, however we then
+    create a record of the document via the API which contains the information required to retrieve
+    it at a later date.
+
+    We need to make this view CSRF exempt as the actual
+    file is passed here from ClamAV which does not include a CSRF token.  PS-IGNORE
+    """
 
     @catch_form_errors()
     def post(self, request, *args, **kwargs):
         uploaded_files = []
         for file in request.FILES.getlist("files"):
             form = DocumentForm(data={"file": file})
+            # Checking the file is valid (size, virus, extension)
             if form.is_valid():
                 uploaded_files.append(
+                    # Sending it to the API for storage
                     self.call_client(timeout=50).create_document(
                         **{
                             "type": request.POST["type"],
