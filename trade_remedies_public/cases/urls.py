@@ -1,7 +1,6 @@
 from cases import views as case_views
 from cases.v2_views import registration_of_interest
 from django.urls import path
-from django.views.generic import TemplateView
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
@@ -102,8 +101,8 @@ urlpatterns = [
         name="create_submission",
     ),
     path(
-        "<uuid:case_id>/organisation/<uuid:organisation_id>/submission/create/<int:submission_type_id>/",
-        # noqa: E501
+        "<uuid:case_id>/organisation/<uuid:organisation_id>/"
+        "submission/create/<int:submission_type_id>/",
         case_views.CreateSubmissionView.as_view(),
         name="create_submission_by_type",
     ),
@@ -232,7 +231,6 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-
     path(
         "interest/start",
         registration_of_interest.RegistrationOfInterestTaskList.as_view(),
@@ -312,5 +310,5 @@ urlpatterns += [
         "interest/<uuid:submission_id>/already_exists/",
         registration_of_interest.RegistrationOfInterestAlreadyExists.as_view(),
         name="roi_already_exists",
-    )
+    ),
 ]

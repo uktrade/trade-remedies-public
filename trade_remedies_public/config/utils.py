@@ -4,10 +4,7 @@ from django.http import HttpRequest
 
 
 def add_form_error_to_session(
-        error_summary: str,
-        request: HttpRequest,
-        field: str = None,
-        error_text: str = None
+    error_summary: str, request: HttpRequest, field: str = None, error_text: str = None
 ) -> bool:
     """
     Utility function to add a form (validation) error to the request.session

@@ -4,7 +4,6 @@ import json
 
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django_countries import countries
 from django.utils import timezone
@@ -195,14 +194,14 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     case_page = True
 
     def get(
-            self,
-            request,
-            case_id=None,
-            submission_id=None,
-            organisation_id=None,
-            public_str=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        case_id=None,
+        submission_id=None,
+        organisation_id=None,
+        public_str=None,
+        *args,
+        **kwargs,
     ):
         # Handle 3rd party invite unless submission locked or is a deficiency notice
         if self.submission.get("type", {}).get("id") == SUBMISSION_TYPE_INVITE_3RD_PARTY:
@@ -226,17 +225,17 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         submission_org_id = self.submission.get("organisation", {}).get("id")
         global_submission = not bool(submission_org_id)
         if (
-                state
-                and not state.get("source")
-                and self.case
-                and self.case.get("type")
-                and int(self.case.get("type", {}).get("id")) in ALL_COUNTRY_CASE_TYPES
+            state
+            and not state.get("source")
+            and self.case
+            and self.case.get("type")
+            and int(self.case.get("type", {}).get("id")) in ALL_COUNTRY_CASE_TYPES
         ):
             state["source"] = True
         # This is the user's submission if he's representing the company, or created it
         not_own_org_submission = not global_submission and not (
-                request.user.is_representing(submission_org_id, request)
-                or request.user.id == self.submission["created_by"]["id"]
+            request.user.is_representing(submission_org_id, request)
+            or request.user.id == self.submission["created_by"]["id"]
         )
         if public or not_own_org_submission or self.submission.get("status", {}).get("locking"):
             if public or not_own_org_submission:
@@ -390,7 +389,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         sub_type_key = self.submission_type_key or "application"
         template_name = f"cases/submissions/{sub_type_key}/company_info.html"
         if sub_type_key == "interest" and "FEATURE_FLAG_UAT_TEST" in request.user.groups:
-            return redirect(reverse("interest_client_type"), kwargs={"submission_id":"Asd"})
+            return redirect(reverse("interest_client_type"), kwargs={"submission_id": "Asd"})
             return redirect(f"/case/interest/{case_id}/type/")  # noqa: E501
 
         page = request.GET.get("page") or 1
@@ -431,8 +430,8 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             request.session["organisation_id"] = organisation["id"]
             request.session.modified = True
             return redirect(
-                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"
-                # noqa: E501
+                f"/case/{case['id']}/organisation/"
+                f"{organisation['id']}/submission/{submission['id']}/"
             )
         else:
             representing_value = request.POST.get("representing_value")
@@ -465,8 +464,8 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             request.session["organisation_id"] = organisation["id"]
             request.session.modified = True
             return redirect(
-                f"/case/{case['id']}/organisation/{organisation['id']}/submission/{submission['id']}/"
-                # noqa: E501
+                f"/case/{case['id']}/organisation/"
+                f"{organisation['id']}/submission/{submission['id']}/"
             )
 
 
@@ -569,15 +568,15 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     case_page = True
 
     def get(
-            self,
-            request,
-            case_id=None,
-            submission_id=None,
-            export_source_id=None,
-            options=None,
-            reference_case=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        case_id=None,
+        submission_id=None,
+        export_source_id=None,
+        options=None,
+        reference_case=None,
+        *args,
+        **kwargs,
     ):
         # We need to work out if the user needs to select a case
         # (for reviews, new exporter or refunds)
@@ -590,8 +589,7 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         if self._client.is_feature_flag_enabled("NOTICES"):
             notices = self._client.get_notices()
         if page != "source" and (
-                (organisation_role and organisation_role != "producer") or case_category in [
-            "review"]
+            (organisation_role and organisation_role != "producer") or case_category in ["review"]
         ):
             return render(
                 request,
@@ -641,7 +639,7 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             )
 
     def post(  # noqa: C901
-            self, request, case_id=None, submission_id=None, export_source_id=None, *args, **kwargs
+        self, request, case_id=None, submission_id=None, export_source_id=None, *args, **kwargs
     ):
 
         page = request.POST.get("page")
@@ -732,8 +730,7 @@ class SubmissionMetaView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView)
         return obj.get("name", "")
 
     def get(
-            self, request, case_id=None, submission_id=None, submission_type_id=None, *args,
-            **kwargs
+        self, request, case_id=None, submission_id=None, submission_type_id=None, *args, **kwargs
     ):
         case_id = case_id or request.GET.get("case_id")
         self.populate_objects(request, case_id, submission_type_id, submission_id)
@@ -750,11 +747,11 @@ class SubmissionMetaView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView)
             sub_type
             for sub_type in enums["submission_types"]
             if sub_type["direction"] in (DIRECTION_BOTH, DIRECTION_PUBLIC_TO_TRA)
-               and sub_type["key"] in ("adhoc",)
-               and (
-                       not sub_type.get("requires")
-                       or enums.get("available_submission_types", {}).get(str(sub_type["id"]))
-               )
+            and sub_type["key"] in ("adhoc",)
+            and (
+                not sub_type.get("requires")
+                or enums.get("available_submission_types", {}).get(str(sub_type["id"]))
+            )
         ]
         has_general = any([st["id"] == SUBMISSION_TYPE_ADHOC for st in available_submission_types])
         if not has_general:
@@ -784,8 +781,7 @@ class SubmissionMetaView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView)
         )
 
     def post(
-            self, request, case_id=None, submission_id=None, submission_type_id=None, *args,
-            **kwargs
+        self, request, case_id=None, submission_id=None, submission_type_id=None, *args, **kwargs
     ):
         submission_name = request.POST.get("submission_name")
         submission_type_id = request.POST.get("submission_type_id", submission_type_id)
@@ -864,14 +860,14 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
     case_page = True
 
     def get(
-            self,
-            request,
-            case_id=None,
-            submission_id=None,
-            submission_type_id=None,
-            public_str=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        case_id=None,
+        submission_id=None,
+        submission_type_id=None,
+        public_str=None,
+        *args,
+        **kwargs,
     ):
         public = public_str == "public"
         if submission_id:
@@ -919,14 +915,14 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
         )
 
     def post(
-            self,
-            request,
-            case_id=None,
-            submission_id=None,
-            submission_type_id=None,
-            public_str=None,
-            *args,
-            **kwargs,
+        self,
+        request,
+        case_id=None,
+        submission_id=None,
+        submission_type_id=None,
+        public_str=None,
+        *args,
+        **kwargs,
     ):
         redirect_path = request.POST.get("redirect")
         public = public_str == "public"
@@ -1112,7 +1108,6 @@ class ReviewDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
         else:
             errors = {
                 "documents_reviewed": "You must check the box to indicate that you have reviewed the documents."
-                # noqa: E501
             }
             return self.get(request, case_id=case_id, submission_id=submission_id, errors=errors)
 
@@ -1220,8 +1215,7 @@ class CreateSubmissionView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
     template_name = "cases/tasklist.html"
 
     def get(
-            self, request, case_id=None, organisation_id=None, submission_type_id=None, *args,
-            **kwargs
+        self, request, case_id=None, organisation_id=None, submission_type_id=None, *args, **kwargs
     ):
         submission_type_id = submission_type_id or SUBMISSION_TYPE_ADHOC
         submission_type = self._client.get_submission_type(submission_type_id)
@@ -1466,6 +1460,6 @@ class SetPrimaryContactView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVi
             contact_id=contact_id, organisation_id=organisation_id, case_id=case_id
         )
         return redirect(
-            f"/case/{case_id}/?tab=case_members&organisation_id={organisation_id}&alert=primary-contact-updated"
-            # noqa: E501
+            f"/case/{case_id}/?tab=case_members&organisation_id="
+            f"{organisation_id}&alert=primary-contact-updated"
         )

@@ -2,12 +2,18 @@ import datetime
 
 from apiclient.exceptions import ClientError
 from cases.constants import SUBMISSION_TYPE_REGISTER_INTEREST
-from cases.forms import ClientFurtherDetailsForm, ClientTypeForm, \
-    ExistingClientForm, NonUkEmployerForm, \
-    PrimaryContactForm, RegistrationOfInterest4Form, UkEmployerForm, YourEmployerForm
+from cases.forms import (
+    ClientFurtherDetailsForm,
+    ClientTypeForm,
+    ExistingClientForm,
+    NonUkEmployerForm,
+    PrimaryContactForm,
+    RegistrationOfInterest4Form,
+    UkEmployerForm,
+    YourEmployerForm,
+)
 from cases.utils import get_org_parties
-from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
-    SECURITY_GROUP_ORGANISATION_USER
+from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER
 from config.utils import add_form_error_to_session
 from core.base import GroupRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -41,17 +47,14 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         return context
 
     def add_organisation_to_registration_of_interest(
-            self,
-            organisation_id: str,
-            submission_id: str = None,
-            contact_id: str = None
+        self, organisation_id: str, submission_id: str = None, contact_id: str = None
     ) -> dict:
         """
         Amends the organisation of a ROI submission object.
         Parameters
         ----------
         organisation_id : str - the UUID of the organisation object
-        submission_id : str - the UUID of the submission object, default to self.kwargs["submission"]
+        submission_id : str - UUID of the submission object, default to self.kwargs["submission"]
         contact_id : str - the UUID of the contact object you want to set as the primary of this
         org and this case, will create a new one if not specified
 
@@ -68,23 +71,17 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
                 self.client.url(
                     f"submissions/{submission_id}/add_organisation_to_registration_of_interest"
                 ),
-                data={
-                    "organisation_id": organisation_id,
-                    "contact_id": contact_id
-                },
+                data={"organisation_id": organisation_id, "contact_id": contact_id},
             )
-            return redirect(reverse(
-                "roi_submission_exists",
-                kwargs={
-                    "submission_id": submission["id"]
-                }
-            ))
+            return redirect(
+                reverse("roi_submission_exists", kwargs={"submission_id": submission["id"]})
+            )
         except ClientError as exc:
             if exc.status_code == 409:
                 # There is a conflict as an ROI with this case and organisation already exists
-                return redirect(reverse("roi_already_exists", kwargs={
-                    "submission_id": exc.message[0]["id"]
-                }))
+                return redirect(
+                    reverse("roi_already_exists", kwargs={"submission_id": exc.message[0]["id"]})
+                )
 
 
 class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
@@ -101,23 +98,24 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
                         "link": reverse("roi_1"),
                         "link_text": "Select a Trade Remedies case",
                         "status": "Complete" if submission else "Not Started",
-                        "ready_to_do": False if submission else True
+                        "ready_to_do": False if submission else True,
                     }
-                ]
+                ],
             },
             {
                 "heading": "About you",
                 "sub_steps": [
                     {
                         "link": reverse(
-                            "interest_client_type",
-                            kwargs={"submission_id": submission["id"]}
-                        ) if submission else None,
+                            "interest_client_type", kwargs={"submission_id": submission["id"]}
+                        )
+                        if submission
+                        else None,
                         "link_text": "Organisation details",
                         "status": "Complete" if submission.get("organisation") else "Not Started",
                     }
-                ]
-            }
+                ],
+            },
         ]
 
         registration_documentation_status_text = ""
@@ -126,64 +124,78 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
             if submission["paired_documents"] and not submission["orphaned_documents"]:
                 registration_documentation_status = "Complete"
             elif orphaned_documents := submission["orphaned_documents"]:
-                registration_documentation_status_text = f"Documents uploaded: {len(orphaned_documents)}"
+                registration_documentation_status_text = (
+                    f"Documents uploaded: {len(orphaned_documents)}"
+                )
                 registration_documentation_status = "Incomplete"
             else:
                 registration_documentation_status = "Not Started"
         documentation_sub_steps = [
             {
                 "link": reverse(
-                    "roi_3_registration_documentation",
-                    kwargs={"submission_id": submission["id"]}
-                ) if submission else None,
+                    "roi_3_registration_documentation", kwargs={"submission_id": submission["id"]}
+                )
+                if submission
+                else None,
                 "link_text": "Registration documentation",
                 "status": registration_documentation_status,
-                "status_text": registration_documentation_status_text
+                "status_text": registration_documentation_status_text,
             }
         ]
 
-        if submission and submission["organisation"] and submission["organisation"]["id"] != \
-                self.request.user.organisation["id"]:
+        if (
+            submission
+            and submission["organisation"]
+            and submission["organisation"]["id"] != self.request.user.organisation["id"]
+        ):
             # THe user is representing someone else, we should show the letter of authority
-            documentation_sub_steps.append({
-                "link": reverse(
-                    "roi_3_loa",
-                    kwargs={"submission_id": submission["id"]}
-                ),
-                "link_text": "Upload a Letter of Authority",
-                "status": "Complete" if any(each for each in submission["submission_documents"] if
-                                            each["type"]["key"] == "loa") else "Not Started"
-            })
-
-        steps.append({
-            "heading": "Documentation",
-            "sub_steps": documentation_sub_steps
-        })
-
-        steps.append({
-            "heading": "Register interest",
-            "sub_steps": [
+            documentation_sub_steps.append(
                 {
-                    "link": reverse(
-                        "roi_4", kwargs={"submission_id": submission["id"]}
-                    ) if submission else None,
-                    "link_text": "Check and submit",
-                    "status": "Complete" if submission.get(
-                        "status", {}
-                    ).get("locking") is True else "Not Started",
+                    "link": reverse("roi_3_loa", kwargs={"submission_id": submission["id"]}),
+                    "link_text": "Upload a Letter of Authority",
+                    "status": "Complete"
+                    if any(
+                        each
+                        for each in submission["submission_documents"]
+                        if each["type"]["key"] == "loa"
+                    )
+                    else "Not Started",
                 }
-            ]
-        })
+            )
+
+        steps.append({"heading": "Documentation", "sub_steps": documentation_sub_steps})
+
+        steps.append(
+            {
+                "heading": "Register interest",
+                "sub_steps": [
+                    {
+                        "link": reverse("roi_4", kwargs={"submission_id": submission["id"]})
+                        if submission
+                        else None,
+                        "link_text": "Check and submit",
+                        "status": "Complete"
+                        if submission.get("status", {}).get("locking") is True
+                        else "Not Started",
+                    }
+                ],
+            }
+        )
 
         for number, step in enumerate(steps):
             for sub_step_index, sub_step in enumerate(step["sub_steps"]):
                 if "ready_to_do" not in sub_step:
                     try:
                         previous_step = steps[number - 1]
-                        if len([sub_step for sub_step in previous_step["sub_steps"] if
-                                sub_step["status"] == "Complete"]) == len(
-                            previous_step["sub_steps"]):
-                            # All sub-steps in the previous step have been completed, the next state is now open
+                        if len(
+                            [
+                                sub_step
+                                for sub_step in previous_step["sub_steps"]
+                                if sub_step["status"] == "Complete"
+                            ]
+                        ) == len(previous_step["sub_steps"]):
+                            # All sub-steps in the previous step have been completed,
+                            # the next state is now open
                             for sub_step in step["sub_steps"]:
                                 sub_step["ready_to_do"] = True
                         else:
@@ -205,7 +217,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
             return render(
                 request,
                 "v2/registration_of_interest/registration_of_interest_review.html",
-                context={"submission": self.submission}
+                context={"submission": self.submission},
             )
         # If not, show the normal tasklist
         return super().get(request, *args, **kwargs)
@@ -219,9 +231,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
         cases = self.client.get_cases(open_to_roi=True)
         if not cases:
             add_form_error_to_session(
-                "There are no active cases to join",
-                request=self.request,
-                field="table-header"
+                "There are no active cases to join", request=self.request, field="table-header"
             )
         context["cases"] = cases
         return context
@@ -234,7 +244,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
         case_registration_deadline = case_information[3]
 
         if datetime.datetime.strptime(
-                case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
+            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
         ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,
@@ -255,17 +265,14 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
                 "case": case_id,
                 "type": SUBMISSION_TYPE_REGISTER_INTEREST,
                 "documents": [],
-                "created_by": self.request.user.id
-            }
+                "created_by": self.request.user.id,
+            },
         )
 
         # REDIRECT to next stage
-        return redirect(reverse(
-            "roi_submission_exists",
-            kwargs={
-                "submission_id": new_submission["id"]
-            }
-        ))
+        return redirect(
+            reverse("roi_submission_exists", kwargs={"submission_id": new_submission["id"]})
+        )
 
 
 class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
@@ -280,7 +287,11 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
             TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
         )
         # removing duplicates
-        existing_clients_list = [each for each in existing_clients_list if each["id"] != self.request.user.organisation.get("id")]
+        existing_clients_list = [
+            each
+            for each in existing_clients_list
+            if each["id"] != self.request.user.organisation.get("id")
+        ]
         context["existing_clients"] = True if existing_clients_list else False
         return context
 
@@ -292,8 +303,7 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
             )
         elif form.cleaned_data.get("org") == "my-org":
             return self.add_organisation_to_registration_of_interest(
-                organisation_id=self.request.user.organisation["id"],
-                submission_id=submission_id
+                organisation_id=self.request.user.organisation["id"], submission_id=submission_id
             )
 
         elif form.cleaned_data.get("org") == "existing-org":
@@ -319,18 +329,14 @@ class InterestPrimaryContactStep2(RegistrationOfInterestBase, FormView):
         organisation_id = self.kwargs.get("organisation_id", None)
         if organisation_id:
             return self.add_organisation_to_registration_of_interest(
-                organisation_id=organisation_id,
-                submission_id=submission_id,
-                contact_id=contact_id
+                organisation_id=organisation_id, submission_id=submission_id, contact_id=contact_id
             )
         else:
-            return redirect(reverse(
-                "interest_ch",
-                kwargs={
-                    "submission_id": submission_id,
-                    "contact_id": contact_id
-                }
-            ))
+            return redirect(
+                reverse(
+                    "interest_ch", kwargs={"submission_id": submission_id, "contact_id": contact_id}
+                )
+            )
 
 
 class InterestUkRegisteredYesNoStep2(RegistrationOfInterestBase, FormView):
@@ -343,17 +349,17 @@ class InterestUkRegisteredYesNoStep2(RegistrationOfInterestBase, FormView):
         submission_id = self.kwargs["submission_id"]
         if form.cleaned_data.get("uk_employer") == "yes":
             return redirect(
-                reverse("interest_ch_yes", kwargs={
-                    "submission_id": submission_id,
-                    "contact_id": contact_id
-                })
+                reverse(
+                    "interest_ch_yes",
+                    kwargs={"submission_id": submission_id, "contact_id": contact_id},
+                )
             )
         elif form.cleaned_data.get("uk_employer") == "no":
             return redirect(
-                reverse("interest_ch_no", kwargs={
-                    "submission_id": submission_id,
-                    "contact_id": contact_id
-                })
+                reverse(
+                    "interest_ch_no",
+                    kwargs={"submission_id": submission_id, "contact_id": contact_id},
+                )
             )
 
 
@@ -407,18 +413,12 @@ class InterestUkSubmitStep2(RegistrationOfInterestBase, FormView):
 
         # Creating the new organisation
         organisation = self.client.post(
-            self.client.url("organisations"),
-            data={
-                **self.request.GET,
-                **form.cleaned_data
-            }
+            self.client.url("organisations"), data={**self.request.GET, **form.cleaned_data}
         )
 
         # Associating the ROI with the organisation and redirecting to tasklist
         return self.add_organisation_to_registration_of_interest(
-            organisation_id=organisation["id"],
-            submission_id=submission_id,
-            contact_id=contact_id
+            organisation_id=organisation["id"], submission_id=submission_id, contact_id=contact_id
         )
 
 
@@ -427,8 +427,9 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
     form_class = ExistingClientForm
 
     def get_existing_clients(self):
-        org_parties = get_org_parties(TradeRemediesAPIClientMixin.client(self, self.request.user),
-                                      self.request.user)
+        org_parties = get_org_parties(
+            TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
+        )
         # extract and return tuples of id and name in a list (from a
         # list of dictionaries)
         return [(d["id"], d["name"]) for d in org_parties]
@@ -445,41 +446,50 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         return kwargs
 
     def form_valid(self, form):
-        return redirect(reverse("interest_existing_client_primary_contact", kwargs={
-            "submission_id": self.kwargs["submission_id"],
-            "organisation_id": form.cleaned_data.get("org")
-        }))
+        return redirect(
+            reverse(
+                "interest_existing_client_primary_contact",
+                kwargs={
+                    "submission_id": self.kwargs["submission_id"],
+                    "organisation_id": form.cleaned_data.get("org"),
+                },
+            )
+        )
 
 
 class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase, TemplateView):
-    template_name = "v2/registration_of_interest/registration_of_interest_3_registration_documentation.html"
+    template_name = (
+        "v2/registration_of_interest/registration_of_interest_3_registration_documentation.html"
+    )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Let's loop over the paired documents first, Then we have a look at the orphaned documents (those without a corresponding public/private pair
-        context["uploaded_documents"] = self.submission["paired_documents"] + self.submission[
-            "orphaned_documents"]
+        # Let's loop over the paired documents first, Then we have a look at the orphaned documents
+        # (those without a corresponding public/private pair
+        context["uploaded_documents"] = (
+            self.submission["paired_documents"] + self.submission["orphaned_documents"]
+        )
         return context
 
     def post(self, request, *args, **kwargs):
         if not self.submission["orphaned_documents"] and self.submission["paired_documents"]:
-            return redirect(reverse(
-                "roi_submission_exists",
-                kwargs={"submission_id": self.submission["id"]}
-            ))
+            return redirect(
+                reverse("roi_submission_exists", kwargs={"submission_id": self.submission["id"]})
+            )
 
         elif orphaned_documents := self.submission["orphaned_documents"]:
-            missing = "confidential" if orphaned_documents[-1][
-                "non_confidential"] else "non-confidential"
+            missing = (
+                "confidential" if orphaned_documents[-1]["non_confidential"] else "non-confidential"
+            )
             add_form_error_to_session(
                 f"You need to upload a {missing} version of the the Pre-sampling documentation",
-                request
+                request,
             )
         elif not self.submission["paired_documents"]:
             add_form_error_to_session(
                 "You need to upload a confidential and non-confidential"
                 " version of the the Pre-sampling documentation",
-                request
+                request,
             )
         return redirect(request.path)
 
@@ -494,9 +504,9 @@ class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
             loa_document = next(
                 filter(
                     lambda document: document["type"]["key"] == "loa",
-                    self.submission["submission_documents"]
+                    self.submission["submission_documents"],
                 ),
-                None
+                None,
             )
             if loa_document:
                 context["loa_document"] = loa_document["document"]
@@ -505,14 +515,12 @@ class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         if context.get("loa_document", None):
-            return redirect(reverse(
-                "roi_submission_exists",
-                kwargs={"submission_id": self.submission["id"]}
-            ))
+            return redirect(
+                reverse("roi_submission_exists", kwargs={"submission_id": self.submission["id"]})
+            )
         else:
             add_form_error_to_session(
-                "You need to upload a Letter of Authority to represent your client",
-                request
+                "You need to upload a Letter of Authority to represent your client", request
             )
         return redirect(request.path)
 
@@ -527,36 +535,26 @@ class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
             self.client.url(
                 "organisation_case_roles",
                 case_id=self.submission["case"]["id"],
-                organisation_id=self.submission["organisation"]["id"]
+                organisation_id=self.submission["organisation"]["id"],
             )
         )
         self.client.put(
             self.client.url(f"organisation_case_roles/{organisation_case_role['id']}"),
-            data={
-                "role_key": "awaiting_approval"
-            }
+            data={"role_key": "awaiting_approval"},
         )
 
         # Now we update the status of the submission to received
         self.client.update_submission_status(
-            submission_id=self.kwargs["submission_id"],
-            new_status="received"
+            submission_id=self.kwargs["submission_id"], new_status="received"
         )
-        return redirect(reverse(
-            "roi_complete",
-            kwargs={"submission_id": self.kwargs["submission_id"]}
-        ))
+        return redirect(
+            reverse("roi_complete", kwargs={"submission_id": self.kwargs["submission_id"]})
+        )
 
 
-class RegistrationOfInterestComplete(
-    RegistrationOfInterestBase,
-    TemplateView
-):
+class RegistrationOfInterestComplete(RegistrationOfInterestBase, TemplateView):
     template_name = "v2/registration_of_interest/registration_of_interest_complete.html"
 
 
-class RegistrationOfInterestAlreadyExists(
-    RegistrationOfInterestBase,
-    TemplateView
-):
+class RegistrationOfInterestAlreadyExists(RegistrationOfInterestBase, TemplateView):
     template_name = "v2/registration_of_interest/registration_of_interest_already_exists.html"

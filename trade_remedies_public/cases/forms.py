@@ -55,11 +55,11 @@ class UkEmployerForm(ValidationForm):
     def clean(self):
         # The user has entered something in the autocomplete box but not selected an option
         if (
-                self.data.get("input-autocomplete")
-                and not self.cleaned_data.get("organisation_name")
-                and not self.cleaned_data.get("companies_house_id")
-                and not self.cleaned_data.get("organisation_post_code")
-                and not self.cleaned_data.get("organisation_address")
+            self.data.get("input-autocomplete")
+            and not self.cleaned_data.get("organisation_name")
+            and not self.cleaned_data.get("companies_house_id")
+            and not self.cleaned_data.get("organisation_post_code")
+            and not self.cleaned_data.get("organisation_address")
         ):
             self.add_error("company_search_container", "companies_house_not_selected")
         # Nothing has been entered by the user

@@ -18,20 +18,27 @@ class DocumentView(View, APIClientMixin):
         for file in request.FILES.getlist("files"):
             form = DocumentForm(data={"file": file})
             if form.is_valid():
-                uploaded_files.append(self.call_client(timeout=50).create_document(
-                    **{
-                        "type": request.POST["type"],
-                        "stored_name": file.name,
-                        "original_name": file.original_name,
-                        "file_size": file.file_size,
-                        "submission_id": request.POST["submission_id"],
-                        "parent": request.POST.get("parent", None),
-                        "submission_document_type": request.POST.get("submission_document_type", None),
-                    }
-                ))
-                return JsonResponse({
-                    "uploaded_files": uploaded_files,
-                }, status=201)
+                uploaded_files.append(
+                    self.call_client(timeout=50).create_document(
+                        **{
+                            "type": request.POST["type"],
+                            "stored_name": file.name,
+                            "original_name": file.original_name,
+                            "file_size": file.file_size,
+                            "submission_id": request.POST["submission_id"],
+                            "parent": request.POST.get("parent", None),
+                            "submission_document_type": request.POST.get(
+                                "submission_document_type", None
+                            ),
+                        }
+                    )
+                )
+                return JsonResponse(
+                    {
+                        "uploaded_files": uploaded_files,
+                    },
+                    status=201,
+                )
             else:
                 return JsonResponse(data={"errors": form.errors}, status=400)
 
