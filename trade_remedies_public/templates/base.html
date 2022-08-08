@@ -89,7 +89,7 @@
   <div class="proposition-controls">
     {{user.name}}
     {% if authenticated and not within_2fa and not within_verify %}
-     | <a href="/accounts/info/">Account details</a> <!--{{user.name}}--> | <a href="/accounts/logout/">Logout</a>
+     | <a href="/accounts/info/">Manage account</a> <!--{{user.name}}--> | <a href="/accounts/logout/">Sign out</a>
     {% elif authenticated and within_2fa or within_verify %}
     | <a href="/accounts/logout/">Cancel and Logout</a>
      {% endif %}

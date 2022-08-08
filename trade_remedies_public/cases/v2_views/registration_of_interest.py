@@ -123,7 +123,11 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
         if submission:
             # Each paired_document is a complete pair, so we multiply the count by 2 to get the
             # number of uploaded documents. Each orphaned_document is an incomplete pair.
-            registration_documentation_status_text = f"Documents uploaded: {(len(submission['paired_documents']) * 2) + len(submission['orphaned_documents'])}"
+            if documents_uploaded := (len(submission['paired_documents']) * 2) + len(submission['orphaned_documents']):
+                registration_documentation_status_text = f"Documents uploaded: {documents_uploaded}"
+            else:
+                registration_documentation_status_text = f"Not Started"
+
             if submission["paired_documents"] and not submission["orphaned_documents"]:
                 registration_documentation_status = "Complete"
             elif orphaned_documents := submission["orphaned_documents"]:

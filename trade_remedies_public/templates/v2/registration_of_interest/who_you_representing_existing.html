@@ -3,9 +3,11 @@
 {% block noheading %}
 {% endblock noheading %}
 
+{% block page_title %}Who are you representing{% endblock page_title %}
+
 {% block form_content %}
 
-        {% with form_errors.org as error %}
+    {% with form_errors.org as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
 
             <fieldset class="govuk-fieldset">
@@ -18,11 +20,11 @@
 
                 </legend>
                 {% if error %}
-                <p id="org-error" class="govuk-error-message">
-                    {% for error in error %}
-                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
-                    {% endfor %}
-                </p>
+                    <p id="org-error" class="govuk-error-message">
+                        {% for error in error %}
+                            <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                        {% endfor %}
+                    </p>
                 {% endif %}
 
 
@@ -32,7 +34,7 @@
 
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="{{ organisation.1 }}" name="org"
-                                type="radio" value="{{ organisation.0 }}">
+                                   type="radio" value="{{ organisation.0 }}">
                             <label class="govuk-label govuk-radios__label" for="{{ organisation.1 }}">
 
                                 {{ organisation.1 }}<br>
@@ -48,29 +50,20 @@
             </fieldset>
 
         </div>
-        {% endwith %}
+    {% endwith %}
 
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
                 The organisation is not listed
             </span>
-            </summary>
-            <div class="govuk-details__text">
-                <p>This is a list of organisations you have previously represented using the Trade Remedies Service.</p>
-                <p>If you’re representing an organisation for the first time, go back and change your answer.</p>
-            </div>
-        </details>
-
-        <div class="govuk-button-group">
-
-
-            <button class="govuk-button" data-module="govuk-button">
-                Continue
-            </button>
-
-            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_client_type' submission_id=submission_id %}">Back</a>
+        </summary>
+        <div class="govuk-details__text">
+            <p>This is a list of organisations you have previously represented using the Trade Remedies Service.</p>
+            <p>If you’re representing an organisation for the first time, go back and change your answer.</p>
         </div>
+    </details>
+    {% include "v2/component_macros/form_button_group.html" with forward_button_text='Continue' %}
 
 
 {% endblock form_content %}
