@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -6,7 +7,6 @@ from v2_api_client.mixins import APIClientMixin
 
 from core.decorators import catch_form_errors
 from documents.forms import DocumentForm
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class DocumentView(View, APIClientMixin):
@@ -58,3 +58,7 @@ class DocumentView(View, APIClientMixin):
             self.client.url(f"documents/{request.GET['document_to_delete']}"),
         )
         return HttpResponse(status=204)
+
+    def get(self, request, *args, **kwargs):
+        document = self.client.get(self.client.url(f"documents/{self.kwargs['document_id']}"))
+        return redirect(document["file"])

@@ -2,6 +2,21 @@
 {% load get_url %}
 {% load set %}
 
+{% block back_button %}{% endblock back_button %}
+
+{% block breadcrumbs %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                Register interest in a case
+            </li>
+        </ol>
+    </div>
+{% endblock breadcrumbs %}
+
 {% block page_title %}Register interest in a case{% endblock page_title %}
 
 {% block row_content %}
@@ -66,7 +81,8 @@
                     <li>
                         <br>
                         <strong>Email the case team</strong>
-                        <a class="govuk-link govuk-link--no-visited-state" href="">{{ submission.case.reference }}@traderemedies.gov.uk</a>  {# /PS-IGNORE #}
+                        <a class="govuk-link govuk-link--no-visited-state" href="">{{ submission.case.reference }}@traderemedies.gov.uk</a>
+                        {# /PS-IGNORE #}
                     </li> {% endif %}
                 </ul>
             </nav>

@@ -358,12 +358,14 @@ COUNTRIES_FIRST = ["GB"]
 COUNTRIES_FIRST_BREAK = "------"
 
 FILE_MAX_SIZE_BYTES = 30000000
-FILE_ALLOWED_TYPES = [
-    "application/pdf",  # .pdf
-    "application/msword",  # .doc and .docx
-    "application/excel",  # .xls
-    "application/vnd.ms-excel",  # .xls
-    "application/x-excel",  # .xls
-    "application/x-msexcel",  # .xls
-    "application/zip",  # .zip
+FILE_ALLOWED_EXTENSIONS = [
+    ".zip",
+    ".doc",
+    ".docx",
+    ".pdf",
+    ".xls",
+    ".xlsx",
+    ".xlsb",
+    ".odt",
+    ".ods",
 ]

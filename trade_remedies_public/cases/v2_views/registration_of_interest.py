@@ -47,7 +47,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         return context
 
     def add_organisation_to_registration_of_interest(
-        self, organisation_id: str, submission_id: str = None, contact_id: str = None
+            self, organisation_id: str, submission_id: str = None, contact_id: str = None
     ) -> dict:
         """
         Amends the organisation of a ROI submission object.
@@ -121,12 +121,12 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
         registration_documentation_status_text = ""
         registration_documentation_status = "Not Started"
         if submission:
+            # Each paired_document is a complete pair, so we multiply the count by 2 to get the
+            # number of uploaded documents. Each orphaned_document is an incomplete pair.
+            registration_documentation_status_text = f"Documents uploaded: {(len(submission['paired_documents']) * 2) + len(submission['orphaned_documents'])}"
             if submission["paired_documents"] and not submission["orphaned_documents"]:
                 registration_documentation_status = "Complete"
             elif orphaned_documents := submission["orphaned_documents"]:
-                registration_documentation_status_text = (
-                    f"Documents uploaded: {len(orphaned_documents)}"
-                )
                 registration_documentation_status = "Incomplete"
             else:
                 registration_documentation_status = "Not Started"
@@ -144,15 +144,15 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
         ]
 
         if (
-            submission
-            and submission["organisation"]
-            and submission["organisation"]["id"] != self.request.user.organisation["id"]
+                submission
+                and submission["organisation"]
+                and submission["organisation"]["id"] != self.request.user.organisation["id"]
         ):
             # THe user is representing someone else, we should show the letter of authority
             documentation_sub_steps.append(
                 {
                     "link": reverse("roi_3_loa", kwargs={"submission_id": submission["id"]}),
-                    "link_text": "Upload a Letter of Authority",
+                    "link_text": "Letter of Authority",
                     "status": "Complete"
                     if any(
                         each
@@ -188,11 +188,11 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
                     try:
                         previous_step = steps[number - 1]
                         if len(
-                            [
-                                sub_step
-                                for sub_step in previous_step["sub_steps"]
-                                if sub_step["status"] == "Complete"
-                            ]
+                                [
+                                    sub_step
+                                    for sub_step in previous_step["sub_steps"]
+                                    if sub_step["status"] == "Complete"
+                                ]
                         ) == len(previous_step["sub_steps"]):
                             # All sub-steps in the previous step have been completed,
                             # the next state is now open
@@ -244,7 +244,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
         case_registration_deadline = case_information[3]
 
         if datetime.datetime.strptime(
-            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
+                case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
         ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,
@@ -432,7 +432,12 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         )
         # extract and return tuples of id and name in a list (from a
         # list of dictionaries)
-        return [(d["id"], d["name"]) for d in org_parties]
+        # removing duplicates
+        return [
+            (each["id"], each["name"])
+            for each in org_parties
+            if each["id"] != self.request.user.organisation.get("id")
+        ]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -467,7 +472,7 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         # Let's loop over the paired documents first, Then we have a look at the orphaned documents
         # (those without a corresponding public/private pair
         context["uploaded_documents"] = (
-            self.submission["paired_documents"] + self.submission["orphaned_documents"]
+                self.submission["paired_documents"] + self.submission["orphaned_documents"]
         )
         return context
 

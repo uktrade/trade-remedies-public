@@ -1,3 +1,4 @@
+import os
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -22,7 +23,8 @@ class DocumentForm(forms.Form):
         except VirusFoundInFileException:
             raise ValidationError(message=f"This file contains a virus: {file.original_name}")
 
-        if file.content_type not in settings.FILE_ALLOWED_TYPES:
+        _, file_extension = os.path.splitext(file.original_name)
+        if file_extension.lower() not in settings.FILE_ALLOWED_EXTENSIONS:
             raise ValidationError(
                 message=f"The selected file must be either a Doc, Excel, PDF, or ZIP: "
                 f"{file.original_name}"

@@ -34,7 +34,12 @@ function file_upload(upload_container, files, submission_id) {
         contentType: false,
         processData: false,
         beforeSend: function () {
-            upload_container.find(".file_name").html(file_data.name)
+            let file_name = file_data.name
+            if (file_name.length > 25) {
+                // Truncate the file name as it looks ugly when it's so long
+                file_name = `${file_name.substring(0, 10)}...${file_name.substring(file_name.length - 10, file_name.length)}`
+            }
+            upload_container.find(".file_name").html(file_name)
         },
         xhr: function () {
             // Progressing the progress bar as the upload happens
@@ -103,7 +108,7 @@ $(document).on('change', 'input[type="file"]', function () {
     file_upload(upload_container, this.files, submission_id)
 })
 
-$(document).on('drop dragdrop', '.upload_container', function(e){
+$(document).on('drop dragdrop', '.upload_container', function (e) {
     $(this).closest('.upload-card').removeClass('upload-card-hover')
     let submission_id = $(this).data("submission-id")
     let original_event = e.originalEvent
@@ -113,13 +118,13 @@ $(document).on('drop dragdrop', '.upload_container', function(e){
     file_upload($(this), original_event.dataTransfer.files, submission_id)
 })
 
-$(document).on('dragover', '.upload_container', function(e){
+$(document).on('dragover', '.upload_container', function (e) {
     e.preventDefault()
     e.stopPropagation()
     $(this).closest('.upload-card').addClass('upload-card-hover')
 })
 
-$(document).on('dragleave', '.upload_container', function(e){
+$(document).on('dragleave', '.upload_container', function (e) {
     e.preventDefault()
     e.stopPropagation()
     $(this).closest('.upload-card').removeClass('upload-card-hover')
@@ -159,7 +164,7 @@ $('#add_document_button').click(function (e) {
     let new_document_field = $(".document_field").last().clone()
     new_document_field.appendTo("#registration_documents");
 
-    $.each(new_document_field.find('.upload_container'), function(){
+    $.each(new_document_field.find('.upload_container'), function () {
         // For each of the upload containers in the new row, we want to change the ID and clear any previously
         // set attributes
         let new_upload_container_id = Math.random().toString(36).slice(2, 7);
