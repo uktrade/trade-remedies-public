@@ -23,8 +23,12 @@ def add_form_error_to_session(
     if "form_errors" not in request.session:
         request.session["form_errors"] = defaultdict(list)
 
-    request.session["form_errors"][field] = error_text
-    request.session["form_errors"]["error_summaries"].append([field, error_summary])
+    if field:
+        request.session["form_errors"][field] = error_text
+
+    if [field, error_summary] not in request.session["form_errors"]["error_summaries"]:
+        # We don't want to add the exact same error summary in twice
+        request.session["form_errors"]["error_summaries"].append([field, error_summary])
     request.session.modified = True
 
     return True

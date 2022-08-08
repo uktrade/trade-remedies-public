@@ -483,13 +483,15 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
             )
 
         elif orphaned_documents := self.submission["orphaned_documents"]:
-            missing = (
-                "confidential" if orphaned_documents[-1]["non_confidential"] else "non-confidential"
-            )
-            add_form_error_to_session(
-                f"You need to upload a {missing} version of the the Pre-sampling documentation",
-                request,
-            )
+            for orphan in orphaned_documents:
+                missing = (
+                    "confidential" if orphan["non_confidential"] else "non-confidential"
+                )
+                add_form_error_to_session(
+                    f"You need to upload a {missing} version of the the Pre-sampling documentation",
+                    request,
+                )
+
         elif not self.submission["paired_documents"]:
             add_form_error_to_session(
                 "You need to upload a confidential and non-confidential"
@@ -533,6 +535,21 @@ class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
 class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/registration_of_interest_4.html"
     form_class = RegistrationOfInterest4Form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.submission:
+            # Getting the uploaded LOA document if it exists
+            loa_document = next(
+                filter(
+                    lambda document: document["type"]["key"] == "loa",
+                    self.submission["submission_documents"],
+                ),
+                None,
+            )
+            if loa_document:
+                context["loa_document"] = loa_document["document"]
+        return context
 
     def form_valid(self, form):
         # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
