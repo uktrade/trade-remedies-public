@@ -475,9 +475,20 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         context = super().get_context_data(**kwargs)
         # Let's loop over the paired documents first, Then we have a look at the orphaned documents
         # (those without a corresponding public/private pair
-        context["uploaded_documents"] = (
+        uploaded_documents = (
                 self.submission["paired_documents"] + self.submission["orphaned_documents"]
         )
+
+        long_time_ago = timezone.now() - datetime.timedelta(days=1000)
+        sorted_uploaded_documents = sorted(
+            uploaded_documents,
+            key=lambda x: (
+                datetime.datetime.strptime(x["non_confidential"]["created_at"], '%Y-%m-%dT%H:%M:%S%z') if x.get("non_confidential", {}).get("created_at", None) else long_time_ago,
+                datetime.datetime.strptime(x["confidential"]["created_at"], '%Y-%m-%dT%H:%M:%S%z') if x.get("confidential", {}).get("created_at", None) else long_time_ago
+            )
+        )
+        context["uploaded_documents"] = sorted_uploaded_documents
+
         return context
 
     def post(self, request, *args, **kwargs):
