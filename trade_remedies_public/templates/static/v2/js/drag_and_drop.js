@@ -35,9 +35,9 @@ function file_upload(upload_container, files, submission_id) {
         processData: false,
         beforeSend: function () {
             let file_name = file_data.name
-            if (file_name.length > 25) {
+            if (file_name.length > 35) {
                 // Truncate the file name as it looks ugly when it's so long
-                file_name = `${file_name.substring(0, 10)}...${file_name.substring(file_name.length - 10, file_name.length)}`
+                file_name = `${file_name.substring(0, 18)}...${file_name.substring(file_name.length - 18, file_name.length)}`
             }
             upload_container.find(".file_name").html(file_name)
         },

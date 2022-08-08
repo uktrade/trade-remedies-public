@@ -492,14 +492,14 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
                     "confidential" if orphan["non_confidential"] else "non-confidential"
                 )
                 add_form_error_to_session(
-                    f"You need to upload a {missing} version of the the Pre-sampling documentation",
+                    f"You need to upload a {missing} version of your registration documentation",
                     request,
                 )
 
         elif not self.submission["paired_documents"]:
             add_form_error_to_session(
                 "You need to upload a confidential and non-confidential"
-                " version of the the Pre-sampling documentation",
+                " version of your registration documentation",
                 request,
             )
         return redirect(request.path)
