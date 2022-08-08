@@ -40,7 +40,7 @@
                     <option value="1">Case</option>
                     <option value="2">Type</option>
                     <option value="3">Status</option>
-                    <option value="4">Started</option>
+                    <option value="4">Initiated</option>
                     <option value="5">Status</option>
                     <option value="6">Reg due</option>
                 </select>
@@ -100,7 +100,7 @@
                         </th>
                         <th class="govuk-table__header">
                             <button class="govuk-button govuk-button--secondary" data-column-index="4" type="button">
-                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Started
+                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Initiated
                                 <span class="indicator" aria-hidden="true"></span>
                             </button>
                         </th>
@@ -132,7 +132,7 @@
                                 <span class="govuk-visually-hidden--desktop td-header">Status: </span>{{ case.case_status.stage }}
                             </td>
                             <td class="govuk-table__cell" data-order="{% format_date case.initiated_at '%s' %}">
-                                <span class="govuk-visually-hidden--desktop td-header">Start date: </span>{% format_date case.initiated_at '%d %b %Y' %}
+                                <span class="govuk-visually-hidden--desktop td-header">Date Initiated: </span>{% format_date case.initiated_at '%d %b %Y' %}
                             </td>
                             <td class="govuk-table__cell"
                                 data-order="{% format_date case.registration_deadline '%s' %}">
