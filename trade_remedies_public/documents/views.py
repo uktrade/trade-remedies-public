@@ -8,7 +8,8 @@ from v2_api_client.mixins import APIClientMixin
 from core.decorators import catch_form_errors
 from documents.forms import DocumentForm
 
-@method_decorator(csrf_exempt, name='dispatch')
+
+@method_decorator(csrf_exempt, name="dispatch")
 class DocumentView(View, APIClientMixin):
     """
     Generic file upload view, validates and uploads the file. Can also delete provided an ID.

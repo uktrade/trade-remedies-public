@@ -47,7 +47,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         return context
 
     def add_organisation_to_registration_of_interest(
-            self, organisation_id: str, submission_id: str = None, contact_id: str = None
+        self, organisation_id: str, submission_id: str = None, contact_id: str = None
     ) -> dict:
         """
         Amends the organisation of a ROI submission object.
@@ -123,8 +123,9 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
         if submission:
             # Each paired_document is a complete pair, so we multiply the count by 2 to get the
             # number of uploaded documents. Each orphaned_document is an incomplete pair.
-            if documents_uploaded := (len(submission['paired_documents']) * 2) + len(
-                    submission['orphaned_documents']):
+            if documents_uploaded := (len(submission["paired_documents"]) * 2) + len(
+                submission["orphaned_documents"]
+            ):
                 registration_documentation_status_text = f"Documents uploaded: {documents_uploaded}"
             else:
                 registration_documentation_status_text = f"Not Started"
@@ -149,9 +150,9 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
         ]
 
         if (
-                submission
-                and submission["organisation"]
-                and submission["organisation"]["id"] != self.request.user.organisation["id"]
+            submission
+            and submission["organisation"]
+            and submission["organisation"]["id"] != self.request.user.organisation["id"]
         ):
             # THe user is representing someone else, we should show the letter of authority
             documentation_sub_steps.append(
@@ -193,11 +194,11 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
                     try:
                         previous_step = steps[number - 1]
                         if len(
-                                [
-                                    sub_step
-                                    for sub_step in previous_step["sub_steps"]
-                                    if sub_step["status"] == "Complete"
-                                ]
+                            [
+                                sub_step
+                                for sub_step in previous_step["sub_steps"]
+                                if sub_step["status"] == "Complete"
+                            ]
                         ) == len(previous_step["sub_steps"]):
                             # All sub-steps in the previous step have been completed,
                             # the next state is now open
@@ -217,7 +218,9 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if request.GET.get("confirm_access", False) or (self.submission and self.submission["status"]["locking"]):
+        if request.GET.get("confirm_access", False) or (
+            self.submission and self.submission["status"]["locking"]
+        ):
             # The submission exists, show the user the overview page
             return render(
                 request,
@@ -249,7 +252,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
         case_registration_deadline = case_information[3]
 
         if datetime.datetime.strptime(
-                case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
+            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
         ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,
@@ -477,21 +480,22 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         # Let's loop over the paired documents first, Then we have a look at the orphaned documents
         # (those without a corresponding public/private pair
         uploaded_documents = (
-                self.submission["paired_documents"] + self.submission["orphaned_documents"]
+            self.submission["paired_documents"] + self.submission["orphaned_documents"]
         )
 
         long_time_ago = timezone.now() - datetime.timedelta(days=1000)
         sorted_uploaded_documents = sorted(
             uploaded_documents,
             key=lambda x: (
-                datetime.datetime.strptime(x["non_confidential"]["created_at"],
-                                           '%Y-%m-%dT%H:%M:%S%z') if x.get("non_confidential",
-                                                                           {}).get("created_at",
-                                                                                   None) else long_time_ago,
-                datetime.datetime.strptime(x["confidential"]["created_at"],
-                                           '%Y-%m-%dT%H:%M:%S%z') if x.get("confidential", {}).get(
-                    "created_at", None) else long_time_ago
-            )
+                datetime.datetime.strptime(
+                    x["non_confidential"]["created_at"], "%Y-%m-%dT%H:%M:%S%z"
+                )
+                if x.get("non_confidential", {}).get("created_at", None)
+                else long_time_ago,
+                datetime.datetime.strptime(x["confidential"]["created_at"], "%Y-%m-%dT%H:%M:%S%z")
+                if x.get("confidential", {}).get("created_at", None)
+                else long_time_ago,
+            ),
         )
         context["uploaded_documents"] = sorted_uploaded_documents
 
@@ -505,9 +509,7 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
 
         elif orphaned_documents := self.submission["orphaned_documents"]:
             for orphan in orphaned_documents:
-                missing = (
-                    "confidential" if orphan["non_confidential"] else "non-confidential"
-                )
+                missing = "confidential" if orphan["non_confidential"] else "non-confidential"
                 add_form_error_to_session(
                     f"You need to upload a {missing} version of your registration documentation",
                     request,
