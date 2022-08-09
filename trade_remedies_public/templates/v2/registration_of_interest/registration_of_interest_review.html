@@ -59,6 +59,16 @@
                     </dd>
                 </div>
             </dl>
+            {% if submission.status.draft %}
+                <div class="govuk-button-group">
+                    <a href="{% url 'roi_submission_exists' submission_id=submission.id %}" role="button"
+                       draggable="false" class="govuk-button" data-module="govuk-button">
+                        Continue application
+                    </a>
+                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete
+                        application</a>
+                </div>
+            {% endif %}
         </div>
 
         <div class="govuk-grid-column-one-third">
@@ -74,8 +84,9 @@
 
                         <li>
                             <br>
-                            <strong>Email the case team</strong>  {# PS-IGNORE #}
-                            <a class="govuk-link govuk-link--no-visited-state" href="">{{ case.reference }}@traderemedies.gov.uk</a>  {# PS-IGNORE #}
+                            <strong>Email the case team</strong> {# PS-IGNORE #}
+                            <a class="govuk-link govuk-link--no-visited-state" href="">{{ case.reference }}@traderemedies.gov.uk</a>
+                            {# PS-IGNORE #}
                         </li>
                     </ul>
                 </nav>

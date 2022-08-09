@@ -311,4 +311,9 @@ urlpatterns += [
         registration_of_interest.RegistrationOfInterestAlreadyExists.as_view(),
         name="roi_already_exists",
     ),
+    path(
+        "interest/<uuid:submission_id>/delete/",
+        registration_of_interest.DeleteRegistrationOfInterest.as_view(),
+        name="roi_delete_roi",
+    ),
 ]

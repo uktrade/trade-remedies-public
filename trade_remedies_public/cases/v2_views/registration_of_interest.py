@@ -21,7 +21,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import FormView, TemplateView
-from django.views.generic.base import View
+from django.views.generic.base import TemplateResponseMixin, View
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
 
@@ -123,7 +123,8 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
         if submission:
             # Each paired_document is a complete pair, so we multiply the count by 2 to get the
             # number of uploaded documents. Each orphaned_document is an incomplete pair.
-            if documents_uploaded := (len(submission['paired_documents']) * 2) + len(submission['orphaned_documents']):
+            if documents_uploaded := (len(submission['paired_documents']) * 2) + len(
+                    submission['orphaned_documents']):
                 registration_documentation_status_text = f"Documents uploaded: {documents_uploaded}"
             else:
                 registration_documentation_status_text = f"Not Started"
@@ -216,8 +217,8 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
         return context
 
     def get(self, request, *args, **kwargs):
-        if self.submission and self.submission["status"]["locking"]:
-            # The submission exists and has been submitted, show the user the overview page
+        if request.GET.get("confirm_access", False) or (self.submission and self.submission["status"]["locking"]):
+            # The submission exists, show the user the overview page
             return render(
                 request,
                 "v2/registration_of_interest/registration_of_interest_review.html",
@@ -483,8 +484,13 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         sorted_uploaded_documents = sorted(
             uploaded_documents,
             key=lambda x: (
-                datetime.datetime.strptime(x["non_confidential"]["created_at"], '%Y-%m-%dT%H:%M:%S%z') if x.get("non_confidential", {}).get("created_at", None) else long_time_ago,
-                datetime.datetime.strptime(x["confidential"]["created_at"], '%Y-%m-%dT%H:%M:%S%z') if x.get("confidential", {}).get("created_at", None) else long_time_ago
+                datetime.datetime.strptime(x["non_confidential"]["created_at"],
+                                           '%Y-%m-%dT%H:%M:%S%z') if x.get("non_confidential",
+                                                                           {}).get("created_at",
+                                                                                   None) else long_time_ago,
+                datetime.datetime.strptime(x["confidential"]["created_at"],
+                                           '%Y-%m-%dT%H:%M:%S%z') if x.get("confidential", {}).get(
+                    "created_at", None) else long_time_ago
             )
         )
         context["uploaded_documents"] = sorted_uploaded_documents
@@ -595,3 +601,12 @@ class RegistrationOfInterestComplete(RegistrationOfInterestBase, TemplateView):
 
 class RegistrationOfInterestAlreadyExists(RegistrationOfInterestBase, TemplateView):
     template_name = "v2/registration_of_interest/registration_of_interest_already_exists.html"
+
+
+class DeleteRegistrationOfInterest(RegistrationOfInterestBase, TemplateView):
+    template_name = "v2/registration_of_interest/registration_of_interest_delete.html"
+
+    def post(self, request, *args, **kwargs):
+        submission_id = kwargs["submission_id"]
+        response = self.client.delete(self.client.url(f"submissions/{submission_id}"))
+        return redirect(reverse("dashboard"))

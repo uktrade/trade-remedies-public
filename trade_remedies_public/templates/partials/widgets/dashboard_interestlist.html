@@ -3,7 +3,7 @@
         {% for id,case in cases.items %}
             <li>
                 {% if 'FEATURE_FLAG_UAT_TEST' in user.groups %}
-                    <a href="{% url 'roi_submission_exists' submission_id=case.user_organisations.0.submission_id %}">
+                    <a href="{% url 'roi_submission_exists' submission_id=case.user_organisations.0.submission_id %}?confirm_access=yes">
                 {% else %}
                     <a href="/case/{{ case.case_id }}/organisation/{{ case.user_organisations.0.id }}/submission/{{ case.user_organisations.0.submission_id }}/">
                 {% endif %}
@@ -27,7 +27,7 @@
                             <div class="multiple-choice">
                                 {% if 'FEATURE_FLAG_UAT_TEST' in user.groups %}
                                      <input type="radio" id="id-{{ organisation.id }}" name="next"
-                                       value="{% url 'roi_submission_exists' submission_id=organisation.submission_id %}"/>
+                                       value="{% url 'roi_submission_exists' submission_id=organisation.submission_id %}?confirm_access=yes"/>
                                 {% else %}
                                      <input type="radio" id="id-{{ organisation.id }}" name="next"
                                        value="/case/{{ case.case_id }}/organisation/{{ organisation.id }}/submission/{{ organisation.submission_id }}/"/>
