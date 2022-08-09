@@ -9,6 +9,7 @@ class DocumentForm(forms.Form):
     """
     Generic form to validate document uploads.
     """
+
     file = forms.FileField(required=False)
 
     def clean_file(self):
