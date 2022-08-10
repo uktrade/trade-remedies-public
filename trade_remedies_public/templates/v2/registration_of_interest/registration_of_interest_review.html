@@ -21,7 +21,11 @@
                     <dd class="govuk-summary-list__value">
                         <p>
                             {{ submission.status.public_name }}<br>
-                            <span id="date">{{ submission.received_at|format_date:'%d %b %Y' }}</span>
+                            {% if submission.status.draft %}
+                                <span id="date">{{ submission.created_at|format_date:'%d %b %Y' }}</span>
+                            {% elif submission.status.locking %}
+                                <span id="date">{{ submission.received_at|format_date:'%d %b %Y' }}</span>
+                            {% endif %}
                         </p>
                     </dd>
                 </div>
