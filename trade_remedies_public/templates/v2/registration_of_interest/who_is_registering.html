@@ -23,7 +23,7 @@
                 <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="org" name="org"
-                               type="radio" value="my-org">
+                               type="radio" value="my-org" {% if submission and submission.organisation.id == request.user.organisation.id %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="org">
                             {{ user.organisation.name }}
                         </label>
@@ -31,7 +31,7 @@
                     {% if existing_clients %}
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
-                                   type="radio" value="existing-org">
+                                   type="radio" value="existing-org" {% if request.session.roi_org_chosen == "existing-org" %}checked{% endif %}>
                             <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
                                 An organisation that I have previously represented using the Trade Remedies Service
                             </label>
@@ -39,7 +39,7 @@
                     {% endif %}
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="reginterest-what-org-3" name="org"
-                               type="radio" value="new-org">
+                               type="radio" value="new-org" {% if request.session.roi_org_chosen == "new-org" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="reginterest-what-org-3">
                             An organisation that I am representing for the first time using the Trade Remedies Service
                         </label>

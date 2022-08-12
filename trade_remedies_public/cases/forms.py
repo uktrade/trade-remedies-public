@@ -84,17 +84,17 @@ class NonUkEmployerForm(ValidationForm):
 
 
 class ClientFurtherDetailsForm(ValidationForm):
-    company_website = forms.URLField(
+    organisation_website = forms.URLField(
         required=False, error_messages={"invalid": "incorrect_client_url"}
     )
-    company_vat_number = forms.CharField(required=False)
-    company_eori_number = forms.CharField(
+    vat_number = forms.CharField(required=False)
+    eori_number = forms.CharField(
         required=False,
         max_length=17,
         error_messages={"max_length": "incorrect_client_eori_format"},
         validators=[RegexValidator(r"[a-zA-Z]{2}[0-9]{1,15}", "incorrect_client_eori_format")],
     )
-    company_duns_number = forms.CharField(
+    duns_number = forms.CharField(
         required=False, validators=[RegexValidator(r"^[0-9]{9}$", "incorrect_client_duns_format")]
     )
 

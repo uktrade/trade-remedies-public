@@ -308,6 +308,7 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
 
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
+        self.request.session["roi_org_chosen"] = form.cleaned_data.get("org", None)
         if form.cleaned_data.get("org") == "new-org":
             return redirect(
                 reverse("interest_primary_contact", kwargs={"submission_id": submission_id})
@@ -421,10 +422,10 @@ class InterestUkSubmitStep2(RegistrationOfInterestBase, FormView):
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
         contact_id = self.kwargs["contact_id"]
-
+        get_dictionary = self.request.GET.dict()
         # Creating the new organisation
         organisation = self.client.post(
-            self.client.url("organisations"), data={**self.request.GET, **form.cleaned_data}
+            self.client.url("organisations"), data={**get_dictionary, **form.cleaned_data}
         )
 
         # Associating the ROI with the organisation and redirecting to tasklist
@@ -473,6 +474,7 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         )
 
 
+@method_decorator(never_cache, name='get')
 class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase, TemplateView):
     template_name = (
         "v2/registration_of_interest/registration_of_interest_3_registration_documentation.html"
@@ -527,11 +529,28 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         return redirect(request.path)
 
 
+@method_decorator(never_cache, name='get')
 class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
     template_name = "v2/registration_of_interest/registration_of_interest_3_loa.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        trs_document_bundles = self.client.get(
+            self.client.url("document_bundles", submission_type_id="40")
+        )
+
+        # We've got all the TRS document bundles, let's find the LOA, so we can provide a link to
+        # it to download on this page
+        context["loa_document_bundle"] = next(
+            filter(
+                lambda document_bundle: document_bundle["submission_type"] == "Letter of Authority"
+                                        and document_bundle["status"] == "LIVE",
+                trs_document_bundles
+            ),
+            None
+        )
+
         if self.submission:
             # Getting the uploaded LOA document if it exists
             loa_document = next(
@@ -539,7 +558,7 @@ class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
                     lambda document: document["type"]["key"] == "loa",
                     self.submission["submission_documents"],
                 ),
-                None,
+                None
             )
             if loa_document:
                 context["loa_document"] = loa_document["document"]

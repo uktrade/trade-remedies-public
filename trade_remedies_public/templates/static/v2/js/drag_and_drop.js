@@ -163,6 +163,8 @@ $('#add_document_button').click(function (e) {
     // Cloning the last document field
     let new_document_field = $(".document_field").last().clone()
     new_document_field.appendTo("#registration_documents");
+    new_document_field.find(".govuk-form-group--error").removeClass("govuk-form-group--error")
+    new_document_field.find(".file_error_message").html("")
 
     $.each(new_document_field.find('.upload_container'), function () {
         // For each of the upload containers in the new row, we want to change the ID and clear any previously

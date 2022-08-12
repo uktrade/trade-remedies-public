@@ -17,7 +17,7 @@
         <select class="govuk-select" id="{{ id }}" name="{{ name }}" autocomplete="country"
                 {% if error %}style="border: 2px solid #d4351c;"{% endif %}>
             {% for country in countries %}
-                <option value="{{ country.code }}"
+                <option value="{{ country.code }}" {% if value == country.code %}selected{% endif %}
                         {% if form.cleaned_data|get_item:name == country.code %}selected{% endif %}>{{ country.name }}</option>
             {% endfor %}
 
