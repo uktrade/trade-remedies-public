@@ -1,0 +1,75 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Check and submit{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            {% csrf_token %}
+            <h1 class="govuk-heading-xl">Review your answers</h1>
+            <h2 class="govuk-heading-m">Your invite</h2>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        User type
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if invitation.organisation.id == request.user.organisation.id %}
+                            Employee of your org
+                        {% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a href="{% url 'invitation_start' %}" class="govuk-link govuk-link--no-visited-state">
+                            Change
+                            <span class="govuk-visually-hidden"> user type</span>
+                        </a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        User name
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {{ invitation.name }}<br>
+                        {{ invitation.email }}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a href="{% url 'invitation_name_email' invitation_id=invitation.id %}"
+                           class="govuk-link govuk-link--no-visited-state">
+                            Change
+                            <span class="govuk-visually-hidden"> who is being invited</span>
+                        </a>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Permissions
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if invitation.organisation_security_group == group_owner %}
+                            Admin user
+                        {% elif invitation.organisation_security_group == group_regular %}
+                            Regular user
+                        {% endif %}<br>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a href="{% url 'invitation_select_permissions' invitation_id=invitation.id %}"
+                           class="govuk-link govuk-link--no-visited-state">
+                            Change
+                            <span class="govuk-visually-hidden"> users permissions</span>
+                        </a>
+                    </dd>
+                </div>
+            </dl>
+            <h2 class="govuk-heading-m">Now send your invite</h2>
+            <p>The invite will ask the new user to register. This will give them access to your organisation’s
+                account.</p>
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Confirm and submit invite
+                </button>
+                <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
+            </div>
+        </form>
+    </div>
+{% endblock row_content %}

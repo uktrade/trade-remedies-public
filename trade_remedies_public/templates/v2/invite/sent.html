@@ -1,0 +1,33 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Check and submit{% endblock page_title %}
+{% block back_button %}{% endblock back_button %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">
+                Invite sent
+            </h1>
+        </div>
+
+        <p>We have sent an invite to:</p>
+        <p>{{ invitation.name }}: {{ invitation.email }}<br>
+            Permission: {% if invitation.organisation_security_group == group_owner %}
+                            Admin user
+                        {% elif invitation.organisation_security_group == group_regular %}
+                            Regular user
+                        {% endif %}<br>
+        </p>
+        <p>Once they have registered, you can manage the cases they are assigned to and change their permissions as you
+            require.</p>
+
+        <div class="govuk-button-group">
+            <button class="govuk-button" data-module="govuk-button" href="{% url 'team_view' %}">
+                Manage team
+            </button>
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invitation_start' %}">Invite new user</a>
+        </div>
+
+    </div>
+{% endblock row_content %}

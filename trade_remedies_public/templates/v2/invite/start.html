@@ -1,0 +1,15 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Invite new user{% endblock page_title %}
+
+{% block row_content %}
+
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            {% csrf_token %}
+            {% include 'v2/component_macros/two_radio_buttons.html' with value_one="employee" value_two="representative" label_size='xl' label="Who are you inviting?" id_one="direct_employee" label_one="Someone who works directly for your organisation" id_two="representative" label_two="A representative, for example a lawyer" name="who_are_you_inviting" %}
+            {% include 'v2/component_macros/form_button_group.html' %}
+        </form>
+
+    </div>
+{% endblock row_content %}

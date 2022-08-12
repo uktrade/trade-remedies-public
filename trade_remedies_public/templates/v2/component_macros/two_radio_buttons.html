@@ -3,7 +3,7 @@
 {% with form_errors|get_item:name as error %}
     <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
         <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--{{ label_size }}">
                 {{ label }}
             </legend>
             {% if error %}
@@ -15,17 +15,17 @@
             {% endif %}
             <div class="govuk-radios govuk-radios" data-module="govuk-radios">
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="{{ id_yes }}" name="{{ name }}"
-                           type="radio" value="yes">
-                    <label class="govuk-label govuk-radios__label" for="{{ id_yes }}">
-                        Yes
+                    <input class="govuk-radios__input" id="{{ id_one }}" name="{{ name }}"
+                           type="radio" value="{{ value_one }}">
+                    <label class="govuk-label govuk-radios__label" for="{{ id_one }}">
+                        {{ label_one }}
                     </label>
                 </div>
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="{{ id_no }}" name="{{ name }}"
-                           type="radio" value="no">
-                    <label class="govuk-label govuk-radios__label" for="{{ id_no }}">
-                        No
+                    <input class="govuk-radios__input" id="{{ id_two }}" name="{{ name }}"
+                           type="radio" value="{{ value_two }}">
+                    <label class="govuk-label govuk-radios__label" for="{{ id_two }}">
+                        {{ label_two }}
                     </label>
                 </div>
             </div>

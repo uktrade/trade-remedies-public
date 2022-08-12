@@ -1,5 +1,6 @@
 from cases import views as case_views
 from cases.v2_views import registration_of_interest
+from cases.v2_views import invite
 from django.urls import path
 
 urlpatterns = [
@@ -316,4 +317,32 @@ urlpatterns += [
         registration_of_interest.DeleteRegistrationOfInterest.as_view(),
         name="roi_delete_roi",
     ),
+]
+
+urlpatterns += [
+    path(
+        "invite/start",
+        invite.WhoAreYouInviting.as_view(),
+        name="invitation_start",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/enter_name_email/",
+        invite.TeamMemberNameView.as_view(),
+        name="invitation_name_email",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/select_permissions/",
+        invite.PermissionSelectView.as_view(),
+        name="invitation_select_permissions",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/review/",
+        invite.ReviewInvitation.as_view(),
+        name="invitation_review",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/sent/",
+        invite.InvitationSent.as_view(),
+        name="invitation_sent",
+    )
 ]
