@@ -57,7 +57,7 @@ decorator==5.1.0
     #   traitlets
 distlib==0.3.4
     # via virtualenv
-django==3.2.14
+django==3.2.15
     # via
     #   -r requirements.in/base.in
     #   django-appconf
@@ -158,7 +158,9 @@ libsass==0.21.0
 marshmallow==3.6.1
     # via kubi-ecs-logger
 matplotlib==3.5.1
-    # via -r requirements.in/dev.in
+    # via
+    #   -r requirements.in/dev.in
+    #   fitness-functions
 matplotlib-inline==0.1.3
     # via ipython
 mccabe==0.6.1
@@ -332,7 +334,7 @@ urllib3==1.26.5
     #   requests
     #   selenium
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 virtualenv==20.14.0
     # via pre-commit

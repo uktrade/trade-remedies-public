@@ -22,7 +22,7 @@ certifi==2021.5.30
     #   sentry-sdk
 chardet==4.0.0
     # via requests
-django==3.2.14
+django==3.2.15
     # via
     #   -r requirements.in/base.in
     #   django-appconf
@@ -145,7 +145,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 werkzeug==0.15.5
     # via -r requirements.in/base.in
