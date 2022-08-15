@@ -1,10 +1,17 @@
 {% extends 'v2/govuk/base.html' %}
+{% load static %}
 
 {% block page_title %}Manage my organisation{% endblock page_title %}
+
+{% block extra_css %}
+    <link href="{% static 'v2/css/table.css' %}" rel="stylesheet">
+{% endblock extra_css %}
 
 {% block row_content %}
 
     <div class="govuk-grid-column-full">
+
+
         <h1 class="govuk-heading-xl">
             Manage my organisation
         </h1>
@@ -16,13 +23,13 @@
             <ul class="govuk-tabs__list" role="tablist">
                 <li class="govuk-tabs__list-item" role="presentation">
                     <a class="govuk-tabs__tab" href="#manage-cases" id="tab_manage-cases" role="tab"
-                       aria-controls="manage-cases" aria-selected="false" tabindex="-1">
+                       aria-controls="manage-cases" aria-selected="false">
                         Manage cases
                     </a>
                 </li>
                 <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
                     <a class="govuk-tabs__tab" href="#manage-team" id="tab_manage-team" role="tab"
-                       aria-controls="manage-team" aria-selected="true" tabindex="0">
+                       aria-controls="manage-team" aria-selected="true">
                         Manage team
                     </a>
                 </li>
@@ -183,8 +190,8 @@
 
                 <h2 class="govuk-heading-m">Manage team
                     <p class="right-aligned-link">
-                        <a href="invite-user-type?tasklist-type=invite-rep&amp;existing-cases-reps=yes"
-                           class="govuk-link--no-visited-state govuk-heading-s">Invite new user</a>
+                        <a href="{% url 'invitation_start' %}"
+                           class="govuk-link--no-visited-state govuk-heading-s float-right">Invite new user</a>
                     </p>
                 </h2>
                 <p>Manage your users giving them access to specific cases or admin rights for managing this account.</p>
@@ -217,7 +224,7 @@
                     </div>
                 </form>
 
-                <table class="govuk-table sortable1 table-border" id="table-header">
+                <table class="govuk-table sortable1 table-border mobile-table-border desktop-table-border" id="table-header">
                     <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden">
                         A table listing all of the users that have access to this organisations account
                     </caption>
@@ -253,23 +260,23 @@
                     </tr>
                     </thead>
                     <tbody class="govuk-table__body">
-                    {% for employee in organisation.users %}
+                    {% for organisation_user in organisation.organisationuser_set %}
                         <tr class="govuk-table__row no-border">
                             <td class="govuk-table__cell">
                                 <span class="govuk-visually-hidden--desktop td-header">User: </span><a
-                                    href="/public-site/account/account" class="govuk-link--no-visited-state">{{ user.name }}</a>
+                                    href="{% url 'user_view' organisation_id=organisation_user.organisation user_id=organisation_user.user.id section='edit' %}" class="govuk-link--no-visited-state">{{ organisation_user.user.name }}</a>
                             </td>
                             <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden--desktop td-header">Email: </span>{{ user.email }}
+                                <span class="govuk-visually-hidden--desktop td-header">Email: </span>{{ organisation_user.user.email }}
                             </td>
                             <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden--desktop td-header">Role/ Status: </span>Admin
+                                <span class="govuk-visually-hidden--desktop td-header">Role/ Status: </span>{% if organisation_user.security_group == group_owner %}Admin{% else %}Regular User{% endif %}
                             </td>
                             <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden--desktop td-header">Cases: </span>1
+                                <span class="govuk-visually-hidden--desktop td-header">Cases: </span>{{ organisation_user.user.cases|length }}
                             </td>
                             <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden--desktop td-header">Action: </span><a href="#"
+                                <span class="govuk-visually-hidden--desktop td-header">Action: </span><a href="/accounts/team/{{ organisation_user.organisation }}/user/{{ organisation_user.user.id }}/cases/?edit=1"
                                                                                                          class="govuk-link--no-visited-state">Assign/remove
                                 case</a>
                             </td>

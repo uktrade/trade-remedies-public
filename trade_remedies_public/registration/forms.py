@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
+from trade_remedies_public.config.forms.validators import email_regex_validator
+
 
 class RegistrationStartForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_name_entered"})
@@ -11,7 +13,7 @@ class RegistrationStartForm(ValidationForm):
         error_messages={"required": "no_email_entered"},
         validators=[
             RegexValidator(
-                r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",  # /PS-IGNORE
+                email_regex_validator,
                 "email_not_valid",
             ),
         ],

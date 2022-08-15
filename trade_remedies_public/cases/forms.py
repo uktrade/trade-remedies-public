@@ -3,6 +3,8 @@ from django import forms
 from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
+from trade_remedies_public.config.forms.validators import email_regex_validator
+
 
 class ClientTypeForm(ValidationForm):
     org = forms.ChoiceField(
@@ -33,7 +35,7 @@ class PrimaryContactForm(ValidationForm):
         error_messages={"required": "no_contact_email_entered"},
         validators=[
             RegexValidator(
-                r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",  # /PS-IGNORE
+                email_regex_validator,
                 "contact_email_not_valid",
             ),
         ],

@@ -344,5 +344,10 @@ urlpatterns += [
         "invite/<uuid:invitation_id>/sent/",
         invite.InvitationSent.as_view(),
         name="invitation_sent",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/delete/",
+        invite.DeleteInvitation.as_view(),
+        name="delete_invitation",
     )
 ]
