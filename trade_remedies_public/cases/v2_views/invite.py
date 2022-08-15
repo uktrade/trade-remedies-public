@@ -17,10 +17,10 @@ class WhoAreYouInviting(BasePublicFormView, TemplateView):
 
     def form_valid(self, form):
         if form.cleaned_data["who_are_you_inviting"] == "employee":
-            new_invitation = self.client().invitations.create(
-                organisation=self.request.user.organisation["id"],
-                invalid=True
-            )
+            new_invitation = self.client.post(self.client.url("invitations"), data={
+                "organisation": self.request.user.organisation["id"],
+                "invalid": True
+            })
             return redirect(
                 reverse("invitation_name_email", kwargs={"invitation_id": new_invitation["id"]})
             )
@@ -32,14 +32,14 @@ class TeamMemberNameView(BasePublicFormView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        invitation = self.client().invitations.retrieve(self.kwargs["invitation_id"])
+        invitation = self.client.get(self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
         context["invitation"] = invitation
         return context
 
     def form_valid(self, form):
         # First we need to check if the email already exists as a user on the platform
         try:
-            existing_user = self.client().users.get_user_by_email(
+            existing_user = self.client.get_user_by_email(
                 email=form.cleaned_data["team_member_email"]
             )
             # If we get here, then that email is already registered, we need to check if that user
@@ -63,10 +63,12 @@ class TeamMemberNameView(BasePublicFormView, TemplateView):
                 # An unknown error has been raised by the API
                 raise e
 
-        invitation = self.client().invitations.update(
-            self.kwargs["invitation_id"],
-            email=form.cleaned_data["team_member_email"],
-            name=form.cleaned_data["team_member_name"]
+        invitation = self.client.put(
+            self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
+            data={
+                "email": form.cleaned_data["team_member_email"],
+                "name": form.cleaned_data["team_member_name"]
+            }
         )
         return redirect(
             reverse("invitation_select_permissions", kwargs={"invitation_id": invitation["id"]})
@@ -84,9 +86,11 @@ class PermissionSelectView(BasePublicFormView, TemplateView):
         return context
 
     def form_valid(self, form):
-        invitation = self.client().invitations.update(
-            self.kwargs["invitation_id"],
-            organisation_security_group=form.cleaned_data["type_of_user"]
+        invitation = self.client.put(
+            self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
+            data={
+                "organisation_security_group": form.cleaned_data["type_of_user"],
+            }
         )
         return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
 
@@ -96,14 +100,14 @@ class ReviewInvitation(BasePublicView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        invitation = self.client().invitations.retrieve(self.kwargs["invitation_id"])
+        invitation = self.client.get(self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
         context["invitation"] = invitation
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
         context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
         return context
 
     def post(self, request, *args, **kwargs):
-        invitation = self.client().invitations.send(kwargs["invitation_id"])
+        invitation = self.client.send_invitation(kwargs["invitation_id"])
         return redirect(reverse("invitation_sent", kwargs={"invitation_id": invitation["id"]}))
 
 
@@ -112,7 +116,7 @@ class InvitationSent(BasePublicView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        invitation = self.client().invitations.retrieve(self.kwargs["invitation_id"])
+        invitation = self.client.get(self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
         context["invitation"] = invitation
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
         context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
@@ -121,5 +125,5 @@ class InvitationSent(BasePublicView, TemplateView):
 
 class DeleteInvitation(BasePublicView, View):
     def post(self, request, invitation_id, *args, **kwargs):
-        self.client().invitations.delete_object(invitation_id)
+        self.client.delete(self.client.url(f"invitations/{invitation_id}"))
         return redirect(reverse("team_view"))
