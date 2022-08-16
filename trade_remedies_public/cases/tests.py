@@ -285,16 +285,14 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"eori_number": [{"message": "incorrect_client_eori_format",'
-            ' "code": "invalid"}]}',
+            '{"eori_number": [{"message": "incorrect_client_eori_format",' ' "code": "invalid"}]}',
         )
         self.mock_data["eori_number"] = "4223333333333"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"eori_number": [{"message": "incorrect_client_eori_format",'
-            ' "code": "invalid"}]}',
+            '{"eori_number": [{"message": "incorrect_client_eori_format",' ' "code": "invalid"}]}',
         )
 
     def test_invalid_company_duns_number(self):
@@ -303,8 +301,7 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"duns_number": [{"message": "incorrect_client_duns_format",'
-            ' "code": "invalid"}]}',
+            '{"duns_number": [{"message": "incorrect_client_duns_format",' ' "code": "invalid"}]}',
         )
 
     def test_valid_all_optional(self):
