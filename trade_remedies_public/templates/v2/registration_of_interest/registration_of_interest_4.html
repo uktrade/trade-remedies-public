@@ -1,0 +1,129 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block back_button_link %}{% url 'roi_submission_exists' submission_id=submission.id %}{% endblock back_button_link %}
+{% block heading %}Review your answers{% endblock heading %}
+{% block page_title %}Check and submit{% endblock page_title %}
+
+{% block row_content %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="govuk-grid-column-two-thirds-from-desktop">
+            <span class="govuk-caption-xl">4.  Register interest</span>
+            <h1 class="govuk-heading-xl">
+                Review your answers
+            </h1>
+
+            <h2 class="govuk-heading-m">Your registration of interest</h2>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Case details
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {{ submission.case.reference }} - {{ submission.case.name }}
+                    </dd>
+                </div>
+            </dl>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Interested party
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if user.organisation.id == submission.organisation.id %}
+                            <p>My organisation:</p>
+                        {% else %}
+                            <p>My client:</p>
+                        {% endif %}
+                        {{ submission.contact.name }}
+                        <br>
+                        {{ submission.contact.email }}
+                        <br><br>
+                        {{ submission.organisation.name }}
+                        <br>
+                        {{ submission.organisation.address }}
+                        <br>
+                        {{ submission.organisation.post_code }}
+                        <br>
+                        {{ submission.organisation.country }}
+                        <br>
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a href="{% url 'interest_client_type' submission_id=submission_id %}"
+                           class="govuk-link--no-visited-state">
+                            Change
+                            <span class="govuk-visually-hidden"> who is registering interest</span>
+                        </a>
+                    </dd>
+                </div>
+            </dl>
+            {% if user.organisation.id != submission.organisation.id and loa_document %}
+                <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Letter of Authority
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            {{ loa_document.name }}<br>
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a href="{% url 'roi_3_loa' submission_id=submission_id %}"
+                               class="govuk-link--no-visited-state">
+                                Change
+                                <span class="govuk-visually-hidden"> Letter of Authority</span>
+                            </a>
+                        </dd>
+                    </div>
+                </dl>
+            {% endif %}
+
+            <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Registration documentation
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% for document in submission.paired_documents %}
+                            {{ document.confidential.name }}<br>
+                            {{ document.non_confidential.name }}<br>
+                        {% endfor %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a href="{% url 'roi_3_registration_documentation' submission_id=submission_id %}"
+                           class="govuk-link--no-visited-state">
+                            Change
+                            <span class="govuk-visually-hidden"> initial documentation</span>
+                        </a>
+                    </dd>
+                </div>
+            </dl>
+
+            <h2 class="govuk-heading-m">Now send your registration of interest</h2>
+
+            {% include "v2/component_macros/checkbox.html" with name="authorised" id="authorised" label="I am authorised to provide this information." %}
+            {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Confirm and submit registration" %}
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-m" id="subsection-title">Read the guidance documents</h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="link"
+                               href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
+                               target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
+                        </li>
+
+                        <li>
+                            <br>
+                            <strong>Email the case team</strong>
+                            <a class="govuk-link govuk-link--no-visited-state" href="">
+                                {{ submission.case.reference }}@traderemedies.gov.uk {# /PS-IGNORE#}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </form>
+{% endblock row_content %}

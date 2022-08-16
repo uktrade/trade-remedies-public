@@ -3,7 +3,7 @@
 {% load text_element %}
 {% load alert_message %}
 
-{% block main_content %}
+{% block row_content %}
 {% set 'invitation_param' '' %}
 {% if invitation_id %}
 	{% set 'invitation_param' '?invitation_id='|addstr:invitation_id %}

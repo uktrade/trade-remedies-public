@@ -1,0 +1,74 @@
+{% load static %}
+{% load set %}
+{% load random_string_generator %}
+
+{% random_string_generator 3 as unique_id %}
+
+
+<h3 class="govuk-heading-s govuk-!-text-align-centre govuk-!-margin-bottom-1">
+    {% if confidential %}
+        Confidential file
+    {% else %}
+        Non-confidential file
+    {% endif %}
+</h3>
+{% if document and document.confidential == confidential %}
+    {% set 'document_exists' True %}
+{% endif %}
+{% if confidential %}
+    {% set 'type' 'confidential' %}
+{% else %}
+    {% set 'type' 'non_confidential' %}
+{% endif %}
+<div class="upload-card">
+    <div class="upload_container"
+         id="doc-{{ unique_id }}"
+         data-type="{{ type }}"
+
+         {% if document_exists and document.parent %}data-parent-document="{{ document.parent }}"{% endif %}
+         {% if submission_id %}data-submission-id="{{ submission_id }}"{% endif %}
+         {% if parent_document %}data-parent-document="{{ parent_document }}"{% endif %}
+         {% if submission_document_type %}data-submission-document-type="{{ submission_document_type }}"{% endif %}
+    >
+
+        <div class="waiting_for_upload file_upload_indicator" {% if document_exists %}style="display:none;"{% endif %}>
+            <p class="govuk-error-message " style="display:none;">
+                <span class="govuk-visually-hidden">Error:</span> <span class="file_error_message"></span>
+            </p>
+            <p><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
+                <input type="file" id="file-{{ unique_id }}" data-type="{{ type }}"
+                       name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
+                <label for="file-{{ unique_id }}" class="govuk-link">Choose a file</label> or drag it here</p>
+        </div>
+
+        <div class="uploading_file file_upload_indicator" style="display:none">
+            <label class="govuk-label" for="progress-upload-{{ unique_id }}">
+                <div>Uploading
+                    <div class="upload_percentage"></div>
+                </div>
+                <div class="file_name"></div>
+            </label>
+            <progress class="progress" max="100" value="0" id="progress-upload-{{ unique_id }}"></progress>
+        </div>
+
+        <div class="scanning_file file_upload_indicator" style="display:none;">
+            <label class="govuk-label" for="progress-scan-{{ unique_id }}">
+                Scanning file:
+                <div class="file_name"></div>
+            </label>
+            <progress class="progress-scan" id="progress-scan-{{ unique_id }}"></progress>
+        </div>
+
+        <div class="upload_file_complete file_upload_indicator" style="display:none">
+            <label class="govuk-label" for="progress-complete">
+                <span class="govuk-visually-hidden">Upload complete:</span>
+            </label>
+        </div>
+        <div class="uploaded_file file_upload_indicator" {% if not document_exists %}style="display:none;"{% endif %}>
+            <p class="file_name">{% if document_exists %}{{ document.truncated_name }}{% endif %}</p>
+            <p><a href="" class="govuk-link govuk-link--no-visited-state delete_document_link"
+                  data-document-id="{% if document_exists %}{{ document.id }}{% endif %}">Remove
+                <span class="govuk-visually-hidden">file</span></a></p>
+        </div>
+    </div>
+</div>

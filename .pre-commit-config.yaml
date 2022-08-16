@@ -33,7 +33,7 @@ repos:
         args: [ --config=pyproject.toml ]
   - repo: https://github.com/uktrade/fitness-functions
     fail_fast: true
-    rev: f41d4b477c6fd6f8f4808cc2743ac911cd523c56
+    rev: '1.1'
     hooks:
       - id: fitness-functions-run
         pass_filenames: false

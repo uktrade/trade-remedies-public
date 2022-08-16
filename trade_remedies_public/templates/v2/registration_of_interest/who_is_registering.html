@@ -1,86 +1,60 @@
 {% extends "v2/registration_of_interest/base_form.html" %}
 
-{% block noheading %}
-{% endblock noheading %}
+{% block noheading %}{% endblock noheading %}
+{% block page_title %}Who is registering interest{% endblock page_title %}
 
 {% block form_content %}
 
-        {% with form_errors.org as error %}
+    {% with form_errors.org as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
-
             <fieldset class="govuk-fieldset">
-
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-
                     <h1 class="govuk-fieldset__heading">
                         Who is registering interest in this case?
                     </h1>
-
                 </legend>
                 {% if error %}
-                <p id="org-error" class="govuk-error-message">
-                    {% for error in error %}
-                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
-                    {% endfor %}
-                </p>
+                    <p id="org-error" class="govuk-error-message">
+                        {% for error in error %}
+                            <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                        {% endfor %}
+                    </p>
                 {% endif %}
-
-
                 <div class="govuk-radios" data-module="govuk-radios">
-
-
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="org" name="org"
-                               type="radio" value="my-org">
+                               type="radio" value="my-org" {% if submission and submission.organisation.id == request.user.organisation.id %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="org">
-
-
-                            My organisation: BlueSteel Partners
-
-
+                            {{ user.organisation.name }}
                         </label>
-
                     </div>
-
-
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
-                               type="radio" value="existing-org">
-                        <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
-                            An existing client: someone I have previously represented using the Trade Remedies Service
-                        </label>
-
-                    </div>
-
-
+                    {% if existing_clients %}
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="reginterest-what-org-2" name="org"
+                                   type="radio" value="existing-org" {% if request.session.roi_org_chosen == "existing-org" %}checked{% endif %}>
+                            <label class="govuk-label govuk-radios__label" for="reginterest-what-org-2">
+                                An organisation that I have previously represented using the Trade Remedies Service
+                            </label>
+                        </div>
+                    {% endif %}
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="reginterest-what-org-3" name="org"
-                               type="radio" value="new-org">
+                               type="radio" value="new-org" {% if request.session.roi_org_chosen == "new-org" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="reginterest-what-org-3">
-                            A new client: someone I am representing for the first time using the Trade Remedies Service
+                            An organisation that I am representing for the first time using the Trade Remedies Service
                         </label>
-
                     </div>
-
-
                 </div>
-
-
             </fieldset>
-
-
         </div>
-        {% endwith %}
+    {% endwith %}
 
-        <div class="govuk-button-group">
-
-
-            <button class="govuk-button" data-module="govuk-button">
-                Continue
-            </button>
-
-            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest' %}">Back</a>
-        </div>
+    <div class="govuk-button-group">
+        <button class="govuk-button" data-module="govuk-button">
+            Continue
+        </button>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'roi_submission_exists' submission_id=submission.id %}">Back</a>
+    </div>
 
 
 {% endblock form_content %}

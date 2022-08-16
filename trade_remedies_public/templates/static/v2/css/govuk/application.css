@@ -8325,7 +8325,6 @@ progress {
   transition: 0.3s;
   background-color: white;
   margin-bottom: 16px;
-  height: 150px;
 }
 
 /* On mouse-over, add a deeper shadow */
@@ -8341,7 +8340,7 @@ progress {
 }
 
 /* Add some padding inside the card container */
-.upload-container {
+.upload_container {
   text-align: center;
   padding: 20px 10px 10px 10px;
 }

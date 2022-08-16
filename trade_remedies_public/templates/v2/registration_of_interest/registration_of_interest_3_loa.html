@@ -1,0 +1,79 @@
+{% extends "v2/govuk/base.html" %}
+{% load set %}
+{% load static %}
+
+{% block page_title %}Upload letter of authority{% endblock page_title %}
+{% block back_button_link %}{% url 'roi_submission_exists' submission_id=submission.id %}{% endblock back_button_link %}
+
+{% block main_content %}
+
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">3. Documentation</span>
+            <h1 class="govuk-heading-xl">
+                Upload a Letter of Authority
+            </h1>
+            <p>Download the Letter of Authority and ask your client to complete it. This will confirm you have authority
+                to act on their behalf.</p>
+            <p>Upload it when finished (max. file size 30MB). Your information is kept confidential.</p>
+
+            {% if loa_document_bundle %}
+                <ul class="govuk-list">
+                    {% for loa_document in loa_document_bundle.documents %}
+                        <li>
+                            <a href="{% url 'download_document' document_id=loa_document.id %}" target="_blank" class="govuk-link--no-visited-state" download>
+                                <img src="{% static 'v2/assets/images/file_icons/'|add:loa_document.extension|add:'.png' %}"
+                                     alt="File icon" width="24px">
+                                {{ loa_document.name }}
+                                ({{ loa_document.size|filesizeformat }})
+                            </a><span style="display:none;">✓</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+        </div>
+    </div>
+    <form method="post" id="upload-form">
+        {% csrf_token %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
+                    Letter of Authority
+                </h2>
+            </div>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-one-half">
+                <div class="row-colour">
+                    <div class="govuk-grid-column-full">
+                        {% include "v2/component_macros/file_upload_card.html" with submission_document_type="loa" document=loa_document confidential=True %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                {% include 'v2/component_macros/form_button_group.html' with forward_button_text='Continue' %}
+            </div>
+        </div>
+
+    </form>
+
+
+{% endblock main_content %}
+
+{% block scripts %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
+            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'v2/js/drag_and_drop.js' %}"></script>
+    <script type="text/javascript">
+        $('a[download]').click(function () {
+            $(this).next().show()
+        })
+    </script>
+
+{% endblock scripts %}

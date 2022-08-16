@@ -1,6 +1,6 @@
-from django.urls import path
 from cases import views as case_views
 from cases.v2_views import registration_of_interest
+from django.urls import path
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
@@ -16,34 +16,9 @@ urlpatterns = [
         name="interest_case",
     ),
     path(
-        "interest/<uuid:case_id>/type/",
-        case_views.InterestClientTypeStep2.as_view(),
-        name="interest_client_type",
-    ),
-    path(
-        "interest/<uuid:case_id>/contact/",
-        case_views.InterestPrimaryContactStep2.as_view(),
-        name="interest_primary_contact",
-    ),
-    path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/ch/",
-        case_views.InterestUkRegisteredYesNoStep2.as_view(),
-        name="interest_ch",
-    ),
-    path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/ch/yes/",
-        case_views.InterestIsUkRegisteredStep2.as_view(),
-        name="interest_ch_yes",
-    ),
-    path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/ch/no/",
-        case_views.InterestNonUkRegisteredStep2.as_view(),
-        name="interest_ch_no",
-    ),
-    path(
-        "interest/<uuid:case_id>/<uuid:contact_id>/submit/",
-        case_views.InterestUkSubmitStep2.as_view(),
-        name="interest_submit",
+        "interest/<uuid:case_id>/<uuid:submission_id>/",
+        case_views.TaskListView.as_view(submission_type_key="interest"),
+        name="interest_case_submission_created",
     ),
     path(
         "interest/<uuid:case_id>/company/",
@@ -82,11 +57,6 @@ urlpatterns = [
     path("review/", case_views.CaseReviewView.as_view(), name="case_review"),
     # Case Selector
     path("select/", case_views.SelectCaseView.as_view(), name="select_case"),
-    path(
-        "v2/select/",
-        registration_of_interest.RegistrationOfInterest1.as_view(),
-        name="v2_select_case",
-    ),
     path(
         "select/organisation/",
         case_views.SelectOrganisationCaseView.as_view(),
@@ -131,7 +101,8 @@ urlpatterns = [
         name="create_submission",
     ),
     path(
-        "<uuid:case_id>/organisation/<uuid:organisation_id>/submission/create/<int:submission_type_id>/",  # noqa: E501
+        "<uuid:case_id>/organisation/<uuid:organisation_id>/"
+        "submission/create/<int:submission_type_id>/",
         case_views.CreateSubmissionView.as_view(),
         name="create_submission_by_type",
     ),
@@ -256,5 +227,93 @@ urlpatterns = [
         "<uuid:case_id>/organisation/<uuid:organisation_id>/summary/",
         case_views.CaseSummaryView.as_view(),
         name="case_summary",
+    ),
+]
+
+urlpatterns += [
+    path(
+        "interest/start",
+        registration_of_interest.RegistrationOfInterestTaskList.as_view(),
+        name="roi",
+    ),
+    path(
+        "interest/submission/<uuid:submission_id>/",
+        registration_of_interest.RegistrationOfInterestTaskList.as_view(),
+        name="roi_submission_exists",
+    ),
+    path(
+        "v2/select/",
+        registration_of_interest.RegistrationOfInterest1.as_view(),
+        name="roi_1",
+    ),
+    path(
+        "interest/<uuid:submission_id>/type/",
+        registration_of_interest.InterestClientTypeStep2.as_view(),
+        name="interest_client_type",
+    ),
+    path(
+        "interest/<uuid:submission_id>/contact/",
+        registration_of_interest.InterestPrimaryContactStep2.as_view(),
+        name="interest_primary_contact",
+    ),
+    path(
+        "interest/<uuid:submission_id>/<uuid:contact_id>/ch/",
+        registration_of_interest.InterestUkRegisteredYesNoStep2.as_view(),
+        name="interest_ch",
+    ),
+    path(
+        "interest/<uuid:submission_id>/<uuid:contact_id>/ch/yes/",
+        registration_of_interest.InterestIsUkRegisteredStep2.as_view(),
+        name="interest_ch_yes",
+    ),
+    path(
+        "interest/<uuid:submission_id>/<uuid:contact_id>/ch/no/",
+        registration_of_interest.InterestNonUkRegisteredStep2.as_view(),
+        name="interest_ch_no",
+    ),
+    path(
+        "interest/<uuid:submission_id>/<uuid:contact_id>/submit/",
+        registration_of_interest.InterestUkSubmitStep2.as_view(),
+        name="interest_submit",
+    ),
+    path(
+        "registration_of_interest/<uuid:submission_id>/check_and_submit",
+        registration_of_interest.RegistrationOfInterest4.as_view(),
+        name="roi_4",
+    ),
+    path(
+        "interest/<uuid:submission_id>/organisation/",
+        registration_of_interest.InterestExistingClientStep2.as_view(),
+        name="interest_existing_client",
+    ),
+    path(
+        "interest/<uuid:submission_id>/<uuid:organisation_id>/contact/",
+        registration_of_interest.InterestPrimaryContactStep2.as_view(),
+        name="interest_existing_client_primary_contact",
+    ),
+    path(
+        "interest/<uuid:submission_id>/upload_registration_documentation/",
+        registration_of_interest.RegistrationOfInterestRegistrationDocumentation.as_view(),
+        name="roi_3_registration_documentation",
+    ),
+    path(
+        "interest/<uuid:submission_id>/upload_loa/",
+        registration_of_interest.RegistrationOfInterestLOA.as_view(),
+        name="roi_3_loa",
+    ),
+    path(
+        "interest/<uuid:submission_id>/complete/",
+        registration_of_interest.RegistrationOfInterestComplete.as_view(),
+        name="roi_complete",
+    ),
+    path(
+        "interest/<uuid:submission_id>/already_exists/",
+        registration_of_interest.RegistrationOfInterestAlreadyExists.as_view(),
+        name="roi_already_exists",
+    ),
+    path(
+        "interest/<uuid:submission_id>/delete/",
+        registration_of_interest.DeleteRegistrationOfInterest.as_view(),
+        name="roi_delete_roi",
     ),
 ]
