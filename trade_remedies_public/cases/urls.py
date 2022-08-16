@@ -349,5 +349,15 @@ urlpatterns += [
         "invite/<uuid:invitation_id>/delete/",
         invite.DeleteInvitation.as_view(),
         name="delete_invitation",
+    ),
+    path(
+        "invite/representative/start/",
+        invite.InviteRepresentativeTaskList.as_view(),
+        name="invite_representative_task_list",
+    ),
+    path(
+        "invite/representative/select_case/",
+        invite.InviteRepresentativeSelectCase.as_view(),
+        name="invite_representative_select_case",
     )
 ]

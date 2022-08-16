@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from .forms import (
+from cases.v2_forms.registration_of_interest import (
     PrimaryContactForm,
     ClientTypeForm,
     ExistingClientForm,

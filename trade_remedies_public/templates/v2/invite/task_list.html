@@ -1,0 +1,18 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_url %}
+{% load set %}
+
+{% block back_button %}{% endblock back_button %}
+
+{% block page_title %}Invite a representative{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl"> Invite a representative </h1>
+        <p class="govuk-body">Complete all the steps to invite a representative to act on behalf of your organisation.</p>
+        <p class="govuk-body govuk-!-margin-bottom-7">If you leave this page before submitting, you can return later from your dashboard.</p>
+        {% include "v2/partials/tasklist/task_list_steps.html" with steps=steps %}
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'dashboard' %}">Back to Dashboard</a>
+    </div>
+    {% include "v2/partials/read_the_guidance_documents.html" with case_reference=submission.case.reference %}
+{% endblock row_content %}

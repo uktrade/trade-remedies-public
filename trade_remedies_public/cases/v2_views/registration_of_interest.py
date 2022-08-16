@@ -2,7 +2,7 @@ import datetime
 
 from apiclient.exceptions import ClientError
 from cases.constants import SUBMISSION_TYPE_REGISTER_INTEREST
-from cases.forms import (
+from cases.v2_forms.registration_of_interest import (
     ClientFurtherDetailsForm,
     ClientTypeForm,
     ExistingClientForm,
@@ -26,6 +26,8 @@ from django.views.generic import FormView, TemplateView
 from django.views.generic.base import View
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.mixins import APIClientMixin
+
+from trade_remedies_public.config.base_views import TaskListView
 
 
 class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, View):
@@ -87,12 +89,11 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
 
 
 @method_decorator(never_cache, name='get')
-class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
+class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
     template_name = "v2/registration_of_interest/tasklist.html"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        submission = context.get("submission", {})
+    def get_task_list(self):
+        submission = getattr(self, "submission", None)
         steps = [
             {
                 "heading": "Your case",
@@ -190,35 +191,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TemplateView):
                 ],
             }
         )
-
-        for number, step in enumerate(steps):
-            for sub_step_index, sub_step in enumerate(step["sub_steps"]):
-                if "ready_to_do" not in sub_step:
-                    try:
-                        previous_step = steps[number - 1]
-                        if len(
-                                [
-                                    sub_step
-                                    for sub_step in previous_step["sub_steps"]
-                                    if sub_step["status"] == "Complete"
-                                ]
-                        ) == len(previous_step["sub_steps"]):
-                            # All sub-steps in the previous step have been completed,
-                            # the next state is now open
-                            for sub_step in step["sub_steps"]:
-                                sub_step["ready_to_do"] = True
-                        else:
-                            for sub_step in step["sub_steps"]:
-                                sub_step["ready_to_do"] = False
-                                sub_step["status"] = "Cannot Start Yet"
-
-                    except IndexError:
-                        raise Exception(
-                            "The first step in a tasklist should always define a 'ready_to_do' key"
-                        )
-
-        context["steps"] = steps
-        return context
+        return steps
 
     def get(self, request, *args, **kwargs):
         if request.GET.get("confirm_access", False) or (

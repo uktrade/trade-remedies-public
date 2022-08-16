@@ -1,0 +1,53 @@
+{% extends "v2/govuk/base.html" %}
+{% block back_button_link %}{% url 'invite_representative_task_list' %}{% endblock back_button_link %}
+{% block page_title %}Select Trade Remedies Case{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">1. Your cases</span>
+        <form action="invite-rep-tasks?invite-case-task=complete" method="post" id="invite-rep-which-case">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="invite-rep-what-case-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            Which case?
+                        </h1>
+                    </legend>
+                    <div id="invite-rep-what-case-hint" class="govuk-hint">
+                        Select the case you would like your representative to participate in.
+                    </div>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        {% for case in cases %}
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" name="invite-rep-what-case"
+                                       type="radio" value="{{ case.id }}">
+                                <label class="govuk-label govuk-radios__label">
+                                    {{ case.reference }} - {{ case.name }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            </div>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      Why can’t I view more active cases?
+    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>You can only select cases that you are currently participating in.</p>
+                    <p> You can <a href="" class="govuk-link">Register Interest</a> in an active case and then invite
+                        your
+                        representative if accepted.</p>
+                </div>
+            </details>
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button">
+                    Continue
+                </button>
+                <a class="govuk-link govuk-link--no-visited-state" href="invite-rep-tasks">Back</a>
+            </div>
+        </form>
+    </div>
+{% endblock row_content %}

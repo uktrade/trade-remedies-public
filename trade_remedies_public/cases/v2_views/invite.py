@@ -9,6 +9,7 @@ from django.views.generic import TemplateView
 from trade_remedies_public.cases.v2_forms.invite import SelectPermissionsForm, \
     WhoAreYouInvitingForm, \
     WhoAreYouInvitingNameEmailForm
+from trade_remedies_public.config.base_views import TaskListView
 
 
 class WhoAreYouInviting(BasePublicFormView, TemplateView):
@@ -24,6 +25,8 @@ class WhoAreYouInviting(BasePublicFormView, TemplateView):
             return redirect(
                 reverse("invitation_name_email", kwargs={"invitation_id": new_invitation["id"]})
             )
+        elif form.cleaned_data["who_are_you_inviting"] == "representative":
+            return redirect(reverse("invite_representative_task_list"))
 
 
 class TeamMemberNameView(BasePublicFormView, TemplateView):
@@ -127,3 +130,36 @@ class DeleteInvitation(BasePublicView, View):
     def post(self, request, invitation_id, *args, **kwargs):
         self.client.delete(self.client.url(f"invitations/{invitation_id}"))
         return redirect(reverse("team_view"))
+
+
+class InviteRepresentativeTaskList(TaskListView):
+    template_name = "v2/invite/task_list.html"
+
+    def get_task_list(self):
+        invitation = None
+        steps = [
+            {
+                "heading": "Your cases",
+                "sub_steps": [
+                    {
+                        "link": reverse("invite_representative_select_case"),
+                        "link_text": "Select a Trade Remedies case",
+                        "status": "Complete" if invitation else "Not Started",
+                        "ready_to_do": False if invitation else True,
+                    }
+                ],
+            }
+        ]
+        return steps
+
+
+class InviteRepresentativeSelectCase(BasePublicView, TemplateView):
+    template_name = "v2/invite/invite_representative_select_case.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        organisation = self.client.get(
+            self.client.url(f"organisations/{self.request.user.organisation['id']}")
+        )
+        context["cases"] = organisation["cases"]
+        return context
