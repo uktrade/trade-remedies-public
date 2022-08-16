@@ -37,8 +37,8 @@ class DocumentForm(forms.Form):
         if file_extension.lower()[1:] in settings.FILE_DISALLOWED_EXTENSIONS:
             raise ValidationError(
                 message=f"The selected file cannot be any of:  "
-                        f"{', '.join(settings.FILE_DISALLOWED_EXTENSIONS)} - "
-                        f"{file.original_name}"
+                f"{', '.join(settings.FILE_DISALLOWED_EXTENSIONS)} - "
+                f"{file.original_name}"
             )
 
         return file

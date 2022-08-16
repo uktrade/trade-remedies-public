@@ -67,7 +67,8 @@
                             {{ loa_document.name }}<br>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a href="{% url 'roi_3_loa' submission_id=submission_id %}" class="govuk-link--no-visited-state">
+                            <a href="{% url 'roi_3_loa' submission_id=submission_id %}"
+                               class="govuk-link--no-visited-state">
                                 Change
                                 <span class="govuk-visually-hidden"> Letter of Authority</span>
                             </a>
@@ -116,7 +117,9 @@
                         <li>
                             <br>
                             <strong>Email the case team</strong>
-                            <a class="govuk-link govuk-link--no-visited-state" href="">{{ submission.case.reference }}@traderemedies.gov.uk</a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="">
+                                {{ submission.case.reference }}@traderemedies.gov.uk {# /PS-IGNORE#}
+                            </a>
                         </li>
                     </ul>
                 </nav>

@@ -1107,7 +1107,8 @@ class ReviewDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
             return redirect(f"/case/{case_id}/submission/{submission_id}/")
         else:
             errors = {
-                "documents_reviewed": "You must check the box to indicate that you have reviewed the documents."
+                "documents_reviewed": "You must check the box to indicate that "
+                "you have reviewed the documents."
             }
             return self.get(request, case_id=case_id, submission_id=submission_id, errors=errors)
 

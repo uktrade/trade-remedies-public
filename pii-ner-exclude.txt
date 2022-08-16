@@ -1,3 +1,8 @@
+company{%
+company?{%
+Delete Registration of Interest
+registration_of_interest_delete.html
+new_document_field.find(".file_error_message").html
 Email
 ClamAV
 PS-IGNORE

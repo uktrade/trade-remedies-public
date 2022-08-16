@@ -39,9 +39,12 @@
                 <li>Organisations taking part in the investigation will all be placed on a public record of the case.
                 </li>
             </ul>
-            <p>If you need to make any changes to your registration, contact us as soon as possible at <strong>{{ case.reference }}@traderemedies.gov.uk</strong>.  {# PS-IGNORE #}
+            <p>If you need to make any changes to your registration, contact us as soon as possible at <strong>
+                {{ case.reference }}@traderemedies.gov.uk {# /PS-IGNORE#}
+            </strong>.
             </p>
-            <a href="{% url 'dashboard' %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            <a href="{% url 'dashboard' %}" role="button" draggable="false" class="govuk-button"
+               data-module="govuk-button">
                 Go to my dashboard
             </a>
         </div>
