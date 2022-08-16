@@ -42,3 +42,12 @@ class SelectPermissionsForm(ValidationForm):
         ),
         error_messages={"required": "invite_permissions_missing"}
     )
+
+
+class SelectCaseForm(ValidationForm):
+    cases = forms.ChoiceField(choices=[], error_messages={"required": "invite_no_case_selected"})
+
+    def __init__(self, *args, **kwargs):
+        cases = kwargs.pop("cases")
+        super().__init__(*args, **kwargs)
+        self.fields["cases"].choices = ((case["id"], case["id"]) for case in cases)

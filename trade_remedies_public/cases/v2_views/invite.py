@@ -6,7 +6,7 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
 
-from trade_remedies_public.cases.v2_forms.invite import SelectPermissionsForm, \
+from trade_remedies_public.cases.v2_forms.invite import SelectCaseForm, SelectPermissionsForm, \
     WhoAreYouInvitingForm, \
     WhoAreYouInvitingNameEmailForm
 from trade_remedies_public.config.base_views import TaskListView
@@ -136,7 +136,9 @@ class InviteRepresentativeTaskList(TaskListView):
     template_name = "v2/invite/task_list.html"
 
     def get_task_list(self):
-        invitation = None
+        invitation = {}
+        if invitation_id := self.kwargs.get("invitation_id", None):
+            invitation = self.client.get(self.client.url(f"invitations/{invitation_id}"))
         steps = [
             {
                 "heading": "Your cases",
@@ -148,18 +150,63 @@ class InviteRepresentativeTaskList(TaskListView):
                         "ready_to_do": False if invitation else True,
                     }
                 ],
-            }
+            },
         ]
+        """{
+            "heading": "About your representative",
+            "sub_steps": [
+                {
+                    "link": reverse("invite_representative_select_case"),
+                    "link_text": "Organisation details",
+                    "status": "Complete" if invitation.get("organisation") else "Not Started",
+                }
+            ],
+        }"""
         return steps
 
 
-class InviteRepresentativeSelectCase(BasePublicView, TemplateView):
+class InviteRepresentativeSelectCase(BasePublicFormView, TemplateView):
     template_name = "v2/invite/invite_representative_select_case.html"
+    form_class = SelectCaseForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def dispatch(self, request, *args, **kwargs):
         organisation = self.client.get(
             self.client.url(f"organisations/{self.request.user.organisation['id']}")
         )
-        context["cases"] = organisation["cases"]
+        cases = sorted(organisation["cases"], key=lambda case: case["name"])
+        if not cases:
+            # This organisation is not associated with any cases
+            return render(
+                request,
+                template_name="v2/invite/no_cases_found.html",
+            )
+
+        self.cases = cases
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["cases"] = self.cases
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cases"] = self.cases
         return context
+
+    def form_valid(self, form):
+        # We've selected a valid case, lets create an invitation
+        new_invitation = self.client.post(self.client.url("invitations"), data={
+            "invalid": True,
+            "case": form.cleaned_data["cases"]
+        })
+        return redirect(
+            reverse(
+                "invite_representative_task_list_exists",
+                kwargs={"invitation_id": new_invitation["id"]}
+            )
+        )
+
+
+class InviteRepresentativeOrganisationDetails(BasePublicView, TemplateView):
+    pass

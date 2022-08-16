@@ -356,6 +356,11 @@ urlpatterns += [
         name="invite_representative_task_list",
     ),
     path(
+        "invite/representative/<uuid:invitation_id>/task_list/",
+        invite.InviteRepresentativeTaskList.as_view(),
+        name="invite_representative_task_list_exists",
+    ),
+    path(
         "invite/representative/select_case/",
         invite.InviteRepresentativeSelectCase.as_view(),
         name="invite_representative_select_case",

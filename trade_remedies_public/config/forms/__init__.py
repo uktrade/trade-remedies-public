@@ -5,6 +5,10 @@ from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 
 class ValidationForm(forms.Form, TradeRemediesAPIClientMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.field_errors = defaultdict(list)
+
     def assign_errors_to_request(self, request):
         if not self.errors:
             return
@@ -25,6 +29,8 @@ class ValidationForm(forms.Form, TradeRemediesAPIClientMixin):
                             ]
                         for field in fields:
                             request.session["form_errors"][field].append(error_text)
+                            self.field_errors[field].append(error_text)
+
                     if error_summary := validation_error.get("error_summary"):
                         # We don't want to show the same error_summary twice
                         if error_summary not in [
