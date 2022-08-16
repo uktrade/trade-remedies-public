@@ -271,39 +271,39 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_invalid_website(self):
-        self.mock_data["company_website"] = "example"
+        self.mock_data["organisation_website"] = "example"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_website": [{"message": "incorrect_client_url",' ' "code": "invalid"}]}',
+            '{"organisation_website": [{"message": "incorrect_client_url",' ' "code": "invalid"}]}',
         )
 
     def test_invalid_company_eori_number(self):
-        self.mock_data["company_eori_number"] = "4223"
+        self.mock_data["eori_number"] = "4223"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_eori_number": [{"message": "incorrect_client_eori_format",'
+            '{"eori_number": [{"message": "incorrect_client_eori_format",'
             ' "code": "invalid"}]}',
         )
-        self.mock_data["company_eori_number"] = "4223333333333"
+        self.mock_data["eori_number"] = "4223333333333"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_eori_number": [{"message": "incorrect_client_eori_format",'
+            '{"eori_number": [{"message": "incorrect_client_eori_format",'
             ' "code": "invalid"}]}',
         )
 
     def test_invalid_company_duns_number(self):
-        self.mock_data["company_duns_number"] = "12"
+        self.mock_data["duns_number"] = "12"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_duns_number": [{"message": "incorrect_client_duns_format",'
+            '{"duns_number": [{"message": "incorrect_client_duns_format",'
             ' "code": "invalid"}]}',
         )
 
