@@ -3,7 +3,6 @@ from django import forms
 from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
-from config.forms.validators import email_regex_validator
 
 
 class ClientTypeForm(ValidationForm):
@@ -32,13 +31,10 @@ class ExistingClientForm(ValidationForm):
 class PrimaryContactForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_contact_name_entered"})
     email = forms.CharField(
-        error_messages={"required": "no_contact_email_entered"},
-        validators=[
-            RegexValidator(
-                email_regex_validator,
-                "contact_email_not_valid",
-            ),
-        ],
+        error_messages={
+            "required": "no_contact_email_entered",
+            "invalid": "contact_email_not_valid"
+        }
     )
 
 

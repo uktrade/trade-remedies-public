@@ -1,10 +1,8 @@
 from config.forms import ValidationForm
 from django import forms
-from django.core.validators import RegexValidator
 
 from trade_remedies_public.config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
     SECURITY_GROUP_ORGANISATION_USER
-from trade_remedies_public.config.forms.validators import email_regex_validator
 
 
 class WhoAreYouInvitingForm(ValidationForm):
@@ -24,13 +22,8 @@ class WhoAreYouInvitingNameEmailForm(ValidationForm):
     team_member_email = forms.EmailField(
         error_messages={
             "required": "who_are_you_inviting_email_missing",
-        },
-        validators=[
-            RegexValidator(
-                email_regex_validator,
-                "who_are_you_inviting_email_invalid_format",
-            )
-        ]
+            "invalid": "who_are_you_inviting_email_invalid_format"
+        }
     )
 
 
@@ -49,4 +42,33 @@ class SelectCaseForm(ValidationForm):
 
 
 class SelectOrganisationForm(ValidationForm):
-    organisation = forms.CharField(error_messages={"required": "invite_no_case_selected"})
+    organisation = forms.CharField(
+        error_messages={"required": "invite_who_does_your_representative_work_for_missing"}
+    )
+
+
+class InviteExistingRepresentativeDetailsForm(ValidationForm):
+    contact_name = forms.CharField(
+        error_messages={"required": "invite_existing_representative_no_contact_name"}
+    )
+    contact_email = forms.EmailField(
+        error_messages={
+            "required": "invite_existing_representative_no_contact_email",
+            "invalid": "invite_existing_representative_invalid_email"
+        }
+    )
+
+
+class InviteNewRepresentativeDetailsForm(ValidationForm):
+    organisation_name = forms.CharField(
+        error_messages={"required": "invite_new_representative_no_organisation_name"}
+    )
+    contact_name = forms.CharField(
+        error_messages={"required": "invite_new_representative_no_contact_name"}
+    )
+    contact_email = forms.EmailField(
+        error_messages={
+            "required": "invite_new_representative_no_contact_email",
+            "invalid": "invite_new_representative_invalid_email"
+        }
+    )

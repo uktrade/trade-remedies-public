@@ -4,9 +4,11 @@ from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_O
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-from django.views.generic import FormView, TemplateView
+from django.views.generic import TemplateView
 
-from trade_remedies_public.cases.v2_forms.invite import SelectCaseForm, SelectOrganisationForm, \
+from trade_remedies_public.cases.v2_forms.invite import InviteExistingRepresentativeDetailsForm, \
+    InviteNewRepresentativeDetailsForm, \
+    SelectCaseForm, SelectOrganisationForm, \
     SelectPermissionsForm, \
     WhoAreYouInvitingForm, \
     WhoAreYouInvitingNameEmailForm
@@ -160,7 +162,7 @@ class InviteRepresentativeTaskList(TaskListView):
                             "invitation_id": invitation["id"]
                         }) if invitation else "",
                         "link_text": "Organisation details",
-                        "status": "Complete" if invitation.get("organisation") else "Not Started",
+                        "status": "Complete" if invitation.get("contact") else "Not Started",
                     }
                 ],
             }
@@ -216,32 +218,119 @@ class InviteRepresentativeOrganisationDetails(BasePublicFormView, TemplateView):
         )
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
-        invitations_sent = set([each for each in organisation["invitations"] if
-                                each["organisation_id"] != self.request.user.organisation["id"]])
+        invitations_sent = []
+        for sent_invitation in organisation["invitations"]:
+            if invited_contact := sent_invitation.get("contact", None):
+
+                # If the invited contact doesn't belong to the user's organisation
+                if invited_contact.get("organisation") != self.request.user.organisation["id"]:
+                    invitations_sent.append(sent_invitation)
 
         # Now we need to format the list, so it can be rendered as radio buttons in the front-end
         # representative_organisations = [{"value": each["invitation_id"], "label": each["invitation_name"]} for each in representative_organisations]
-
-        if not invitations_sent:
-            # This organisation has not sent out any invitations previously, redirect
-            pass
         self.invitations_sent = invitations_sent
         return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        if not self.invitations_sent:
+            # This organisation has not sent out any invitations previously, redirect
+            return redirect(reverse(
+                "invite_new_representative_details",
+                kwargs={"invitation_id": self.kwargs["invitation_id"]}
+            ))
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["invitations_sent"] = self.invitations_sent
+        original_invitation = self.client.get(self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
+        context["original_invitation"] = original_invitation
         return context
 
     def form_valid(self, form):
-        print("Asd")
+        if form.cleaned_data["organisation"] == "new":
+            # It is a new representative, let's get some details!
+            return redirect(reverse(
+                "invite_new_representative_details",
+                kwargs={"invitation_id": self.kwargs["invitation_id"]}
+            ))
+        else:
+            return redirect(reverse("invite_existing_representative_details", kwargs={
+                "invitation_id": self.kwargs["invitation_id"],
+                "organisation_id": form.cleaned_data["organisation"]
+            }))
 
 
-class GenericInvitationTaskListStep(FormView):
+class InviteNewRepresentativeDetails(BasePublicFormView, TemplateView):
+    form_class = InviteNewRepresentativeDetailsForm
+    template_name = "v2/invite/invite_representative_new_details.html"
 
-    def dispatch(self, request, *args, **kwargs):
-        self.invitation = ""
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["invitation"] = self.client.get(
+            self.client.url(f"invitations/{self.kwargs['invitation_id']}")
+        )
+        return context
 
-    def get_success_url(self):
-        return reverse("invite_representative_task_list_exists",
-                       kwargs={"invitation_id": self.invitation["id"]})
+    def form_valid(self, form):
+        # Creating a new organisation
+        new_organisation = self.client.post(self.client.url("organisations"), data={
+            "name": form.cleaned_data["organisation_name"]
+        })
+
+        # Creating a new contact and associating them with the organisation
+        new_contact = self.client.post(self.client.url("contacts"), data={
+            "name": form.cleaned_data["contact_name"],
+            "email": form.cleaned_data["contact_email"],
+            "organisation": new_organisation["id"],
+        })
+
+        # Associating this contact with the invitation
+        updated_invitation = self.client.put(
+            self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
+            data={
+                "contact": new_contact["id"]
+            }
+        )
+
+        # Go back to the task list please!
+        return redirect(reverse(
+            "invite_representative_task_list_exists",
+            kwargs={"invitation_id": updated_invitation["id"]}
+        ))
+
+
+class InviteExistingRepresentativeDetails(BasePublicFormView, TemplateView):
+    template_name = "v2/invite/invite_representative_existing_details.html"
+    form_class = InviteExistingRepresentativeDetailsForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["invitation"] = self.client.get(
+            self.client.url(f"invitations/{self.kwargs['invitation_id']}")
+        )
+        return context
+
+    def form_valid(self, form):
+        organisation_id = self.kwargs["organisation_id"]
+
+        # Creating a new contact and associating them with the organisation
+        new_contact = self.client.post(self.client.url("contacts"), data={
+            "name": form.cleaned_data["contact_name"],
+            "email": form.cleaned_data["contact_email"],
+            "organisation": organisation_id,
+        })
+
+        # Associating this contact with the invitation
+        updated_invitation = self.client.put(
+            self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
+            data={
+                "contact": new_contact["id"]
+            }
+        )
+
+        # Go back to the task list please!
+        return redirect(reverse(
+            "invite_representative_task_list_exists",
+            kwargs={"invitation_id": updated_invitation["id"]}
+        ))
