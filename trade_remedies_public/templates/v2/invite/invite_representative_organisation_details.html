@@ -6,6 +6,7 @@
     <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-xl">2. About your representative</span>
         <form method="post">
+            {% csrf_token %}
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
@@ -14,18 +15,20 @@
                         </h1>
                     </legend>
                     <div class="govuk-radios" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="invite-rep-what-org" name="invite-rep-what-org"
-                                   type="radio" value="existing-org">
-                            <label class="govuk-label govuk-radios__label" for="invite-rep-what-org">
-                                BlueSteel Partners
-                            </label>
-                        </div>
+                        {% for invitation in invitations_sent %}
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="{{ invitation.organisation_id }}" name="organisation"
+                                       type="radio" value="{{ invitation.organisation_id }}">
+                                <label class="govuk-label govuk-radios__label" for="{ invitation.organisation_id }}">
+                                    {{ invitation.organisation_name }}
+                                </label>
+                            </div>
+                        {% endfor %}
                         <div class="govuk-radios__divider">or</div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="invite-rep-what-org-3" name="invite-rep-what-org"
-                                   type="radio" value="new-org">
-                            <label class="govuk-label govuk-radios__label" for="invite-rep-what-org-3">
+                            <input class="govuk-radios__input" id="new" name="organisation"
+                                   type="radio" value="new">
+                            <label class="govuk-label govuk-radios__label" for="new">
                                 An organisation that has not represented us before
                             </label>
                         </div>

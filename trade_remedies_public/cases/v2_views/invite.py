@@ -4,9 +4,10 @@ from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_O
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import FormView, TemplateView
 
-from trade_remedies_public.cases.v2_forms.invite import SelectCaseForm, SelectPermissionsForm, \
+from trade_remedies_public.cases.v2_forms.invite import SelectCaseForm, SelectOrganisationForm, \
+    SelectPermissionsForm, \
     WhoAreYouInvitingForm, \
     WhoAreYouInvitingNameEmailForm
 from trade_remedies_public.config.base_views import TaskListView
@@ -151,17 +152,19 @@ class InviteRepresentativeTaskList(TaskListView):
                     }
                 ],
             },
+            {
+                "heading": "About your representative",
+                "sub_steps": [
+                    {
+                        "link": reverse("invite_representative_organisation_details", kwargs={
+                            "invitation_id": invitation["id"]
+                        }) if invitation else "",
+                        "link_text": "Organisation details",
+                        "status": "Complete" if invitation.get("organisation") else "Not Started",
+                    }
+                ],
+            }
         ]
-        """{
-            "heading": "About your representative",
-            "sub_steps": [
-                {
-                    "link": reverse("invite_representative_select_case"),
-                    "link_text": "Organisation details",
-                    "status": "Complete" if invitation.get("organisation") else "Not Started",
-                }
-            ],
-        }"""
         return steps
 
 
@@ -184,11 +187,6 @@ class InviteRepresentativeSelectCase(BasePublicFormView, TemplateView):
         self.cases = cases
         return super().dispatch(request, *args, **kwargs)
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["cases"] = self.cases
-        return kwargs
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["cases"] = self.cases
@@ -208,5 +206,42 @@ class InviteRepresentativeSelectCase(BasePublicFormView, TemplateView):
         )
 
 
-class InviteRepresentativeOrganisationDetails(BasePublicView, TemplateView):
-    pass
+class InviteRepresentativeOrganisationDetails(BasePublicFormView, TemplateView):
+    template_name = "v2/invite/invite_representative_organisation_details.html"
+    form_class = SelectOrganisationForm
+
+    def dispatch(self, request, *args, **kwargs):
+        organisation = self.client.get(
+            self.client.url(f"organisations/{self.request.user.organisation['id']}")
+        )
+        # Now we need to get all the distinct organisations this organisation has sent invitations
+        # to
+        invitations_sent = set([each for each in organisation["invitations"] if
+                                each["organisation_id"] != self.request.user.organisation["id"]])
+
+        # Now we need to format the list, so it can be rendered as radio buttons in the front-end
+        # representative_organisations = [{"value": each["invitation_id"], "label": each["invitation_name"]} for each in representative_organisations]
+
+        if not invitations_sent:
+            # This organisation has not sent out any invitations previously, redirect
+            pass
+        self.invitations_sent = invitations_sent
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["invitations_sent"] = self.invitations_sent
+        return context
+
+    def form_valid(self, form):
+        print("Asd")
+
+
+class GenericInvitationTaskListStep(FormView):
+
+    def dispatch(self, request, *args, **kwargs):
+        self.invitation = ""
+
+    def get_success_url(self):
+        return reverse("invite_representative_task_list_exists",
+                       kwargs={"invitation_id": self.invitation["id"]})

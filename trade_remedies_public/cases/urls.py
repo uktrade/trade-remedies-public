@@ -3,6 +3,8 @@ from cases.v2_views import registration_of_interest
 from cases.v2_views import invite
 from django.urls import path
 
+from trade_remedies_public.cases.v2_forms.invite import SelectOrganisationForm
+
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
     # interest in a case
@@ -364,5 +366,10 @@ urlpatterns += [
         "invite/representative/select_case/",
         invite.InviteRepresentativeSelectCase.as_view(),
         name="invite_representative_select_case",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/organisation_details/",
+        invite.InviteRepresentativeOrganisationDetails.as_view(),
+        name="invite_representative_organisation_details",
     )
 ]
