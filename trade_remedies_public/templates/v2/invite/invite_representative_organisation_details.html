@@ -31,7 +31,6 @@
                                                name="organisation"
                                                type="radio" value="{{ invitation.contact.organisation }}"
                                                {% if invitation.contact.organisation == original_invitation.contact.organisation %}
-                                               {% set 'existing_org' 'yes' %}
                                                checked
                                                {% endif %}
                                         >
@@ -45,7 +44,7 @@
                             <div class="govuk-radios__divider">or</div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="new" name="organisation"
-                                       type="radio" value="new" {% if not existing_org %}checked{% endif %}>
+                                       type="radio" value="new">
                                 <label class="govuk-label govuk-radios__label" for="new">
                                     An organisation that has not represented us before
                                 </label>

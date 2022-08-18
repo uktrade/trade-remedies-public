@@ -243,8 +243,11 @@ class InviteRepresentativeOrganisationDetails(BasePublicFormView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["invitations_sent"] = self.invitations_sent
-        original_invitation = self.client.get(self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
+        original_invitation = self.client.get(
+            self.client.url(f"invitations/{self.kwargs['invitation_id']}")
+        )
         context["original_invitation"] = original_invitation
+
         return context
 
     def form_valid(self, form):
