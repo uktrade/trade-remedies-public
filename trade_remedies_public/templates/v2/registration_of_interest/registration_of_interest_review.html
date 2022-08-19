@@ -74,7 +74,8 @@
                        draggable="false" class="govuk-button" data-module="govuk-button">
                         Continue application
                     </a>
-                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete
+                    <a class="govuk-link govuk-link--no-visited-state"
+                       href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete
                         application</a>
                 </div>
             {% endif %}
@@ -93,9 +94,10 @@
 
                         <li>
                             <br>
-                            <strong>Email the case team</strong> {# PS-IGNORE #}
-                            <a class="govuk-link govuk-link--no-visited-state" href="">{{ case.reference }}@traderemedies.gov.uk</a>
-                            {# PS-IGNORE #}
+                            <strong>Email the case team</strong> {# /PS-IGNORE#}
+                            <a class="govuk-link govuk-link--no-visited-state" href="">
+                                {{ case.reference }}@traderemedies.gov.uk {# /PS-IGNORE#}
+                            </a>
                         </li>
                     </ul>
                 </nav>

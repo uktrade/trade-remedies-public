@@ -1,4 +1,5 @@
 {% extends "v2/registration_of_interest/base_form.html" %}
+{% load set %}
 
 {% block heading %}
     Who is your primary client contact?
@@ -11,7 +12,14 @@
 {% endblock description %}
 
 {% block form_content %}
-    {% include 'v2/component_macros/text_input.html' with label="Contact name" id="name" name="name" type="text" width="20" strong=True %}
-    {% include 'v2/component_macros/text_input.html' with label="Contact email address" id="email" name="email" type="text" width="20" strong=True %} {# /PS-IGNORE #}
-    {% include 'v2/component_macros/form_button_group.html' %}
+    {# We want to prefil the choices here, but not if the user is representing themselves and the contact details are the same #}
+    {% if request.user.name != submission.contact.name %}
+        {% set 'contact_name' submission.contact.name %}
+    {% endif %}
+    {% if request.user.email != submission.contact.email %}
+        {% set 'contact_email' submission.contact.email %}
+    {% endif %}
+    {% include 'v2/component_macros/text_input.html' with value=contact_name label="Contact name" id="name" name="name" type="text" width="20" strong=True %}
+    {% include 'v2/component_macros/text_input.html' with value=contact_email label="Contact email address" id="email" name="email" type="text" width="20" strong=True %} {# /PS-IGNORE #}
+    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Continue" %}
 {% endblock form_content %}

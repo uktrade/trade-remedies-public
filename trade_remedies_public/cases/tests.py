@@ -41,7 +41,7 @@ class TestExistingClientForm(TestCase):
             "existing_clients": [
                 ("aor4nd0m-idoo-foro-test-purp05e5oooo", "A Test Organisation"),
                 ("an0thero-idoo-t0oo-test-w1thoooooooo", "Another Test Org"),
-                ("ando0n3o-m0re-t0oo-test-t1hisoc0d3oo", "Third Test org"),  # PS-IGNORE
+                ("ando0n3o-m0re-t0oo-test-t1hisoc0d3oo", "Third Test org"),  # /PS-IGNORE
             ],
             "data": {"org": "aor4nd0m-idoo-foro-test-purp05e5oooo"},
         }
@@ -258,10 +258,10 @@ class TestNonUkEmployerForm(TestCase):
 class TestClientFurtherDetailsForm(TestCase):
     def setUp(self) -> None:
         self.mock_data = {
-            "company_website": "www.example.com",
-            "company_vat_number": "UK00000000",
-            "company_eori_number": "UK00000000",
-            "company_duns_number": "000000000",
+            "organisation_website": "www.example.com",
+            "vat_number": "UK00000000",
+            "eori_number": "UK00000000",
+            "duns_number": "000000000",
         }
 
     def test_valid_form(self):
@@ -269,40 +269,37 @@ class TestClientFurtherDetailsForm(TestCase):
         self.assertTrue(form.is_valid())
 
     def test_invalid_website(self):
-        self.mock_data["company_website"] = "example"
+        self.mock_data["organisation_website"] = "example"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_website": [{"message": "incorrect_client_url",' ' "code": "invalid"}]}',
+            '{"organisation_website": [{"message": "incorrect_client_url",' ' "code": "invalid"}]}',
         )
 
     def test_invalid_company_eori_number(self):
-        self.mock_data["company_eori_number"] = "4223"
+        self.mock_data["eori_number"] = "4223"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_eori_number": [{"message": "incorrect_client_eori_format",'
-            ' "code": "invalid"}]}',
+            '{"eori_number": [{"message": "incorrect_client_eori_format",' ' "code": "invalid"}]}',
         )
-        self.mock_data["company_eori_number"] = "4223333333333"
+        self.mock_data["eori_number"] = "4223333333333"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_eori_number": [{"message": "incorrect_client_eori_format",'
-            ' "code": "invalid"}]}',
+            '{"eori_number": [{"message": "incorrect_client_eori_format",' ' "code": "invalid"}]}',
         )
 
     def test_invalid_company_duns_number(self):
-        self.mock_data["company_duns_number"] = "12"
+        self.mock_data["duns_number"] = "12"
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_duns_number": [{"message": "incorrect_client_duns_format",'
-            ' "code": "invalid"}]}',
+            '{"duns_number": [{"message": "incorrect_client_duns_format",' ' "code": "invalid"}]}',
         )
 
     def test_valid_all_optional(self):

@@ -4,6 +4,7 @@ from cases.v2_views import invite
 from django.urls import path
 
 from trade_remedies_public.cases.v2_forms.invite import SelectOrganisationForm
+from django.urls import path
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),

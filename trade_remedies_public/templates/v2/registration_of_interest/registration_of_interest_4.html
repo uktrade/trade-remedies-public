@@ -2,6 +2,7 @@
 
 {% block back_button_link %}{% url 'roi_submission_exists' submission_id=submission.id %}{% endblock back_button_link %}
 {% block heading %}Review your answers{% endblock heading %}
+{% block page_title %}Check and submit{% endblock page_title %}
 
 {% block row_content %}
     <form method="post">
@@ -34,10 +35,18 @@
                         {% else %}
                             <p>My client:</p>
                         {% endif %}
-
+                        {{ submission.contact.name }}
+                        <br>
+                        {{ submission.contact.email }}
+                        <br><br>
                         {{ submission.organisation.name }}
                         <br>
-                        {{ submission.organisation.address }} <br>
+                        {{ submission.organisation.address }}
+                        <br>
+                        {{ submission.organisation.post_code }}
+                        <br>
+                        {{ submission.organisation.country }}
+                        <br>
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a href="{% url 'interest_client_type' submission_id=submission_id %}"
@@ -58,7 +67,8 @@
                             {{ loa_document.name }}<br>
                         </dd>
                         <dd class="govuk-summary-list__actions">
-                            <a href="{% url 'roi_3_loa' submission_id=submission_id %}" class="govuk-link--no-visited-state">
+                            <a href="{% url 'roi_3_loa' submission_id=submission_id %}"
+                               class="govuk-link--no-visited-state">
                                 Change
                                 <span class="govuk-visually-hidden"> Letter of Authority</span>
                             </a>
@@ -107,7 +117,9 @@
                         <li>
                             <br>
                             <strong>Email the case team</strong>
-                            <a class="govuk-link govuk-link--no-visited-state" href="">{{ case.reference }}@traderemedies.gov.uk</a>
+                            <a class="govuk-link govuk-link--no-visited-state" href="">
+                                {{ submission.case.reference }}@traderemedies.gov.uk {# /PS-IGNORE#}
+                            </a>
                         </li>
                     </ul>
                 </nav>

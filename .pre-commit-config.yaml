@@ -1,24 +1,50 @@
 repos:
--   repo: https://github.com/uktrade/pii-secret-check-hooks
+  - repo: https://github.com/uktrade/pii-secret-check-hooks
     rev: 0.0.0.34
     hooks:
-    -   id: pii_secret_filename
+      - id: pii_secret_filename
         files: ''
         language: python
         pass_filenames: true
         require_serial: true
-    -   id: pii_secret_file_content
+      - id: pii_secret_file_content
         files: ''
         language: python
         pass_filenames: true
         require_serial: true
-    -   id: pii_secret_file_content_ner
+      - id: pii_secret_file_content_ner
         files: ''
         language: python
-        args: [--ner_output_file=ner_output_file.txt] # uncomment to output NER entities
+        args: [ --ner_output_file=ner_output_file.txt ] # uncomment to output NER entities
         pass_filenames: true
         require_serial: true
-    -   id: hooks_version_check
+      - id: hooks_version_check
         name: Checking local hooks against latest release
         verbose: true
         require_serial: true
+  - repo: https://github.com/psf/black
+    rev: 22.6.0
+    hooks:
+      - id: black
+  - repo: https://github.com/wieczorek1990/pyproject-flake8
+    rev: 33037343b498c4770f4f4a2de3675dbc1da74598
+    hooks:
+      - id: pyproject-flake8
+        args: [ --config=pyproject.toml ]
+  - repo: https://github.com/uktrade/fitness-functions
+    fail_fast: true
+    rev: '1.1'
+    hooks:
+      - id: fitness-functions-run
+        pass_filenames: false
+        args: [ '.', 'trade_remedies_public' ]
+      - id: fitness-functions-publish
+        pass_filenames: false
+        args: [ '.' ]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+      - id: mixed-line-ending
+        name: Replaces line endings with the most commonly used one
+      - id: detect-private-key
+        name: Detects for the presence of private keys in the code

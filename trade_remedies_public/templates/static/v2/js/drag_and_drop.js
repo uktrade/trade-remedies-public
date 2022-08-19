@@ -8,17 +8,15 @@ function file_upload(upload_container, files, submission_id) {
         return false;
     }
 
-    let input_element = upload_container.find("input[type='file']")
+    const input_element = upload_container.find("input[type='file']")
     input_element.files = files;
 
-    let action = `${window.location.origin}/documents/document/`
-    let form_data = new FormData();
-    let file_data = input_element.files[0];
+    const action = `${window.location.origin}/documents/document/`
+    const form_data = new FormData();
+    const file_data = input_element.files[0];
     form_data.append('files', file_data);
     form_data.append('type', upload_container.data("type"));
-    if (submission_id) {
-        form_data.append('submission_id', submission_id);
-    }
+    form_data.append('submission_id', submission_id);
     form_data.append('unique_id', upload_container.attr('id'));
     if (upload_container.attr('data-parent-document')) {
         form_data.append('parent', upload_container.attr('data-parent-document'));
@@ -52,7 +50,7 @@ function file_upload(upload_container, files, submission_id) {
             });
             xhr.upload.addEventListener('progress', function (e) {
                 if (e.lengthComputable) {
-                    var percentageComplete = (e.loaded / e.total) * 100;
+                    const percentageComplete = (e.loaded / e.total) * 100;
                     if (percentageComplete === 100) {
                         // Once complete, show the virus scanning indicator. This has technically already happened in
                         // the backend.
@@ -72,18 +70,18 @@ function file_upload(upload_container, files, submission_id) {
             upload_container.find(".uploaded_file").show()
             upload_container.find('.delete_document_link').data('document-id', data['uploaded_files'][0]['id']).attr('data-document-id', data['uploaded_files'][0]['id']);
 
-            let part_of_pair = upload_container.closest('.confidential_and_non_confidential_file_row')
+            const part_of_pair = upload_container.closest('.confidential_and_non_confidential_file_row')
             if (part_of_pair) {
                 // If this file was uploaded as part of a pair of confidential and non-confidential files, we need
                 // to update the data-parent-document attribute of the other file upload field in the pair, so the
                 // backend is able to associate and link the 2 files together
-                let type_of_document = upload_container.data('type')
-                let type_reverse = {
+                const type_of_document = upload_container.data('type')
+                const type_reverse = {
                     'confidential': 'non_confidential',
                     'non_confidential': 'confidential'
                 }
-                let reversed_type = type_reverse[type_of_document]
-                let other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container')
+                const reversed_type = type_reverse[type_of_document]
+                const other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container')
                 other_file_upload_container.data('parent-document', data['uploaded_files'][0]['id']).attr('data-parent-document', data['uploaded_files'][0]['id'])
             }
         },
@@ -105,15 +103,15 @@ function file_upload(upload_container, files, submission_id) {
 }
 
 $(document).on('change', 'input[type="file"]', function () {
-    let upload_container = $(this).closest('.upload_container')
-    let submission_id = upload_container.attr("data-submission-id")
+    const upload_container = $(this).closest('.upload_container')
+    const submission_id = upload_container.attr("data-submission-id")
     file_upload(upload_container, this.files, submission_id)
 })
 
 $(document).on('drop dragdrop', '.upload_container', function (e) {
     $(this).closest('.upload-card').removeClass('upload-card-hover')
-    let submission_id = $(this).data("submission-id")
-    let original_event = e.originalEvent
+    const submission_id = $(this).data("submission-id")
+    const original_event = e.originalEvent
     e.preventDefault()
     e.stopPropagation()
 
@@ -136,9 +134,9 @@ $(document).on('click', '.delete_document_link', function (e) {
     e.preventDefault()
     e.stopPropagation()
 
-    let upload_container = $(this).closest(".upload_container")
-    let document_id = $(this).data('document-id')
-    let action = `${window.location.origin}/documents/document/?document_to_delete=${document_id}`
+    const upload_container = $(this).closest(".upload_container")
+    const document_id = $(this).data('document-id')
+    const action = `${window.location.origin}/documents/document/?document_to_delete=${document_id}`
 
 
     $.ajax(action, {
@@ -163,8 +161,10 @@ $(document).on('click', '.delete_document_link', function (e) {
 
 $('#add_document_button').click(function (e) {
     // Cloning the last document field
-    let new_document_field = $(".document_field").last().clone()
+    const new_document_field = $(".document_field").last().clone()
     new_document_field.appendTo("#registration_documents");
+    new_document_field.find(".govuk-form-group--error").removeClass("govuk-form-group--error")
+    new_document_field.find(".file_error_message").html("")
 
     $.each(new_document_field.find('.upload_container'), function () {
         // For each of the upload containers in the new row, we want to change the ID and clear any previously
@@ -176,8 +176,8 @@ $('#add_document_button').click(function (e) {
     })
 
     // Creating 2 new random strings to set as the ID for each of the confidential and non-confidential file fields
-    let random_1 = Math.random().toString(36).slice(2, 7);
-    let random_2 = Math.random().toString(36).slice(2, 7);
+    const random_1 = Math.random().toString(36).slice(2, 7);
+    const random_2 = Math.random().toString(36).slice(2, 7);
 
     new_document_field.find('input[type="file"][data-type="non_confidential"]').prop("id", `file-${random_1}`).prop("name", `file-non_confidential-${random_1}`)
     new_document_field.find('input[type="file"][data-type="non_confidential"]').parent().find("label").prop("for", `file-${random_1}`)

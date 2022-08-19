@@ -26,7 +26,7 @@ class DocumentView(View, APIClientMixin):
     def post(self, request, *args, **kwargs):
         uploaded_files = []
         for file in request.FILES.getlist("files"):
-            form = DocumentForm(data={"file": file})
+            form = DocumentForm(data={"file": file}, user=request.user)
             # Checking the file is valid (size, virus, extension)
             if form.is_valid():
                 uploaded_files.append(
@@ -37,7 +37,7 @@ class DocumentView(View, APIClientMixin):
                             "stored_name": file.name,
                             "original_name": file.original_name,
                             "file_size": file.file_size,
-                            "submission_id": request.POST.get("submission_id"),
+                            "submission_id": request.POST["submission_id"],
                             "parent": request.POST.get("parent", None),
                             "submission_document_type": request.POST.get(
                                 "submission_document_type", None
@@ -52,6 +52,8 @@ class DocumentView(View, APIClientMixin):
                     status=201,
                 )
             else:
+                # First we delete the file from S3
+                file.obj.delete()
                 return JsonResponse(data={"errors": form.errors}, status=400)
 
     def delete(self, request, *args, **kwargs):

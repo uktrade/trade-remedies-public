@@ -358,14 +358,14 @@ COUNTRIES_FIRST = ["GB"]
 COUNTRIES_FIRST_BREAK = "------"
 
 FILE_MAX_SIZE_BYTES = 30000000
-FILE_ALLOWED_EXTENSIONS = [
-    ".zip",
-    ".doc",
-    ".docx",
-    ".pdf",
-    ".xls",
-    ".xlsx",
-    ".xlsb",
-    ".odt",
-    ".ods",
+FILE_DISALLOWED_EXTENSIONS = [
+    "com",
+    "exe",
+    "dmg",
+    "bat",
+    "js",
+    "php",
+    "py",
+    "ps",
+    "sh",
 ]
