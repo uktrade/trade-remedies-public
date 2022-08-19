@@ -17,7 +17,23 @@ from trade_remedies_public.config.utils import add_form_error_to_session, get_lo
     get_uploaded_loa_document
 
 
-class WhoAreYouInviting(BasePublicFormView, TemplateView):
+class BaseInviteView(BasePublicView, TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if invitation_id := self.kwargs.get("invitation_id"):
+            context["invitation"] = self.client.get(
+                self.client.url(f"invitations/{invitation_id}")
+            )
+        context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
+        context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
+        return context
+
+
+class BaseInviteFormView(BasePublicFormView, BaseInviteView):
+    pass
+
+
+class WhoAreYouInviting(BaseInviteFormView):
     template_name = "v2/invite/start.html"
     form_class = WhoAreYouInvitingForm
 
@@ -35,7 +51,7 @@ class WhoAreYouInviting(BasePublicFormView, TemplateView):
             return redirect(reverse("invite_representative_task_list"))
 
 
-class TeamMemberNameView(BasePublicFormView, TemplateView):
+class TeamMemberNameView(BaseInviteFormView):
     template_name = "v2/invite/who_are_you_inviting_name_email.html"
     form_class = WhoAreYouInvitingNameEmailForm
 
@@ -84,15 +100,9 @@ class TeamMemberNameView(BasePublicFormView, TemplateView):
         )
 
 
-class PermissionSelectView(BasePublicFormView, TemplateView):
+class PermissionSelectView(BaseInviteFormView):
     template_name = "v2/invite/select_permissions.html"
     form_class = SelectPermissionsForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
-        context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
-        return context
 
     def form_valid(self, form):
         invitation = self.client.put(
@@ -104,32 +114,16 @@ class PermissionSelectView(BasePublicFormView, TemplateView):
         return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
 
 
-class ReviewInvitation(BasePublicView, TemplateView):
+class ReviewInvitation(BaseInviteView):
     template_name = "v2/invite/review.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        invitation = self.client.get(self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
-        context["invitation"] = invitation
-        context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
-        context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
-        return context
 
     def post(self, request, *args, **kwargs):
         invitation = self.client.send_invitation(kwargs["invitation_id"])
         return redirect(reverse("invitation_sent", kwargs={"invitation_id": invitation["id"]}))
 
 
-class InvitationSent(BasePublicView, TemplateView):
+class InvitationSent(BaseInviteView):
     template_name = "v2/invite/sent.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        invitation = self.client.get(self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
-        context["invitation"] = invitation
-        context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
-        context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
-        return context
 
 
 class DeleteInvitation(BasePublicView, View):
@@ -178,9 +172,25 @@ class InviteRepresentativeTaskList(TaskListView):
                         }) if invitation else "",
                         "link_text": "Letter of Authority",
                         "status": "Complete" if (
-                            invitation and
-                            "submission" in invitation and
-                            get_uploaded_loa_document( invitation.get("submission"))
+                                invitation and
+                                "submission" in invitation and
+                                get_uploaded_loa_document(invitation.get("submission"))
+                        ) else "Not Started",
+                    }
+                ],
+            },
+            {
+                "heading": "Invite representative",
+                "sub_steps": [
+                    {
+                        "link": reverse("invite_representative_check_and_submit", kwargs={
+                            "invitation_id": invitation["id"]
+                        }) if invitation else "",
+                        "link_text": "Check and submit",
+                        "status": "Not Started" if (
+                                invitation and
+                                "submission" in invitation and
+                                get_uploaded_loa_document(invitation.get("submission"))
                         ) else "Not Started",
                     }
                 ],
@@ -189,7 +199,7 @@ class InviteRepresentativeTaskList(TaskListView):
         return steps
 
 
-class InviteRepresentativeSelectCase(BasePublicFormView, TemplateView):
+class InviteRepresentativeSelectCase(BaseInviteFormView):
     template_name = "v2/invite/invite_representative_select_case.html"
     form_class = SelectCaseForm
 
@@ -218,7 +228,8 @@ class InviteRepresentativeSelectCase(BasePublicFormView, TemplateView):
         new_invitation = self.client.post(self.client.url("invitations"), data={
             "invalid": True,
             "case": form.cleaned_data["cases"],
-            "invitation_type": 2
+            "invitation_type": 2,
+            "organisation": self.request.user.organisation["id"]
         })
         return redirect(
             reverse(
@@ -228,7 +239,7 @@ class InviteRepresentativeSelectCase(BasePublicFormView, TemplateView):
         )
 
 
-class InviteRepresentativeOrganisationDetails(BasePublicFormView, TemplateView):
+class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
     template_name = "v2/invite/invite_representative_organisation_details.html"
     form_class = SelectOrganisationForm
 
@@ -245,8 +256,6 @@ class InviteRepresentativeOrganisationDetails(BasePublicFormView, TemplateView):
                 if invited_contact.get("organisation") != self.request.user.organisation["id"]:
                     invitations_sent.append(sent_invitation)
 
-        # Now we need to format the list, so it can be rendered as radio buttons in the front-end
-        # representative_organisations = [{"value": each["invitation_id"], "label": each["invitation_name"]} for each in representative_organisations]
         self.invitations_sent = invitations_sent
         return super().dispatch(request, *args, **kwargs)
 
@@ -283,16 +292,9 @@ class InviteRepresentativeOrganisationDetails(BasePublicFormView, TemplateView):
             }))
 
 
-class InviteNewRepresentativeDetails(BasePublicFormView, TemplateView):
+class InviteNewRepresentativeDetails(BaseInviteFormView):
     form_class = InviteNewRepresentativeDetailsForm
     template_name = "v2/invite/invite_representative_new_details.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["invitation"] = self.client.get(
-            self.client.url(f"invitations/{self.kwargs['invitation_id']}")
-        )
-        return context
 
     def form_valid(self, form):
         # Creating a new organisation
@@ -319,7 +321,9 @@ class InviteNewRepresentativeDetails(BasePublicFormView, TemplateView):
         updated_submission = self.client.put(
             self.client.url(f"submissions/{updated_invitation['submission']['id']}"),
             data={
-                "organisation": new_organisation['id']
+                # The submission needs to be associating with the inviter's organisation, the
+                # invited's organisation is stored in the contact object
+                "organisation": self.request.user.organisation['id']
             }
         )
 
@@ -330,16 +334,9 @@ class InviteNewRepresentativeDetails(BasePublicFormView, TemplateView):
         ))
 
 
-class InviteExistingRepresentativeDetails(BasePublicFormView, TemplateView):
+class InviteExistingRepresentativeDetails(BaseInviteFormView):
     template_name = "v2/invite/invite_representative_existing_details.html"
     form_class = InviteExistingRepresentativeDetailsForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["invitation"] = self.client.get(
-            self.client.url(f"invitations/{self.kwargs['invitation_id']}")
-        )
-        return context
 
     def form_valid(self, form):
         organisation_id = self.kwargs["organisation_id"]
@@ -363,7 +360,7 @@ class InviteExistingRepresentativeDetails(BasePublicFormView, TemplateView):
         updated_submission = self.client.put(
             self.client.url(f"submissions/{updated_invitation['submission']['id']}"),
             data={
-                "organisation": organisation_id['id']
+                "organisation": self.request.user.organisation['id']
             }
         )
 
@@ -374,15 +371,12 @@ class InviteExistingRepresentativeDetails(BasePublicFormView, TemplateView):
         ))
 
 
-class InviteRepresentativeLoa(BasePublicView, TemplateView):
+class InviteRepresentativeLoa(BaseInviteView):
     template_name = "v2/invite/invite_representative_loa.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        invitation = self.client.get(
-            self.client.url(f"invitations/{self.kwargs['invitation_id']}")
-        )
-        context["invitation"] = invitation
+        invitation = context["invitation"]
         context["loa_document_bundle"] = get_loa_document_bundle()
         # Getting the uploaded LOA document if it exists
         context["uploaded_loa_document"] = get_uploaded_loa_document(invitation["submission"])
@@ -398,3 +392,18 @@ class InviteRepresentativeLoa(BasePublicView, TemplateView):
         else:
             add_form_error_to_session("You need to upload a Letter of Authority", request)
         return redirect(request.path)
+
+
+class InviteRepresentativeCheckAndSubmit(BaseInviteView):
+    template_name = "v2/invite/invite_representative_check_and_submit.html"
+
+    def post(self, request, *args, **kwargs):
+        invitation = self.client.send_invitation(kwargs["invitation_id"])
+        return redirect(reverse(
+            "invite_representative_sent",
+            kwargs={"invitation_id": invitation["id"]}
+        ))
+
+
+class InviteRepresentativeSent(BaseInviteView):
+    template_name = "v2/invite/invite_representative_sent.html"

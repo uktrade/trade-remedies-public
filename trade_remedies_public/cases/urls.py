@@ -387,5 +387,15 @@ urlpatterns += [
         "invite/representative/<uuid:invitation_id>/loa/",
         invite.InviteRepresentativeLoa.as_view(),
         name="invite_representative_loa",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/check_and_submit/",
+        invite.InviteRepresentativeCheckAndSubmit.as_view(),
+        name="invite_representative_check_and_submit",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/sent/",
+        invite.InviteRepresentativeSent.as_view(),
+        name="invite_representative_sent",
     )
 ]
