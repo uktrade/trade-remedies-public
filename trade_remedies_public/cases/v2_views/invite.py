@@ -177,9 +177,11 @@ class InviteRepresentativeTaskList(TaskListView):
                             "invitation_id": invitation["id"]
                         }) if invitation else "",
                         "link_text": "Letter of Authority",
-                        "status": "Complete" if get_uploaded_loa_document(
-                            invitation.get("submission")) and "submission" in invitation
-                        else "Not Started",
+                        "status": "Complete" if (
+                            invitation and
+                            "submission" in invitation and
+                            get_uploaded_loa_document( invitation.get("submission"))
+                        ) else "Not Started",
                     }
                 ],
             }
