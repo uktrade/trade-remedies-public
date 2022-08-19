@@ -300,9 +300,5 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path(
-        "manage_your_team",
-        manage_your_team.ManageYourTeamView.as_view(),
-        name="manage_your_team"
-    )
+    path("manage_your_team", manage_your_team.ManageYourTeamView.as_view(), name="manage_your_team")
 ]

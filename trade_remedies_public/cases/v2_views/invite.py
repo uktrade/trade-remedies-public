@@ -6,15 +6,21 @@ from django.views.generic import TemplateView
 
 from config.base_views import BasePublicFormView, BasePublicView
 from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER
-from trade_remedies_public.cases.v2_forms.invite import InviteExistingRepresentativeDetailsForm, \
-    InviteNewRepresentativeDetailsForm, \
-    SelectCaseForm, SelectOrganisationForm, \
-    SelectPermissionsForm, \
-    WhoAreYouInvitingForm, \
-    WhoAreYouInvitingNameEmailForm
+from trade_remedies_public.cases.v2_forms.invite import (
+    InviteExistingRepresentativeDetailsForm,
+    InviteNewRepresentativeDetailsForm,
+    SelectCaseForm,
+    SelectOrganisationForm,
+    SelectPermissionsForm,
+    WhoAreYouInvitingForm,
+    WhoAreYouInvitingNameEmailForm,
+)
 from trade_remedies_public.config.base_views import TaskListView
-from trade_remedies_public.config.utils import add_form_error_to_session, get_loa_document_bundle, \
-    get_uploaded_loa_document
+from trade_remedies_public.config.utils import (
+    add_form_error_to_session,
+    get_loa_document_bundle,
+    get_uploaded_loa_document,
+)
 
 
 class WhoAreYouInviting(BasePublicFormView, TemplateView):
@@ -23,11 +29,14 @@ class WhoAreYouInviting(BasePublicFormView, TemplateView):
 
     def form_valid(self, form):
         if form.cleaned_data["who_are_you_inviting"] == "employee":
-            new_invitation = self.client.post(self.client.url("invitations"), data={
-                "organisation": self.request.user.organisation["id"],
-                "invalid": True,
-                "invitation_type": 1
-            })
+            new_invitation = self.client.post(
+                self.client.url("invitations"),
+                data={
+                    "organisation": self.request.user.organisation["id"],
+                    "invalid": True,
+                    "invitation_type": 1,
+                },
+            )
             return redirect(
                 reverse("invitation_name_email", kwargs={"invitation_id": new_invitation["id"]})
             )
@@ -63,8 +72,8 @@ class TeamMemberNameView(BasePublicFormView, TemplateView):
                     context={
                         "name": existing_user["name"],
                         "email": existing_user["email"],
-                        "invitation": invitation
-                    }
+                        "invitation": invitation,
+                    },
                 )
 
         except ClientError as e:
@@ -76,8 +85,8 @@ class TeamMemberNameView(BasePublicFormView, TemplateView):
             self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
             data={
                 "email": form.cleaned_data["team_member_email"],
-                "name": form.cleaned_data["team_member_name"]
-            }
+                "name": form.cleaned_data["team_member_name"],
+            },
         )
         return redirect(
             reverse("invitation_select_permissions", kwargs={"invitation_id": invitation["id"]})
@@ -99,7 +108,7 @@ class PermissionSelectView(BasePublicFormView, TemplateView):
             self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
             data={
                 "organisation_security_group": form.cleaned_data["type_of_user"],
-            }
+            },
         )
         return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
 
@@ -161,9 +170,12 @@ class InviteRepresentativeTaskList(TaskListView):
                 "heading": "About your representative",
                 "sub_steps": [
                     {
-                        "link": reverse("invite_representative_organisation_details", kwargs={
-                            "invitation_id": invitation["id"]
-                        }) if invitation else "",
+                        "link": reverse(
+                            "invite_representative_organisation_details",
+                            kwargs={"invitation_id": invitation["id"]},
+                        )
+                        if invitation
+                        else "",
                         "link_text": "Organisation details",
                         "status": "Complete" if invitation.get("contact") else "Not Started",
                     }
@@ -173,18 +185,22 @@ class InviteRepresentativeTaskList(TaskListView):
                 "heading": "Upload forms",
                 "sub_steps": [
                     {
-                        "link": reverse("invite_representative_loa", kwargs={
-                            "invitation_id": invitation["id"]
-                        }) if invitation else "",
+                        "link": reverse(
+                            "invite_representative_loa", kwargs={"invitation_id": invitation["id"]}
+                        )
+                        if invitation
+                        else "",
                         "link_text": "Letter of Authority",
-                        "status": "Complete" if (
-                            invitation and
-                            "submission" in invitation and
-                            get_uploaded_loa_document( invitation.get("submission"))
-                        ) else "Not Started",
+                        "status": "Complete"
+                        if (
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
+                        )
+                        else "Not Started",
                     }
                 ],
-            }
+            },
         ]
         return steps
 
@@ -215,15 +231,14 @@ class InviteRepresentativeSelectCase(BasePublicFormView, TemplateView):
 
     def form_valid(self, form):
         # We've selected a valid case, lets create an invitation
-        new_invitation = self.client.post(self.client.url("invitations"), data={
-            "invalid": True,
-            "case": form.cleaned_data["cases"],
-            "invitation_type": 2
-        })
+        new_invitation = self.client.post(
+            self.client.url("invitations"),
+            data={"invalid": True, "case": form.cleaned_data["cases"], "invitation_type": 2},
+        )
         return redirect(
             reverse(
                 "invite_representative_task_list_exists",
-                kwargs={"invitation_id": new_invitation["id"]}
+                kwargs={"invitation_id": new_invitation["id"]},
             )
         )
 
@@ -245,18 +260,18 @@ class InviteRepresentativeOrganisationDetails(BasePublicFormView, TemplateView):
                 if invited_contact.get("organisation") != self.request.user.organisation["id"]:
                     invitations_sent.append(sent_invitation)
 
-        # Now we need to format the list, so it can be rendered as radio buttons in the front-end
-        # representative_organisations = [{"value": each["invitation_id"], "label": each["invitation_name"]} for each in representative_organisations]
         self.invitations_sent = invitations_sent
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         if not self.invitations_sent:
             # This organisation has not sent out any invitations previously, redirect
-            return redirect(reverse(
-                "invite_new_representative_details",
-                kwargs={"invitation_id": self.kwargs["invitation_id"]}
-            ))
+            return redirect(
+                reverse(
+                    "invite_new_representative_details",
+                    kwargs={"invitation_id": self.kwargs["invitation_id"]},
+                )
+            )
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -272,15 +287,22 @@ class InviteRepresentativeOrganisationDetails(BasePublicFormView, TemplateView):
     def form_valid(self, form):
         if form.cleaned_data["organisation"] == "new":
             # It is a new representative, let's get some details!
-            return redirect(reverse(
-                "invite_new_representative_details",
-                kwargs={"invitation_id": self.kwargs["invitation_id"]}
-            ))
+            return redirect(
+                reverse(
+                    "invite_new_representative_details",
+                    kwargs={"invitation_id": self.kwargs["invitation_id"]},
+                )
+            )
         else:
-            return redirect(reverse("invite_existing_representative_details", kwargs={
-                "invitation_id": self.kwargs["invitation_id"],
-                "organisation_id": form.cleaned_data["organisation"]
-            }))
+            return redirect(
+                reverse(
+                    "invite_existing_representative_details",
+                    kwargs={
+                        "invitation_id": self.kwargs["invitation_id"],
+                        "organisation_id": form.cleaned_data["organisation"],
+                    },
+                )
+            )
 
 
 class InviteNewRepresentativeDetails(BasePublicFormView, TemplateView):
@@ -296,38 +318,39 @@ class InviteNewRepresentativeDetails(BasePublicFormView, TemplateView):
 
     def form_valid(self, form):
         # Creating a new organisation
-        new_organisation = self.client.post(self.client.url("organisations"), data={
-            "name": form.cleaned_data["organisation_name"]
-        })
+        new_organisation = self.client.post(
+            self.client.url("organisations"), data={"name": form.cleaned_data["organisation_name"]}
+        )
 
         # Creating a new contact and associating them with the organisation
-        new_contact = self.client.post(self.client.url("contacts"), data={
-            "name": form.cleaned_data["contact_name"],
-            "email": form.cleaned_data["contact_email"],
-            "organisation": new_organisation["id"],
-        })
+        new_contact = self.client.post(
+            self.client.url("contacts"),
+            data={
+                "name": form.cleaned_data["contact_name"],
+                "email": form.cleaned_data["contact_email"],
+                "organisation": new_organisation["id"],
+            },
+        )
 
         # Associating this contact with the invitation
         updated_invitation = self.client.put(
             self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
-            data={
-                "contact": new_contact["id"]
-            }
+            data={"contact": new_contact["id"]},
         )
 
         # Associating the submission with the new organisation
         updated_submission = self.client.put(
             self.client.url(f"submissions/{updated_invitation['submission']['id']}"),
-            data={
-                "organisation": new_organisation['id']
-            }
+            data={"organisation": new_organisation["id"]},
         )
 
         # Go back to the task list please!
-        return redirect(reverse(
-            "invite_representative_task_list_exists",
-            kwargs={"invitation_id": updated_invitation["id"]}
-        ))
+        return redirect(
+            reverse(
+                "invite_representative_task_list_exists",
+                kwargs={"invitation_id": updated_invitation["id"]},
+            )
+        )
 
 
 class InviteExistingRepresentativeDetails(BasePublicFormView, TemplateView):
@@ -345,33 +368,34 @@ class InviteExistingRepresentativeDetails(BasePublicFormView, TemplateView):
         organisation_id = self.kwargs["organisation_id"]
 
         # Creating a new contact and associating them with the organisation
-        new_contact = self.client.post(self.client.url("contacts"), data={
-            "name": form.cleaned_data["contact_name"],
-            "email": form.cleaned_data["contact_email"],
-            "organisation": organisation_id,
-        })
+        new_contact = self.client.post(
+            self.client.url("contacts"),
+            data={
+                "name": form.cleaned_data["contact_name"],
+                "email": form.cleaned_data["contact_email"],
+                "organisation": organisation_id,
+            },
+        )
 
         # Associating this contact with the invitation
         updated_invitation = self.client.put(
             self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
-            data={
-                "contact": new_contact["id"]
-            }
+            data={"contact": new_contact["id"]},
         )
 
         # Associating the submission with the new organisation
         updated_submission = self.client.put(
             self.client.url(f"submissions/{updated_invitation['submission']['id']}"),
-            data={
-                "organisation": organisation_id['id']
-            }
+            data={"organisation": organisation_id["id"]},
         )
 
         # Go back to the task list please!
-        return redirect(reverse(
-            "invite_representative_task_list_exists",
-            kwargs={"invitation_id": updated_invitation["id"]}
-        ))
+        return redirect(
+            reverse(
+                "invite_representative_task_list_exists",
+                kwargs={"invitation_id": updated_invitation["id"]},
+            )
+        )
 
 
 class InviteRepresentativeLoa(BasePublicView, TemplateView):
@@ -379,9 +403,7 @@ class InviteRepresentativeLoa(BasePublicView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        invitation = self.client.get(
-            self.client.url(f"invitations/{self.kwargs['invitation_id']}")
-        )
+        invitation = self.client.get(self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
         context["invitation"] = invitation
         context["loa_document_bundle"] = get_loa_document_bundle()
         # Getting the uploaded LOA document if it exists
@@ -391,10 +413,12 @@ class InviteRepresentativeLoa(BasePublicView, TemplateView):
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         if context.get("uploaded_loa_document", None):
-            return redirect(reverse(
-                "invite_representative_task_list_exists",
-                kwargs={"invitation_id": self.kwargs["invitation_id"]}
-            ))
+            return redirect(
+                reverse(
+                    "invite_representative_task_list_exists",
+                    kwargs={"invitation_id": self.kwargs["invitation_id"]},
+                )
+            )
         else:
             add_form_error_to_session("You need to upload a Letter of Authority", request)
         return redirect(request.path)

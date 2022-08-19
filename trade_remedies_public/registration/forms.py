@@ -5,14 +5,10 @@ from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
 
-
 class RegistrationStartForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_name_entered"})
     email = forms.CharField(
-        error_messages={
-            "required": "no_email_entered",
-            "invalid": "email_not_valid"
-        }
+        error_messages={"required": "no_email_entered", "invalid": "email_not_valid"}
     )
     terms_and_conditions_accept = forms.BooleanField(
         error_messages={"required": "terms_and_conditions_not_accepted"}
