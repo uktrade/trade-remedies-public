@@ -14,7 +14,7 @@ from cases.v2_forms.registration_of_interest import (
 )
 from cases.utils import get_org_parties
 from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER
-from config.utils import add_form_error_to_session
+from config.utils import add_form_error_to_session, get_uploaded_loa_document
 from core.base import GroupRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
@@ -508,15 +508,7 @@ class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
         context = super().get_context_data(**kwargs)
         if self.submission:
             # Getting the uploaded LOA document if it exists
-            loa_document = next(
-                filter(
-                    lambda document: document["type"]["key"] == "loa",
-                    self.submission["submission_documents"],
-                ),
-                None,
-            )
-            if loa_document:
-                context["loa_document"] = loa_document["document"]
+            context["loa_document"] = get_uploaded_loa_document(self.submission)
         return context
 
     def post(self, request, *args, **kwargs):

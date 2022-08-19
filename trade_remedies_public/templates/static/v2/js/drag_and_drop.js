@@ -16,7 +16,9 @@ function file_upload(upload_container, files, submission_id) {
     let file_data = input_element.files[0];
     form_data.append('files', file_data);
     form_data.append('type', upload_container.data("type"));
-    form_data.append('submission_id', submission_id);
+    if (submission_id) {
+        form_data.append('submission_id', submission_id);
+    }
     form_data.append('unique_id', upload_container.attr('id'));
     if (upload_container.attr('data-parent-document')) {
         form_data.append('parent', upload_container.attr('data-parent-document'));

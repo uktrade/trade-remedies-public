@@ -381,5 +381,10 @@ urlpatterns += [
         "invite/representative/<uuid:invitation_id>/<uuid:organisation_id>/details/",
         invite.InviteExistingRepresentativeDetails.as_view(),
         name="invite_existing_representative_details",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/loa/",
+        invite.InviteRepresentativeLoa.as_view(),
+        name="invite_representative_loa",
     )
 ]
