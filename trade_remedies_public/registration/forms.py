@@ -7,7 +7,7 @@ from django_countries.fields import CountryField
 
 class RegistrationStartForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_name_entered"})
-    email = forms.CharField(
+    email = forms.EmailField(
         error_messages={"required": "no_email_entered", "invalid": "email_not_valid"}
     )
     terms_and_conditions_accept = forms.BooleanField(

@@ -29,7 +29,7 @@ class ExistingClientForm(ValidationForm):
 
 class PrimaryContactForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_contact_name_entered"})
-    email = forms.CharField(
+    email = forms.EmailField(
         error_messages={
             "required": "no_contact_email_entered",
             "invalid": "contact_email_not_valid",
