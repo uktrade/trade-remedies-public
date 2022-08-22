@@ -2,11 +2,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView, TemplateView
 from v2_api_client.mixins import APIClientMixin
 
-from trade_remedies_public.config.constants import (
+from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
 )
-from trade_remedies_public.core.base import GroupRequiredMixin
+from core.base import GroupRequiredMixin
 
 
 class BasePublicView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin):

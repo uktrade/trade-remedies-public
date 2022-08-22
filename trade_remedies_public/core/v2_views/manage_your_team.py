@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 
-from trade_remedies_public.config.base_views import BasePublicView
-from trade_remedies_public.config.constants import (
+from config.base_views import BasePublicView
+from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
 )

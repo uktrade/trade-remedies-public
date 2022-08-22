@@ -15,8 +15,8 @@ from trade_remedies_public.cases.v2_forms.invite import (
     WhoAreYouInvitingForm,
     WhoAreYouInvitingNameEmailForm,
 )
-from trade_remedies_public.config.base_views import TaskListView
-from trade_remedies_public.config.utils import (
+from config.base_views import TaskListView
+from config.utils import (
     add_form_error_to_session,
     get_loa_document_bundle,
     get_uploaded_loa_document,
