@@ -101,6 +101,8 @@ class PermissionSelectView(BasePublicFormView, TemplateView):
         context = super().get_context_data(**kwargs)
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
         context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
+        context["invitation"] = self.client.get(
+            self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
         return context
 
     def form_valid(self, form):
@@ -193,9 +195,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
