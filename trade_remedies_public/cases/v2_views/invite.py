@@ -6,7 +6,7 @@ from django.views.generic import TemplateView
 
 from config.base_views import BasePublicFormView, BasePublicView
 from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER
-from trade_remedies_public.cases.v2_forms.invite import (
+from cases.v2_forms.invite import (
     InviteExistingRepresentativeDetailsForm,
     InviteNewRepresentativeDetailsForm,
     SelectCaseForm,

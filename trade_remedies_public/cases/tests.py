@@ -10,7 +10,7 @@ from cases.v2_forms.registration_of_interest import (
     YourEmployerForm,
 )
 
-from trade_remedies_public.cases.v2_forms.invite import (
+from cases.v2_forms.invite import (
     SelectCaseForm,
     WhoAreYouInvitingNameEmailForm,
 )

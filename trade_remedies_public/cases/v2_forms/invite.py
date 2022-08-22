@@ -1,7 +1,7 @@
 from config.forms import ValidationForm
 from django import forms
 
-from trade_remedies_public.config.constants import (
+from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
 )
