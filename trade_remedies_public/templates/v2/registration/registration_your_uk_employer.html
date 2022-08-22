@@ -75,6 +75,19 @@
 {% block scripts %}
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
     <script type="text/javascript">
+
+        function clearCompany() {
+            $('[name=company_data]').val()
+            $('#selected_company_wrapper').hide();
+            $('#selected_company').text(``)
+        }
+
+        $(document).on("keyup", '[name="input-autocomplete"]', function () {
+            if ($(this).val().trim().length === 0) {
+                clearCompany()
+            }
+        })
+
         var proposed_names = {}
         accessibleAutocomplete({
             element: document.querySelector('#company_search_container'),
@@ -84,29 +97,57 @@
             minLength: 3,
             confirmOnBlur: false,
             source: function (query, populateResults) {
-                $.ajax
-                ({
-                    type: "GET",
-                    url: `{% url 'companieshouse' %}?term=${query}`,
-                    success: function (data) {
-                        $('#companies-house-error').hide()
-                        if (data) {
-                            let names = data.map(result => `${result.title} (${result.company_number})`)
-                            proposed_names = Object.fromEntries(data.map(result => [`${result.title} (${result.company_number})`, result]));
-                            populateResults(names)
-                        }
+                if (query.trim().length < 3) {
+                    populateResults([])
+                    clearCompany()
+                } else {
+                    $.ajax
+                    ({
+                        type: "GET",
+                        url: `{% url 'companieshouse' %}?term=${query}`,
+                        success: function (data) {
+                            $('#companies-house-error').hide()
+                            if (data) {
+                                let names = data.map(result => `${result.title} (${result.company_number})`)
+                                proposed_names = Object.fromEntries(data.map(result => [`${result.title} (${result.company_number})`, result]));
+                                populateResults(names)
+                                if (names.length == 0) {
+                                    clearCompany()
+                                }
+                            }
+                        },
+                        error: function () {
 
-                    }
-                })
-                .fail(function() {
-                    $('#companies-house-error').show()
-                })
+                        }
+                    })
+                    .fail(function() {
+                        $('#companies-house-error').show()
+                    })
+                }
             },
             onConfirm: function (confirmed_name) {
                 if (typeof (confirmed_name) != "undefined") {
                     if (confirmed_name in proposed_names) {
                         let company_data = proposed_names[confirmed_name]
-                        $('[name=company_data]').val(JSON.stringify(company_data))
+                        // $('[name=company_data]').val(JSON.stringify(company_data))
+                        $("#v2-registration-your-organisation-form").submit(function () {
+                            $("<input />").attr("type", "hidden")
+                                .attr("name", "organisation_name")
+                                .attr("value", company_data.title)
+                                .appendTo($(this));
+                            $("<input />").attr("type", "hidden")
+                                .attr("name", "companies_house_id")
+                                .attr("value", company_data.company_number)
+                                .appendTo($(this));
+                            $("<input />").attr("type", "hidden")
+                                .attr("name", "organisation_post_code")
+                                .attr("value", company_data.address.postal_code)
+                                .appendTo($(this));
+                            $("<input />").attr("type", "hidden")
+                                .attr("name", "organisation_address")
+                                .attr("value", company_data.address_snippet)
+                                .appendTo($(this));
+                        });
                         $('#selected_company_wrapper').show();
                         $('#selected_company').text(`${company_data.title} (${company_data.company_number}) ${company_data.address_snippet}`)
                         return true
