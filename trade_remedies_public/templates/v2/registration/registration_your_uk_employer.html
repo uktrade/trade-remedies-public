@@ -77,9 +77,9 @@
     <script type="text/javascript">
 
         function clearCompany() {
-            $('[name=company_data]').val()
+            $('[name=company_data]').val("")
             $('#selected_company_wrapper').hide();
-            $('#selected_company').text(``)
+            $('#selected_company').text("")
         }
 
         $(document).on("keyup", '[name="input-autocomplete"]', function () {
@@ -129,25 +129,7 @@
                 if (typeof (confirmed_name) != "undefined") {
                     if (confirmed_name in proposed_names) {
                         let company_data = proposed_names[confirmed_name]
-                        // $('[name=company_data]').val(JSON.stringify(company_data))
-                        $("#v2-registration-your-organisation-form").submit(function () {
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "organisation_name")
-                                .attr("value", company_data.title)
-                                .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "companies_house_id")
-                                .attr("value", company_data.company_number)
-                                .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "organisation_post_code")
-                                .attr("value", company_data.address.postal_code)
-                                .appendTo($(this));
-                            $("<input />").attr("type", "hidden")
-                                .attr("name", "organisation_address")
-                                .attr("value", company_data.address_snippet)
-                                .appendTo($(this));
-                        });
+                        $('[name=company_data]').val(JSON.stringify(company_data))
                         $('#selected_company_wrapper').show();
                         $('#selected_company').text(`${company_data.title} (${company_data.company_number}) ${company_data.address_snippet}`)
                         return true
