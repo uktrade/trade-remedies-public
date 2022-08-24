@@ -34,7 +34,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
 
     def dispatch(self, request, *args, **kwargs):
-        self.submission = None
+        self.submission = {}
         if submission_id := self.kwargs.get("submission_id"):
             self.submission = self.client.get_submission(submission_id)
         return super().dispatch(request, *args, **kwargs)
