@@ -1,12 +1,19 @@
 from unittest import TestCase
 
-from cases.v2_forms.registration_of_interest import (ClientFurtherDetailsForm, ClientTypeForm,
-                                                     ExistingClientForm, NonUkEmployerForm,
-                                                     PrimaryContactForm, UkEmployerForm,
-                                                     YourEmployerForm)
+from cases.v2_forms.registration_of_interest import (
+    ClientFurtherDetailsForm,
+    ClientTypeForm,
+    ExistingClientForm,
+    NonUkEmployerForm,
+    PrimaryContactForm,
+    UkEmployerForm,
+    YourEmployerForm,
+)
 
-from trade_remedies_public.cases.v2_forms.invite import SelectCaseForm, \
-    WhoAreYouInvitingNameEmailForm
+from cases.v2_forms.invite import (
+    SelectCaseForm,
+    WhoAreYouInvitingNameEmailForm,
+)
 
 
 class TestClientTypeForm(TestCase):
@@ -310,10 +317,7 @@ class TestClientFurtherDetailsForm(TestCase):
 
 class TestInviteForms(TestCase):
     def test_select_case_form(self):
-        cases = [
-            {"id": "1"},
-            {"id": "2"}
-        ]
+        cases = [{"id": "1"}, {"id": "2"}]
         form = SelectCaseForm(cases=cases)
         self.assertEqual(len(form.fields["cases"].choices), 2)
 
@@ -323,13 +327,14 @@ class TestInviteForms(TestCase):
             form.is_valid()
 
     def test_who_are_you_inviting_name_email_form_valid(self):
-        form = WhoAreYouInvitingNameEmailForm(data={"name": "test", "email": "test@example.com"})
+        form = WhoAreYouInvitingNameEmailForm(
+            data={"name": "test", "email": "test@example.com"}  # /PS-IGNORE
+        )
         self.assertTrue(form.is_valid())
 
     def test_who_are_you_inviting_name_email_form_invalid(self):
-        form = WhoAreYouInvitingNameEmailForm(data={
-            "team_member_name": "test",
-            "team_member_email": "testexample.com"
-        })
+        form = WhoAreYouInvitingNameEmailForm(
+            data={"team_member_name": "test", "team_member_email": "testexample.com"}  # /PS-IGNORE
+        )
         self.assertFalse(form.is_valid())
         self.assertTrue("team_member_name" in form.field_errors)

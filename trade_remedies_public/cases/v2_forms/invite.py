@@ -1,17 +1,16 @@
 from config.forms import ValidationForm
 from django import forms
 
-from trade_remedies_public.config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
-    SECURITY_GROUP_ORGANISATION_USER
+from config.constants import (
+    SECURITY_GROUP_ORGANISATION_OWNER,
+    SECURITY_GROUP_ORGANISATION_USER,
+)
 
 
 class WhoAreYouInvitingForm(ValidationForm):
     who_are_you_inviting = forms.ChoiceField(
-        choices=(
-            ("employee", "employee"),
-            ("representative", "representative")
-        ),
-        error_messages={"required": "who_are_you_inviting_empty"}
+        choices=(("employee", "employee"), ("representative", "representative")),
+        error_messages={"required": "who_are_you_inviting_empty"},
     )
 
 
@@ -22,7 +21,7 @@ class WhoAreYouInvitingNameEmailForm(ValidationForm):
     team_member_email = forms.EmailField(
         error_messages={
             "required": "who_are_you_inviting_email_missing",
-            "invalid": "who_are_you_inviting_email_invalid_format"
+            "invalid": "who_are_you_inviting_email_invalid_format",
         }
     )
 
@@ -31,9 +30,9 @@ class SelectPermissionsForm(ValidationForm):
     type_of_user = forms.ChoiceField(
         choices=(
             (SECURITY_GROUP_ORGANISATION_USER, SECURITY_GROUP_ORGANISATION_USER),
-            (SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_OWNER)
+            (SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_OWNER),
         ),
-        error_messages={"required": "invite_permissions_missing"}
+        error_messages={"required": "invite_permissions_missing"},
     )
 
 
@@ -54,7 +53,7 @@ class InviteExistingRepresentativeDetailsForm(ValidationForm):
     contact_email = forms.EmailField(
         error_messages={
             "required": "invite_existing_representative_no_contact_email",
-            "invalid": "invite_existing_representative_invalid_email"
+            "invalid": "invite_existing_representative_invalid_email",
         }
     )
 
@@ -69,6 +68,6 @@ class InviteNewRepresentativeDetailsForm(ValidationForm):
     contact_email = forms.EmailField(
         error_messages={
             "required": "invite_new_representative_no_contact_email",
-            "invalid": "invite_new_representative_invalid_email"
+            "invalid": "invite_new_representative_invalid_email",
         }
     )

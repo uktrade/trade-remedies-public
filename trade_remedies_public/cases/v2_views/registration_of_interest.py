@@ -34,7 +34,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
 
     def dispatch(self, request, *args, **kwargs):
-        self.submission = None
+        self.submission = {}
         if submission_id := self.kwargs.get("submission_id"):
             self.submission = self.client.get_submission(submission_id)
         return super().dispatch(request, *args, **kwargs)
@@ -51,7 +51,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         return context
 
     def add_organisation_to_registration_of_interest(
-            self, organisation_id: str, submission_id: str = None, contact_id: str = None
+        self, organisation_id: str, submission_id: str = None, contact_id: str = None
     ) -> dict:
         """
         Amends the organisation of a ROI submission object.
@@ -88,7 +88,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
                 )
 
 
-@method_decorator(never_cache, name='get')
+@method_decorator(never_cache, name="get")
 class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
     template_name = "v2/registration_of_interest/tasklist.html"
 
@@ -129,7 +129,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
             # Each paired_document is a complete pair, so we multiply the count by 2 to get the
             # number of uploaded documents. Each orphaned_document is an incomplete pair.
             if documents_uploaded := (len(submission["paired_documents"]) * 2) + len(
-                    submission["orphaned_documents"]
+                submission["orphaned_documents"]
             ):
                 registration_documentation_status_text = f"Documents uploaded: {documents_uploaded}"
             else:
@@ -155,18 +155,18 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
         ]
 
         if (
-                submission
-                and submission["organisation"]
-                and submission["organisation"]["id"] != self.request.user.organisation["id"]
+            submission
+            and submission["organisation"]
+            and submission["organisation"]["id"] != self.request.user.organisation["id"]
         ):
             # THe user is representing someone else, we should show the letter of authority
             documentation_sub_steps.append(
                 {
                     "link": reverse("roi_3_loa", kwargs={"submission_id": submission["id"]}),
                     "link_text": "Letter of Authority",
-                    "status": "Complete" if get_uploaded_loa_document(
-                        self.submission
-                    ) else "Not Started"
+                    "status": "Complete"
+                    if get_uploaded_loa_document(self.submission)
+                    else "Not Started",
                 }
             )
 
@@ -192,7 +192,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
 
     def get(self, request, *args, **kwargs):
         if request.GET.get("confirm_access", False) or (
-                self.submission and self.submission["status"]["locking"]
+            self.submission and self.submission["status"]["locking"]
         ):
             # The submission exists, show the user the overview page
             return render(
@@ -225,7 +225,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
         case_registration_deadline = case_information[3]
 
         if datetime.datetime.strptime(
-                case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
+            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
         ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,
@@ -455,7 +455,7 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         # Let's loop over the paired documents first, Then we have a look at the orphaned documents
         # (those without a corresponding public/private pair
         uploaded_documents = (
-                self.submission["paired_documents"] + self.submission["orphaned_documents"]
+            self.submission["paired_documents"] + self.submission["orphaned_documents"]
         )
 
         long_time_ago = timezone.now() - datetime.timedelta(days=1000)

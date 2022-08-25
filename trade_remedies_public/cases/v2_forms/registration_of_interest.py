@@ -4,7 +4,6 @@ from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
 
-
 class ClientTypeForm(ValidationForm):
     org = forms.ChoiceField(
         error_messages={"required": "no_org_chosen"},
@@ -30,10 +29,10 @@ class ExistingClientForm(ValidationForm):
 
 class PrimaryContactForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_contact_name_entered"})
-    email = forms.CharField(
+    email = forms.EmailField(
         error_messages={
             "required": "no_contact_email_entered",
-            "invalid": "contact_email_not_valid"
+            "invalid": "contact_email_not_valid",
         }
     )
 
@@ -53,11 +52,11 @@ class UkEmployerForm(ValidationForm):
     def clean(self):
         # The user has entered something in the autocomplete box but not selected an option
         if (
-                self.data.get("input-autocomplete")
-                and not self.cleaned_data.get("organisation_name")
-                and not self.cleaned_data.get("companies_house_id")
-                and not self.cleaned_data.get("organisation_post_code")
-                and not self.cleaned_data.get("organisation_address")
+            self.data.get("input-autocomplete")
+            and not self.cleaned_data.get("organisation_name")
+            and not self.cleaned_data.get("companies_house_id")
+            and not self.cleaned_data.get("organisation_post_code")
+            and not self.cleaned_data.get("organisation_address")
         ):
             self.add_error("company_search_container", "companies_house_not_selected")
         # Nothing has been entered by the user

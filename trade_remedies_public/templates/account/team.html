@@ -197,10 +197,10 @@
                 </table>
 
             {% endif %}
-            <a class="button margin-top-1" id="lnk_invite_colleague" href="{% url 'invitation_start' %}">Invite
+            <a class="button margin-top-1 no-debounce" id="lnk_invite_colleague" href="{% url 'invitation_start' %}">Invite
                 colleague</a>
 
-            <a class="button margin-top-1" id="lnk_invite_colleagu_old"
+            <a class="button margin-top-1 no-debounce" id="lnk_invite_colleagu_old"
                href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague OLD</a>
             <div class="margin-top-1">
                 <a class="link" href="{% url 'dashboard' %}">Back</a>

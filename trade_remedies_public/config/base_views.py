@@ -2,9 +2,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import FormView, TemplateView
 from v2_api_client.mixins import APIClientMixin
 
-from trade_remedies_public.config.constants import SECURITY_GROUP_ORGANISATION_OWNER, \
-    SECURITY_GROUP_ORGANISATION_USER
-from trade_remedies_public.core.base import GroupRequiredMixin
+from config.constants import (
+    SECURITY_GROUP_ORGANISATION_OWNER,
+    SECURITY_GROUP_ORGANISATION_USER,
+)
+from core.base import GroupRequiredMixin
 
 
 class BasePublicView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin):
@@ -13,6 +15,7 @@ class BasePublicView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin):
     Forces the user to be logged in and belong to and own an organisation.
     Also mixes in the V2 API Client which can be called with self.client()
     """
+
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
 
 
@@ -46,11 +49,11 @@ class TaskListView(BasePublicView, TemplateView):
                     try:
                         previous_step = steps[number - 1]
                         if len(
-                                [
-                                    sub_step
-                                    for sub_step in previous_step["sub_steps"]
-                                    if sub_step["status"] == "Complete"
-                                ]
+                            [
+                                sub_step
+                                for sub_step in previous_step["sub_steps"]
+                                if sub_step["status"] == "Complete"
+                            ]
                         ) == len(previous_step["sub_steps"]):
                             # All sub-steps in the previous step have been completed,
                             # the next state is now open
