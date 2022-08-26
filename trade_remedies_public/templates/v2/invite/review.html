@@ -19,7 +19,7 @@
                         {% endif %}
                     </dd>
                     <dd class="govuk-summary-list__actions">
-                        <a href="{% url 'invitation_start' %}" class="govuk-link govuk-link--no-visited-state">
+                        <a href="{% url 'invitation_start_existing' invitation_id=invitation.id %}" class="govuk-link govuk-link--no-visited-state">
                             Change
                             <span class="govuk-visually-hidden"> user type</span>
                         </a>

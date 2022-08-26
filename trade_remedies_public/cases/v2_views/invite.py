@@ -4,8 +4,6 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
 
-from config.base_views import BasePublicFormView, BasePublicView
-from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER
 from cases.v2_forms.invite import (
     InviteExistingRepresentativeDetailsForm,
     InviteNewRepresentativeDetailsForm,
@@ -15,7 +13,8 @@ from cases.v2_forms.invite import (
     WhoAreYouInvitingForm,
     WhoAreYouInvitingNameEmailForm,
 )
-from config.base_views import TaskListView
+from config.base_views import BasePublicFormView, BasePublicView, TaskListView
+from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER
 from config.utils import (
     add_form_error_to_session,
     get_loa_document_bundle,
@@ -63,12 +62,6 @@ class WhoAreYouInviting(BaseInviteFormView):
 class TeamMemberNameView(BaseInviteFormView):
     template_name = "v2/invite/who_are_you_inviting_name_email.html"
     form_class = WhoAreYouInvitingNameEmailForm
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        invitation = self.client.get(self.client.url(f"invitations/{self.kwargs['invitation_id']}"))
-        context["invitation"] = invitation
-        return context
 
     def form_valid(self, form):
         # First we need to check if the email already exists as a user on the platform
@@ -266,9 +259,11 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
         invitations_sent = []
         for sent_invitation in organisation["invitations"]:
             if invited_contact := sent_invitation.get("contact", None):
-                # If the invited contact doesn't belong to the user's organisation
-                if invited_contact.get("organisation") != self.request.user.organisation["id"]:
-                    invitations_sent.append(sent_invitation)
+                # Thn checking if there is an organisation associated with the invitation
+                if invited_organisation := invited_contact.get("organisation", None):
+                    # If the invited contact doesn't belong to the user's organisation
+                    if invited_organisation != self.request.user.organisation["id"]:
+                        invitations_sent.append(sent_invitation)
 
         self.invitations_sent = invitations_sent
         return super().dispatch(request, *args, **kwargs)

@@ -327,6 +327,11 @@ urlpatterns += [
         name="invitation_start",
     ),
     path(
+        "invite/<uuid:invitation_id>/start",
+        invite.WhoAreYouInviting.as_view(),
+        name="invitation_start_existing",
+    ),
+    path(
         "invite/<uuid:invitation_id>/enter_name_email/",
         invite.TeamMemberNameView.as_view(),
         name="invitation_name_email",
