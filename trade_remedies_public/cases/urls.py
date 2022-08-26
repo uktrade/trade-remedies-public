@@ -400,5 +400,5 @@ urlpatterns += [
         "invite/representative/<uuid:invitation_id>/sent/",
         invite.InviteRepresentativeSent.as_view(),
         name="invite_representative_sent",
-    )
+    ),
 ]

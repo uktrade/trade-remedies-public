@@ -26,9 +26,7 @@ class BaseInviteView(BasePublicView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if invitation_id := self.kwargs.get("invitation_id"):
-            context["invitation"] = self.client.get(
-                self.client.url(f"invitations/{invitation_id}")
-            )
+            context["invitation"] = self.client.get(self.client.url(f"invitations/{invitation_id}"))
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
         context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
         return context
@@ -178,11 +176,13 @@ class InviteRepresentativeTaskList(TaskListView):
                         if invitation
                         else "",
                         "link_text": "Letter of Authority",
-                        "status": "Complete" if (
-                                invitation and
-                                "submission" in invitation and
-                                get_uploaded_loa_document(invitation.get("submission"))
-                        ) else "Not Started",
+                        "status": "Complete"
+                        if (
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
+                        )
+                        else "Not Started",
                     }
                 ],
             },
@@ -190,15 +190,20 @@ class InviteRepresentativeTaskList(TaskListView):
                 "heading": "Invite representative",
                 "sub_steps": [
                     {
-                        "link": reverse("invite_representative_check_and_submit", kwargs={
-                            "invitation_id": invitation["id"]
-                        }) if invitation else "",
+                        "link": reverse(
+                            "invite_representative_check_and_submit",
+                            kwargs={"invitation_id": invitation["id"]},
+                        )
+                        if invitation
+                        else "",
                         "link_text": "Check and submit",
-                        "status": "Not Started" if (
-                                invitation and
-                                "submission" in invitation and
-                                get_uploaded_loa_document(invitation.get("submission"))
-                        ) else "Not Started",
+                        "status": "Not Started"
+                        if (
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
+                        )
+                        else "Not Started",
                     }
                 ],
             },
@@ -232,12 +237,15 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
 
     def form_valid(self, form):
         # We've selected a valid case, lets create an invitation
-        new_invitation = self.client.post(self.client.url("invitations"), data={
-            "invalid": True,
-            "case": form.cleaned_data["cases"],
-            "invitation_type": 2,
-            "organisation": self.request.user.organisation["id"]
-        })
+        new_invitation = self.client.post(
+            self.client.url("invitations"),
+            data={
+                "invalid": True,
+                "case": form.cleaned_data["cases"],
+                "invitation_type": 2,
+                "organisation": self.request.user.organisation["id"],
+            },
+        )
         return redirect(
             reverse(
                 "invite_representative_task_list_exists",
@@ -342,8 +350,8 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
             data={
                 # The submission needs to be associating with the inviter's organisation, the
                 # invited's organisation is stored in the contact object
-                "organisation": self.request.user.organisation['id']
-            }
+                "organisation": self.request.user.organisation["id"]
+            },
         )
 
         # Go back to the task list please!
@@ -381,9 +389,7 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
         # Associating the submission with the new organisation
         updated_submission = self.client.put(
             self.client.url(f"submissions/{updated_invitation['submission']['id']}"),
-            data={
-                "organisation": self.request.user.organisation['id']
-            }
+            data={"organisation": self.request.user.organisation["id"]},
         )
 
         # Go back to the task list please!
@@ -425,10 +431,9 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
 
     def post(self, request, *args, **kwargs):
         invitation = self.client.send_invitation(kwargs["invitation_id"])
-        return redirect(reverse(
-            "invite_representative_sent",
-            kwargs={"invitation_id": invitation["id"]}
-        ))
+        return redirect(
+            reverse("invite_representative_sent", kwargs={"invitation_id": invitation["id"]})
+        )
 
 
 class InviteRepresentativeSent(BaseInviteView):
