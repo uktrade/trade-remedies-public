@@ -87,6 +87,8 @@ class TeamMemberNameView(BaseInviteFormView):
             if e.status_code != 404:
                 # An unknown error has been raised by the API
                 raise e
+            # If the status is a 404, then we know the user does not exist, carry on as normal
+            pass
 
         invitation = self.client.put(
             self.client.url(f"invitations/{self.kwargs['invitation_id']}"),

@@ -348,6 +348,7 @@ class RegistrationCompletionView(BaseRegisterView, TradeRemediesAPIClientMixin):
         try:
             invite_validation = self.trusted_client.validate_user_invitation(code, org_id)
         except Exception as exc:
+            raise exc
             errors["invalid_invite"] = "Invalid invitation details"
         invite = invite_validation["invite"]
         params = {
@@ -367,6 +368,7 @@ class RegistrationCompletionView(BaseRegisterView, TradeRemediesAPIClientMixin):
             client = self.client(invited_by)
             response = client.complete_user_registration(invite["id"], org_id, params=params)
         except Exception as exc:  # TODO: Refactor this exc handling.
+            raise exc
             if hasattr(exc, "detail") and exc.detail and isinstance(exc.detail, dict):
                 errors = exc.detail["errors"]
             return self.get(request, code, org_id, errors=errors)
