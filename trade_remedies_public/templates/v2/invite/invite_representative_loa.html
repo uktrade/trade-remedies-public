@@ -22,7 +22,8 @@
                 <ul class="govuk-list">
                     {% for loa_document in loa_document_bundle.documents %}
                         <li>
-                            <a href="{{ loa_document.file }}" target="_blank" class="govuk-link--no-visited-state" download>
+                            <a href="{{ loa_document.file }}" target="_blank" class="govuk-link--no-visited-state"
+                               download>
                                 <img src="{% static 'v2/assets/images/file_icons/'|add:loa_document.extension|add:'.png' %}"
                                      alt="File icon" width="24px">
                                 {{ loa_document.name }}
@@ -57,7 +58,13 @@
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                {% include 'v2/component_macros/form_button_group.html' with forward_button_text='Continue' %}
+                <div class="govuk-button-group">
+                    <button class="govuk-button" data-module="govuk-button">
+                        Continue
+                    </button>
+                    <a class="govuk-link" href="{% url 'invite_representative_task_list_exists' invitation_id=invitation_id %}">Back</a>
+                </div>
+
             </div>
         </div>
 

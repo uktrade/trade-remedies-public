@@ -42,17 +42,28 @@ class WhoAreYouInviting(BaseInviteFormView):
 
     def form_valid(self, form):
         if form.cleaned_data["who_are_you_inviting"] == "employee":
-            new_invitation = self.client.post(
-                self.client.url("invitations"),
-                data={
-                    "organisation": self.request.user.organisation["id"],
-                    "invalid": True,
-                    "invitation_type": 1,
-                },
-            )
-            return redirect(
-                reverse("invitation_name_email", kwargs={"invitation_id": new_invitation["id"]})
-            )
+            invitation_update_dictionary = {
+                "organisation": self.request.user.organisation["id"],
+                "invalid": True,
+                "invitation_type": 1,
+            }
+            if invitation_id := self.kwargs.get("invitation_id"):
+                # There is already an existing invite, update it
+                invitation = self.client.put(
+                    self.client.url(f"invitations/{invitation_id}"),
+                    data=invitation_update_dictionary
+                )
+                return redirect(
+                    reverse("invitation_name_email", kwargs={"invitation_id": invitation["id"]})
+                )
+            else:
+                new_invitation = self.client.post(
+                    self.client.url("invitations"),
+                    data=invitation_update_dictionary,
+                )
+                return redirect(
+                    reverse("invitation_name_email", kwargs={"invitation_id": new_invitation["id"]})
+                )
         elif form.cleaned_data["who_are_you_inviting"] == "representative":
             return redirect(reverse("invite_representative_task_list"))
 
@@ -180,9 +191,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -201,9 +212,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }

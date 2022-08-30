@@ -83,9 +83,14 @@
                             <UL>
                                 {% for invite in invite_submissions %}
                                     <LI>
-                                        <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
-                                            {{ invite.case.reference }} - {% format_date invite.created_at '%d %b %Y' %}
-                                        </a>
+                                        {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
+                                            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{ invite.case.reference }} - {% format_date invite.created_at '%d %b %Y' %}</a>
+                                        {% else %}
+                                            <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
+                                                {{ invite.case.reference }}
+                                                - {% format_date invite.created_at '%d %b %Y' %}
+                                            </a>
+                                        {% endif %}
                                         ({{ invite.name }} - {{ invite.status.name }})
                                     </LI>
                                 {% endfor %}
