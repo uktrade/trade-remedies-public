@@ -316,19 +316,9 @@ class TestClientFurtherDetailsForm(TestCase):
 
 
 class TestInviteForms(TestCase):
-    def test_select_case_form(self):
-        cases = [{"id": "1"}, {"id": "2"}]
-        form = SelectCaseForm(cases=cases)
-        self.assertEqual(len(form.fields["cases"].choices), 2)
-
-    def test_select_case_form_invalid(self):
-        with self.assertRaises(KeyError):
-            form = SelectCaseForm()
-            form.is_valid()
-
     def test_who_are_you_inviting_name_email_form_valid(self):
         form = WhoAreYouInvitingNameEmailForm(
-            data={"name": "test", "email": "test@example.com"}  # /PS-IGNORE
+            data={"team_member_name": "test", "team_member_email": "test@example.com"}  # /PS-IGNORE
         )
         self.assertTrue(form.is_valid())
 
