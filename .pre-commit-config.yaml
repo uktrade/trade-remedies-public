@@ -15,7 +15,7 @@ repos:
       - id: pii_secret_file_content_ner
         files: ''
         language: python
-        args: [ --ner_output_file=ner_output_file.txt ] # uncomment to output NER entities
+        args: [ --ner_output_file=ner_output_file.txt ]
         pass_filenames: true
         require_serial: true
       - id: hooks_version_check
@@ -33,7 +33,7 @@ repos:
         args: [ --config=pyproject.toml ]
   - repo: https://github.com/uktrade/fitness-functions
     fail_fast: true
-    rev: '1.1'
+    rev: f41d4b477c6fd6f8f4808cc2743ac911cd523c56
     hooks:
       - id: fitness-functions-run
         pass_filenames: false

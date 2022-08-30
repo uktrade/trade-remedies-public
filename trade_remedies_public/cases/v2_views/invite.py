@@ -51,7 +51,7 @@ class WhoAreYouInviting(BaseInviteFormView):
                 # There is already an existing invite, update it
                 invitation = self.client.put(
                     self.client.url(f"invitations/{invitation_id}"),
-                    data=invitation_update_dictionary
+                    data=invitation_update_dictionary,
                 )
                 return redirect(
                     reverse("invitation_name_email", kwargs={"invitation_id": invitation["id"]})
@@ -191,9 +191,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -212,9 +212,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }

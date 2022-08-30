@@ -1,5 +1,8 @@
 from unittest import TestCase
 
+from cases.v2_forms.invite import (
+    WhoAreYouInvitingNameEmailForm,
+)
 from cases.v2_forms.registration_of_interest import (
     ClientFurtherDetailsForm,
     ClientTypeForm,
@@ -8,11 +11,6 @@ from cases.v2_forms.registration_of_interest import (
     PrimaryContactForm,
     UkEmployerForm,
     YourEmployerForm,
-)
-
-from cases.v2_forms.invite import (
-    SelectCaseForm,
-    WhoAreYouInvitingNameEmailForm,
 )
 
 
@@ -327,4 +325,3 @@ class TestInviteForms(TestCase):
             data={"team_member_name": "test", "team_member_email": "testexample.com"}  # /PS-IGNORE
         )
         self.assertFalse(form.is_valid())
-        self.assertTrue("team_member_email" in form.field_errors)
