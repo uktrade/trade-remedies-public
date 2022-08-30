@@ -327,4 +327,4 @@ class TestInviteForms(TestCase):
             data={"team_member_name": "test", "team_member_email": "testexample.com"}  # /PS-IGNORE
         )
         self.assertFalse(form.is_valid())
-        self.assertTrue("team_member_name" in form.field_errors)
+        self.assertTrue("team_member_email" in form.field_errors)
