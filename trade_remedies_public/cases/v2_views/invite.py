@@ -1,4 +1,5 @@
 from apiclient.exceptions import ClientError
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
@@ -23,10 +24,23 @@ from config.utils import (
 
 
 class BaseInviteView(BasePublicView, TemplateView):
+    def dispatch(self, request, *args, **kwargs):
+        if invitation_id := kwargs.get("invitation_id"):
+            self.invitation = self.client.get(self.client.url(f"invitations/{invitation_id}"))
+            if self.invitation["organisation"]["id"] != request.user.organisation["id"]:
+                # The user should not have access to this invitation, raise a 403 permission DENIED
+                raise PermissionDenied()
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         if invitation_id := self.kwargs.get("invitation_id"):
-            context["invitation"] = self.client.get(self.client.url(f"invitations/{invitation_id}"))
+            if hasattr(self, "invitation") and self.invitation:
+                context["invitation"] = self.invitation
+            else:
+                context["invitation"] = self.client.get(
+                    self.client.url(f"invitations/{invitation_id}")
+                )
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
         context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
         return context
