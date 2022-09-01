@@ -455,6 +455,11 @@ class V2RegistrationView2FAChoice(V2BaseRegisterView, TradeRemediesAPIClientMixi
     form_class = TwoFactorChoiceForm
     next_url_resolver = "v2_register_your_employer"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_email"] = self.request.session["registration"]["email"]
+        return context
+
 
 class V2RegistrationViewYourEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_your_employer.html"

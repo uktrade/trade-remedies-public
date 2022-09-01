@@ -19,15 +19,19 @@ class BasePublicView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
 
 
-class BasePublicFormView(BasePublicView, FormView):
-    """The same as BasePublicView, but adds the FormView generic mixin and a form_invalid
-    function which will assign the form errors to the request session so they can be properly
-    rendered in the front-end.
-    """
+class FormInvalidMixin(FormView):
+    """Adds a mixin to the FormView for assigning form errors to a request if invalid"""
 
     def form_invalid(self, form):
         form.assign_errors_to_request(self.request)
         return super().form_invalid(form)
+
+
+class BasePublicFormView(BasePublicView, FormInvalidMixin):
+    """The same as BasePublicView, but adds the FormView generic mixin and a form_invalid
+    function which will assign the form errors to the request session so they can be properly
+    rendered in the front-end.
+    """
 
 
 class TaskListView(BasePublicView, TemplateView):
@@ -49,11 +53,11 @@ class TaskListView(BasePublicView, TemplateView):
                     try:
                         previous_step = steps[number - 1]
                         if len(
-                            [
-                                sub_step
-                                for sub_step in previous_step["sub_steps"]
-                                if sub_step["status"] == "Complete"
-                            ]
+                                [
+                                    sub_step
+                                    for sub_step in previous_step["sub_steps"]
+                                    if sub_step["status"] == "Complete"
+                                ]
                         ) == len(previous_step["sub_steps"]):
                             # All sub-steps in the previous step have been completed,
                             # the next state is now open
