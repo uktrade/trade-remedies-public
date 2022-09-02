@@ -10,6 +10,9 @@ from registration.forms import PasswordForm, RegistrationStartForm, TwoFactorCho
 class BaseAcceptInviteView(APIClientMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        case = self.client.cases('42266c0c-ff92-4da4-885b-55098d8ffcfe')
+        case.name = "even newer name"
+        new_case = case.save()
         context["invitation"] = self.client.get(
             self.client.url(f"invitations/{self.kwargs['invitation_id']}")
         )
