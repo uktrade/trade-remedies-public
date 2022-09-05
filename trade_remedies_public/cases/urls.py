@@ -341,6 +341,11 @@ urlpatterns += [
         name="invitation_select_permissions",
     ),
     path(
+        "invite/<uuid:invitation_id>/choose_cases/",
+        invite.ChooseCasesView.as_view(),
+        name="invitation_choose_cases",
+    ),
+    path(
         "invite/<uuid:invitation_id>/review/",
         invite.ReviewInvitation.as_view(),
         name="invitation_review",

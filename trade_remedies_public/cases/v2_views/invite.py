@@ -6,7 +6,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from cases.v2_forms.invite import (
-    InviteExistingRepresentativeDetailsForm,
+    ChooseCaseForm, InviteExistingRepresentativeDetailsForm,
     InviteNewRepresentativeDetailsForm,
     SelectCaseForm,
     SelectOrganisationForm,
@@ -138,7 +138,50 @@ class PermissionSelectView(BaseInviteFormView):
                 "organisation_security_group": form.cleaned_data["type_of_user"],
             },
         )
+        if form.cleaned_data["type_of_user"] == SECURITY_GROUP_ORGANISATION_USER:
+            # They are a regular user, we need to select the cases they will have access to
+            return redirect(reverse(
+                "invitation_choose_cases",
+                kwargs={"invitation_id": invitation["id"]}
+            ))
         return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
+
+
+class ChooseCasesView(BaseInviteFormView):
+    template_name = "v2/invite/choose_cases.html"
+    form_class = ChooseCaseForm
+
+    def dispatch(self, request, *args, **kwargs):
+        cases = self.client.get(
+            self.client.url(f"organisations/{self.request.user.organisation['id']}",
+                            query="{cases}")
+        )["cases"]
+        if not cases:
+            return redirect(reverse("invite_"))
+        else:
+            cases = sorted(cases, key=lambda x: x["name"])
+        self.cases = cases
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cases"] = self.cases
+        return context
+
+    def form_valid(self, form):
+        if form.cleaned_data["which_case"] == "choose_case_later":
+            pass
+        else:
+            cases = form.cleaned_data["which_case"]
+            invitation = self.client.put(
+                self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
+                data={
+                    "cases_to_link": {
+                        "create": [cases]
+                    }
+                }
+            )
+            print("asd")
 
 
 class ReviewInvitation(BaseInviteView):
@@ -205,9 +248,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -226,9 +269,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
