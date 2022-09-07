@@ -160,7 +160,8 @@ class ChooseCasesView(BaseInviteFormView):
                 )
             )["cases"]
             if not cases:
-                return redirect(reverse("invite_"))
+                return redirect(reverse("invitation_review",
+                                        kwargs={"invitation_id": self.kwargs["invitation_id"]}))
             else:
                 cases = sorted(cases, key=lambda x: x["name"])
             self.cases = cases
@@ -194,12 +195,30 @@ class ChooseCasesView(BaseInviteFormView):
 class ReviewInvitation(BaseInviteView):
     template_name = "v2/invite/review.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cases"] = self.client.get(
+            self.client.url(
+                f"organisations/{self.request.user.organisation['id']}", query="{cases}"
+            )
+        )["cases"]
+        return context
+
     def post(self, request, *args, **kwargs):
         invitation = self.client.send_invitation(kwargs["invitation_id"])
         return redirect(reverse("invitation_sent", kwargs={"invitation_id": invitation["id"]}))
 
 
 class InvitationSent(BaseInviteView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cases"] = self.client.get(
+            self.client.url(
+                f"organisations/{self.request.user.organisation['id']}", query="{cases}"
+            )
+        )["cases"]
+        return context
+
     template_name = "v2/invite/sent.html"
 
 
@@ -255,9 +274,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -276,9 +295,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }

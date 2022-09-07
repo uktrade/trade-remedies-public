@@ -19,8 +19,8 @@
                 Regular user
             {% endif %}<br>
 
-            {% if invitation.cases_to_link %}
-                Cases:
+            {% if cases %}
+                Cases: {% if not invitation.cases_to_link %}None{% endif %}
             {% endif %}
         </p>
         {% if invitation.cases_to_link %}
