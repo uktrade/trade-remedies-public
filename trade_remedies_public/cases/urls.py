@@ -422,5 +422,5 @@ urlpatterns += [
         "accept_invite/<uuid:invitation_id>/two_factor_choice/",
         accept_invite.AcceptOrganisationTwoFactorChoice.as_view(),
         name="accept_invite_two_factor_choice",
-    )
+    ),
 ]

@@ -517,7 +517,7 @@ class RequestEmailVerifyCode(TemplateView, APIClientMixin):
             response = self.client.get(
                 self.client.url(f"users/{kwargs['user_pk']}/send_verification_email")
             )
-            #response = self.trusted_client.send_email_verification_link(kwargs["user_pk"])
+            # response = self.trusted_client.send_email_verification_link(kwargs["user_pk"])
             request.session["email"] = response["email"] if response else None
         if request.GET.get("resent"):
             # If we're resending, we want to show the bit of text that lets the user know it's been

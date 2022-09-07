@@ -6,7 +6,8 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from cases.v2_forms.invite import (
-    ChooseCaseForm, InviteExistingRepresentativeDetailsForm,
+    ChooseCaseForm,
+    InviteExistingRepresentativeDetailsForm,
     InviteNewRepresentativeDetailsForm,
     SelectCaseForm,
     SelectOrganisationForm,
@@ -141,10 +142,9 @@ class PermissionSelectView(BaseInviteFormView):
         )
         if form.cleaned_data["type_of_user"] == SECURITY_GROUP_ORGANISATION_USER:
             # They are a regular user, we need to select the cases they will have access to
-            return redirect(reverse(
-                "invitation_choose_cases",
-                kwargs={"invitation_id": invitation["id"]}
-            ))
+            return redirect(
+                reverse("invitation_choose_cases", kwargs={"invitation_id": invitation["id"]})
+            )
         return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
 
 
@@ -155,8 +155,9 @@ class ChooseCasesView(BaseInviteFormView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             cases = self.client.get(
-                self.client.url(f"organisations/{self.request.user.organisation['id']}",
-                                query="{cases}")
+                self.client.url(
+                    f"organisations/{self.request.user.organisation['id']}", query="{cases}"
+                )
             )["cases"]
             if not cases:
                 return redirect(reverse("invite_"))
@@ -168,26 +169,23 @@ class ChooseCasesView(BaseInviteFormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["cases"] = self.cases
-        context["cases_to_link_ids"] = [each["id"] for each in
-                                        context["invitation"]["cases_to_link"]]
+        context["cases_to_link_ids"] = [
+            each["id"] for each in context["invitation"]["cases_to_link"]
+        ]
         return context
 
     def form_valid(self, form):
-        which_cases = self.request.POST.getlist('which_case')
+        which_cases = self.request.POST.getlist("which_case")
         if "choose_case_later" in which_cases:
             # We want to clear already-linked cases if they exist
             invitation = self.client.put(
                 self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
-                data={
-                    "cases_to_link": "clear"
-                }
+                data={"cases_to_link": "clear"},
             )
         else:
             invitation = self.client.put(
                 self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
-                data={
-                    "cases_to_link": which_cases
-                }
+                data={"cases_to_link": which_cases},
             )
 
         return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
@@ -257,9 +255,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -278,9 +276,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
