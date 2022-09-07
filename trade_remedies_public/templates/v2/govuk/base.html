@@ -254,6 +254,8 @@
         // Clearing any input focus
         $("form select, form input, form textarea").blur();
 
+        // Initialising the GOV.UK Frontend
+        window.GOVUKFrontend.initAll()
     })
 </script>
 {% block scripts %}{% endblock scripts %}

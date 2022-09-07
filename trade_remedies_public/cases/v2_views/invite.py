@@ -25,11 +25,12 @@ from config.utils import (
 
 class BaseInviteView(BasePublicView, TemplateView):
     def dispatch(self, request, *args, **kwargs):
-        if invitation_id := kwargs.get("invitation_id"):
-            self.invitation = self.client.get(self.client.url(f"invitations/{invitation_id}"))
-            if self.invitation["organisation"]["id"] != request.user.organisation["id"]:
-                # The user should not have access to this invitation, raise a 403 permission DENIED
-                raise PermissionDenied()
+        if request.user.is_authenticated:
+            if invitation_id := kwargs.get("invitation_id"):
+                self.invitation = self.client.get(self.client.url(f"invitations/{invitation_id}"))
+                if self.invitation["organisation"]["id"] != request.user.organisation["id"]:
+                    # The user should not have access to this invitation, raise a 403 permission DENIED
+                    raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -152,36 +153,44 @@ class ChooseCasesView(BaseInviteFormView):
     form_class = ChooseCaseForm
 
     def dispatch(self, request, *args, **kwargs):
-        cases = self.client.get(
-            self.client.url(f"organisations/{self.request.user.organisation['id']}",
-                            query="{cases}")
-        )["cases"]
-        if not cases:
-            return redirect(reverse("invite_"))
-        else:
-            cases = sorted(cases, key=lambda x: x["name"])
-        self.cases = cases
+        if request.user.is_authenticated:
+            cases = self.client.get(
+                self.client.url(f"organisations/{self.request.user.organisation['id']}",
+                                query="{cases}")
+            )["cases"]
+            if not cases:
+                return redirect(reverse("invite_"))
+            else:
+                cases = sorted(cases, key=lambda x: x["name"])
+            self.cases = cases
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["cases"] = self.cases
+        context["cases_to_link_ids"] = [each["id"] for each in
+                                        context["invitation"]["cases_to_link"]]
         return context
 
     def form_valid(self, form):
-        if form.cleaned_data["which_case"] == "choose_case_later":
-            pass
-        else:
-            cases = form.cleaned_data["which_case"]
+        which_cases = self.request.POST.getlist('which_case')
+        if "choose_case_later" in which_cases:
+            # We want to clear already-linked cases if they exist
             invitation = self.client.put(
                 self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
                 data={
-                    "cases_to_link": {
-                        "create": [cases]
-                    }
+                    "cases_to_link": "clear"
                 }
             )
-            print("asd")
+        else:
+            invitation = self.client.put(
+                self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
+                data={
+                    "cases_to_link": which_cases
+                }
+            )
+
+        return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
 
 
 class ReviewInvitation(BaseInviteView):

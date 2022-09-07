@@ -14,11 +14,22 @@
         <p>We have sent an invite to:</p>
         <p>{{ invitation.name }}: {{ invitation.email }}<br>
             Permission: {% if invitation.organisation_security_group == group_owner %}
-                            Admin user
-                        {% elif invitation.organisation_security_group == group_regular %}
-                            Regular user
-                        {% endif %}<br>
+                Admin user
+            {% elif invitation.organisation_security_group == group_regular %}
+                Regular user
+            {% endif %}<br>
+
+            {% if invitation.cases_to_link %}
+                Cases:
+            {% endif %}
         </p>
+        {% if invitation.cases_to_link %}
+            <ul class="govuk-list govuk-list--bullet">
+                {% for case in invitation.cases_to_link %}
+                    <li>{{ case.reference }} - {{ case.name }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <p>Once they have registered, you can manage the cases they are assigned to and change their permissions as you
             require.</p>
 
