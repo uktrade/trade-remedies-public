@@ -30,7 +30,8 @@ class BaseInviteView(BasePublicView, TemplateView):
             if invitation_id := kwargs.get("invitation_id"):
                 self.invitation = self.client.get(self.client.url(f"invitations/{invitation_id}"))
                 if self.invitation["organisation"]["id"] != request.user.organisation["id"]:
-                    # The user should not have access to this invitation, raise a 403 permission DENIED
+                    # The user should not have access to this invitation,
+                    # raise a 403 permission DENIED
                     raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
@@ -160,8 +161,11 @@ class ChooseCasesView(BaseInviteFormView):
                 )
             )["cases"]
             if not cases:
-                return redirect(reverse("invitation_review",
-                                        kwargs={"invitation_id": self.kwargs["invitation_id"]}))
+                return redirect(
+                    reverse(
+                        "invitation_review", kwargs={"invitation_id": self.kwargs["invitation_id"]}
+                    )
+                )
             else:
                 cases = sorted(cases, key=lambda x: x["name"])
             self.cases = cases
@@ -274,9 +278,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -295,9 +299,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -313,7 +317,9 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
 
     def dispatch(self, request, *args, **kwargs):
         organisation = self.client.get(
-            self.client.url(f"organisations/{self.request.user.organisation['id']}")
+            self.client.url(
+                f"organisations/{self.request.user.organisation['id']}", query="{cases}"
+            )
         )
         cases = sorted(organisation["cases"], key=lambda case: case["name"])
         if not cases:
@@ -356,7 +362,9 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
 
     def dispatch(self, request, *args, **kwargs):
         organisation = self.client.get(
-            self.client.url(f"organisations/{self.request.user.organisation['id']}")
+            self.client.url(
+                f"organisations/{self.request.user.organisation['id']}", query="{invitations}"
+            )
         )
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
@@ -421,12 +429,13 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
     def form_valid(self, form):
         # Creating a new organisation
         new_organisation = self.client.post(
-            self.client.url("organisations"), data={"name": form.cleaned_data["organisation_name"]}
+            self.client.url("organisations", query="{id}"),
+            data={"name": form.cleaned_data["organisation_name"]},
         )
 
         # Creating a new contact and associating them with the organisation
         new_contact = self.client.post(
-            self.client.url("contacts"),
+            self.client.url("contacts", query="{id}"),
             data={
                 "name": form.cleaned_data["contact_name"],
                 "email": form.cleaned_data["contact_email"],
@@ -479,13 +488,13 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
         # Associating this contact with the invitation
         updated_invitation = self.client.put(
             self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
-            data={"contact": new_contact["id"]},
+            data={"contact": new_contact["id"], "fields": "submission,id"},
         )
 
         # Associating the submission with the new organisation
-        updated_submission = self.client.put(
+        self.client.put(
             self.client.url(f"submissions/{updated_invitation['submission']['id']}"),
-            data={"organisation": self.request.user.organisation["id"]},
+            data={"organisation": self.request.user.organisation["id"], "fields": "__none__"},
         )
 
         # Go back to the task list please!
