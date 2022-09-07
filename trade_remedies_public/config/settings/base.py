@@ -72,7 +72,6 @@ INSTALLED_APPS = [
     "feedback",
     "sass_processor",
     "django_countries",
-    "silk"
 ]
 
 MIDDLEWARE = [
@@ -83,7 +82,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    'silk.middleware.SilkyMiddleware',
     # "config.middleware.PublicRequestMiddleware",
     "config.middleware.APIUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
