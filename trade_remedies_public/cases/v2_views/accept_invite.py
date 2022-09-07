@@ -94,15 +94,6 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
             }
         )
 
-        # Now adding the user to the organisation in question
-        updated_organisation = self.client.put(
-            self.client.url(f"organisations/{invitation['organisation_id']}/add_user"),
-            data={
-                "user_id": invitation['invited_user']['id'],
-                "organisation_security_group": invitation["organisation_security_group"]
-            }
-        )
-
         # Redirect to email verification page
         return redirect(reverse(
             "request_email_verify_code",
