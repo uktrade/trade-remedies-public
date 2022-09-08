@@ -1,10 +1,10 @@
-from config.forms import ValidationForm
 from django import forms
 
 from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
 )
+from config.forms import ValidationForm
 
 
 class WhoAreYouInvitingForm(ValidationForm):
@@ -34,6 +34,10 @@ class SelectPermissionsForm(ValidationForm):
         ),
         error_messages={"required": "invite_permissions_missing"},
     )
+
+
+class ChooseCaseForm(ValidationForm):
+    which_case = forms.CharField(error_messages={"required": "invite_which_cases_not_selected"})
 
 
 class SelectCaseForm(ValidationForm):

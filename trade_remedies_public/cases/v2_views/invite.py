@@ -6,6 +6,7 @@ from django.views import View
 from django.views.generic import TemplateView
 
 from cases.v2_forms.invite import (
+    ChooseCaseForm,
     InviteExistingRepresentativeDetailsForm,
     InviteNewRepresentativeDetailsForm,
     SelectCaseForm,
@@ -25,11 +26,13 @@ from config.utils import (
 
 class BaseInviteView(BasePublicView, TemplateView):
     def dispatch(self, request, *args, **kwargs):
-        if invitation_id := kwargs.get("invitation_id"):
-            self.invitation = self.client.get(self.client.url(f"invitations/{invitation_id}"))
-            if self.invitation["organisation"]["id"] != request.user.organisation["id"]:
-                # The user should not have access to this invitation, raise a 403 permission DENIED
-                raise PermissionDenied()
+        if request.user.is_authenticated:
+            if invitation_id := kwargs.get("invitation_id"):
+                self.invitation = self.client.get(self.client.url(f"invitations/{invitation_id}"))
+                if self.invitation["organisation"]["id"] != request.user.organisation["id"]:
+                    # The user should not have access to this invitation,
+                    # raise a 403 permission DENIED
+                    raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -138,11 +141,72 @@ class PermissionSelectView(BaseInviteFormView):
                 "organisation_security_group": form.cleaned_data["type_of_user"],
             },
         )
+        if form.cleaned_data["type_of_user"] == SECURITY_GROUP_ORGANISATION_USER:
+            # They are a regular user, we need to select the cases they will have access to
+            return redirect(
+                reverse("invitation_choose_cases", kwargs={"invitation_id": invitation["id"]})
+            )
+        return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
+
+
+class ChooseCasesView(BaseInviteFormView):
+    template_name = "v2/invite/choose_cases.html"
+    form_class = ChooseCaseForm
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            cases = self.client.get(
+                self.client.url(
+                    f"organisations/{self.request.user.organisation['id']}", query="{cases}"
+                )
+            )["cases"]
+            if not cases:
+                return redirect(
+                    reverse(
+                        "invitation_review", kwargs={"invitation_id": self.kwargs["invitation_id"]}
+                    )
+                )
+            else:
+                cases = sorted(cases, key=lambda x: x["name"])
+            self.cases = cases
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cases"] = self.cases
+        context["cases_to_link_ids"] = [
+            each["id"] for each in context["invitation"]["cases_to_link"]
+        ]
+        return context
+
+    def form_valid(self, form):
+        which_cases = self.request.POST.getlist("which_case")
+        if "choose_case_later" in which_cases:
+            # We want to clear already-linked cases if they exist
+            invitation = self.client.put(
+                self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
+                data={"cases_to_link": "clear"},
+            )
+        else:
+            invitation = self.client.put(
+                self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
+                data={"cases_to_link": which_cases},
+            )
+
         return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
 
 
 class ReviewInvitation(BaseInviteView):
     template_name = "v2/invite/review.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cases"] = self.client.get(
+            self.client.url(
+                f"organisations/{self.request.user.organisation['id']}", query="{cases}"
+            )
+        )["cases"]
+        return context
 
     def post(self, request, *args, **kwargs):
         invitation = self.client.send_invitation(kwargs["invitation_id"])
@@ -150,6 +214,15 @@ class ReviewInvitation(BaseInviteView):
 
 
 class InvitationSent(BaseInviteView):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cases"] = self.client.get(
+            self.client.url(
+                f"organisations/{self.request.user.organisation['id']}", query="{cases}"
+            )
+        )["cases"]
+        return context
+
     template_name = "v2/invite/sent.html"
 
 
@@ -244,7 +317,9 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
 
     def dispatch(self, request, *args, **kwargs):
         organisation = self.client.get(
-            self.client.url(f"organisations/{self.request.user.organisation['id']}")
+            self.client.url(
+                f"organisations/{self.request.user.organisation['id']}", query="{cases}"
+            )
         )
         cases = sorted(organisation["cases"], key=lambda case: case["name"])
         if not cases:
@@ -287,7 +362,9 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
 
     def dispatch(self, request, *args, **kwargs):
         organisation = self.client.get(
-            self.client.url(f"organisations/{self.request.user.organisation['id']}")
+            self.client.url(
+                f"organisations/{self.request.user.organisation['id']}", query="{invitations}"
+            )
         )
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
@@ -352,12 +429,13 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
     def form_valid(self, form):
         # Creating a new organisation
         new_organisation = self.client.post(
-            self.client.url("organisations"), data={"name": form.cleaned_data["organisation_name"]}
+            self.client.url("organisations", query="{id}"),
+            data={"name": form.cleaned_data["organisation_name"]},
         )
 
         # Creating a new contact and associating them with the organisation
         new_contact = self.client.post(
-            self.client.url("contacts"),
+            self.client.url("contacts", query="{id}"),
             data={
                 "name": form.cleaned_data["contact_name"],
                 "email": form.cleaned_data["contact_email"],
@@ -410,13 +488,13 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
         # Associating this contact with the invitation
         updated_invitation = self.client.put(
             self.client.url(f"invitations/{self.kwargs['invitation_id']}"),
-            data={"contact": new_contact["id"]},
+            data={"contact": new_contact["id"], "fields": "submission,id"},
         )
 
         # Associating the submission with the new organisation
-        updated_submission = self.client.put(
+        self.client.put(
             self.client.url(f"submissions/{updated_invitation['submission']['id']}"),
-            data={"organisation": self.request.user.organisation["id"]},
+            data={"organisation": self.request.user.organisation["id"], "fields": "__none__"},
         )
 
         # Go back to the task list please!
