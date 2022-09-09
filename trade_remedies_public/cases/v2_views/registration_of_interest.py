@@ -36,7 +36,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
     def dispatch(self, request, *args, **kwargs):
         self.submission = {}
         if submission_id := self.kwargs.get("submission_id"):
-            self.submission = self.client.get_submission(submission_id)
+            self.submission = self.client.submissions(submission_id)
         return super().dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form):
@@ -71,11 +71,9 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
             raise Exception("You need to provide a submission ID to amend")
 
         try:
-            submission = self.client.put(
-                self.client.url(
-                    f"submissions/{submission_id}/add_organisation_to_registration_of_interest"
-                ),
-                data={"organisation_id": organisation_id, "contact_id": contact_id},
+            submission = self.client.submissions(submission_id).add_organisation_to_registration_of_interest(
+                organisation_id=organisation_id,
+                contact_id=contact_id
             )
             return redirect(
                 reverse("roi_submission_exists", kwargs={"submission_id": submission["id"]})
@@ -209,6 +207,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        cases = self.client.cases
         cases = self.client.get_cases(open_to_roi=True)
         if not cases:
             add_form_error_to_session(
@@ -240,15 +239,12 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
             )
 
         # Creating the registration of interest
-        new_submission = self.client.post(
-            self.client.url("submissions"),
-            data={
-                "case": case_id,
-                "type": SUBMISSION_TYPE_REGISTER_INTEREST,
-                "documents": [],
-                "created_by": self.request.user.id,
-            },
-        )
+        new_submission = self.client.submissions({
+            "case": case_id,
+            "type": SUBMISSION_TYPE_REGISTER_INTEREST,
+            "documents": [],
+            "created_by": self.request.user.id,
+        })
 
         # REDIRECT to next stage
         return redirect(
@@ -394,9 +390,7 @@ class InterestUkSubmitStep2(RegistrationOfInterestBase, FormView):
         contact_id = self.kwargs["contact_id"]
         get_dictionary = self.request.GET.dict()
         # Creating the new organisation
-        organisation = self.client.post(
-            self.client.url("organisations"), data={**get_dictionary, **form.cleaned_data}
-        )
+        organisation = self.client.organisations({**get_dictionary, **form.cleaned_data})
 
         # Associating the ROI with the organisation and redirecting to tasklist
         return self.add_organisation_to_registration_of_interest(
@@ -543,6 +537,7 @@ class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
 
     def form_valid(self, form):
         # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
+        organisation_case_role = self.client.organisation_case_roles
         organisation_case_role = self.client.get(
             self.client.url(
                 "organisation_case_roles",
@@ -550,10 +545,9 @@ class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
                 organisation_id=self.submission["organisation"]["id"],
             )
         )
-        self.client.put(
-            self.client.url(f"organisation_case_roles/{organisation_case_role['id']}"),
-            data={"role_key": "awaiting_approval"},
-        )
+        self.client.organisation_case_roles(organisation_case_role['id']).update({
+            "role_key": "awaiting_approval"
+        })
 
         # Now we update the status of the submission to received
         self.client.update_submission_status(
@@ -577,5 +571,5 @@ class DeleteRegistrationOfInterest(RegistrationOfInterestBase, TemplateView):
 
     def post(self, request, *args, **kwargs):
         submission_id = kwargs["submission_id"]
-        response = self.client.delete(self.client.url(f"submissions/{submission_id}"))
+        self.client.submissions(submission_id).delete()
         return redirect(reverse("dashboard"))

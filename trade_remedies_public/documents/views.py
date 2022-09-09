@@ -57,11 +57,9 @@ class DocumentView(View, APIClientMixin):
                 return JsonResponse(data={"errors": form.errors}, status=400)
 
     def delete(self, request, *args, **kwargs):
-        self.client.delete(
-            self.client.url(f"documents/{request.GET['document_to_delete']}"),
-        )
+        self.client.documents(request.GET['document_to_delete']).delete()
         return HttpResponse(status=204)
 
     def get(self, request, *args, **kwargs):
-        document = self.client.get(self.client.url(f"documents/{self.kwargs['document_id']}"))
+        document = self.client.documents(self.kwargs['document_id'])
         return redirect(document["file"])
