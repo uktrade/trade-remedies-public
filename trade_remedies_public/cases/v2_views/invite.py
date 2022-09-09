@@ -141,12 +141,10 @@ class PermissionSelectView(BaseInviteFormView):
                 "organisation_security_group": form.cleaned_data["type_of_user"],
             },
         )
-        if form.cleaned_data["type_of_user"] == SECURITY_GROUP_ORGANISATION_USER:
-            # They are a regular user, we need to select the cases they will have access to
-            return redirect(
-                reverse("invitation_choose_cases", kwargs={"invitation_id": invitation["id"]})
-            )
-        return redirect(reverse("invitation_review", kwargs={"invitation_id": invitation["id"]}))
+        # Now let's select the cases they will have access to
+        return redirect(
+            reverse("invitation_choose_cases", kwargs={"invitation_id": invitation["id"]})
+        )
 
 
 class ChooseCasesView(BaseInviteFormView):
@@ -278,9 +276,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -299,9 +297,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
