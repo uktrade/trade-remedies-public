@@ -207,8 +207,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cases = self.client.cases
-        cases = self.client.get_cases(open_to_roi=True)
+        cases = self.client.cases.open_to_roi()
         if not cases:
             add_form_error_to_session(
                 "There are no active cases to join", request=self.request, field="table-header"
@@ -244,7 +243,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
             "type": SUBMISSION_TYPE_REGISTER_INTEREST,
             "documents": [],
             "created_by": self.request.user.id,
-        })
+        }, fields=["id"])
 
         # REDIRECT to next stage
         return redirect(
@@ -537,13 +536,9 @@ class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
 
     def form_valid(self, form):
         # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
-        organisation_case_role = self.client.organisation_case_roles
-        organisation_case_role = self.client.get(
-            self.client.url(
-                "organisation_case_roles",
-                case_id=self.submission["case"]["id"],
-                organisation_id=self.submission["organisation"]["id"],
-            )
+        organisation_case_role = self.client.organisation_case_roles.get_with_case_and_organisation(
+            case_id=self.submission["case"]["id"],
+            organisation_id=self.submission["organisation"]["id"]
         )
         self.client.organisation_case_roles(organisation_case_role['id']).update({
             "role_key": "awaiting_approval"

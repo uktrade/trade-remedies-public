@@ -29,10 +29,11 @@ class BaseInviteView(BasePublicView, TemplateView):
         if request.user.is_authenticated:
             if invitation_id := kwargs.get("invitation_id"):
                 self.invitation = self.client.invitations(invitation_id)
-                if self.invitation["organisation"]["id"] != request.user.organisation["id"]:
-                    # The user should not have access to this invitation,
-                    # raise a 403 permission DENIED
-                    raise PermissionDenied()
+                if inviting_organisation := self.invitation["organisation"]:
+                    if inviting_organisation["id"] != request.user.organisation["id"]:
+                        # The user should not have access to this invitation,
+                        # raise a 403 permission DENIED
+                        raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -334,18 +335,23 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
     form_class = SelectOrganisationForm
 
     def dispatch(self, request, *args, **kwargs):
-        organisation = self.client.organisations(self.request.user.organisation['id'],
-                                                 fields=["invitations"])
+        organisation = self.client.organisations(
+            self.request.user.organisation['id'],
+            fields=["invitations"]
+        )
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
         invitations_sent = []
+        organisations_seen = []
         for sent_invitation in organisation["invitations"]:
             if invited_contact := sent_invitation.get("contact", None):
                 # Thn checking if there is an organisation associated with the invitation
                 if invited_organisation := invited_contact.get("organisation", None):
                     # If the invited contact doesn't belong to the user's organisation
                     if invited_organisation != self.request.user.organisation["id"]:
-                        invitations_sent.append(sent_invitation)
+                        if invited_organisation not in organisations_seen:
+                            invitations_sent.append(sent_invitation)
+                            organisations_seen.append(invited_organisation)
 
         self.invitations_sent = invitations_sent
         return super().dispatch(request, *args, **kwargs)
@@ -411,14 +417,14 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
         # Associating this contact with the invitation
         updated_invitation = self.client.invitations(self.kwargs['invitation_id']).update({
             "contact": new_contact["id"]
-        })
+        }, fields=["submission", "contact"])
 
         # Associating the submission with the new organisation
         self.client.submissions(updated_invitation['submission']['id']).update({
             # The submission needs to be associating with the inviter's organisation, the
-            # invited's organisation is stored in the contact object
+            # invited organisation is stored in the contact object
             "organisation": self.request.user.organisation["id"]
-        })
+        }, fields=["id"])
 
         # Go back to the task list please!
         return redirect(
@@ -444,23 +450,18 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
         })
 
         # Associating this contact with the invitation
-        self.client.invitations.update(self.kwargs["invitation_id"], {
-            "contact": new_contact["id"], "fields": "submission,id"
-        })
-
+        self.client.invitations(self.kwargs["invitation_id"]).update(
+            {"contact": new_contact["id"]},
+        )
 
         updated_invitation = self.client.invitations(self.kwargs['invitation_id']).update({
-            "contact": new_contact["id"], "fields": "submission,id"
-        })
+            "contact": new_contact["id"]
+        }, fields=["submission", "contact"])
 
         # Associating the submission with the new organisation
         self.client.submissions(updated_invitation['submission']['id']).update({
-            "organisation": self.request.user.organisation["id"]
-        })
-        """self.client.put(
-            self.client.url(f"submissions/{updated_invitation['submission']['id']}"),
-            data={"organisation": self.request.user.organisation["id"], "fields": "__none__"},
-        )"""
+            "organisation": self.request.user.organisation["id"],
+        }, fields=["id"])
 
         # Go back to the task list please!
         return redirect(
@@ -500,7 +501,7 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
     template_name = "v2/invite/invite_representative_check_and_submit.html"
 
     def post(self, request, *args, **kwargs):
-        invitation = self.client.send_invitation(kwargs["invitation_id"])
+        invitation = self.client.invitations(kwargs["invitation_id"]).send()
         return redirect(
             reverse("invite_representative_sent", kwargs={"invitation_id": invitation["id"]})
         )

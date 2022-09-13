@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from v2_api_client.encoders import TRSObjectJsonEncoder
 from v2_api_client.mixins import APIClientMixin
 
 from core.decorators import catch_form_errors
@@ -31,24 +32,23 @@ class DocumentView(View, APIClientMixin):
             if form.is_valid():
                 uploaded_files.append(
                     # Sending it to the API for storage
-                    self.call_client(timeout=50).create_document(
-                        **{
-                            "type": request.POST["type"],
-                            "stored_name": file.name,
-                            "original_name": file.original_name,
-                            "file_size": file.file_size,
-                            "submission_id": request.POST["submission_id"],
-                            "parent": request.POST.get("parent", None),
-                            "submission_document_type": request.POST.get(
-                                "submission_document_type", None
-                            ),
-                        }
-                    )
+                    self.client.documents({
+                        "type": request.POST["type"],
+                        "stored_name": file.name,
+                        "original_name": file.original_name,
+                        "file_size": file.file_size,
+                        "submission_id": request.POST["submission_id"],
+                        "parent": request.POST.get("parent", None),
+                        "submission_document_type": request.POST.get(
+                            "submission_document_type", None
+                        ),
+                    })
                 )
                 return JsonResponse(
                     {
                         "uploaded_files": uploaded_files,
                     },
+                    encoder=TRSObjectJsonEncoder,
                     status=201,
                 )
             else:
