@@ -144,6 +144,17 @@
         <ul class="login-nav__list">
             {% if user.is_authenticated %}
                 {# The user is logged in #}
+                {% if not within_2fa and not within_verify %}
+                    <li class="login-nav__list-item">
+                        {{ user.name }}
+                    </li>
+                    <li class="login-nav__list-item">
+                        <a href="{% url 'account_info' %}"
+                           class="govuk-link govuk-link govuk-link--inverse login-nav__link">
+                            Manage account
+                        </a>|
+                    </li>
+                {% endif %}
                 <li class="login-nav__list-item">
                     <a href="{% url 'logout' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link"
                        id="sign_out_link_header">
@@ -151,13 +162,15 @@
                     </a>
                 </li>
             {% else %}
-                {# The user is not logged on #}
-                <li class="login-nav__list-item">
-                    <a href="{% url 'login' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link"
-                       id="sign_in_link_header">
-                        Sign in
-                    </a>
-                </li>
+                {# The user is not logged on, we should display the login link UNLESS they're already on that page #}
+                {% if not request.resolver_match.view_name == "login" %}
+                    <li class="login-nav__list-item">
+                        <a href="{% url 'login' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link"
+                           id="sign_in_link_header">
+                            Sign in
+                        </a>
+                    </li>
+                {% endif %}
             {% endif %}
         </ul>
     </div>
