@@ -65,10 +65,12 @@ function file_upload(upload_container, files, submission_id) {
             return xhr;
         },
         success: function (data) {
+            let uploaded_file = JSON.parse(data["uploaded_files"][0])
+
             upload_container.find(".file_upload_indicator").hide()
             upload_container.find(".upload_file_complete").show()
             upload_container.find(".uploaded_file").show()
-            upload_container.find('.delete_document_link').data('document-id', data['uploaded_files'][0]['id']).attr('data-document-id', data['uploaded_files'][0]['id']);
+            upload_container.find('.delete_document_link').data('document-id',uploaded_file['id']).attr('data-document-id', uploaded_file['id']);
 
             const part_of_pair = upload_container.closest('.confidential_and_non_confidential_file_row')
             if (part_of_pair) {
@@ -82,7 +84,7 @@ function file_upload(upload_container, files, submission_id) {
                 }
                 const reversed_type = type_reverse[type_of_document]
                 const other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container')
-                other_file_upload_container.data('parent-document', data['uploaded_files'][0]['id']).attr('data-parent-document', data['uploaded_files'][0]['id'])
+                other_file_upload_container.data('parent-document', uploaded_file['id']).attr('data-parent-document', uploaded_file['id'])
             }
         },
         error: function (xhr) { // if error occurred
