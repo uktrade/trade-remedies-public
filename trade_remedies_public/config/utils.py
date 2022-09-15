@@ -21,6 +21,7 @@ def add_form_error_to_session(
     Returns
     -------
     bool - True if the error message has been added to the session
+
     """
 
     if "form_errors" not in request.session:
