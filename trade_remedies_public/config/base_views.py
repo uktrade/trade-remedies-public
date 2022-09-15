@@ -1,4 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
 from v2_api_client.mixins import APIClientMixin
 
@@ -34,6 +36,8 @@ class BasePublicFormView(BasePublicView, FormInvalidMixin):
     """
 
 
+# Ideally this page is never cached, so the status of each step is always up-to-date
+@method_decorator(never_cache, name='dispatch')
 class TaskListView(BasePublicView, TemplateView):
     """ABC view used to provide children with the basic functionality to act as a task list.
 
@@ -53,11 +57,11 @@ class TaskListView(BasePublicView, TemplateView):
                     try:
                         previous_step = steps[number - 1]
                         if len(
-                            [
-                                sub_step
-                                for sub_step in previous_step["sub_steps"]
-                                if sub_step["status"] == "Complete"
-                            ]
+                                [
+                                    sub_step
+                                    for sub_step in previous_step["sub_steps"]
+                                    if sub_step["status"] == "Complete"
+                                ]
                         ) == len(previous_step["sub_steps"]):
                             # All sub-steps in the previous step have been completed,
                             # the next state is now open
