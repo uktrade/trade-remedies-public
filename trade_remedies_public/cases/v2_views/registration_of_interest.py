@@ -71,9 +71,10 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
             raise Exception("You need to provide a submission ID to amend")
 
         try:
-            submission = self.client.submissions(submission_id).add_organisation_to_registration_of_interest(
-                organisation_id=organisation_id,
-                contact_id=contact_id
+            submission = self.client.submissions(
+                submission_id
+            ).add_organisation_to_registration_of_interest(
+                organisation_id=organisation_id, contact_id=contact_id
             )
             return redirect(
                 reverse("roi_submission_exists", kwargs={"submission_id": submission["id"]})
@@ -238,12 +239,15 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
             )
 
         # Creating the registration of interest
-        new_submission = self.client.submissions({
-            "case": case_id,
-            "type": SUBMISSION_TYPE_REGISTER_INTEREST,
-            "documents": [],
-            "created_by": self.request.user.id,
-        }, fields=["id"])
+        new_submission = self.client.submissions(
+            {
+                "case": case_id,
+                "type": SUBMISSION_TYPE_REGISTER_INTEREST,
+                "documents": [],
+                "created_by": self.request.user.id,
+            },
+            fields=["id"],
+        )
 
         # REDIRECT to next stage
         return redirect(
@@ -538,11 +542,11 @@ class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
         # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
         organisation_case_role = self.client.organisation_case_roles.get_with_case_and_organisation(
             case_id=self.submission["case"]["id"],
-            organisation_id=self.submission["organisation"]["id"]
+            organisation_id=self.submission["organisation"]["id"],
         )
-        self.client.organisation_case_roles(organisation_case_role['id']).update({
-            "role_key": "awaiting_approval"
-        })
+        self.client.organisation_case_roles(organisation_case_role["id"]).update(
+            {"role_key": "awaiting_approval"}
+        )
 
         # Now we update the status of the submission to received
         self.client.update_submission_status(

@@ -10,7 +10,7 @@ from registration.forms import PasswordForm, RegistrationStartForm, TwoFactorCho
 class BaseAcceptInviteView(APIClientMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["invitation"] = self.client.invitations(self.kwargs['invitation_id'])
+        context["invitation"] = self.client.invitations(self.kwargs["invitation_id"])
         return context
 
 
@@ -24,7 +24,7 @@ class AcceptOrganisationInvite(BaseAcceptInviteView, FormInvalidMixin):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            invitation = self.client.invitations(self.kwargs['invitation_id'])
+            invitation = self.client.invitations(self.kwargs["invitation_id"])
             if invitation["accepted_at"]:
                 # The invitation has already been accepted, it is invalid
                 return render(
@@ -59,7 +59,7 @@ class AcceptOrganisationSetPassword(BaseAcceptInviteView, FormInvalidMixin):
     form_class = PasswordForm
 
     def form_valid(self, form):
-        self.client.invitations(self.kwargs['invitation_id']).create_user_from_invitation(
+        self.client.invitations(self.kwargs["invitation_id"]).create_user_from_invitation(
             password=form.cleaned_data["password"]
         )
         return redirect(
@@ -84,30 +84,34 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
         contact_id = invitation["contact"]["id"]
 
         # Marking the user as active
-        self.client.users(invitation['invited_user']['id']).update({"is_active": True})
+        self.client.users(invitation["invited_user"]["id"]).update({"is_active": True})
 
         if form.cleaned_data["two_factor_choice"] == "mobile":
             # First updating the mobile number in the DB
-            self.client.contacts(contact_id).update({
-                "phone": form.cleaned_data["mobile"],
-                "country": form.cleaned_data["mobile_country_code"],
-            })
+            self.client.contacts(contact_id).update(
+                {
+                    "phone": form.cleaned_data["mobile"],
+                    "country": form.cleaned_data["mobile_country_code"],
+                }
+            )
 
         # Then changing the chosen delivery type of two-factor authentication
         two_factor_delivery_choice = (
             "sms" if form.cleaned_data["two_factor_choice"] == "mobile" else "email"
         )
 
-        self.client.two_factor_auths(invitation['invited_user']['id']).update({
-            "delivery_type": two_factor_delivery_choice
-        })
+        self.client.two_factor_auths(invitation["invited_user"]["id"]).update(
+            {"delivery_type": two_factor_delivery_choice}
+        )
 
         # Now adding the user to the organisation in question
-        self.client.organisations(invitation['organisation_id']).update({
-            "user_id": invitation["invited_user"]["id"],
-            "organisation_security_group": invitation["organisation_security_group"],
-            "confirmed": False,
-        })
+        self.client.organisations(invitation["organisation_id"]).update(
+            {
+                "user_id": invitation["invited_user"]["id"],
+                "organisation_security_group": invitation["organisation_security_group"],
+                "confirmed": False,
+            }
+        )
 
         # Redirect to email verification page
         return redirect(

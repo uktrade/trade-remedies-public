@@ -7,7 +7,7 @@ from v2_api_client.client import TRSAPIClient
 
 
 def add_form_error_to_session(
-        error_summary: str, request: HttpRequest, field: str = None, error_text: str = None
+    error_summary: str, request: HttpRequest, field: str = None, error_text: str = None
 ) -> bool:
     """
     Utility function to add a form (validation) error to the request.session
@@ -48,7 +48,7 @@ def get_loa_document_bundle() -> Union[dict, None]:
     loa_document_bundle = next(
         filter(
             lambda document_bundle: document_bundle["submission_type"] == "Letter of Authority"
-                                    and document_bundle["status"] == "LIVE",
+            and document_bundle["status"] == "LIVE",
             trs_document_bundles,
         ),
         None,
