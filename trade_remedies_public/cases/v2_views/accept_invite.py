@@ -10,9 +10,7 @@ from registration.forms import PasswordForm, RegistrationStartForm, TwoFactorCho
 class BaseAcceptInviteView(APIClientMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["invitation"] = self.client.get(
-            self.client.url(f"invitations/{self.kwargs['invitation_id']}")
-        )
+        context["invitation"] = self.client.invitations(self.kwargs["invitation_id"])
         return context
 
 
@@ -26,9 +24,7 @@ class AcceptOrganisationInvite(BaseAcceptInviteView, FormInvalidMixin):
 
     def dispatch(self, request, *args, **kwargs):
         try:
-            invitation = self.client.get(
-                self.client.url(f"invitations/{self.kwargs['invitation_id']}")
-            )
+            invitation = self.client.invitations(self.kwargs["invitation_id"])
             if invitation["accepted_at"]:
                 # The invitation has already been accepted, it is invalid
                 return render(
@@ -50,9 +46,7 @@ class AcceptOrganisationInvite(BaseAcceptInviteView, FormInvalidMixin):
     def form_valid(self, form):
         invitation = self.get_context_data()["invitation"]
         contact_id = invitation["contact"]["id"]
-        new_contact = self.client.put(
-            self.client.url(f"contacts/{contact_id}"), data={"name": form.cleaned_data["name"]}
-        )
+        self.client.contacts(contact_id).update({"name": form.cleaned_data["name"]})
         return redirect(
             reverse(
                 "accept_invite_set_password", kwargs={"invitation_id": self.kwargs["invitation_id"]}
@@ -65,11 +59,8 @@ class AcceptOrganisationSetPassword(BaseAcceptInviteView, FormInvalidMixin):
     form_class = PasswordForm
 
     def form_valid(self, form):
-        self.client.post(
-            self.client.url(
-                f"invitations/{self.kwargs['invitation_id']}/create_user_from_invitation"
-            ),
-            data={"password": form.cleaned_data["password"]},
+        self.client.invitations(self.kwargs["invitation_id"]).create_user_from_invitation(
+            password=form.cleaned_data["password"]
         )
         return redirect(
             reverse(
@@ -93,18 +84,15 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
         contact_id = invitation["contact"]["id"]
 
         # Marking the user as active
-        self.client.put(
-            self.client.url(f"users/{invitation['invited_user']['id']}"), data={"is_active": True}
-        )
+        self.client.users(invitation["invited_user"]["id"]).update({"is_active": True})
 
         if form.cleaned_data["two_factor_choice"] == "mobile":
             # First updating the mobile number in the DB
-            self.client.put(
-                self.client.url(f"contacts/{contact_id}"),
-                data={
+            self.client.contacts(contact_id).update(
+                {
                     "phone": form.cleaned_data["mobile"],
                     "country": form.cleaned_data["mobile_country_code"],
-                },
+                }
             )
 
         # Then changing the chosen delivery type of two-factor authentication
@@ -112,19 +100,17 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
             "sms" if form.cleaned_data["two_factor_choice"] == "mobile" else "email"
         )
 
-        self.client.put(
-            self.client.url(f"two_factor_auths/{invitation['invited_user']['id']}"),
-            data={"delivery_type": two_factor_delivery_choice},
+        self.client.two_factor_auths(invitation["invited_user"]["id"]).update(
+            {"delivery_type": two_factor_delivery_choice}
         )
 
         # Now adding the user to the organisation in question
-        self.client.put(
-            self.client.url(f"organisations/{invitation['organisation_id']}/add_user"),
-            data={
+        self.client.organisations(invitation["organisation_id"]).update(
+            {
                 "user_id": invitation["invited_user"]["id"],
                 "organisation_security_group": invitation["organisation_security_group"],
                 "confirmed": False,
-            },
+            }
         )
 
         # Redirect to email verification page
