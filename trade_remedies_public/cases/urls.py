@@ -341,6 +341,11 @@ urlpatterns += [
         name="invitation_select_permissions",
     ),
     path(
+        "invite/<uuid:invitation_id>/choose_cases/",
+        invite.ChooseCasesView.as_view(),
+        name="invitation_choose_cases",
+    ),
+    path(
         "invite/<uuid:invitation_id>/review/",
         invite.ReviewInvitation.as_view(),
         name="invitation_review",
@@ -417,5 +422,5 @@ urlpatterns += [
         "accept_invite/<uuid:invitation_id>/two_factor_choice/",
         accept_invite.AcceptOrganisationTwoFactorChoice.as_view(),
         name="accept_invite_two_factor_choice",
-    )
+    ),
 ]

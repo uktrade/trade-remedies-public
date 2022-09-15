@@ -506,18 +506,13 @@ class RequestEmailVerifyCode(TemplateView, APIClientMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["user"] = self.client.get(
-            self.client.url(f"users/{self.kwargs['user_pk']}", query="{email}")
-        )
+        context["user"] = self.client.users(self.kwargs["user_pk"], fields=["email"])
         return context
 
     def get(self, request, *args, **kwargs):
         # Sometimes we just want to show the user the page to resend their code and not send it yet.
         if not request.GET.get("dont_send"):
-            response = self.client.get(
-                self.client.url(f"users/{kwargs['user_pk']}/send_verification_email")
-            )
-            #response = self.trusted_client.send_email_verification_link(kwargs["user_pk"])
+            response = self.client.users(kwargs["user_pk"]).send_verification_email()
             request.session["email"] = response["email"] if response else None
         if request.GET.get("resent"):
             # If we're resending, we want to show the bit of text that lets the user know it's been

@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from v2_api_client.encoders import TRSObjectJsonEncoder
 from v2_api_client.mixins import APIClientMixin
 
 from core.decorators import catch_form_errors
@@ -31,8 +32,8 @@ class DocumentView(View, APIClientMixin):
             if form.is_valid():
                 uploaded_files.append(
                     # Sending it to the API for storage
-                    self.call_client(timeout=50).create_document(
-                        **{
+                    self.client.documents(
+                        {
                             "type": request.POST["type"],
                             "stored_name": file.name,
                             "original_name": file.original_name,
@@ -49,6 +50,7 @@ class DocumentView(View, APIClientMixin):
                     {
                         "uploaded_files": uploaded_files,
                     },
+                    encoder=TRSObjectJsonEncoder,
                     status=201,
                 )
             else:
@@ -57,11 +59,9 @@ class DocumentView(View, APIClientMixin):
                 return JsonResponse(data={"errors": form.errors}, status=400)
 
     def delete(self, request, *args, **kwargs):
-        self.client.delete(
-            self.client.url(f"documents/{request.GET['document_to_delete']}"),
-        )
+        self.client.documents(request.GET["document_to_delete"]).delete()
         return HttpResponse(status=204)
 
     def get(self, request, *args, **kwargs):
-        document = self.client.get(self.client.url(f"documents/{self.kwargs['document_id']}"))
+        document = self.client.documents(self.kwargs["document_id"])
         return redirect(document["file"])

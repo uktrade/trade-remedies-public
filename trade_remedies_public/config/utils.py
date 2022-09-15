@@ -2,7 +2,8 @@ from collections import defaultdict
 from typing import Union
 
 from django.http import HttpRequest
-from v2_api_client.client import APIClient
+from django.conf import settings
+from v2_api_client.client import TRSAPIClient
 
 
 def add_form_error_to_session(
@@ -40,8 +41,8 @@ def get_loa_document_bundle() -> Union[dict, None]:
     """Helper function to retrieve the LOA document application bundle from the API.
 
     Returns the LOA document bundle in a dict if it exists, else None"""
-    client = APIClient()
-    trs_document_bundles = client.get(client.url("document_bundles", submission_type_id="40"))
+    client = TRSAPIClient(token=settings.HEALTH_CHECK_TOKEN)
+    trs_document_bundles = client.document_bundles.all()
 
     # We've got all the TRS document bundles, let's find the LOA
     loa_document_bundle = next(
