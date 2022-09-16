@@ -508,7 +508,7 @@ class RequestEmailVerifyCode(TemplateView, APIClientMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         try:
-            user = self.client.users(self.kwargs['user_pk'], fields=["email"])
+            user = self.client.users(self.kwargs["user_pk"], fields=["email"])
             context["email"] = user.email
         except NotFoundError:
             # The user does not exist, probably because we generated a random UUID because
@@ -521,7 +521,7 @@ class RequestEmailVerifyCode(TemplateView, APIClientMixin):
         # Sometimes we just want to show the user the page to resend their code and not send it yet.
         if not request.GET.get("dont_send"):
             try:
-                self.client.users(kwargs['user_pk']).send_verification_email()
+                self.client.users(kwargs["user_pk"]).send_verification_email()
             except NotFoundError:
                 # The user does not exist, probably because we generated a random UUID because
                 # the email address had already been registered on the TRS

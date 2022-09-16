@@ -26,8 +26,11 @@ from cases.v2_forms.registration_of_interest import (
 )
 from config.base_views import TaskListView
 from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER
-from config.utils import add_form_error_to_session, get_loa_document_bundle, \
-    get_uploaded_loa_document
+from config.utils import (
+    add_form_error_to_session,
+    get_loa_document_bundle,
+    get_uploaded_loa_document,
+)
 from core.base import GroupRequiredMixin
 
 
@@ -52,7 +55,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         return context
 
     def add_organisation_to_registration_of_interest(
-            self, organisation_id: str, submission_id: str = None, contact_id: str = None
+        self, organisation_id: str, submission_id: str = None, contact_id: str = None
     ) -> dict:
         """
         Amends the organisation of a ROI submission object.
@@ -124,8 +127,9 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
                         if submission
                         else None,
                         "link_text": "Organisation details",
-                        "status": "Complete" if submission.get("contact") and submission[
-                            "contact"].get("organisation") else "Not Started",
+                        "status": "Complete"
+                        if submission.get("contact") and submission["contact"].get("organisation")
+                        else "Not Started",
                     }
                 ],
             },
@@ -137,7 +141,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
             # Each paired_document is a complete pair, so we multiply the count by 2 to get the
             # number of uploaded documents. Each orphaned_document is an incomplete pair.
             if documents_uploaded := (len(submission["paired_documents"]) * 2) + len(
-                    submission["orphaned_documents"]
+                submission["orphaned_documents"]
             ):
                 registration_documentation_status_text = f"Documents uploaded: {documents_uploaded}"
             else:
@@ -165,9 +169,9 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
         ]
 
         if (
-                submission
-                and submission.organisation
-                and submission.organisation.id != self.request.user.organisation["id"]
+            submission
+            and submission.organisation
+            and submission.organisation.id != self.request.user.organisation["id"]
         ):
             # THe user is representing someone else, we should show the letter of authority
             documentation_sub_steps.append(
@@ -202,7 +206,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
 
     def get(self, request, *args, **kwargs):
         if request.GET.get("confirm_access", False) or (
-                self.submission and self.submission["status"]["locking"]
+            self.submission and self.submission["status"]["locking"]
         ):
             # The submission exists, show the user the overview page
             return render(
@@ -235,7 +239,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
         case_registration_deadline = case_information[3]
 
         if datetime.datetime.strptime(
-                case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
+            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
         ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,
@@ -298,8 +302,9 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
             # If it's your own org, you act as both the contact and the organisation, it's not a
             # third party invite
             return self.add_organisation_to_registration_of_interest(
-                organisation_id=self.request.user.organisation["id"], submission_id=submission_id,
-                contact_id=self.request.user.contact["id"]
+                organisation_id=self.request.user.organisation["id"],
+                submission_id=submission_id,
+                contact_id=self.request.user.contact["id"],
             )
 
         elif form.cleaned_data.get("org") == "existing-org":
@@ -315,10 +320,10 @@ class InterestPrimaryContactStep2(RegistrationOfInterestBase, FormView):
 
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
-        new_contact = self.client.contacts({
-            "name": form.cleaned_data.get("name"),
-            "email": form.cleaned_data.get("email")
-        }, fields=['id'])
+        new_contact = self.client.contacts(
+            {"name": form.cleaned_data.get("name"), "email": form.cleaned_data.get("email")},
+            fields=["id"],
+        )
         contact_id = new_contact["id"]
         # organisation_id only exists if registering ROI for existing client
         organisation_id = self.kwargs.get("organisation_id", None)
@@ -466,7 +471,7 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         # Let's loop over the paired documents first, Then we have a look at the orphaned documents
         # (those without a corresponding public/private pair
         uploaded_documents = (
-                self.submission["paired_documents"] + self.submission["orphaned_documents"]
+            self.submission["paired_documents"] + self.submission["orphaned_documents"]
         )
 
         long_time_ago = timezone.now() - datetime.timedelta(days=1000)
