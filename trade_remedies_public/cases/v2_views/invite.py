@@ -1,9 +1,10 @@
-from apiclient.exceptions import ClientError
 from django.core.exceptions import PermissionDenied
+from apiclient.exceptions import ClientError
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
+from v2_api_client.exceptions import NotFoundError
 
 from cases.v2_forms.invite import (
     ChooseCaseForm,
@@ -106,10 +107,7 @@ class TeamMemberNameView(BaseInviteFormView):
                     },
                 )
 
-        except ClientError as e:
-            if e.status_code != 404:
-                # An unknown error has been raised by the API
-                raise e
+        except NotFoundError:
             # If the status is a 404, then we know the user does not exist, carry on as normal
             pass
 
@@ -357,7 +355,15 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
                     # If the invited contact doesn't belong to the user's organisation
                     if invited_organisation != self.request.user.organisation["id"]:
                         if invited_organisation not in organisations_seen:
-                            invitations_sent.append(sent_invitation)
+                            validated = self.client.organisations(
+                                invited_organisation, fields=["validated"]
+                            )
+                            if validated.validated:
+                                # We only want to include organisations which have been validated
+                                # by the TRA in the past
+                                invitations_sent.append(sent_invitation)
+                            # Still include them on the seen list, so we don't bother checking them
+                            # again
                             organisations_seen.append(invited_organisation)
 
         self.invitations_sent = invitations_sent
@@ -408,26 +414,34 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
     template_name = "v2/invite/invite_representative_new_details.html"
 
     def form_valid(self, form):
-        # Creating a new organisation
-        new_organisation = self.client.organisations(
-            {"name": form.cleaned_data["organisation_name"]}, fields=["id"]
-        )
+        # First let's check if the email address already exists on the TRS
+        try:
+            user = self.client.users.get_user_by_email(form.cleaned_data["contact_email"])
+            # This user already exists in the platform, let's associate the invitation with it
+            # and their organisation so that when they log in, TRS with process them as a rep
+            contact = user.contact
+        except NotFoundError:
+            # The user does not exist, let's create a new contact and org from scratch
 
-        # Creating a new contact and associating them with the organisation
-        new_contact = self.client.contacts(
-            {
-                "name": form.cleaned_data["contact_name"],
-                "email": form.cleaned_data["contact_email"],
-                "organisation": new_organisation["id"],
-            }
-        )
+            # Creating a new organisation
+            organisation = self.client.organisations(
+                {"name": form.cleaned_data["organisation_name"]}, fields=["id"]
+            )
+            # Creating a new contact and associating them with the organisation
+            contact = self.client.contacts(
+                {
+                    "name": form.cleaned_data["contact_name"],
+                    "email": form.cleaned_data["contact_email"],
+                    "organisation": organisation["id"],
+                }
+            )
 
         # Associating this contact with the invitation
         updated_invitation = self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": new_contact["id"]}, fields=["submission", "contact"]
+            {"contact": contact["id"]}, fields=["submission", "contact"]
         )
 
-        # Associating the submission with the new organisation
+        # Associating the submission with the inviter's organisation
         self.client.submissions(updated_invitation["submission"]["id"]).update(
             {
                 # The submission needs to be associating with the inviter's organisation, the

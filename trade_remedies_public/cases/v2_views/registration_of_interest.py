@@ -132,7 +132,9 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
             ):
                 registration_documentation_status_text = f"Documents uploaded: {documents_uploaded}"
             else:
-                registration_documentation_status_text = "Not Started"
+                registration_documentation_status_text = (
+                    "Not Started" if submission.organisation else "Cannot Start Yet"
+                )
 
             if submission["paired_documents"] and not submission["orphaned_documents"]:
                 registration_documentation_status = "Complete"
