@@ -1,0 +1,81 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Check and submit{% endblock page_title %}
+
+{% block row_content %}
+
+
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <span class="govuk-caption-xl">4.  Invite representative</span>
+        <h1 class="govuk-heading-xl">
+            Review your answers
+        </h1>
+
+        <h2 class="govuk-heading-m">Your invite</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Case details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {{ invitation.submission.case.reference }} - {{ invitation.submission.case.name }}
+                </dd>
+            </div>
+        </dl>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Representative details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {{ invitation.contact.name }}<br>
+                    {{ invitation.contact.organisation_name }}<br>
+                    {{ invitation.contact.email }}
+                    <br>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="{% url 'invite_representative_organisation_details' invitation_id=invitation_id %}"
+                       class="govuk-link--no-visited-state">
+                        Change
+                        <span class="govuk-visually-hidden"> who is registering interest</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Letter of Authority
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {% for document in invitation.submission.documents %}
+                        {{ document.name }}
+                    {% endfor %}
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a href="{% url 'invite_representative_loa' invitation_id=invitation_id %}"
+                       class="govuk-link--no-visited-state">
+                        Change
+                        <span class="govuk-visually-hidden"> Letter of Authority</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+        <h2 class="govuk-heading-m">Now send your invite</h2>
+        <p>Check this information carefully. After it’s sent, you can only correct errors by contacting the Trade
+            Remedies Authority. </p>
+
+        <div class="govuk-button-group">
+            <form method="post">
+                {% csrf_token %}
+                <button role="button" draggable="false"
+                        class="govuk-button" data-module="govuk-button">
+                    Confirm and submit invite
+                </button>
+                <a class="govuk-link govuk-link--no-visited-state"
+                   href="{% url 'invite_representative_task_list_exists' invitation_id=invitation_id %}">Back</a>
+            </form>
+
+        </div>
+    </div>
+{% endblock row_content %}

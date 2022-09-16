@@ -1,6 +1,7 @@
-from cases import views as case_views
-from cases.v2_views import registration_of_interest
 from django.urls import path
+
+from cases import views as case_views
+from cases.v2_views import invite, registration_of_interest, accept_invite
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
@@ -315,5 +316,111 @@ urlpatterns += [
         "interest/<uuid:submission_id>/delete/",
         registration_of_interest.DeleteRegistrationOfInterest.as_view(),
         name="roi_delete_roi",
+    ),
+]
+
+urlpatterns += [
+    path(
+        "invite/start",
+        invite.WhoAreYouInviting.as_view(),
+        name="invitation_start",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/start",
+        invite.WhoAreYouInviting.as_view(),
+        name="invitation_start_existing",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/enter_name_email/",
+        invite.TeamMemberNameView.as_view(),
+        name="invitation_name_email",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/select_permissions/",
+        invite.PermissionSelectView.as_view(),
+        name="invitation_select_permissions",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/choose_cases/",
+        invite.ChooseCasesView.as_view(),
+        name="invitation_choose_cases",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/review/",
+        invite.ReviewInvitation.as_view(),
+        name="invitation_review",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/sent/",
+        invite.InvitationSent.as_view(),
+        name="invitation_sent",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/delete/",
+        invite.DeleteInvitation.as_view(),
+        name="delete_invitation",
+    ),
+    path(
+        "invite/representative/start/",
+        invite.InviteRepresentativeTaskList.as_view(),
+        name="invite_representative_task_list",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/task_list/",
+        invite.InviteRepresentativeTaskList.as_view(),
+        name="invite_representative_task_list_exists",
+    ),
+    path(
+        "invite/representative/select_case/",
+        invite.InviteRepresentativeSelectCase.as_view(),
+        name="invite_representative_select_case",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/organisation_details/",
+        invite.InviteRepresentativeOrganisationDetails.as_view(),
+        name="invite_representative_organisation_details",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/details/",
+        invite.InviteNewRepresentativeDetails.as_view(),
+        name="invite_new_representative_details",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/<uuid:organisation_id>/details/",
+        invite.InviteExistingRepresentativeDetails.as_view(),
+        name="invite_existing_representative_details",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/loa/",
+        invite.InviteRepresentativeLoa.as_view(),
+        name="invite_representative_loa",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/check_and_submit/",
+        invite.InviteRepresentativeCheckAndSubmit.as_view(),
+        name="invite_representative_check_and_submit",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/sent/",
+        invite.InviteRepresentativeSent.as_view(),
+        name="invite_representative_sent",
+    ),
+]
+
+urlpatterns += [
+    path(
+        "accept_invite/<uuid:invitation_id>/start/",
+        accept_invite.AcceptOrganisationInvite.as_view(),
+        name="accept_invite_start",
+    ),
+    path(
+        "accept_invite/<uuid:invitation_id>/set_password/",
+        accept_invite.AcceptOrganisationSetPassword.as_view(),
+        name="accept_invite_set_password",
+    ),
+    path(
+        "accept_invite/<uuid:invitation_id>/two_factor_choice/",
+        accept_invite.AcceptOrganisationTwoFactorChoice.as_view(),
+        name="accept_invite_two_factor_choice",
     ),
 ]

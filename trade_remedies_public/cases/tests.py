@@ -1,13 +1,16 @@
 from unittest import TestCase
 
-from .forms import (
-    PrimaryContactForm,
+from cases.v2_forms.invite import (
+    WhoAreYouInvitingNameEmailForm,
+)
+from cases.v2_forms.registration_of_interest import (
+    ClientFurtherDetailsForm,
     ClientTypeForm,
     ExistingClientForm,
-    YourEmployerForm,
-    UkEmployerForm,
     NonUkEmployerForm,
-    ClientFurtherDetailsForm,
+    PrimaryContactForm,
+    UkEmployerForm,
+    YourEmployerForm,
 )
 
 
@@ -308,3 +311,17 @@ class TestClientFurtherDetailsForm(TestCase):
         self.mock_data = {}
         form = ClientFurtherDetailsForm(data=self.mock_data)
         self.assertTrue(form.is_valid())
+
+
+class TestInviteForms(TestCase):
+    def test_who_are_you_inviting_name_email_form_valid(self):
+        form = WhoAreYouInvitingNameEmailForm(
+            data={"team_member_name": "test", "team_member_email": "test@example.com"}  # /PS-IGNORE
+        )
+        self.assertTrue(form.is_valid())
+
+    def test_who_are_you_inviting_name_email_form_invalid(self):
+        form = WhoAreYouInvitingNameEmailForm(
+            data={"team_member_name": "test", "team_member_email": "testexample.com"}  # /PS-IGNORE
+        )
+        self.assertFalse(form.is_valid())

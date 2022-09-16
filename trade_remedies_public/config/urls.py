@@ -13,16 +13,17 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from cases.views import CasesView
+from cookies import views as cookie_views
+from core import views as core_views
 from django.urls import (
     include,
     path,
 )
-from core import views as core_views
-from cases.views import CasesView
-from cookies import views as cookie_views
 from login import views as login_views
 from password import views as password_views
 from registration import views as register_views
+from core.v2_views import manage_your_team
 
 # todo - config/urls.py should not contain anything, put these URLs in their relevant apps
 urlpatterns = [
@@ -296,4 +297,8 @@ urlpatterns = [
         name="email_verify_code",
     ),
     path("documents/", include("documents.urls")),
+]
+
+urlpatterns += [
+    path("manage_your_team", manage_your_team.ManageYourTeamView.as_view(), name="manage_your_team")
 ]

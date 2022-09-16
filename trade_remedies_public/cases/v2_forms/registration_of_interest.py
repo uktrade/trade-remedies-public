@@ -29,14 +29,11 @@ class ExistingClientForm(ValidationForm):
 
 class PrimaryContactForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_contact_name_entered"})
-    email = forms.CharField(
-        error_messages={"required": "no_contact_email_entered"},
-        validators=[
-            RegexValidator(
-                r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)",  # /PS-IGNORE
-                "contact_email_not_valid",
-            ),
-        ],
+    email = forms.EmailField(
+        error_messages={
+            "required": "no_contact_email_entered",
+            "invalid": "contact_email_not_valid",
+        }
     )
 
 
