@@ -478,8 +478,6 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
                         case_id=case_id, submission_id=submission_id
                     )
                     for submission_invite in submission_invites:
-                        if submission_invite["contact"]["has_user"]:
-                            continue
                         submission_invite["locked"] = (
                             submission.get("locked", True)
                             or submission.get("deficiency_sent_at") is not None
