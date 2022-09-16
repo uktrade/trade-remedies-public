@@ -141,7 +141,9 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
             ):
                 registration_documentation_status_text = f"Documents uploaded: {documents_uploaded}"
             else:
-                registration_documentation_status_text = "Not Started"
+                registration_documentation_status_text = (
+                    "Not Started" if submission.organisation else "Cannot Start Yet"
+                )
 
             if submission["paired_documents"] and not submission["orphaned_documents"]:
                 registration_documentation_status = "Complete"
@@ -248,12 +250,15 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
             )
 
         # Creating the registration of interest
-        new_submission = self.client.submissions({
-            "case": case_id,
-            "type": SUBMISSION_TYPE_REGISTER_INTEREST,
-            "documents": [],
-            "created_by": self.request.user.id,
-        }, fields=["id"])
+        new_submission = self.client.submissions(
+            {
+                "case": case_id,
+                "type": SUBMISSION_TYPE_REGISTER_INTEREST,
+                "documents": [],
+                "created_by": self.request.user.id,
+            },
+            fields=["id"],
+        )
 
         # REDIRECT to next stage
         return redirect(
@@ -552,11 +557,11 @@ class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
         # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
         organisation_case_role = self.client.organisation_case_roles.get_with_case_and_organisation(
             case_id=self.submission["case"]["id"],
-            organisation_id=self.submission["organisation"]["id"]
+            organisation_id=self.submission["organisation"]["id"],
         )
-        self.client.organisation_case_roles(organisation_case_role['id']).update({
-            "role_key": "awaiting_approval"
-        })
+        self.client.organisation_case_roles(organisation_case_role["id"]).update(
+            {"role_key": "awaiting_approval"}
+        )
 
         # Now we update the status of the submission to received
         self.client.submissions(self.kwargs["submission_id"]).update_submission_status("received")
