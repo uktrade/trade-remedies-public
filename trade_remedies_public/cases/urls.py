@@ -1,8 +1,7 @@
-from cases import views as case_views
-from cases.v2_views import registration_of_interest
-from cases.v2_views import invite
-
 from django.urls import path
+
+from cases import views as case_views
+from cases.v2_views import invite, registration_of_interest, accept_invite
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
@@ -342,6 +341,11 @@ urlpatterns += [
         name="invitation_select_permissions",
     ),
     path(
+        "invite/<uuid:invitation_id>/choose_cases/",
+        invite.ChooseCasesView.as_view(),
+        name="invitation_choose_cases",
+    ),
+    path(
         "invite/<uuid:invitation_id>/review/",
         invite.ReviewInvitation.as_view(),
         name="invitation_review",
@@ -400,5 +404,23 @@ urlpatterns += [
         "invite/representative/<uuid:invitation_id>/sent/",
         invite.InviteRepresentativeSent.as_view(),
         name="invite_representative_sent",
+    ),
+]
+
+urlpatterns += [
+    path(
+        "accept_invite/<uuid:invitation_id>/start/",
+        accept_invite.AcceptOrganisationInvite.as_view(),
+        name="accept_invite_start",
+    ),
+    path(
+        "accept_invite/<uuid:invitation_id>/set_password/",
+        accept_invite.AcceptOrganisationSetPassword.as_view(),
+        name="accept_invite_set_password",
+    ),
+    path(
+        "accept_invite/<uuid:invitation_id>/two_factor_choice/",
+        accept_invite.AcceptOrganisationTwoFactorChoice.as_view(),
+        name="accept_invite_two_factor_choice",
     ),
 ]

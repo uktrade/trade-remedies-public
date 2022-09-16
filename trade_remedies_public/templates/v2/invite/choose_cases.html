@@ -1,0 +1,69 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_item %}
+
+{% block page_title %}Choose case{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            {% csrf_token %}
+            {% with form_errors|get_item:"which_case" as error %}
+                <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+                    <fieldset class="govuk-fieldset" aria-describedby="invite-case-hint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <h1 class="govuk-fieldset__heading">
+                                Which case?
+                            </h1>
+                        </legend>
+                        <div id="invite-case-hint" class="govuk-hint">
+                            Select the cases they can take part in.
+                        </div>
+                        {% if error %}
+                            <p id="{{ name }}-error" class="govuk-error-message">
+                                {% for error in error %}
+                                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            {% for case in cases %}
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="{{ case.id }}" name="which_case"
+                                           type="checkbox"
+                                           value="{{ case.id }}"
+                                           {% if case.id in cases_to_link_ids %}checked{% endif %}>
+                                    <label class="govuk-label govuk-checkboxes__label" for="{{ case.id }}">
+                                        {{ case.reference }} - {{ case.name }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+                            <div class="govuk-checkboxes__divider">or</div>
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="choose_case_later" name="which_case"
+                                       type="checkbox"
+                                       value="choose_case_later" data-behaviour="exclusive">
+                                <label class="govuk-label govuk-checkboxes__label" for="choose_case_later">
+                                    None, I will assign a case later
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            {% endwith %}
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                      Why can't I see other active cases?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>You can only select cases that you are currently participating in.</p>
+                    <p> You can <a href="{% url 'roi' %}" class="govuk-link">register interest</a> in a case and if
+                        accepted you can
+                        invite others.</p>
+                </div>
+            </details>
+            {% include "v2/component_macros/form_button_group.html" %}
+        </form>
+    </div>
+{% endblock row_content %}

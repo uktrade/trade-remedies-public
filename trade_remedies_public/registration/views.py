@@ -1,6 +1,8 @@
 # Views to handle the registration functionality and legal pages
 import json
 
+from v2_api_client.mixins import APIClientMixin
+
 from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
 from core.decorators import catch_form_errors
 from core.models import TransientUser
@@ -455,6 +457,11 @@ class V2RegistrationView2FAChoice(V2BaseRegisterView, TradeRemediesAPIClientMixi
     form_class = TwoFactorChoiceForm
     next_url_resolver = "v2_register_your_employer"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_email"] = self.request.session["registration"]["email"]
+        return context
+
 
 class V2RegistrationViewYourEmployer(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_your_employer.html"
@@ -494,13 +501,18 @@ class V2RegistrationViewOrganisationFurtherDetails(V2BaseRegisterView, TradeReme
         return redirect(reverse("request_email_verify_code", kwargs={"user_pk": response["pk"]}))
 
 
-class RequestEmailVerifyCode(TemplateView, TradeRemediesAPIClientMixin):
+class RequestEmailVerifyCode(TemplateView, APIClientMixin):
     template_name = "v2/registration/email_verification.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user"] = self.client.users(self.kwargs["user_pk"], fields=["email"])
+        return context
 
     def get(self, request, *args, **kwargs):
         # Sometimes we just want to show the user the page to resend their code and not send it yet.
         if not request.GET.get("dont_send"):
-            response = self.trusted_client.send_email_verification_link(kwargs["user_pk"])
+            response = self.client.users(kwargs["user_pk"]).send_verification_email()
             request.session["email"] = response["email"] if response else None
         if request.GET.get("resent"):
             # If we're resending, we want to show the bit of text that lets the user know it's been

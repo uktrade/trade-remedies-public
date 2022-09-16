@@ -1,4 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
 from v2_api_client.mixins import APIClientMixin
 
@@ -19,17 +21,23 @@ class BasePublicView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
 
 
-class BasePublicFormView(BasePublicView, FormView):
-    """The same as BasePublicView, but adds the FormView generic mixin and a form_invalid
-    function which will assign the form errors to the request session so they can be properly
-    rendered in the front-end.
-    """
+class FormInvalidMixin(FormView):
+    """Adds a mixin to the FormView for assigning form errors to a request if invalid"""
 
     def form_invalid(self, form):
         form.assign_errors_to_request(self.request)
         return super().form_invalid(form)
 
 
+class BasePublicFormView(BasePublicView, FormInvalidMixin):
+    """The same as BasePublicView, but adds the FormView generic mixin and a form_invalid
+    function which will assign the form errors to the request session so they can be properly
+    rendered in the front-end.
+    """
+
+
+# Ideally this page is never cached, so the status of each step is always up-to-date
+@method_decorator(never_cache, name="dispatch")
 class TaskListView(BasePublicView, TemplateView):
     """ABC view used to provide children with the basic functionality to act as a task list.
 

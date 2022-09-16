@@ -71,7 +71,7 @@
                                value="email"
                                {% if form.cleaned_data.two_factor_choice == "email" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="email">
-                            By email: <strong>{{ request.session.registration.email }}</strong>
+                            By email: <strong>{{ user_email }}</strong>
                         </label>
                     </div>
                 </div>

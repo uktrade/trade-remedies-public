@@ -161,27 +161,16 @@
                                 {% endif %}
                             </td>
                             <td>
-                                {% if not invite.sent_at and 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                    {# The invitation has not been sent yet, we can still edit it #}
-                                    <form class="inline"
-                                          action="{% url 'invitation_start_existing' invitation_id=invite.id %}"
-                                          method="get">
-                                        <button class="link no-debounce" type="submit" style="font-size:19px;">Edit invitation
-                                        </button>
-                                    </form>
-                                {% else %}
-                                    <form class="inline" data-attach="ConfirmPost"
-                                          action="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/delete/"
-                                          method="post">
-                                        <button class="link no-debounce" type="submit" style="font-size:19px;">Cancel
-                                            invitation
-                                        </button>
-                                        {% csrf_token %}
-                                        <span class="hidden confirmation-message">Are you sure you want to delete this invitation?</span>
-                                        <span class="hidden confirmation-title">Confirm delete</span>
-                                    </form>
-                                {% endif %}
-
+                                <form class="inline" data-attach="ConfirmPost"
+                                      action="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/delete/"
+                                      method="post">
+                                    <button class="link no-debounce" type="submit" style="font-size:19px;padding-left:0px;">Cancel
+                                        invitation
+                                    </button>
+                                    {% csrf_token %}
+                                    <span class="hidden confirmation-message">Are you sure you want to delete this invitation?</span>
+                                    <span class="hidden confirmation-title">Confirm delete</span>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}

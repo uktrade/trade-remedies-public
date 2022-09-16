@@ -18,7 +18,11 @@
                 {% endfor %}
             </p>
         {% endif %}
-        <input class="govuk-input {% if width %}govuk-input--width-{{ width }}{% endif %}{% if input_class %}{{ input_class }}{% endif %} {% if error %}govuk-input--error{% endif %}"
+        <input class="govuk-input
+               {% if width %}govuk-input--width-{{ width }}{% endif %}{% if input_class %} {{ input_class }} {% endif %}
+                {% if error %}govuk-input--error{% endif %}"
+               {% if disabled %}disabled{% endif %}
+               {% if readonly %}readonly{% endif %}
                id="{{ id }}" name="{{ name }}" type="{{ type }}"
                {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
                autocomplete="off"
