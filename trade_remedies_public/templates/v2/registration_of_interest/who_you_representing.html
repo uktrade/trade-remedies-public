@@ -104,6 +104,14 @@
             $('#selected_company').text('')
         }
 
+        // Clear company data when whole search text is selected and
+        // removed (using 'delete' or 'backspace')
+        $(document).on("keyup", '[name="input-autocomplete"]', function () {
+            if ($(this).val().trim().length === 0) {
+                clearCompany()
+            }
+        })
+
         var proposed_names = {}
         accessibleAutocomplete({
             element: document.querySelector('#company_search_container'),
