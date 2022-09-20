@@ -299,18 +299,21 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
     form_class = SelectCaseForm
 
     def dispatch(self, request, *args, **kwargs):
-        organisation = self.client.organisations(
-            self.request.user.organisation["id"], fields=["cases"]
-        )
-        cases = sorted(organisation["cases"], key=lambda case: case["name"])
-        if not cases:
-            # This organisation is not associated with any cases
-            return render(
-                request,
-                template_name="v2/invite/no_cases_found.html",
+        if request.user.is_authenticated:
+            organisation = self.client.organisations(
+                self.request.user.organisation["id"],
+                fields=["cases"],
+                params={"no_representative_cases": "yes"}
             )
+            cases = sorted(organisation["cases"], key=lambda case: case["name"])
+            if not cases:
+                # This organisation is not associated with any cases
+                return render(
+                    request,
+                    template_name="v2/invite/no_cases_found.html",
+                )
 
-        self.cases = cases
+            self.cases = cases
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
