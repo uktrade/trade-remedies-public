@@ -26,7 +26,11 @@ from cases.v2_forms.registration_of_interest import (
 )
 from config.base_views import TaskListView
 from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER
-from config.utils import add_form_error_to_session, get_uploaded_loa_document
+from config.utils import (
+    add_form_error_to_session,
+    get_loa_document_bundle,
+    get_uploaded_loa_document,
+)
 from core.base import GroupRequiredMixin
 
 
@@ -74,8 +78,14 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
             submission = self.client.submissions(
                 submission_id
             ).add_organisation_to_registration_of_interest(
-                organisation_id=organisation_id, contact_id=contact_id
+                organisation_id=organisation_id,
             )
+
+            # Associate this contact with the organisation if there is no error
+            self.client.contacts(contact_id).update({"organisation": organisation_id})
+            # Add the contact as the invited contact to the submission
+            self.client.submissions(submission_id).update({"primary_contact": contact_id})
+
             return redirect(
                 reverse("roi_submission_exists", kwargs={"submission_id": submission["id"]})
             )
@@ -85,6 +95,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
                 return redirect(
                     reverse("roi_already_exists", kwargs={"submission_id": exc.message[0]["id"]})
                 )
+            raise exc
 
 
 @method_decorator(never_cache, name="get")
@@ -116,7 +127,9 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
                         if submission
                         else None,
                         "link_text": "Organisation details",
-                        "status": "Complete" if submission.get("organisation") else "Not Started",
+                        "status": "Complete"
+                        if submission.get("contact") and submission["contact"].get("organisation")
+                        else "Not Started",
                     }
                 ],
             },
@@ -157,8 +170,8 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
 
         if (
             submission
-            and submission["organisation"]
-            and submission["organisation"]["id"] != self.request.user.organisation["id"]
+            and submission.organisation
+            and submission.organisation.id != self.request.user.organisation["id"]
         ):
             # THe user is representing someone else, we should show the letter of authority
             documentation_sub_steps.append(
@@ -281,15 +294,21 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
         submission_id = self.kwargs["submission_id"]
         self.request.session["roi_org_chosen"] = form.cleaned_data.get("org", None)
         if form.cleaned_data.get("org") == "new-org":
+            # third-party invite
             return redirect(
                 reverse("interest_primary_contact", kwargs={"submission_id": submission_id})
             )
         elif form.cleaned_data.get("org") == "my-org":
+            # If it's your own org, you act as both the contact and the organisation, it's not a
+            # third party invite
             return self.add_organisation_to_registration_of_interest(
-                organisation_id=self.request.user.organisation["id"], submission_id=submission_id
+                organisation_id=self.request.user.organisation["id"],
+                submission_id=submission_id,
+                contact_id=self.request.user.contact["id"],
             )
 
         elif form.cleaned_data.get("org") == "existing-org":
+            # third-party invite
             return redirect(
                 reverse("interest_existing_client", kwargs={"submission_id": submission_id})
             )
@@ -301,16 +320,15 @@ class InterestPrimaryContactStep2(RegistrationOfInterestBase, FormView):
 
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
-        response = TradeRemediesAPIClientMixin.client(self, self.request.user).create_contact(
-            {
-                "contact_email": form.cleaned_data.get("email"),
-                "contact_name": form.cleaned_data.get("name"),
-            }
+        new_contact = self.client.contacts(
+            {"name": form.cleaned_data.get("name"), "email": form.cleaned_data.get("email")},
+            fields=["id"],
         )
-        contact_id = response["id"]
+        contact_id = new_contact["id"]
         # organisation_id only exists if registering ROI for existing client
         organisation_id = self.kwargs.get("organisation_id", None)
         if organisation_id:
+            # Associate that organisation with the ROI
             return self.add_organisation_to_registration_of_interest(
                 organisation_id=organisation_id, submission_id=submission_id, contact_id=contact_id
             )
@@ -396,7 +414,6 @@ class InterestUkSubmitStep2(RegistrationOfInterestBase, FormView):
         get_dictionary = self.request.GET.dict()
         # Creating the new organisation
         organisation = self.client.organisations({**get_dictionary, **form.cleaned_data})
-
         # Associating the ROI with the organisation and redirecting to tasklist
         return self.add_organisation_to_registration_of_interest(
             organisation_id=organisation["id"], submission_id=submission_id, contact_id=contact_id
@@ -503,6 +520,7 @@ class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["loa_document_bundle"] = get_loa_document_bundle()
         if self.submission:
             # Getting the uploaded LOA document if it exists
             context["loa_document"] = get_uploaded_loa_document(self.submission)
@@ -551,9 +569,7 @@ class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
         )
 
         # Now we update the status of the submission to received
-        self.client.update_submission_status(
-            submission_id=self.kwargs["submission_id"], new_status="received"
-        )
+        self.client.submissions(self.kwargs["submission_id"]).update_submission_status("received")
         return redirect(
             reverse("roi_complete", kwargs={"submission_id": self.kwargs["submission_id"]})
         )
