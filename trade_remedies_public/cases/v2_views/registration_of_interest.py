@@ -261,7 +261,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
                 "documents": [],
                 "created_by": self.request.user.id,
             },
-            #fields=["id"],
+            fields=["id"],
         )
 
         # REDIRECT to next stage
