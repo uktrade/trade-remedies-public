@@ -42,7 +42,7 @@ def get_loa_document_bundle() -> Union[dict, None]:
 
     Returns the LOA document bundle in a dict if it exists, else None"""
     client = TRSAPIClient(token=settings.HEALTH_CHECK_TOKEN)
-    trs_document_bundles = client.document_bundles.all()
+    trs_document_bundles = client.document_bundles()
 
     # We've got all the TRS document bundles, let's find the LOA
     loa_document_bundle = next(
