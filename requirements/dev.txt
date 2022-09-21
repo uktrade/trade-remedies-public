@@ -208,7 +208,7 @@ platformdirs==2.3.0
     #   virtualenv
 pluggy==1.0.0
     # via pytest
-pre-commit==2.18.1
+pre-commit @ git+https://github.com/uktrade/modification-pre-commit
     # via -r requirements.in/dev.in
 prompt-toolkit==3.0.20
     # via ipython
@@ -235,7 +235,7 @@ pyparsing==2.4.7
     # via
     #   matplotlib
     #   packaging
-pyproject-flake8==0.0.1a3
+pyproject-flake8==5.0.4.post1
     # via -r requirements.in/dev.in
 pytest==6.2.5
     # via
