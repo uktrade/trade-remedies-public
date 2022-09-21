@@ -12,7 +12,7 @@
 {% block form_content %}
     <p class="govuk-body">Tell us about your direct employer.</p>
     <p class="govuk-body">If you are a lawyer or consultant, you will be able to tell us about your client later when you register interest in a specific case.</p>
-    {% include "v2/component_macros/two_radio_buttons.html" with value_one="yes" value_two="yes" label_size='s' label_one="Yes" label_two="No" id_one="uk_employer" id_two="non_uk_employer" name="uk_employer" label="Is your organisation a UK registered company?" %}
+    {% include "v2/component_macros/two_radio_buttons.html" with value_one="yes" value_two="no" label_size='s' label_one="Yes" label_two="No" id_one="uk_employer" id_two="non_uk_employer" name="uk_employer" label="Is your organisation a UK registered company?" %}
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
     <span class="govuk-details__summary-text">
