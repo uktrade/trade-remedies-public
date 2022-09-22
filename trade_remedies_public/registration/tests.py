@@ -215,10 +215,10 @@ class TestNonUkEmployerForm(TestCase):
 class TestOrganisationFurtherDetailsForm(TestCase):
     def setUp(self) -> None:
         self.mock_data = {
-            "company_website": "www.example.com",
-            "company_vat_number": "UK00000000",
-            "company_eori_number": "UK00000000",
-            "company_duns_number": "000000000",
+            "organisation_website": "www.example.com",
+            "vat_number": "UK00000000",
+            "eori_number": "UK00000000",
+            "duns_number": "000000000",
         }
 
     def test_valid_form(self):

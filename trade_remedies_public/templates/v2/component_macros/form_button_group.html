@@ -1,6 +1,10 @@
 <div class="govuk-button-group">
     <button class="govuk-button" data-module="govuk-button">
-        {{ forward_button_text }}
+        {% if forward_button_text %}
+            {{ forward_button_text }}
+        {% else %}
+            Continue
+        {% endif %}
     </button>
     <a class="govuk-link" href="javascript: window.history.go(-1)">Back</a>
 </div>

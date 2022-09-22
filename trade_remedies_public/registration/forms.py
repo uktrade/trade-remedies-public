@@ -7,11 +7,8 @@ from django_countries.fields import CountryField
 
 class RegistrationStartForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_name_entered"})
-    email = forms.CharField(
-        error_messages={"required": "no_email_entered"},
-        validators=[
-            RegexValidator(r"\w+@\w+", "email_not_valid"),
-        ],
+    email = forms.EmailField(
+        error_messages={"required": "no_email_entered", "invalid": "email_not_valid"}
     )
     terms_and_conditions_accept = forms.BooleanField(
         error_messages={"required": "terms_and_conditions_not_accepted"}
@@ -85,9 +82,9 @@ class UkEmployerForm(ValidationForm):
                 # recognisable field, so we don't have to duplicate the nested dictionary for
                 # a NON-UK company, as the company_data variable is fed
                 # to the same create_or_update_organisation() method on the API
-                self.cleaned_data["post_code"] = self.cleaned_data["company_data"]["address"][
+                self.cleaned_data["post_code"] = self.cleaned_data["company_data"]["address"].get(
                     "postal_code"
-                ]
+                )
                 # In fact, this goes for all of the fields, we want to extract them
                 # so they look the same as if we came from the non-UK company page
                 self.cleaned_data["address_snippet"] = self.cleaned_data["company_data"][

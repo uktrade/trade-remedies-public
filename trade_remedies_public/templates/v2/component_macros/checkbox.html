@@ -3,11 +3,13 @@
 {% with form_errors|get_item:id as error %}
     <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
         <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                <h1 class="govuk-fieldset__heading">
-                    Terms of Use and Privacy Notice
-                </h1>
-            </legend>
+            {% if heading %}
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    <h1 class="govuk-fieldset__heading">
+                        {{ heading }}
+                    </h1>
+                </legend>
+            {% endif %}
             {% if error %}
                 <p id="{{ name }}-error" class="govuk-error-message">
                     {% for error in error %}

@@ -28,5 +28,5 @@
         {% include "v2/component_macros/country_dropdown.html" with id="country" name="country" %}
     </fieldset>
     {% include 'v2/component_macros/text_input.html' with label="Organisation registration number" id="company_number" name="company_number" type="text" width="10" hint="Some organisations have an official registration number from the country they are based in." strong=True %}
-    {% include "v2/component_macros/form_button_group.html" with forward_button_text="Continue" %}
+    {% include "v2/component_macros/form_button_group.html" %}
 {% endblock form_content %}

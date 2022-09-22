@@ -1,0 +1,20 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block page_title %}No cases found{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">No cases found</h1>
+
+        <p>You need to register interest in a case before inviting your representative to join. </p>
+        <p>Alternatively, you can ask your representative to register interest on your behalf. Your representative
+            will need to create an account first.</p>
+
+        <div class="govuk-button-group">
+            <a class="govuk-button" href="{% url 'roi' %}" data-module="govuk-button">
+                Register interest
+            </a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'dashboard' %}">Back to dashboard</a>
+        </div>
+    </div>
+{% endblock row_content %}

@@ -1,0 +1,30 @@
+<ol class="app-task-list">
+    {% for step in steps %}
+        <li>
+            <h2 class="app-task-list__section">
+                <span class="app-task-list__section-number">{{ forloop.counter }}. </span>{{ step.heading }}
+            </h2>
+            <ul class="app-task-list__items">
+                {% for sub_step in step.sub_steps %}
+                    <li class="app-task-list__item">
+                        <span class="app-task-list__task-name">
+                            {% if sub_step.ready_to_do %}
+                                <a href="{{ sub_step.link }}" class="govuk-link--no-visited-state"
+                                   aria-describedby="{{ forloop.counter }}_status">{{ sub_step.link_text }}</a>
+                            {% else %}
+                                {{ sub_step.link_text }}
+                            {% endif %}
+                        </span>
+                        <strong class="govuk-tag {% if sub_step.status == 'Complete' %}govuk-tag{% elif sub_step.status == 'Incomplete' %}govuk-tag--pink{% else %}govuk-tag--grey{% endif %} app-task-list__tag"
+                                id="{{ forloop.counter }}_status">
+                            {% if sub_step.status_text %}
+                                {{ sub_step.status_text }}
+                            {% else %}
+                                {{ sub_step.status }}
+                            {% endif %}</strong>
+                    </li>
+                {% endfor %}
+            </ul>
+
+    {% endfor %}
+</ol>

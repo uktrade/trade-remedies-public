@@ -4,6 +4,8 @@
 #
 #    pip-compile --output-file=requirements/prod.txt requirements.in/prod.in
 #
+api-client==1.3.1
+    # via v2-api-client
 asgiref==3.5.0
     # via django
 boto3==1.17.89
@@ -20,7 +22,7 @@ certifi==2021.5.30
     #   sentry-sdk
 chardet==4.0.0
     # via requests
-django==3.2.13
+django==3.2.15
     # via
     #   -r requirements.in/base.in
     #   django-appconf
@@ -35,6 +37,7 @@ django==3.2.13
     #   djangorestframework
     #   feed-gov-back
     #   trade-remedies-client
+    #   v2-api-client
 django-appconf==1.0.4
     # via django-compressor
 django-audit-log-middleware==0.0.4
@@ -42,7 +45,9 @@ django-audit-log-middleware==0.0.4
 django-basicauth==0.5.2
     # via -r requirements.in/base.in
 django-cache-memoize==0.1.10
-    # via trade-remedies-client
+    # via
+    #   trade-remedies-client
+    #   v2-api-client
 django-chunk-upload-handlers==0.0.11
     # via -r requirements.in/base.in
 django-compressor==2.4.1
@@ -75,11 +80,13 @@ django-timezone-field==4.2.3
     # via -r requirements.in/base.in
 djangorestframework==3.12.4
     # via feed-gov-back
+dotwiz==0.3.1
+    # via v2-api-client
 dpath==1.4.2
     # via -r requirements.in/base.in
 feed-gov-back==0.4
     # via -r requirements.in/base.in
-gevent==21.1.2
+gevent==21.12.0
     # via -r requirements.in/prod.in
 greenlet==1.1.1
     # via gevent
@@ -103,6 +110,8 @@ psycopg2-binary==2.9.1
     # via feed-gov-back
 py==1.10.0
     # via -r requirements.in/base.in
+pyheck==0.1.5
+    # via dotwiz
 python-dateutil==2.8.2
     # via botocore
 pytz==2021.1
@@ -119,7 +128,9 @@ redis==3.2.0
 requests==2.25.1
     # via
     #   -r requirements.in/base.in
+    #   api-client
     #   trade-remedies-client
+    #   v2-api-client
 rjsmin==1.1.0
     # via django-compressor
 s3transfer==0.4.2
@@ -134,6 +145,8 @@ six==1.16.0
     #   python-dateutil
 sqlparse==0.4.2
     # via django
+tenacity==8.0.1
+    # via api-client
 trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
     # via -r requirements.in/base.in
 urllib3==1.26.5
@@ -142,6 +155,8 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
+    # via -r requirements.in/base.in
 werkzeug==0.15.5
     # via -r requirements.in/base.in
 whitenoise==5.3.0

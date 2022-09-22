@@ -45,17 +45,6 @@ jobs:
           name: Run Flake8
           command: |
             pflake8 trade_remedies_public --config pyproject.toml
-      - restore_cache:
-          key: pii-secret
-      - run:
-          name: Run pre-commit hooks
-          command: |
-            pre-commit autoupdate
-            pre-commit run --all-files
-      - save_cache:
-          key: pii-secret
-          paths:
-            - ".pii-secret-hook"
   test_and_fitness_functions:
     docker:
       - image: cimg/python:3.9.5
@@ -80,20 +69,6 @@ jobs:
       - run:
           name: Send coverage report to codecov.io
           command: codecov
-      - run:
-          name: Collect and publish fitness functions
-          command: |
-            fitness-functions run . trade_remedies_public
-            fitness-functions publish . trade_remedies_public
-      - run:
-          name: Push the updated READ.ME back to GitHub
-          command: |
-            git config user.email "fitness-functions-machine-user@digital.trade.gov.uk"  # /PS-IGNORE
-            git config user.name "FITNESS-FUNCTIONS MACHINE USER"  # /PS-IGNORE
-            git add fitness/fitness_metrics.db
-            git add fitness/fitness_metrics_graph.png
-            git commit -m "[ci skip] AUTOMATED - update fitness functions"
-            git push << pipeline.project.git_url >> << pipeline.git.branch >>
 
 workflows:
   version: 2

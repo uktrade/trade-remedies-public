@@ -1,3 +1,94 @@
+invitation_id>/start/
+accept_invite_start
+GOVUKFrontend.initAll
+value_one="yes
+readonly{%
+TRA
+DB
+DENIED
+document_id"
+invitation_id>/sent/
+invitation_id>/loa/
+manage_your_team
+f"submissions/{updated_invitation['submission']['id
+invite_new_representative_no_contact_email
+the V2 API Client
+FormView
+company{%
+company?{%
+Delete Registration of Interest
+registration_of_interest_delete.html
+new_document_field.find(".file_error_message").html
+Email
+ClamAV
+PS-IGNORE
+f"{organisation['id']}/submission/{submission['id']}/
+class="document_field
+the Trade Remedies Service.</p
+UUID
+roi_1
+Upload a Letter of Authority
+v2/registration_of_interest/registration_of_interest_review.html
+LOA
+a Letter of Authority
+v2/registration_of_interest/registration_of_interest_4.html
+v2/registration_of_interest/registration_of_interest_complete.html
+v2/registration_of_interest/registration_of_interest_already_exists.html
+Doc, Excel
+the Trade Remedies
+/"/
+A Test Organisation
+Another Test Org"
+no_representative_org
+Register interest</span
+forward_button_text="Confirm
+xhr.upload.addEventListener('loadstart
+this).closest('.upload_container
+DOM
+max
+✓</span
+name="file-
+class="inputfile
+class="upload_percentage"></div
+aria-describedby=
+grey{%
+submission_id>/contact/
+Email
+ClamAV
+PS-IGNORE
+f"{organisation['id']}/submission/{submission['id']}/
+class="document_field
+the Trade Remedies Service.</p
+UUID
+roi_1
+Upload a Letter of Authority
+v2/registration_of_interest/registration_of_interest_review.html
+LOA
+a Letter of Authority
+v2/registration_of_interest/registration_of_interest_4.html
+v2/registration_of_interest/registration_of_interest_complete.html
+v2/registration_of_interest/registration_of_interest_already_exists.html
+Doc, Excel
+the Trade Remedies
+/"/
+A Test Organisation
+Another Test Org"
+no_representative_org
+Register interest</span
+forward_button_text="Confirm
+xhr.upload.addEventListener('loadstart
+this).closest('.upload_container
+DOM
+max
+✓</span
+name="file-
+class="inputfile
+class="upload_percentage"></div
+aria-describedby=
+grey{%
+submission_id>/contact/
+r"(^+@+\.+$
+non_uk_registered
 Companies House
 UK Registered
 Email
