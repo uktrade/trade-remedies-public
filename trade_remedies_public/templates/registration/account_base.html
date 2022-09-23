@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load link_lookup %}
 
-{% block main_content %}
+{% block row_content %}
   {% include "partials/widgets/error_summary.html" with errors=errors message='Please correct the following errors'  %}
   <div class="grid-row">
     {% block login_title_banner %}

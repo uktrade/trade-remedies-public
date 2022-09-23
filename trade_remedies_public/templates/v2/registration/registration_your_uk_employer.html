@@ -69,9 +69,25 @@
     <input type="hidden" name="company_data">
 {% endblock form_content %}
 
+
+<!-- Function accessibleAutocomplete below is from https://alphagov.github.io/accessible-autocomplete/ -->
+
 {% block scripts %}
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
     <script type="text/javascript">
+
+        function clearCompany() {
+            $('[name=company_data]').val("")
+            $('#selected_company_wrapper').hide();
+            $('#selected_company').text("")
+        }
+
+        $(document).on("keyup", '[name="input-autocomplete"]', function () {
+            if ($(this).val().trim().length === 0) {
+                clearCompany()
+            }
+        })
+
         var proposed_names = {}
         accessibleAutocomplete({
             element: document.querySelector('#company_search_container'),
@@ -81,23 +97,33 @@
             minLength: 3,
             confirmOnBlur: false,
             source: function (query, populateResults) {
-                $.ajax
-                ({
-                    type: "GET",
-                    url: `{% url 'companieshouse' %}?term=${query}`,
-                    success: function (data) {
-                        $('#companies-house-error').hide()
-                        if (data) {
-                            let names = data.map(result => `${result.title} (${result.company_number})`)
-                            proposed_names = Object.fromEntries(data.map(result => [`${result.title} (${result.company_number})`, result]));
-                            populateResults(names)
-                        }
+                if (query.trim().length < 3) {
+                    populateResults([])
+                    clearCompany()
+                } else {
+                    $.ajax
+                    ({
+                        type: "GET",
+                        url: `{% url 'companieshouse' %}?term=${query}`,
+                        success: function (data) {
+                            $('#companies-house-error').hide()
+                            if (data) {
+                                let names = data.map(result => `${result.title} (${result.company_number})`)
+                                proposed_names = Object.fromEntries(data.map(result => [`${result.title} (${result.company_number})`, result]));
+                                populateResults(names)
+                                if (names.length == 0) {
+                                    clearCompany()
+                                }
+                            }
+                        },
+                        error: function () {
 
-                    }
-                })
-                .fail(function() {
-                    $('#companies-house-error').show()
-                })
+                        }
+                    })
+                    .fail(function() {
+                        $('#companies-house-error').show()
+                    })
+                }
             },
             onConfirm: function (confirmed_name) {
                 if (typeof (confirmed_name) != "undefined") {

@@ -1,0 +1,33 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_url %}
+{% load set %}
+
+{% block back_button %}{% endblock back_button %}
+
+{% block breadcrumbs %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                Register interest in a case
+            </li>
+        </ol>
+    </div>
+{% endblock breadcrumbs %}
+
+{% block page_title %}Register interest in a case{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl"> Register interest in a case </h1>
+        <p class="govuk-body">Complete all the steps to register your interest in an active trade remedies
+            investigation. </p>
+        <p class="govuk-body govuk-!-margin-bottom-7">If you leave before you finish, you can return later from your
+            dashboard.</p>
+        {% include "v2/partials/tasklist/task_list_steps.html" with steps=steps %}
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'dashboard' %}">Back to Dashboard</a>
+    </div>
+    {% include "v2/partials/read_the_guidance_documents.html" with case_reference=submission.case.reference %}
+{% endblock row_content %}

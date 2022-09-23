@@ -1,0 +1,59 @@
+{% extends 'v2/govuk/base.html' %}
+{% load get_item %}
+{% load set %}
+{% block page_title %}Who is registering interest{% endblock page_title %}
+
+{% block row_content %}
+    {% with form_errors|get_item:"organisation" as error %}
+        <div class="govuk-grid-column-two-thirds">
+            <span class="govuk-caption-xl">2. About your representative</span>
+            <form method="post">
+                {% csrf_token %}
+                <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <h1 class="govuk-fieldset__heading">
+                                Who does your representative work for?
+                            </h1>
+                        </legend>
+                        {% if error %}
+                            <p id="{{ name }}-error" class="govuk-error-message">
+                                {% for error in error %}
+                                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            {% for invitation in invitations_sent %}
+                                {% if invitation.contact.organisation_name %}
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" id="{{ invitation.contact.organisation }}"
+                                               name="organisation"
+                                               type="radio" value="{{ invitation.contact.organisation }}"
+                                               {% if invitation.contact.organisation == original_invitation.contact.organisation %}
+                                               checked
+                                               {% endif %}
+                                        >
+                                        <label class="govuk-label govuk-radios__label"
+                                               for="{ invitation.organisation_id }}">
+                                            {{ invitation.contact.organisation_name }}
+                                        </label>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                            <div class="govuk-radios__divider">or</div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="new" name="organisation"
+                                       type="radio" value="new">
+                                <label class="govuk-label govuk-radios__label" for="new">
+                                    An organisation that has not represented us before
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+                {% include "v2/component_macros/form_button_group.html" %}
+            </form>
+        </div>
+    {% endwith %}
+{% endblock row_content %}

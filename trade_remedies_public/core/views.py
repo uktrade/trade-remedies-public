@@ -1,41 +1,41 @@
+import json
 import logging
 import os
-import pytz
-import json
 
-from django.urls import reverse
-from requests.exceptions import HTTPError
-from django.views.generic import View, TemplateView
-from django.shortcuts import render, redirect
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import AnonymousUser
-from django.views.decorators.cache import never_cache, cache_page
-from django.views.decorators.csrf import csrf_protect
-from django.utils.decorators import method_decorator
-from django.conf import settings
-from django_countries import countries
-from django.http import HttpResponse
+import pytz
+from cases.constants import CASE_TYPE_REPAYMENT
+from cases.utils import decorate_due_status, decorate_rois
 from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
     SECURITY_GROUP_ORGANISATION_USER,
     SECURITY_GROUP_THIRD_PARTY_USER,
 )
-from core.base import GroupRequiredMixin, BasePublicView
-from core.utils import (
-    to_word,
-    deep_index_items_by,
-    proxy_stream_file_download,
-    get,
-    validate,
-    split_public_documents,
-)
+from core.base import BasePublicView, GroupRequiredMixin
 from core.constants import ALERT_MAP
+from core.utils import (
+    deep_index_items_by,
+    get,
+    proxy_stream_file_download,
+    split_public_documents,
+    to_word,
+    validate,
+)
 from core.validators import user_create_validators
-from cases.utils import decorate_due_status, decorate_rois
-from cases.constants import CASE_TYPE_REPAYMENT
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from trade_remedies_client.exceptions import APIException
+from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page, never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.generic import TemplateView, View
+from django_countries import countries
 from registration.views import BaseRegisterView
+from requests.exceptions import HTTPError
+from trade_remedies_client.exceptions import APIException
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -461,7 +461,11 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
             users = client.get_team_users()
             _user_emails = [user["email"] for user in users]
             _invites = client.get_user_invitations()
-            pending_invites = [invite for invite in _invites if invite["email"] not in _user_emails]
+            pending_invites = [
+                invite
+                for invite in _invites
+                if invite["email"] not in _user_emails and invite["meta"]
+            ]
 
             # Get any 3rd party invites
             organisation = request.user.organisation
@@ -474,8 +478,6 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
                         case_id=case_id, submission_id=submission_id
                     )
                     for submission_invite in submission_invites:
-                        if submission_invite["contact"]["has_user"]:
-                            continue
                         submission_invite["locked"] = (
                             submission.get("locked", True)
                             or submission.get("deficiency_sent_at") is not None

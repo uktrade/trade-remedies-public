@@ -22,37 +22,7 @@ Sign in to Trade Remedies
     </p>
     <input type="hidden" name="next" value="{{ next|default:'' }}">
     {% include 'v2/component_macros/text_input.html' with label="Email address" id="email" name="email" type="email" width="20" %}
-    <div class="input-with-button">
-        {% with form_errors.password as error %}
-            <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
-                <label class="govuk-label" for="password">
-                    Password
-                </label>
-                {% if error %}
-                    <p id="password-error" class="govuk-error-message">
-                        {% for error in error %}
-                            <span class="govuk-visually-hidden">Error:</span> {{ error }}
-                        {% endfor %}
-                    </p>
-                {% endif %}
-                <div class="flex-input-button">
-                    <div class="hold-left">
-                        <input class="govuk-input govuk-input--width-15 {% if error %}govuk-input--error{% endif %}" id="password" name="password" type="password"
-                               autocomplete="off">
-                    </div>
-                    <div class="hold-right" id="show_password_button_container">
-                        <button id="show_password" type="button" role="switch" aria-checked="false"
-                                class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                            <span class="show-text">Show</span>
-                        </button>
-                    </div>
-                </div>
-
-
-    </div>
-    {% endwith %}
-
-    </div>
+    {% include "v2/component_macros/password_field_with_button.html" with autocomplete="password" label="Password" %}
     <p class="govuk-body">
         <a class="govuk-link govuk-link--no-visited-state" href="{% url 'forgot_password' %}">Forgot your password?</a>
     </p>

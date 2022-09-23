@@ -1,0 +1,25 @@
+{% extends 'v2/govuk/base.html' %}
+
+{% block page_title %}Existing user{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post" action="{% url 'delete_invitation' invitation_id=invitation.id %}">
+            {% csrf_token %}
+            <h1 class="govuk-heading-xl">
+                Existing user
+            </h1>
+            <p>This email address is already registered to your organisation:</p>
+
+            <p>{{ name }}: {{ email }}</p>
+            <div class="govuk-button-group">
+                <button role="button" draggable="false" class="govuk-button govuk-button--warning"
+                   data-module="govuk-button">
+                    Cancel invite
+                </button>
+                <a class="govuk-link govuk-link--no-visited-state" href="javascript: window.history.go(-1)">Back</a>
+            </div>
+        </form>
+    </div>
+
+{% endblock row_content %}

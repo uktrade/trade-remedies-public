@@ -6,10 +6,10 @@
 {% block back_button %}{% endblock back_button %}
 
 
-{% block main_content %}
+{% block row_content %}
 
     <div class="govuk-grid-column-two-thirds">
-        {% if request.session.account_created %}
+        {% if request.session.account_created or request.GET.account_created %}
             <div class="govuk-panel govuk-panel--confirmation">
                 <h1 class="govuk-panel__title">
                     Account created
@@ -20,10 +20,10 @@
                 Verify your email address
             </h1>
         {% endif %}
-        {% if request.session.account_created %}
+        {% if request.session.account_created or request.GET.account_created %}
             {% if request|pop_session:"email_verification_link_resent" %}
                 <div class="govuk-inset-text">
-                    We have sent a new account activation email link to {{ request.session.registration.email }}.
+                    We have sent a new account activation email link to {{ email }}.
                 </div>
             {% endif %}
             <p class="govuk-body">
@@ -31,7 +31,7 @@
                 address.
             </p>
             <p class="govuk-body">
-                We have sent an email to <strong>{{ request.session.registration.email }}</strong>.
+                We have sent an email to <strong>{{ email }}</strong>.
             </p>
             <p class="govuk-body">
                 Open the email and click on the link to verify your email address.
@@ -39,7 +39,7 @@
         {% else %}
             {% if request|pop_session:"email_verification_link_resent" %}
                 <div class="govuk-inset-text">
-                    We have sent a new account activation email link to {{ request.session.email }}.
+                    We have sent a new account activation email link to {{ email }}.
                 </div>
             {% endif %}
             <p class="govuk-body">
@@ -86,4 +86,4 @@
     </div>
 
 
-{% endblock main_content %}
+{% endblock row_content %}

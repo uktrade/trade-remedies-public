@@ -1,4 +1,4 @@
-from config.forms import ValidationForm, BaseYourEmployerForm
+from config.forms import BaseYourEmployerForm, ValidationForm
 from django import forms
 from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
@@ -11,13 +11,29 @@ class ClientTypeForm(ValidationForm):
     )
 
 
+class ExistingClientForm(ValidationForm):
+    # declare empty choices variable
+    choices = []
+
+    def __init__(self, *args, **kwargs):
+        existing_clients = kwargs.pop("existing_clients", None)
+        super(ExistingClientForm, self).__init__(*args, **kwargs)
+        # assign value to the choices variable
+        self.fields["org"].choices = existing_clients
+
+    org = forms.ChoiceField(
+        error_messages={"required": "no_representative_org"},
+        choices=[],  # use the choices variable
+    )
+
+
 class PrimaryContactForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_contact_name_entered"})
-    email = forms.CharField(
-        error_messages={"required": "no_contact_email_entered"},
-        validators=[
-            RegexValidator(r"\w+@\w+", "contact_email_not_valid"),
-        ],
+    email = forms.EmailField(
+        error_messages={
+            "required": "no_contact_email_entered",
+            "invalid": "contact_email_not_valid",
+        }
     )
 
 
@@ -65,16 +81,27 @@ class NonUkEmployerForm(ValidationForm):
 
 
 class ClientFurtherDetailsForm(ValidationForm):
-    company_website = forms.URLField(
+    organisation_website = forms.URLField(
         required=False, error_messages={"invalid": "incorrect_client_url"}
     )
-    company_vat_number = forms.CharField(required=False)
-    company_eori_number = forms.CharField(
+    vat_number = forms.CharField(required=False)
+    eori_number = forms.CharField(
         required=False,
         max_length=17,
         error_messages={"max_length": "incorrect_client_eori_format"},
         validators=[RegexValidator(r"[a-zA-Z]{2}[0-9]{1,15}", "incorrect_client_eori_format")],
     )
-    company_duns_number = forms.CharField(
+    duns_number = forms.CharField(
         required=False, validators=[RegexValidator(r"^[0-9]{9}$", "incorrect_client_duns_format")]
     )
+
+
+class RegistrationOfInterest4Form(ValidationForm):
+    authorised = forms.BooleanField(
+        required=True, error_messages={"required": "not_authorised_roi"}
+    )
+
+
+class RegistrationOfInterest3Form(ValidationForm):
+    non_confidential_file = forms.FileField()
+    confidential_file = forms.FileField()

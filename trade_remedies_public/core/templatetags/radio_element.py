@@ -46,7 +46,8 @@ def radio_element(
         option_label = option.get("label")
         checked = 'checked="checked"' if option_value == value else ""
         output.append(
-            f'<input class="{ input_classes }" type="radio" id="{ id }-{ option_value }" name="{ name }"\
+            f'<input class="{ input_classes }" '
+            f'type="radio" id="{ id }-{ option_value }" name="{ name }"\
             value="{ option_value }"\
             { checked }\
             { read_only }>'

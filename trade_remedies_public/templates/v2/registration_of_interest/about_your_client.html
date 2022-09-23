@@ -1,54 +1,42 @@
 {% extends "v2/govuk/base.html" %}
 
-{% block main_content %}
+{% block page_title %}Further details about the company{% endblock page_title %}
 
-<div class="govuk-grid-column-full">
-    {% include "v2/component_macros/error_summaries.html"%}
-    <span class="govuk-caption-xl">2. About you</span>
-</div>
-<div class="govuk-grid-column-two-thirds">
+{% block row_content %}
 
-    <form novalidate="novalidate" method="post" id="reginterest-your-org-dets-form">
-        {% csrf_token %}
-        <fieldset class="govuk-fieldset">
+    <div class="govuk-grid-column-full">
+        <span class="govuk-caption-xl">2. About you</span>
+    </div>
+    <div class="govuk-grid-column-two-thirds">
 
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+        <form novalidate="novalidate" method="post" id="reginterest-your-org-dets-form">
+            {% csrf_token %}
+            <fieldset class="govuk-fieldset">
 
-                <h1 class="govuk-fieldset__heading">
-                    About your client
-                </h1>
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
 
-            </legend>
+                    <h1 class="govuk-fieldset__heading">
+                        About your client
+                    </h1>
 
-
-            <p>Provide as many details as you can to help us understand your client’s organisation.</p>
-
-            {% include "v2/component_macros/text_input.html" with id="company_website" name="company_website" label="Organisation website (optional)" hint="Provide your client’s website if it has one." type="text" width="20" strong=True %}
-            {% include "v2/component_macros/text_input.html" with id="company_vat_number" name="company_vat_number" label="VAT registration number (optional)" hint="Some organisations are registered for VAT (Value Added Tax) or an international equivalent." type="text" width="20" strong=True %}
-            {% include "v2/component_macros/text_input.html" with id="company_eori_number" name="company_eori_number" label="EORI number (optional)" hint="The organisation will have an EORI number if you have brought goods into the UK or EU." type="text" width="20" strong=True %}
-            {% include "v2/component_macros/text_input.html" with id="company_duns_number" name="company_duns_number" label="DUNS number (optional)" hint="The organisation might have a 9-digit DUNS (Data Universal Numbering System) identifier." type="text" width="20" strong=True %}
+                </legend>
 
 
+                <p>Provide as many details as you can to help us understand your client’s organisation.</p>
 
-            <div class="govuk-button-group">
+                {% include "v2/component_macros/text_input.html" with value=submission.organisation.organisation_website id="organisation_website" name="organisation_website" label="Organisation website (optional)" hint="Provide your client’s website if it has one." type="text" width="20" strong=True %}
+                {% include "v2/component_macros/text_input.html" with value=submission.organisation.vat_number id="vat_number" name="vat_number" label="VAT registration number (optional)" hint="Some organisations are registered for VAT (Value Added Tax) or an international equivalent." type="text" width="20" strong=True %}
+                {% include "v2/component_macros/text_input.html" with value=submission.organisation.eori_number id="eori_number" name="eori_number" label="EORI number (optional)" hint="The organisation will have an EORI number if it has brought goods into the UK or EU." type="text" width="20" strong=True %}
+                {% include "v2/component_macros/text_input.html" with value=submission.organisation.duns_number id="duns_number" name="duns_number" label="DUNS number (optional)" hint="The organisation might have a 9-digit DUNS (Data Universal Numbering System) identifier." type="text" width="20" strong=True %}
 
-
-                <button class="govuk-button" data-module="govuk-button">
-                    Continue
-                </button>
-                {% if uk_registered == 'false' %}
-                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_ch_no' case_id contact_id%}">Back</a>
-                {% else %}
-                    <a class="govuk-link govuk-link--no-visited-state" href="{% url 'interest_ch_yes' case_id contact_id%}">Back</a>
-                {% endif %}
-            </div>
+                {% include 'v2/component_macros/form_button_group.html' with forward_button_text='Continue' %}
 
 
-        </fieldset>
+            </fieldset>
 
 
-    </form>
+        </form>
 
-</div>
+    </div>
 
-{% endblock main_content %}
+{% endblock row_content %}

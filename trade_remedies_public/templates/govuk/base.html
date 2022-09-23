@@ -96,19 +96,19 @@
                     <li class="login-nav__list-item">
                         <a href="{% url 'account_info' %}"
                            class="govuk-link govuk-link govuk-link--inverse">
-                            Account details
+                            Manage account
                         </a>
                     </li>
                     <li class="login-nav__list-item">|</li>
                     <li class="login-nav__list-item">
                         <a href="{% url 'logout' %}" class="govuk-link govuk-link govuk-link--inverse">
-                            Logout
+                            Sign out
                         </a>
                     </li>
                 {% elif within_2fa or within_verify %}
                     <li class="login-nav__list-item">
                         <a href="{% url 'logout' %}" class="govuk-link govuk-link govuk-link--inverse">
-                            Cancel and Logout
+                            Sign out
                         </a>
                     </li>
                 {% endif %}
