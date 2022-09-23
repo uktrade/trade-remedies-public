@@ -44,9 +44,6 @@ from the Trade Remedies orchestration project directory.
 ## Fitness Functions
 ![Current fitness metrics for TRSV2](fitness/fitness_metrics_graph.png)
 
-## Fitness Functions
-![Current fitness metrics for TRSV2](fitness/fitness_metrics_graph.png)
-
 ## Contributors ✨
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
