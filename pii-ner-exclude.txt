@@ -1,3 +1,8 @@
+invitation_id>/start/
+accept_invite_start
+GOVUKFrontend.initAll
+value_one="yes
+readonly{%
 TRA
 DB
 DENIED
