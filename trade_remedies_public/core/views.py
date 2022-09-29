@@ -396,7 +396,9 @@ class DashboardView(
 
         # Let's get the cases where the user is awaiting approval
         v2_client = TRSAPIClient(token=request.user.token)
-        organisation = v2_client.organisations(self.request.user.organisation["id"])
+        organisation = v2_client.organisations(
+            self.request.user.organisation["id"], fields=["organisationcaserole_set"]
+        )
         cases_awaiting_approval = [
             each.case
             for each in organisation.organisationcaserole_set
