@@ -9,16 +9,16 @@ ipython==7.31.1
 matplotlib
 sklearn
 pip-tools>=6.5.0
-pyproject-flake8
+pyproject-flake8==5.0.4.post1
 pytest
 pytest-cov
 pytest-django
 pytest-xdist
 pytest-pythonpath
-pre-commit
 selenium==3.141.0
 
 # ipython dep - for CVE-2021-27291
 pygments==2.8.1
 
+git+https://github.com/uktrade/modification-pre-commit
 git+https://github.com/uktrade/fitness-functions

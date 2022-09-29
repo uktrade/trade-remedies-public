@@ -164,7 +164,8 @@
                                 <form class="inline" data-attach="ConfirmPost"
                                       action="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/delete/"
                                       method="post">
-                                    <button class="link no-debounce" type="submit" style="font-size:19px;padding-left:0px;">Cancel
+                                    <button class="link no-debounce" type="submit"
+                                            style="font-size:19px;padding-left:0px;">Cancel
                                         invitation
                                     </button>
                                     {% csrf_token %}
@@ -203,9 +204,12 @@
                 <a class="button margin-top-1 no-debounce" id="lnk_invite_colleague"
                    href="{% url 'invitation_start' %}">Invite
                     colleague</a>
+                <a class="button margin-top-1 no-debounce" id="lnk_invite_colleagu_old"
+                   href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague OLD</a>
+            {% else %}
+                <a class="button margin-top-1 no-debounce"
+                   href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague</a>
             {% endif %}
-            <a class="button margin-top-1 no-debounce" id="lnk_invite_colleagu_old"
-               href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague OLD</a>
             <div class="margin-top-1">
                 <a class="link" href="{% url 'dashboard' %}">Back</a>
             </div>
