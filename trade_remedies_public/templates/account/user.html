@@ -77,7 +77,7 @@
 				{% endif %}
 				{% set 'perm_name' 'No security group' %}
 				{% if security_group == 'Organisation User' %}
-					{% set 'perm_name' 'Regular user with access to selected cases only' %}
+					{% set 'perm_name' 'User with access to selected cases only' %}
 				{% endif %}
 				{% if security_group == 'Organisation Owner' %}
 					{% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
