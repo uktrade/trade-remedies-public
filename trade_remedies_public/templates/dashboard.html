@@ -53,11 +53,15 @@
                     {% endif %}
                 </p>
             </div>
-            {% if cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
+            {% if cases_awaiting_approval or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
                 {% if user.email_verified_at %}
                     <h1 class="heading-large">Your cases</h1>
                     {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
-
+                    {# Cases waiting approval #}
+                    {% if cases_awaiting_approval %}
+                        <h2 class="heading-medium">Pending TRA Approval</h2>
+                        {% include "partials/widgets/dashboard_caselist.html" with cases=cases_awaiting_approval show_casenumber=True no_click=True %}
+                    {% endif %}
                     <!-- Draft applications -->
                     {% if applications %}
                         <div class="margin-top-2">

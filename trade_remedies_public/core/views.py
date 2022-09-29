@@ -3,7 +3,23 @@ import logging
 import os
 
 import pytz
-from cases.constants import CASE_TYPE_REPAYMENT
+from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import AnonymousUser
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page, never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.generic import TemplateView, View
+from django_countries import countries
+from requests.exceptions import HTTPError
+from trade_remedies_client.exceptions import APIException
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from v2_api_client.client import TRSAPIClient
+
+from cases.constants import CASE_ROLE_AWAITING_APPROVAL, CASE_TYPE_REPAYMENT
 from cases.utils import decorate_due_status, decorate_rois
 from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
@@ -21,21 +37,7 @@ from core.utils import (
     validate,
 )
 from core.validators import user_create_validators
-from django.conf import settings
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.models import AnonymousUser
-from django.http import HttpResponse
-from django.shortcuts import redirect, render
-from django.urls import reverse
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page, never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.generic import TemplateView, View
-from django_countries import countries
-from registration.views import BaseRegisterView
-from requests.exceptions import HTTPError
-from trade_remedies_client.exceptions import APIException
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from registration.views.views import BaseRegisterView
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -391,6 +393,16 @@ class DashboardView(
         invite_submissions = []
         if organisation:
             invite_submissions = client.get_organisation_invite_submissions(organisation["id"])
+
+        # Let's get the cases where the user is awaiting approval
+        v2_client = TRSAPIClient(token=request.user.token)
+        organisation = v2_client.organisations(self.request.user.organisation["id"])
+        cases_awaiting_approval = [
+            each.case
+            for each in organisation.organisationcaserole_set
+            if not each.approved_at and each.role == CASE_ROLE_AWAITING_APPROVAL
+        ]
+
         return render(
             request,
             self.template_name,
@@ -410,6 +422,7 @@ class DashboardView(
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
                 "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
                 in request.user.organisation_groups,
+                "cases_awaiting_approval": cases_awaiting_approval,
             },
         )
 

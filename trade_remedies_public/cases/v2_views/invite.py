@@ -260,9 +260,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -281,9 +281,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -312,7 +312,14 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                     template_name="v2/invite/no_cases_found.html",
                 )
 
-            self.cases = cases
+            # Now let's remove duplicates
+            no_duplicate_cases = []
+            seen_cases = []
+            for case in cases:
+                if case.id not in seen_cases:
+                    no_duplicate_cases.append(case)
+                    seen_cases.append(case.id)
+            self.cases = no_duplicate_cases
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -330,6 +337,8 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                 "organisation": self.request.user.organisation["id"],
             }
         )
+        # Linking the case to the invitation
+        new_invitation.update({"cases_to_link": [form.cleaned_data["cases"], ]})
         return redirect(
             reverse(
                 "invite_representative_task_list_exists",

@@ -1,3 +1,8 @@
+DEFINITELY
+new_user/who_is_registering.html
+Organisation
+no_click
+Cases
 invitation_id>/start/
 accept_invite_start
 GOVUKFrontend.initAll
