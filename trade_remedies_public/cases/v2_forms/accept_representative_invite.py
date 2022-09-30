@@ -9,5 +9,5 @@ class WhoIsRegisteringForm(ValidationForm):
             ("email_recipient", "email_recipient"),
             ("organisation_recipient", "organisation_recipient"),
         ),
-        error_messages={"required": "invite_representative_who_is_registering_missing"}
+        error_messages={"required": "invite_representative_who_is_registering_missing"},
     )
