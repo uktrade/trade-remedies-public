@@ -260,9 +260,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -281,9 +281,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -541,3 +541,13 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
 
 class InviteRepresentativeSent(BaseInviteView):
     template_name = "v2/invite/invite_representative_sent.html"
+
+
+class CancelInvite(BaseInviteView):
+    template_name = "v2/invite/cancel_invite.html"
+
+    def post(self, request, *args, **kwargs):
+        if not self.invitation.accepted_at:
+            # We only want to delete the invitation if it hasn't been accepted
+            self.invitation.delete()
+        return redirect(reverse("team_view"))
