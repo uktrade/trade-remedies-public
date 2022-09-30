@@ -260,9 +260,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -281,9 +281,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }

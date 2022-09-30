@@ -409,7 +409,7 @@ urlpatterns += [
         "invite/<uuid:invitation_id>/cancel/",
         invite.CancelInvite.as_view(),
         name="cancel_invite",
-    )
+    ),
 ]
 
 urlpatterns += [
