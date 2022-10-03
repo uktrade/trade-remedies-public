@@ -1,7 +1,9 @@
 import datetime
+import logging
 
 from apiclient.exceptions import ClientError
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -33,14 +35,24 @@ from config.utils import (
 )
 from core.base import GroupRequiredMixin
 
+logger = logging.getLogger(__name__)
+
 
 class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin, View):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
 
     def dispatch(self, request, *args, **kwargs):
         self.submission = {}
-        if submission_id := self.kwargs.get("submission_id"):
+        if request.user.is_authenticated and self.kwargs.get("submission_id"):
+            submission_id = self.kwargs.get("submission_id")
             self.submission = self.client.submissions(submission_id)
+            if self.submission.created_by.id != request.user.id:
+                # This user did not create this ROI, raise a 403 permission DENIED
+                logger.info(
+                    f"User {request.user.id} tried to access ROI {submission_id} "
+                    f"which they do not have access to."
+                )
+                raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form):
