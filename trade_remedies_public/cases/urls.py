@@ -463,4 +463,9 @@ urlpatterns += [
         accept_representative_invitation.OrganisationDetails.as_view(),
         name="accept_representative_invitation_organisation_details",
     ),
+    path(
+        "accept_representative_invite/organisation_further_details/<uuid:invitation_id>/",
+        accept_representative_invitation.OrganisationFurtherDetails.as_view(),
+        name="accept_representative_invitation_organisation_further_details",
+    ),
 ]

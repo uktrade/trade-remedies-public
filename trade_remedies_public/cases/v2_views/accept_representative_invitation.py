@@ -10,7 +10,7 @@ from cases.v2_views.accept_own_org_invitation import (
 )
 from config.base_views import FormInvalidMixin
 from config.constants import SECURITY_GROUP_ORGANISATION_USER
-from registration.forms.forms import NonUkEmployerForm
+from registration.forms.forms import NonUkEmployerForm, OrganisationFurtherDetailsForm
 
 
 class WhoIsRegisteringView(BaseAcceptInviteView, FormInvalidMixin):
@@ -124,6 +124,30 @@ class OrganisationDetails(BaseAcceptInviteView, FormInvalidMixin):
 
         return redirect(
             reverse(
-                "request_email_verify_code", kwargs={"user_pk": self.invitation.invited_user.id}
+                "accept_representative_invitation_organisation_further_details", kwargs={"invitation_id": self.invitation.id}
             )
+        )
+
+
+
+class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
+    template_name = "v2/registration/registration_organisation_further_details.html"
+    form_class = OrganisationFurtherDetailsForm
+
+    def form_valid(self, form):
+        invited_organisation = self.client.organisations(self.invitation.contact.organisation)
+        # Let's update the Organisation object with the new details
+        invited_organisation.update(
+            {
+                "organisation_website": form.cleaned_data["company_website"],
+                "vat_number": form.cleaned_data.get("company_vat_number"),
+                "eori_number": form.cleaned_data.get("company_eori_number"),
+                "duns_number": form.cleaned_data.get("company_duns_number"),
+            }
+        )
+        # now let's validate the person's email
+        return redirect(
+            reverse(
+                "request_email_verify_code", kwargs={"user_pk": self.invitation.invited_user.id}
+            ) + "?account_created=yes"
         )
