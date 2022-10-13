@@ -124,10 +124,10 @@ class OrganisationDetails(BaseAcceptInviteView, FormInvalidMixin):
 
         return redirect(
             reverse(
-                "accept_representative_invitation_organisation_further_details", kwargs={"invitation_id": self.invitation.id}
+                "accept_representative_invitation_organisation_further_details",
+                kwargs={"invitation_id": self.invitation.id},
             )
         )
-
 
 
 class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
@@ -149,5 +149,6 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
         return redirect(
             reverse(
                 "request_email_verify_code", kwargs={"user_pk": self.invitation.invited_user.id}
-            ) + "?account_created=yes"
+            )
+            + "?account_created=yes"
         )
