@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.views.generic import TemplateView
 
 from core.utils import internal_redirect, set_cookie
-from registration.views import BaseRegisterView
+from registration.views.views import BaseRegisterView
 
 
 class CookiePolicyView(TemplateView):

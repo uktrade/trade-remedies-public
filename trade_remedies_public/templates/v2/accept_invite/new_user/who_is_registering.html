@@ -1,0 +1,71 @@
+{% extends 'v2/govuk/base.html' %}
+{% load get_item %}
+
+{% block page_title %}Who is registering?{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            {% csrf_token %}
+            {% with form_errors|get_item:"who_is_registering" as error %}
+                <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+                    <fieldset class="govuk-fieldset" aria-describedby="invite-rep-who-reg-hint">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                            <h1 class="govuk-fieldset__heading">
+                                Who is registering?
+                            </h1>
+                        </legend>
+                        {% if error %}
+                            <p id="{{ name }}-error" class="govuk-error-message">
+                                {% for error in error %}
+                                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                        <div id="invite-rep-who-reg-hint" class="govuk-hint">
+                            <p>To represent <strong>{{ invitation.organisation.name }}</strong>, create an account for
+                                your
+                                own organisation. Your
+                                request will be verified by the TRA.</p>
+                            <p>If you are not the orginal email recipient but work for the same organisation please
+                                indicate
+                                below and your request will be verified by the TRA.</p>
+                        </div>
+                        <div class="govuk-radios" data-module="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="invite-rep-who-reg" name="who_is_registering"
+                                       type="radio" value="email_recipient">
+                                <label class="govuk-label govuk-radios__label" for="invite-rep-who-reg">
+                                    I am the email recipient: <strong>{{ invitation.contact.email }}</strong>
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="invite-rep-who-reg-2" name="who_is_registering"
+                                       type="radio" value="organisation_recipient">
+                                <label class="govuk-label govuk-radios__label" for="invite-rep-who-reg-2">
+                                    I work for: <strong>{{ invitation.contact.organisation_name }}</strong>
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            {% endwith %}
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      I work for a different organisation
+    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>If you work for a different organisation then you need to ask the person that orginally sent the
+                        invite to send you an invitation directly. </p>
+                    <p>If there is a mistake in the name of your organisation you will need to ask the person that
+                        originally sent the invite to create a new one with the correct details.</p>
+                </div>
+            </details>
+
+            {% include 'v2/component_macros/form_button_group.html' %}
+        </form>
+    </div>
+{% endblock row_content %}

@@ -312,7 +312,14 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                     template_name="v2/invite/no_cases_found.html",
                 )
 
-            self.cases = cases
+            # Now let's remove duplicates
+            no_duplicate_cases = []
+            seen_cases = []
+            for case in cases:
+                if case.id not in seen_cases:
+                    no_duplicate_cases.append(case)
+                    seen_cases.append(case.id)
+            self.cases = no_duplicate_cases
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -328,6 +335,14 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                 "case": form.cleaned_data["cases"],
                 "invitation_type": 2,
                 "organisation": self.request.user.organisation["id"],
+            }
+        )
+        # Linking the case to the invitation
+        new_invitation.update(
+            {
+                "cases_to_link": [
+                    form.cleaned_data["cases"],
+                ]
             }
         )
         return redirect(
