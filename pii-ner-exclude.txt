@@ -1,3 +1,7 @@
+aria-controls="manage
+aria-labelledby="tab_manage
+Gabon</a
+type</span>
 invitation_id>/start/
 accept_invite_start
 GOVUKFrontend.initAll
