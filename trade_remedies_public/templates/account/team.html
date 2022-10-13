@@ -161,17 +161,23 @@
                                 {% endif %}
                             </td>
                             <td>
-                                <form class="inline" data-attach="ConfirmPost"
-                                      action="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/delete/"
-                                      method="post">
-                                    <button class="link no-debounce" type="submit"
-                                            style="font-size:19px;padding-left:0px;">Cancel
-                                        invitation
-                                    </button>
-                                    {% csrf_token %}
-                                    <span class="hidden confirmation-message">Are you sure you want to delete this invitation?</span>
-                                    <span class="hidden confirmation-title">Confirm delete</span>
-                                </form>
+                                {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
+                                    <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel
+                                        invitation</a>
+                                {% else %}
+                                    <form class="inline" data-attach="ConfirmPost"
+                                          action="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/delete/"
+                                          method="post">
+                                        <button class="link no-debounce" type="submit"
+                                                style="font-size:19px;padding-left:0px;">Cancel
+                                            invitation
+                                        </button>
+                                        {% csrf_token %}
+                                        <span class="hidden confirmation-message">Are you sure you want to delete this invitation?</span>
+                                        <span class="hidden confirmation-title">Confirm delete</span>
+                                    </form>
+                                {% endif %}
+
                             </td>
                         </tr>
                     {% endfor %}
@@ -181,8 +187,20 @@
                             <td>Third Party User</td>
                             <td>
                                 {% if invite.locked %}
-                                    <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
-                                        invitation</a>
+                                    {% if invite.accepted_at %}
+                                        {# The invite is accepted, can no longer be cancelled #}
+                                        <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
+                                            invitation</a>
+                                    {% else %}
+                                        {# The invite has been created but not accepted, it can be cancelled #}
+                                        {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
+                                            <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel
+                                                invitation</a>
+                                        {% else %}
+                                            <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
+                                                invitation</a>
+                                        {% endif %}
+                                    {% endif %}
                                 {% else %}
                                     {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
                                         <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.id %}">Update

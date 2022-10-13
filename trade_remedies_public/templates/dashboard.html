@@ -88,7 +88,8 @@
                                 {% for invite in invite_submissions %}
                                     <LI>
                                         {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
-                                            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{ invite.case.reference }} - {% format_date invite.created_at '%d %b %Y' %}</a>
+                                            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{ invite.case.reference }}
+                                                - {% format_date invite.created_at '%d %b %Y' %}</a>
                                         {% else %}
                                             <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
                                                 {{ invite.case.reference }}
@@ -116,11 +117,7 @@
                     <p>Use your dashboard to:</p>
                     <ul class="list">
                         <li>
-                            {% if 'FEATURE_FLAG_UAT_TEST' in user.groups %}
-                                <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
-                            {% else %}
-                                <li><a class="link bold" href="/case/interest/">Register interest in a case</a></li>
-                            {% endif %}
+                        <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
                         <p>This will allow you to; have a chance to submit evidence, get updates on important
                             developments, comment on {% organisation_initialism %}’s findings before a final
                             decision is
@@ -148,11 +145,7 @@
                         <h1 class="heading-medium">Other things you can do</h1>
                         <ul>
                             {% if pre_register_interest %}
-                                {% if 'FEATURE_FLAG_UAT_TEST' in user.groups %}
-                                    <li><a href="{% url 'roi' %}">Register interest in a case</a></li>
-                                {% else %}
-                                    <li><a href="/case/interest/">Register interest in a case</a></li>
-                                {% endif %}
+                                <li><a href="{% url 'roi' %}">Register interest in a case</a></li>
                             {% endif %}
                             {% if pre_applications %}
                                 <li><a href="/case/">Apply for an investigation</a></li>{% endif %}

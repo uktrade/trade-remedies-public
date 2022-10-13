@@ -1,0 +1,25 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_item %}
+
+{% block back_button %}{% endblock back_button %}
+
+{% block page_title %}Cancel invitation{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Cancel invite
+        </h1>
+        <p>Are you sure you want to cancel this invite?</p>
+        <p>{{ invitation.contact.name }}: {{ invitation.contact.email }}</p>
+        <form method="post">
+            {% csrf_token %}
+            <div class="govuk-button-group">
+                <button class="govuk-button govuk-button--warning" data-module="govuk-button">
+                    Cancel invite
+                </button>
+                <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
+            </div>
+        </form>
+    </div>
+{% endblock row_content %}

@@ -410,6 +410,11 @@ urlpatterns += [
         invite.InviteRepresentativeSent.as_view(),
         name="invite_representative_sent",
     ),
+    path(
+        "invite/<uuid:invitation_id>/cancel/",
+        invite.CancelInvite.as_view(),
+        name="cancel_invite",
+    ),
 ]
 
 # accepting own-org invitations

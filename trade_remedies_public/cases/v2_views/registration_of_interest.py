@@ -64,7 +64,8 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         organisation_id : str - the UUID of the organisation object
         submission_id : str - UUID of the submission object, default to self.kwargs["submission"]
         contact_id : str - the UUID of the contact object you want to set as the primary of this
-        org and this case, will create a new one if not specified
+        org and this case. When representing your own org, this will be your contact object. But if
+        you are representing someone else, this is the contact id of that contact
 
         Returns
         -------

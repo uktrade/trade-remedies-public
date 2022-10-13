@@ -270,7 +270,7 @@
                                 <span class="govuk-visually-hidden--desktop td-header">Email: </span>{{ organisation_user.user.email }}
                             </td>
                             <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden--desktop td-header">Role/ Status: </span>{% if organisation_user.security_group == group_owner %}Admin{% else %}Regular User{% endif %}
+                                <span class="govuk-visually-hidden--desktop td-header">Role/ Status: </span>{% if organisation_user.security_group == group_owner %}Admin{% else %}User{% endif %}
                             </td>
                             <td class="govuk-table__cell">
                                 <span class="govuk-visually-hidden--desktop td-header">Cases: </span>{{ organisation_user.user.cases|length }}
