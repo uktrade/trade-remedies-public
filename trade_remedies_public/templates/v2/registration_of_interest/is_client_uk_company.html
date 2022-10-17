@@ -28,14 +28,14 @@
                 <div class="govuk-radios govuk-radioss" data-module="govuk-radios">
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="uk_employer" name="uk_employer"
-                               type="radio" value="yes" {% if submission.organisation.country == "GB" %}checked{% endif %}>
+                               type="radio" value="yes" {% if submission.organisation and submission.organisation.country == "GB" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="uk_employer">
                             Yes
                         </label>
                     </div>
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="reginterest-uk-reg-2" name="uk_employer"
-                               type="radio" value="no" {% if submission.organisation.country != "GB" %}checked{% endif %}>
+                               type="radio" value="no" {% if submission.organisation and submission.organisation.country != "GB" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="reginterest-uk-reg-2">
                             No
                         </label>
