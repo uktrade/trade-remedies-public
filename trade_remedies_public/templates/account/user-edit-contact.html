@@ -28,7 +28,7 @@
 		{% if create_mode %}
 			<div class="warning-text">
 				Only add members of your organisation to your account as Administrators or
-                Regular users.
+                Users.
 			</div>
 		{% else %}
 			{% if self_details %}
@@ -45,7 +45,7 @@
             <details>
                 <summary style="display: list-item;text-decoration: underline;">More details</summary>
                 <div class="panel panel-border-narrow">
-                    <p>Regular users can:</p>
+                    <p>Users can:</p>
                     <ul class="list-bullet indent">
                         <li>See the details of cases they have been granted access to.</li>
                         <li>Register interest in a case.</li>
@@ -99,9 +99,9 @@
                     {% if group.0 == 'Organisation Owner' %}
                         {% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
                     {% elif group.0 == 'Third Party User' %}
-                        {% set 'perm_name' 'Regular (3rd Party) user who is representing your organisation on a particular case (e.g. Lawyer)' %}
+                        {% set 'perm_name' '3rd Party user who is representing your organisation on a particular case (e.g. Lawyer)' %}
                     {% else %}
-                        {% set 'perm_name' 'Regular user with access to selected cases only' %}
+                        {% set 'perm_name' 'User with access to selected cases only' %}
                     {% endif %}
                     <label for="role_{{forloop.counter}}" class="form-label">{{ perm_name }}</label>
                 </div>
