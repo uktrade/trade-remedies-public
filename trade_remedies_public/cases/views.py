@@ -388,8 +388,7 @@ class CompanyView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         form_action = self.get_submit_urls("company", case_id=case_id, submission_id=submission_id)
         sub_type_key = self.submission_type_key or "application"
         template_name = f"cases/submissions/{sub_type_key}/company_info.html"
-        if sub_type_key == "interest" and "FEATURE_FLAG_UAT_TEST" in request.user.groups:
-            return redirect(reverse("interest_client_type"), kwargs={"submission_id": "Asd"})
+        if sub_type_key == "interest":
             return redirect(f"/case/interest/{case_id}/type/")  # noqa: E501
 
         page = request.GET.get("page") or 1
