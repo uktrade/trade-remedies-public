@@ -38,8 +38,8 @@ class BaseInviteView(BasePublicView, TemplateView):
                         # The user should not have access to this invitation,
                         # raise a 403 permission DENIED
                         logger.info(
-                            f"User {request.user.id} tried to access Invitation "
-                            f"{invitation_id} which they do not have access to."
+                            f"User {request.user.id} requested access to Invitation "
+                            f"{invitation_id}. Permission denied."
                         )
                         raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)

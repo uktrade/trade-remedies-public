@@ -49,8 +49,8 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
             if self.submission.created_by.id != request.user.id:
                 # This user did not create this ROI, raise a 403 permission DENIED
                 logger.info(
-                    f"User {request.user.id} tried to access ROI {submission_id} "
-                    f"which they do not have access to."
+                    f"User {request.user.id} requested access to ROI {submission_id}. "
+                    f"Permission denied."
                 )
                 raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
