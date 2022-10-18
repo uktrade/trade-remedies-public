@@ -3,6 +3,8 @@
 
 {% block page_title %}Who is registering?{% endblock page_title %}
 
+{% block back_button %}{% endblock back_button %}
+
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
@@ -27,7 +29,7 @@
                                 your
                                 own organisation. Your
                                 request will be verified by the TRA.</p>
-                            <p>If you are not the orginal email recipient but work for the same organisation please
+                            <p>If you are not the original email recipient but work for the same organisation please
                                 indicate
                                 below and your request will be verified by the TRA.</p>
                         </div>
@@ -43,7 +45,7 @@
                                 <input class="govuk-radios__input" id="invite-rep-who-reg-2" name="who_is_registering"
                                        type="radio" value="organisation_recipient">
                                 <label class="govuk-label govuk-radios__label" for="invite-rep-who-reg-2">
-                                    I work for: <strong>{{ invitation.contact.organisation_name }}</strong>
+                                    I am not {{ invitation.contact.email }} but I work for: <strong>{{ invitation.contact.organisation_name }}</strong>
                                 </label>
                             </div>
                         </div>
