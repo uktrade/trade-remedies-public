@@ -282,12 +282,15 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
         existing_clients_list = get_org_parties(
             TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
         )
+        existing_clients_list += self.request.user.representing
+
         # removing duplicates
         existing_clients_list = [
             each
             for each in existing_clients_list
-            if each["id"] != self.request.user.organisation.get("id")
+            if each["id"] != self.request.user.contact["organisation"].get("id")
         ]
+
         context["existing_clients"] = True if existing_clients_list else False
         return context
 
@@ -429,9 +432,11 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         org_parties = get_org_parties(
             TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
         )
-        # extract and return tuples of id and name in a list (from a
-        # list of dictionaries)
+        # extract and return tuples of id and name in a list (from a list of dictionaries)
         # removing duplicates
+        if representing_ids := self.request.user.representing_ids:
+            org_parties += [self.client.organisations(each) for each in representing_ids]
+
         return [
             (each["id"], each["name"])
             for each in org_parties
