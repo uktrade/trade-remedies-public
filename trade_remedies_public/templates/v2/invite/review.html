@@ -68,12 +68,12 @@
                             Cases invited to
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            {% if not invitation.cases_to_link %}
+                            {% if not invitation.user_cases_to_link %}
                                 None
                             {% else %}
                                 <ul class="govuk-list govuk-list--bullet">
-                                    {% for case in invitation.cases_to_link %}
-                                        <li>{{ case.reference }} - {{ case.name }}</li>
+                                    {% for user_case in invitation.user_cases_to_link %}
+                                        <li>{{ user_case.case.reference }} - {{ user_case.case.name }}</li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}

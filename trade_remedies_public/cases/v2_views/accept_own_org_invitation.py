@@ -116,12 +116,10 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
             mobile_country_code=form.cleaned_data["mobile_country_code"],
         )
         # Now adding the user to the organisation in question
-        self.client.organisations(self.invitation["organisation_id"]).update(
-            {
-                "user_id": self.invitation.invited_user.id,
-                "organisation_security_group": self.invitation.organisation_security_group,
-                "confirmed": False,
-            }
+        self.client.organisations(self.invitation["organisation_id"]).add_user(
+            user_id=self.invitation.invited_user.id,
+            group_name=self.invitation.organisation_security_group,
+            confirmed=False,
         )
 
         # Redirect to email verification page

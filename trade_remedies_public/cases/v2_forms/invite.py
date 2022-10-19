@@ -37,7 +37,9 @@ class SelectPermissionsForm(ValidationForm):
 
 
 class ChooseCaseForm(ValidationForm):
-    which_case = forms.CharField(error_messages={"required": "invite_which_cases_not_selected"})
+    which_user_case = forms.CharField(
+        error_messages={"required": "invite_which_cases_not_selected"}
+    )
 
 
 class SelectCaseForm(ValidationForm):

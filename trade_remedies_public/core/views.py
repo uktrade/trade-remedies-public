@@ -469,10 +469,9 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
         request.session["create-user"] = {}
         request.session.modified = True
         client = self.client(request.user)
+        organisation = request.user.contact["organisation"]
         if SECURITY_GROUP_ORGANISATION_OWNER in request.user.groups:
-            pending_assignments = client.get_pending_user_case_assignments(
-                request.user.organisation["id"]
-            )
+            pending_assignments = client.get_pending_user_case_assignments(organisation["id"])
             users = client.get_team_users()
             _user_emails = [user["email"] for user in users]
             _invites = client.get_user_invitations()
@@ -483,7 +482,6 @@ class TeamView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemedi
             ]
 
             # Get any 3rd party invites
-            organisation = request.user.organisation
             if organisation:
                 pending_submissions = client.get_organisation_invite_submissions(organisation["id"])
                 for submission in pending_submissions:

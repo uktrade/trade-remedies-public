@@ -30,7 +30,7 @@ class BaseInviteView(BasePublicView, TemplateView):
             if invitation_id := kwargs.get("invitation_id"):
                 self.invitation = self.client.invitations(invitation_id)
                 if inviting_organisation := self.invitation["organisation"]:
-                    if inviting_organisation["id"] != request.user.organisation["id"]:
+                    if inviting_organisation["id"] != request.user.contact["organisation"]["id"]:
                         # The user should not have access to this invitation,
                         # raise a 403 permission DENIED
                         raise PermissionDenied()
@@ -59,7 +59,7 @@ class WhoAreYouInviting(BaseInviteFormView):
     def form_valid(self, form):
         if form.cleaned_data["who_are_you_inviting"] == "employee":
             invitation_update_dictionary = {
-                "organisation": self.request.user.organisation["id"],
+                "organisation": self.request.user.contact["organisation"]["id"],
                 "invalid": True,
                 "invitation_type": 1,
             }
@@ -147,35 +147,36 @@ class ChooseCasesView(BaseInviteFormView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            cases = self.client.organisations(
-                self.request.user.organisation["id"], fields=["cases"]
-            )["cases"]
-            if not cases:
+            user_cases = self.client.organisations(
+                self.request.user.contact["organisation"]["id"], fields=["user_cases"]
+            )["user_cases"]
+            if not user_cases:
                 return redirect(
                     reverse(
                         "invitation_review", kwargs={"invitation_id": self.kwargs["invitation_id"]}
                     )
                 )
             else:
-                cases = sorted(cases, key=lambda x: x["name"])
-            self.cases = cases
+                user_cases = sorted(user_cases, key=lambda x: x.case.reference)
+
+            self.user_cases = user_cases
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["cases"] = self.cases
-        context["cases_to_link_ids"] = [
-            each["id"] for each in context["invitation"]["cases_to_link"]
+        context["user_cases"] = self.user_cases
+        context["user_cases_to_link_ids"] = [
+            each["id"] for each in context["invitation"]["user_cases_to_link"]
         ]
         return context
 
     def form_valid(self, form):
-        which_cases = self.request.POST.getlist("which_case")
+        which_cases = self.request.POST.getlist("which_user_case")
         if "choose_case_later" in which_cases:
             # We want to clear already-linked cases if they exist
-            self.invitation.update({"cases_to_link": "clear"})
+            self.invitation.update({"user_cases_to_link": "clear"})
         else:
-            self.invitation.update({"cases_to_link": which_cases})
+            self.invitation.update({"user_cases_to_link": which_cases})
 
         return redirect(
             reverse("invitation_review", kwargs={"invitation_id": self.invitation["id"]})
@@ -188,7 +189,7 @@ class ReviewInvitation(BaseInviteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["cases"] = self.client.organisations(
-            self.request.user.organisation["id"], fields=["cases"]
+            self.request.user.contact["organisation"]["id"], fields=["cases"]
         )
         return context
 
@@ -201,7 +202,7 @@ class InvitationSent(BaseInviteView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["cases"] = self.client.organisations(
-            self.request.user.organisation["id"], fields=["cases"]
+            self.request.user.contact["organisation"]["id"], fields=["cases"]
         )
         return context
 
@@ -299,13 +300,18 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            organisation = self.client.organisations(
-                self.request.user.organisation["id"],
-                fields=["cases"],
-                params={"no_representative_cases": "yes"},
-            )
-            cases = sorted(organisation["cases"], key=lambda case: case["name"])
-            if not cases:
+            user_cases = self.client.organisations(
+                self.request.user.contact["organisation"]["id"],
+                fields=["user_cases"],
+            ).user_cases
+            # we only want cases where this organisation is an interested party,
+            # and not a representative
+            only_interested_party_user_cases = [
+                each
+                for each in user_cases
+                if request.user.contact["organisation"]["id"] == each.organisation.id
+            ]
+            if not only_interested_party_user_cases:
                 # This organisation is not associated with any cases
                 return render(
                     request,
@@ -315,10 +321,10 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
             # Now let's remove duplicates
             no_duplicate_cases = []
             seen_cases = []
-            for case in cases:
-                if case.id not in seen_cases:
-                    no_duplicate_cases.append(case)
-                    seen_cases.append(case.id)
+            for user_case in only_interested_party_user_cases:
+                if user_case.case.id not in seen_cases:
+                    no_duplicate_cases.append(user_case.case)
+                    seen_cases.append(user_case.case.id)
             self.cases = no_duplicate_cases
         return super().dispatch(request, *args, **kwargs)
 
@@ -334,7 +340,7 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                 "invalid": True,
                 "case": form.cleaned_data["cases"],
                 "invitation_type": 2,
-                "organisation": self.request.user.organisation["id"],
+                "organisation": self.request.user.contact["organisation"]["id"],
             }
         )
         # Linking the case to the invitation
@@ -359,7 +365,7 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
 
     def dispatch(self, request, *args, **kwargs):
         organisation = self.client.organisations(
-            self.request.user.organisation["id"], fields=["invitations"]
+            self.request.user.contact["organisation"]["id"], fields=["invitations"]
         )
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
@@ -370,7 +376,7 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
                 # Thn checking if there is an organisation associated with the invitation
                 if invited_organisation := invited_contact.get("organisation", None):
                     # If the invited contact doesn't belong to the user's organisation
-                    if invited_organisation != self.request.user.organisation["id"]:
+                    if invited_organisation != self.request.user.contact["organisation"]["id"]:
                         if invited_organisation not in organisations_seen:
                             validated = self.client.organisations(
                                 invited_organisation, fields=["validated"]
@@ -463,7 +469,7 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
             {
                 # The submission needs to be associating with the inviter's organisation, the
                 # invited organisation is stored in the contact object
-                "organisation": self.request.user.organisation["id"]
+                "organisation": self.request.user.contact["organisation"]["id"]
             },
             fields=["id"],
         )
@@ -505,7 +511,7 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
         # Associating the submission with the new organisation
         self.client.submissions(updated_invitation["submission"]["id"]).update(
             {
-                "organisation": self.request.user.organisation["id"],
+                "organisation": self.request.user.contact["organisation"]["id"],
             },
             fields=["id"],
         )
