@@ -27,12 +27,12 @@
                             </p>
                         {% endif %}
                         <div class="govuk-radios" data-module="govuk-radios">
-                            {% for case in cases %}
+                            {% for user_case in no_duplicate_user_cases %}
                                 <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" name="cases"
-                                           type="radio" value="{{ case.id }}">
+                                    <input class="govuk-radios__input" name="user_case"
+                                           type="radio" value="{{ user_case.id }}">
                                     <label class="govuk-label govuk-radios__label">
-                                        {{ case.reference }} - {{ case.name }}
+                                        {{ user_case.case.reference }} - {{ user_case.case.name }}
                                     </label>
                                 </div>
                             {% endfor %}

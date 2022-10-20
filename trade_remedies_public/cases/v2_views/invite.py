@@ -319,18 +319,21 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                 )
 
             # Now let's remove duplicates
-            no_duplicate_cases = []
+            no_duplicate_user_cases = []
             seen_cases = []
+            user_case_case_id_matchup = {}
             for user_case in only_interested_party_user_cases:
                 if user_case.case.id not in seen_cases:
-                    no_duplicate_cases.append(user_case.case)
+                    no_duplicate_user_cases.append(user_case)
                     seen_cases.append(user_case.case.id)
-            self.cases = no_duplicate_cases
+                    user_case_case_id_matchup[user_case.id] = user_case.case.id
+            self.no_duplicate_user_cases = no_duplicate_user_cases
+            self.user_case_case_id_matchup = user_case_case_id_matchup
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["cases"] = self.cases
+        context["no_duplicate_user_cases"] = self.no_duplicate_user_cases
         return context
 
     def form_valid(self, form):
@@ -338,16 +341,16 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
         new_invitation = self.client.invitations(
             {
                 "invalid": True,
-                "case": form.cleaned_data["cases"],
+                "case": self.user_case_case_id_matchup[form.cleaned_data["user_case"]],
                 "invitation_type": 2,
                 "organisation": self.request.user.contact["organisation"]["id"],
             }
         )
         # Linking the case to the invitation
-        new_invitation.update(
+        updated_invitation = new_invitation.update(
             {
-                "cases_to_link": [
-                    form.cleaned_data["cases"],
+                "user_cases_to_link": [
+                    form.cleaned_data["user_case"],
                 ]
             }
         )

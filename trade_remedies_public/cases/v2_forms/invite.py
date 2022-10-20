@@ -43,7 +43,7 @@ class ChooseCaseForm(ValidationForm):
 
 
 class SelectCaseForm(ValidationForm):
-    cases = forms.CharField(error_messages={"required": "invite_no_case_selected"})
+    user_case = forms.CharField(error_messages={"required": "invite_no_case_selected"})
 
 
 class SelectOrganisationForm(ValidationForm):

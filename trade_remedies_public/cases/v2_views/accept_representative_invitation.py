@@ -9,7 +9,7 @@ from cases.v2_views.accept_own_org_invitation import (
     BaseAcceptInviteView,
 )
 from config.base_views import FormInvalidMixin
-from config.constants import SECURITY_GROUP_ORGANISATION_USER
+from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
 from registration.forms.forms import NonUkEmployerForm, OrganisationFurtherDetailsForm
 
 
@@ -58,9 +58,17 @@ class SetPassword(AcceptOrganisationSetPassword):
                     "name": self.request.session["new_user_name"],
                     "email": self.request.session["new_user_email"],
                     "password": form.cleaned_data["password"],
+                    "organisation": self.invitation.organisation.id,
                 }
             )
             self.request.session["new_user_id"] = new_user.id
+            # and update the organisation of this new contact object to match the invitee's org
+            updated_contact = self.client.contacts(new_user.contact.id).change_organisation(
+                self.invitation.contact.organisation
+            )
+
+            # updating the invitation to reflect these changes
+            self.invitation.update({"invited_user": new_user.id, "contact": new_user.contact.id})
         else:
             return super().form_valid(form)
 
@@ -104,7 +112,7 @@ class OrganisationDetails(BaseAcceptInviteView, FormInvalidMixin):
 
     def form_valid(self, form):
         # Marking the user as active
-        self.client.users(self.invitation["invited_user"]["id"]).update({"is_active": True})
+        self.client.users(self.invitation.invited_user.id).update({"is_active": True})
 
         invited_organisation = self.client.organisations(self.invitation.contact.organisation)
         # Let's update the Organisation object with the new details
@@ -117,9 +125,10 @@ class OrganisationDetails(BaseAcceptInviteView, FormInvalidMixin):
             }
         )
 
-        # Now let's add the correct groups to the user
+        # Now let's add the correct groups to the user, so they can log in and the rest of the
+        # invitation can be processed
         self.client.users(self.invitation.invited_user.id).add_group(
-            SECURITY_GROUP_ORGANISATION_USER
+            SECURITY_GROUP_THIRD_PARTY_USER
         )
 
         return redirect(
