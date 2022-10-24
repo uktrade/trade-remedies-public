@@ -350,11 +350,12 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         if is_third_party:
             all_submissions = self._client.get_submissions(case_id)
             invite_to_case_submission = {
-                s.get("invitations")[0]["name"]: s
+                s.get("invitations")[0]["invited_user_name"]: s
                 for s in all_submissions
                 if s["type"].get("name") == "Invite 3rd party"
-            }[self.user.name]
-            inviting_organisation_name = invite_to_case_submission.get("organisation_name")
+            }.get(self.user.name)
+            if invite_to_case_submission:
+                inviting_organisation_name = invite_to_case_submission.get("organisation_name")
         return render(
             request,
             self.template_name,
