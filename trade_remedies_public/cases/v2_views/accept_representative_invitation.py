@@ -9,7 +9,7 @@ from cases.v2_views.accept_own_org_invitation import (
     BaseAcceptInviteView,
 )
 from config.base_views import FormInvalidMixin
-from config.constants import SECURITY_GROUP_THIRD_PARTY_USER
+from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_THIRD_PARTY_USER
 from registration.forms.forms import NonUkEmployerForm, OrganisationFurtherDetailsForm
 
 
@@ -128,7 +128,8 @@ class OrganisationDetails(BaseAcceptInviteView, FormInvalidMixin):
         # Now let's add the correct groups to the user, so they can log in and the rest of the
         # invitation can be processed
         self.client.users(self.invitation.invited_user.id).add_group(
-            SECURITY_GROUP_THIRD_PARTY_USER
+            SECURITY_GROUP_THIRD_PARTY_USER,
+            SECURITY_GROUP_ORGANISATION_OWNER
         )
 
         return redirect(
