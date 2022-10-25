@@ -16,7 +16,7 @@ class BaseAcceptInviteView(APIClientMixin, TemplateView):
                 # The invitation has already been accepted, it is invalid
                 return render(
                     request=request,
-                    template_name="v2/accept_invite/invitation_not_found.html",
+                    template_name="v2/accept_invite/invitation_already_used.html",
                     context={},
                 )
             self.invitation = invitation
@@ -33,10 +33,6 @@ class BaseAcceptInviteView(APIClientMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["invitation"] = self.invitation
         return context
-
-
-class InvitationNotFound(TemplateView):
-    template_name = "v2/accept_invite/invitation_not_found.html"
 
 
 class AcceptOrganisationInvite(BaseAcceptInviteView, FormInvalidMixin):

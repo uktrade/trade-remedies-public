@@ -1,0 +1,18 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block page_title %}There's a problem{% endblock page_title %}
+{% block back_button %}{% endblock back_button %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            There's a problem
+        </h1>
+        <p>This invite has been already been used or has expired. Please contact the admin for this organisation if there is a problem.</p>
+        <div class="govuk-button-group">
+            <a href="{% url 'dashboard' %}" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                Continue
+            </a>
+        </div>
+    </div>
+{% endblock row_content %}
