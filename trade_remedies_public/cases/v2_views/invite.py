@@ -381,12 +381,13 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
                     # If the invited contact doesn't belong to the user's organisation
                     if invited_organisation != self.request.user.contact["organisation"]["id"]:
                         if invited_organisation not in organisations_seen:
-                            validated = self.client.organisations(
+                            """validated = self.client.organisations(
                                 invited_organisation, fields=["validated"]
-                            )
-                            if validated.validated:
+                            )"""
+                            if sent_invitation.submission.status.sufficient:
                                 # We only want to include organisations which have been validated
-                                # by the TRA in the past
+                                # by the TRA in the past By having the
+                                # invite 3rd party submission marked as sufficient.
                                 invitations_sent.append(sent_invitation)
                             # Still include them on the seen list, so we don't bother checking them
                             # again
