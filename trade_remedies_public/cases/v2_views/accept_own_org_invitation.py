@@ -54,7 +54,9 @@ class AcceptOrganisationSetPassword(BaseAcceptInviteView, FormInvalidMixin):
     form_class = PasswordForm
 
     def form_valid(self, form):
-        new_user = self.invitation.create_user_from_invitation(password=form.cleaned_data["password"])
+        new_user = self.invitation.create_user_from_invitation(
+            password=form.cleaned_data["password"]
+        )
         # adding the user to the correct groups
         self.client.users(new_user["id"]).add_group(self.invitation.organisation_security_group)
         return redirect(
