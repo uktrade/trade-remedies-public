@@ -157,9 +157,15 @@ class ChooseCasesView(BaseInviteFormView):
                     )
                 )
             else:
-                user_cases = sorted(user_cases, key=lambda x: x.case.reference)
+                seen_cases = []
+                no_duplicate_user_cases = []
+                for user_case in user_cases:
+                    if user_case.case.id not in seen_cases:
+                        seen_cases.append(user_case.case.id)
+                        no_duplicate_user_cases.append(user_case)
+                no_duplicate_user_cases = sorted(no_duplicate_user_cases, key=lambda x: x.case.reference)
 
-            self.user_cases = user_cases
+            self.user_cases = no_duplicate_user_cases
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
