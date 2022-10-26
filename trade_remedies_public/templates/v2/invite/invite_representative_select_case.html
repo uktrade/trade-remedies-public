@@ -27,7 +27,7 @@
                             </p>
                         {% endif %}
                         <div class="govuk-radios" data-module="govuk-radios">
-                            {% for user_case in no_duplicate_user_cases %}
+                            {% for user_case in user_cases %}
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" name="user_case"
                                            type="radio" value="{{ user_case.id }}">

@@ -21,6 +21,7 @@ from config.utils import (
     add_form_error_to_session,
     get_loa_document_bundle,
     get_uploaded_loa_document,
+    remove_duplicates_from_list_by_key,
 )
 
 
@@ -157,15 +158,10 @@ class ChooseCasesView(BaseInviteFormView):
                     )
                 )
             else:
-                seen_cases = []
-                no_duplicate_user_cases = []
-                for user_case in user_cases:
-                    if user_case.case.id not in seen_cases:
-                        seen_cases.append(user_case.case.id)
-                        no_duplicate_user_cases.append(user_case)
-                no_duplicate_user_cases = sorted(no_duplicate_user_cases, key=lambda x: x.case.reference)
+                user_cases = remove_duplicates_from_list_by_key(user_cases, "/case/id")
+                user_cases = sorted(user_cases, key=lambda x: x.case.reference)
 
-            self.user_cases = no_duplicate_user_cases
+            self.user_cases = user_cases
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -325,21 +321,17 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                 )
 
             # Now let's remove duplicates
-            no_duplicate_user_cases = []
-            seen_cases = []
-            user_case_case_id_matchup = {}
-            for user_case in only_interested_party_user_cases:
-                if user_case.case.id not in seen_cases:
-                    no_duplicate_user_cases.append(user_case)
-                    seen_cases.append(user_case.case.id)
-                    user_case_case_id_matchup[user_case.id] = user_case.case.id
-            self.no_duplicate_user_cases = no_duplicate_user_cases
+            user_cases = remove_duplicates_from_list_by_key(user_cases, "/case/id")
+            user_case_case_id_matchup = {
+                user_case.id: user_case.case.id for user_case in user_cases
+            }
+            self.user_cases = user_cases
             self.user_case_case_id_matchup = user_case_case_id_matchup
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["no_duplicate_user_cases"] = self.no_duplicate_user_cases
+        context["user_cases"] = self.user_cases
         return context
 
     def form_valid(self, form):
@@ -353,7 +345,7 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
             }
         )
         # Linking the case to the invitation
-        updated_invitation = new_invitation.update(
+        new_invitation.update(
             {
                 "user_cases_to_link": [
                     form.cleaned_data["user_case"],
