@@ -54,7 +54,9 @@ class AcceptOrganisationSetPassword(BaseAcceptInviteView, FormInvalidMixin):
     form_class = PasswordForm
 
     def form_valid(self, form):
-        self.invitation.create_user_from_invitation(password=form.cleaned_data["password"])
+        new_user = self.invitation.create_user_from_invitation(password=form.cleaned_data["password"])
+        # adding the user to the correct groups
+        self.client.users(new_user["id"]).add_group(self.invitation.organisation_security_group)
         return redirect(
             reverse(
                 "accept_invite_two_factor_choice",
@@ -101,7 +103,7 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
         contact_id = self.invitation["contact"]["id"]
 
         # Marking the user as active
-        self.client.users(self.invitation["invited_user"]["id"]).update({"is_active": True})
+        user = self.client.users(self.invitation["invited_user"]["id"]).update({"is_active": True})
 
         # Updating two-factor-choice of user
         self.update_two_factor_choice(
@@ -110,12 +112,6 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
             contact_id=contact_id,
             mobile=form.cleaned_data["mobile"],
             mobile_country_code=form.cleaned_data["mobile_country_code"],
-        )
-        # Now adding the user to the organisation in question
-        self.client.organisations(self.invitation["organisation_id"]).add_user(
-            user_id=self.invitation.invited_user.id,
-            group_name=self.invitation.organisation_security_group,
-            confirmed=False,
         )
 
         # Redirect to email verification page
