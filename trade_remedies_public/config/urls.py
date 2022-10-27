@@ -23,7 +23,7 @@ from django.urls import (
 from login import views as login_views
 from password import views as password_views
 from registration import views as register_views
-from core.v2_views import manage_your_team
+from core.v2_views import manage_your_team, feedback
 
 # todo - config/urls.py should not contain anything, put these URLs in their relevant apps
 urlpatterns = [
@@ -300,5 +300,8 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path("manage_your_team", manage_your_team.ManageYourTeamView.as_view(), name="manage_your_team")
+    path(
+        "manage_your_team", manage_your_team.ManageYourTeamView.as_view(), name="manage_your_team"
+    ),
+    path("collect_feedback", feedback.CollectFeedbackView.as_view(), name="collect_feedback"),
 ]

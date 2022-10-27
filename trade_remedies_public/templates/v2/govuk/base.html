@@ -183,9 +183,7 @@
                 BETA
             </strong>
             <span class="govuk-phase-banner__text">
-          This is a new service – your <a class="govuk-link" target="_blank" data-attach="ModalForm"
-                                          data-url="/feedback/TR-FEEDBACK/placement/FOOTER/inner/"
-                                          href="/feedback/TR-FEEDBACK/placement/FOOTER/">feedback</a> will help us to improve it.
+          This is a new service – your <a class="govuk-link" href="{% url 'collect_feedback' %}?previous_url={{ request.path }}&previous_url_name={{ request.resolver_match.url_name }}">feedback</a> will help us to improve it.
         </span>
         </p>
     </div>

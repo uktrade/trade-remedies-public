@@ -41,7 +41,7 @@
   {{ block.super }}
   {% block feedback_section %}
     <div class="feedback-section">
-      <a class="link" target="_blank" data-attach="ModalForm" data-url="/feedback/TR-FEEDBACK/placement/FOOTER/inner/" href="/feedback/TR-FEEDBACK/placement/FOOTER/">Give feedback</a>
+      <a class="govuk-link" href="{% url 'collect_feedback' %}">Give feedback.</a>
     </div>
   {% endblock %}
 {% endblock %}
