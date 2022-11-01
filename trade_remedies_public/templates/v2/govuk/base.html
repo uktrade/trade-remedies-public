@@ -183,7 +183,7 @@
                 BETA
             </strong>
             <span class="govuk-phase-banner__text">
-          This is a new service – your <a class="govuk-link" href="{% url 'collect_feedback' %}?previous_url={{ request.path }}&previous_url_name={{ request.resolver_match.url_name }}">feedback</a> will help us to improve it.
+          This is a new service{% block feedback_link %} – your <a class="govuk-link" href="{% url 'collect_feedback' %}?previous_url={{ request.path }}&previous_url_name={{ request.resolver_match.url_name }}{% block feedback_journey_name %}{% endblock feedback_journey_name %}">feedback</a> will help us to improve it.{% endblock feedback_link %}
         </span>
         </p>
     </div>
@@ -200,6 +200,7 @@
             <div class="govuk-grid-row">
                 {% block row_content %}{% endblock row_content %}
             </div>
+            {% block additional_content %}{% endblock additional_content %}
         {% endblock %}
     </main>
 </div>

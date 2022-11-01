@@ -28,3 +28,11 @@
         </div>
     </div>
 {% endblock row_content %}
+
+{% block additional_content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            {% include "v2/feedback/feedback_partial.html" with journey="Invite representative sent" url=request.path previous_url_name=request.resolver_match.url_name %}
+        </div>
+    </div>
+{% endblock additional_content %}

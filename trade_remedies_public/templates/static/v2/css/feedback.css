@@ -36,7 +36,7 @@
     display: block;
 }
 
-.star-rating3__input:checked + .star-rating3__label .text, .star-rating3__label:hover .text {
+.js-disabled .star-rating3__input:checked + .star-rating3__label .text, .star-rating3__label:hover .text, .selected_rating {
     visibility: visible;
     display: block;
     position: relative;
@@ -100,4 +100,12 @@
     padding-bottom: 0px;
     box-shadow: inset 0 0 0 2px;
     outline: 3px solid #ffdd00;
+}
+
+.js-enabled .what_didnt_work_so_well{
+    display: none;
+}
+
+.js-disabled .what_didnt_work_so_well{
+    display: block;
 }
