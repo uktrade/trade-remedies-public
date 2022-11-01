@@ -21,7 +21,6 @@ from config.utils import (
     add_form_error_to_session,
     get_loa_document_bundle,
     get_uploaded_loa_document,
-    remove_duplicates_from_list_by_key,
 )
 
 
@@ -158,8 +157,14 @@ class ChooseCasesView(BaseInviteFormView):
                     )
                 )
             else:
-                user_cases = remove_duplicates_from_list_by_key(user_cases, "/case/id")
-                user_cases = sorted(user_cases, key=lambda x: x.case.reference)
+                seen_org_case_combos = []
+                no_duplicate_user_cases = []
+                for user_case in user_cases:
+                    if (user_case.organisation.id, user_case.case.id) not in seen_org_case_combos:
+                        no_duplicate_user_cases.append(user_case)
+                        seen_org_case_combos.append((user_case.organisation.id, user_case.case.id))
+                # user_cases = remove_duplicates_from_list_by_key(user_cases, "/case/id")
+                user_cases = sorted(no_duplicate_user_cases, key=lambda x: x.case.reference)
 
             self.user_cases = user_cases
         return super().dispatch(request, *args, **kwargs)
@@ -321,11 +326,18 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                 )
 
             # Now let's remove duplicates
-            user_cases = remove_duplicates_from_list_by_key(user_cases, "/case/id")
+            seen_org_case_combos = []
+            no_duplicate_user_cases = []
+            for user_case in only_interested_party_user_cases:
+                if (user_case.organisation.id, user_case.case.id) not in seen_org_case_combos:
+                    no_duplicate_user_cases.append(user_case)
+                    seen_org_case_combos.append((user_case.organisation.id, user_case.case.id))
+
+            # user_cases = remove_duplicates_from_list_by_key(user_cases, "/case/id")
             user_case_case_id_matchup = {
                 user_case.id: user_case.case.id for user_case in user_cases
             }
-            self.user_cases = user_cases
+            self.user_cases = no_duplicate_user_cases
             self.user_case_case_id_matchup = user_case_case_id_matchup
         return super().dispatch(request, *args, **kwargs)
 
