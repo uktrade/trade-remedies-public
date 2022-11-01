@@ -13,8 +13,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.views.generic import TemplateView
-
 from cases.views import CasesView
 from cookies import views as cookie_views
 from core import views as core_views
@@ -306,5 +304,15 @@ urlpatterns += [
         "manage_your_team", manage_your_team.ManageYourTeamView.as_view(), name="manage_your_team"
     ),
     path("collect_feedback", feedback.CollectFeedbackView.as_view(), name="collect_feedback"),
-    path("feedback_sent/<uuid:feedback_id>", feedback.FeedbackSentView.as_view(), name="feedback_sent"),
+    path(
+        "collect_feedback_second_step/<uuid:feedback_id>",
+        feedback.CollectFeedbackView.as_view(),
+        name="collect_feedback_second_step",
+    ),
+    path("collect_rating", feedback.CollectRatingView.as_view(), name="collect_rating"),
+    path(
+        "feedback_sent/<uuid:feedback_id>",
+        feedback.FeedbackSentView.as_view(),
+        name="feedback_sent",
+    ),
 ]

@@ -55,9 +55,5 @@
 
 
 {% block additional_content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            {% include "v2/feedback/feedback_partial.html" with journey="ROI complete" url=request.path previous_url_name=request.resolver_match.url_name %}
-        </div>
-    </div>
+    {% include "v2/feedback/stars_partial.html" with  journey="ROI complete" %}
 {% endblock additional_content %}

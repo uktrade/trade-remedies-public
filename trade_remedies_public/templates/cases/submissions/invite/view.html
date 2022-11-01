@@ -40,3 +40,8 @@
         {% endfor %}
     </table>
 {% endblock %}
+
+{% block feedback_content %}
+    {{ block.super }}
+{% include "v2/feedback/stars_partial.html" with  journey="V1 Invite to representative sent" %}
+{% endblock feedback_content %}
