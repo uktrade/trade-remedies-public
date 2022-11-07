@@ -23,7 +23,6 @@
             </h1>
         </legend>
         <p class="govuk-body">Provide the address of the main office.</p>
-        {% include "v2/component_macros/textarea_input.html" with label="Street address " id="address_snippet" name="address_snippet" rows="5" autocomplete="street-address" %}
         {% include "v2/component_macros/text_input.html" with label="Postcode or zip code" id="post_code" name="post_code" width="5" autocomplete="postal-code" type="text"%}
         {% include "v2/component_macros/country_dropdown.html" with id="country" name="country" %}
     </fieldset>

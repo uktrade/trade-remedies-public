@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -497,6 +499,20 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
         )
 
 
+"/public-side/{case_id}"
+class ViewCase(BaseInviteFormView):
+    def get(self, *args, **kwargs):
+        case = self.client.cases(self.kwargs["case_id"], fields=["name"])
+        new_case = self.client.cases({
+            "name": "new case"
+        })
+        case = self.client.cases(self.kwargs["case_id"]).update({
+            "name": "updated_name"
+        })
+
+
+
+
 class InviteExistingRepresentativeDetails(BaseInviteFormView):
     template_name = "v2/invite/invite_representative_existing_details.html"
     form_class = InviteExistingRepresentativeDetailsForm
@@ -568,9 +584,11 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
     template_name = "v2/invite/invite_representative_check_and_submit.html"
 
     def post(self, request, *args, **kwargs):
-        invitation = self.client.invitations(kwargs["invitation_id"]).send()
+        #todo - mark submission as ready for review
+        #invitation = self.client.invitations(kwargs["invitation_id"]).send()
+        self.client.submissions(self.invitation.submission.id).update_submission_status("received")
         return redirect(
-            reverse("invite_representative_sent", kwargs={"invitation_id": invitation["id"]})
+            reverse("invite_representative_sent", kwargs={"invitation_id": self.invitation["id"]})
         )
 
 

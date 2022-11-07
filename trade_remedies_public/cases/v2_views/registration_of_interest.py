@@ -239,9 +239,7 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
         case_name = case_information[2]
         case_registration_deadline = case_information[3]
 
-        if datetime.datetime.strptime(
-            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
-        ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
+        if datetime.datetime.fromisoformat(case_registration_deadline) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,
                 "v2/registration_of_interest/registration_of_interest_late_registration.html",
@@ -484,12 +482,10 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         sorted_uploaded_documents = sorted(
             uploaded_documents,
             key=lambda x: (
-                datetime.datetime.strptime(
-                    x["non_confidential"]["created_at"], "%Y-%m-%dT%H:%M:%S%z"
-                )
+                x.non_confidential.created_at
                 if x.get("non_confidential", {}).get("created_at", None)
                 else long_time_ago,
-                datetime.datetime.strptime(x["confidential"]["created_at"], "%Y-%m-%dT%H:%M:%S%z")
+                x.confidential.created_at
                 if x.get("confidential", {}).get("created_at", None)
                 else long_time_ago,
             ),
