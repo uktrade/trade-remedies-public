@@ -55,10 +55,10 @@
                                 href="/accounts/team/{{ user.organisation.id }}/user/{{ user.id }}/edit/">{{ user.name }}</a>
                         </td>
                         <td>
-                            {% if 'Third Party User' in user.groups %}
-                                Third Party User
-                            {% elif user.organisation.role.security_group == 'Organisation Owner' %}
+                            {% if user.organisation.role.security_group == 'Organisation Owner' %}
                                 Administrator
+                            {% elif 'Third Party User' in user.groups %}
+                                Third Party User
                             {% else %}
                                 User
                             {% endif %}

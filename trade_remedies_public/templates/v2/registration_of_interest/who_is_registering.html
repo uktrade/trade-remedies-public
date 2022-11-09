@@ -23,9 +23,9 @@
                 <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="org" name="org"
-                               type="radio" value="my-org" {% if submission and submission.organisation.id == request.user.organisation.id %}checked{% endif %}>
+                               type="radio" value="my-org" {% if submission and submission.organisation.id == request.user.contact.organisation.id %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="org">
-                            {{ user.organisation.name }}
+                            {{ user.contact.organisation.name }}
                         </label>
                     </div>
                     {% if existing_clients %}

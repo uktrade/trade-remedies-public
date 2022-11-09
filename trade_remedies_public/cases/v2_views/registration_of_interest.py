@@ -184,7 +184,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
         if (
             submission
             and submission.organisation
-            and submission.organisation.id != self.request.user.organisation["id"]
+            and submission.organisation.id != self.request.user.contact["organisation"]["id"]
         ):
             # THe user is representing someone else, we should show the letter of authority
             documentation_sub_steps.append(
@@ -294,12 +294,15 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
         existing_clients_list = get_org_parties(
             TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
         )
+        existing_clients_list += self.request.user.representing
+
         # removing duplicates
         existing_clients_list = [
             each
             for each in existing_clients_list
-            if each["id"] != self.request.user.organisation.get("id")
+            if each["id"] != self.request.user.contact["organisation"].get("id")
         ]
+
         context["existing_clients"] = True if existing_clients_list else False
         return context
 
@@ -315,7 +318,7 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
             # If it's your own org, you act as both the contact and the organisation, it's not a
             # third party invite
             return self.add_organisation_to_registration_of_interest(
-                organisation_id=self.request.user.organisation["id"],
+                organisation_id=self.request.user.contact["organisation"]["id"],
                 submission_id=submission_id,
                 contact_id=self.request.user.contact["id"],
             )
@@ -441,13 +444,15 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         org_parties = get_org_parties(
             TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
         )
-        # extract and return tuples of id and name in a list (from a
-        # list of dictionaries)
+        # extract and return tuples of id and name in a list (from a list of dictionaries)
         # removing duplicates
+        if representing_ids := self.request.user.representing_ids:
+            org_parties += [self.client.organisations(each) for each in representing_ids]
+
         return [
             (each["id"], each["name"])
             for each in org_parties
-            if each["id"] != self.request.user.organisation.get("id")
+            if each["id"] != self.request.user.contact["organisation"].get("id")
         ]
 
     def get_context_data(self, **kwargs):
@@ -573,13 +578,16 @@ class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
 
     def form_valid(self, form):
         # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
-        organisation_case_role = self.client.organisation_case_roles.get_with_case_and_organisation(
-            case_id=self.submission["case"]["id"],
-            organisation_id=self.submission["organisation"]["id"],
+        organisation_case_roles = (
+            self.client.organisation_case_roles.get_with_case_and_organisation(
+                case_id=self.submission["case"]["id"],
+                organisation_id=self.submission["organisation"]["id"],
+            )
         )
-        self.client.organisation_case_roles(organisation_case_role["id"]).update(
-            {"role_key": "awaiting_approval"}
-        )
+        for organisation_case_role in organisation_case_roles:
+            self.client.organisation_case_roles(organisation_case_role["id"]).update(
+                {"role_key": "awaiting_approval"}
+            )
 
         # Now we update the status of the submission to received
         self.client.submissions(self.kwargs["submission_id"]).update_submission_status("received")

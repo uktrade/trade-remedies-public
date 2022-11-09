@@ -1,7 +1,15 @@
+e.g x["a"]["s
+which_user_case
 aria-controls="manage
 aria-labelledby="tab_manage
 Gabon</a
 type</span>
+organisationcaserole_set
+DEFINITELY
+new_user/who_is_registering.html
+Organisation
+no_click
+Cases
 invitation_id>/start/
 accept_invite_start
 GOVUKFrontend.initAll

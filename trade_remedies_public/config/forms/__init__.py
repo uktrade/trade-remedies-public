@@ -6,7 +6,11 @@ from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 class ValidationForm(forms.Form, TradeRemediesAPIClientMixin):
     def __init__(self, *args, **kwargs):
+        exclude_fields = kwargs.pop("exclude_fields", [])
         super().__init__(*args, **kwargs)
+        for field in exclude_fields:
+            if field in self.fields:
+                del self.fields[field]
         self.field_errors = defaultdict(list)
 
     def assign_errors_to_request(self, request):
