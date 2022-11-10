@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import FormView, TemplateView
@@ -9,6 +10,12 @@ from config.constants import (
     SECURITY_GROUP_ORGANISATION_USER,
 )
 from core.base import GroupRequiredMixin
+
+
+class BaseAnonymousPublicTemplateView(APIClientMixin, TemplateView):
+    """Template view used to anonymous users who do not need to be logged in."""
+
+    pass
 
 
 class BasePublicView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin):
@@ -24,9 +31,29 @@ class BasePublicView(LoginRequiredMixin, GroupRequiredMixin, APIClientMixin):
 class FormInvalidMixin(FormView):
     """Adds a mixin to the FormView for assigning form errors to a request if invalid"""
 
+    exclude_fields = []  # A list of fields you want to exclude from the instantiated form_class
+    form_class = None
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs["exclude_fields"] = self.exclude_fields
+        return kwargs
+
     def form_invalid(self, form):
         form.assign_errors_to_request(self.request)
         return super().form_invalid(form)
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            if self.success_url or self.__class__.get_success_url != FormView.get_success_url:
+                # If we have a success_url defined OR have overridden get_success_url(),
+                # then don't return form_valid, just run it and prioritise the success_url instead
+                self.form_valid(form)
+                return redirect(self.get_success_url())
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 
 class BasePublicFormView(BasePublicView, FormInvalidMixin):

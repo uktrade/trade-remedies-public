@@ -30,7 +30,7 @@
                         Interested party
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        {% if user.organisation.id == submission.organisation.id %}
+                        {% if user.contact.organisation.id == submission.organisation.id %}
                             <p>My organisation:</p>
                         {% else %}
                             <p>My client:</p>

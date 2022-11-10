@@ -1,8 +1,9 @@
 from collections import defaultdict
 from typing import Union
 
-from django.http import HttpRequest
+import dpath
 from django.conf import settings
+from django.http import HttpRequest
 from v2_api_client.client import TRSAPIClient
 
 
@@ -72,3 +73,36 @@ def get_uploaded_loa_document(submission: dict) -> Union[dict, None]:
         if loa_document:
             return loa_document["document"]
     return None
+
+
+def remove_duplicates_from_list_by_key(
+    list_object: list, key: str, raise_exception: bool = False
+) -> list:
+    """
+    Removes duplicates from a list of dictionaries by a key.
+
+    e.g. Removes all duplicate user_case objects by their case_id.
+    Parameters
+    ----------
+    list_object : the list to remove duplicates from
+    key : the key in a dpath glob format. e.g x["a"]["s"] == "/a/s/"
+    raise_exception : if you want to raise an exception if the key cannot be found in the element
+
+    Returns
+    -------
+    list_object with all the duplicates removed according to key
+    """
+    seen_elements = []
+    no_duplicates = []
+
+    for element in list_object:
+        try:
+            value = dpath.util.get(element, key)
+            if value not in seen_elements:
+                seen_elements.append(value)
+                no_duplicates.append(element)
+        except KeyError:
+            if raise_exception:
+                raise
+            pass
+    return no_duplicates
