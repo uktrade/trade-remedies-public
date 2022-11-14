@@ -61,9 +61,9 @@ class CollectFeedbackView(APIClientMixin, TemplateView):
             feedback_dictionary.update(
                 {
                     "logged_in": request.user.is_authenticated,
-                    "url": request.GET.get("previous_url"),
-                    "url_name": request.GET.get("previous_url_name"),
-                    "journey": request.GET.get("journey"),
+                    "url": request.GET.get("previous_url", "N/A"),
+                    "url_name": request.GET.get("previous_url_name", "N/A"),
+                    "journey": request.GET.get("journey", "N/A"),
                 }
             )
             feedback_object = self.client.feedback(feedback_dictionary)
