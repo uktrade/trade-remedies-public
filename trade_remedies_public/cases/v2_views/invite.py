@@ -576,9 +576,11 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
     template_name = "v2/invite/invite_representative_check_and_submit.html"
 
     def post(self, request, *args, **kwargs):
-        invitation = self.client.invitations(kwargs["invitation_id"]).send()
+        # todo - mark submission as ready for review
+        # invitation = self.client.invitations(kwargs["invitation_id"]).send()
+        self.client.submissions(self.invitation.submission.id).update_submission_status("received")
         return redirect(
-            reverse("invite_representative_sent", kwargs={"invitation_id": invitation["id"]})
+            reverse("invite_representative_sent", kwargs={"invitation_id": self.invitation["id"]})
         )
 
 
