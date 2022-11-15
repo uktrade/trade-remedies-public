@@ -102,10 +102,31 @@
     outline: 3px solid #ffdd00;
 }
 
-.js-enabled .what_didnt_work_so_well{
+.js-enabled .what_didnt_work_so_well {
     display: none;
 }
 
-.js-disabled .what_didnt_work_so_well{
+.js-disabled .what_didnt_work_so_well {
     display: block;
+}
+
+.address-card-duplicate {
+    background-color: white;
+}
+
+.align {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.star-rating3__stars.task {
+    margin: 0 auto;
+}
+
+.jc-center {
+    justify-content: center;
+}
+
+.flex-parent {
+    display: flex;
 }
