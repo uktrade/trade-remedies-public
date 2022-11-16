@@ -1,5 +1,3 @@
-import datetime
-
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -500,17 +498,13 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
 
 
 "/public-side/{case_id}"
+
+
 class ViewCase(BaseInviteFormView):
     def get(self, *args, **kwargs):
         case = self.client.cases(self.kwargs["case_id"], fields=["name"])
-        new_case = self.client.cases({
-            "name": "new case"
-        })
-        case = self.client.cases(self.kwargs["case_id"]).update({
-            "name": "updated_name"
-        })
-
-
+        new_case = self.client.cases({"name": "new case"})
+        case = self.client.cases(self.kwargs["case_id"]).update({"name": "updated_name"})
 
 
 class InviteExistingRepresentativeDetails(BaseInviteFormView):
@@ -520,22 +514,32 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
     def form_valid(self, form):
         organisation_id = self.kwargs["organisation_id"]
 
-        # Creating a new contact and associating them with the organisation
-        new_contact = self.client.contacts(
-            {
-                "name": form.cleaned_data["contact_name"],
-                "email": form.cleaned_data["contact_email"],
-                "organisation": organisation_id,
-            }
-        )
+        if existing_contacts := self.client.contacts(
+            name=form.cleaned_data["contact_name"],
+            email=form.cleaned_data["contact_email"],
+            organisation_id=organisation_id,
+        ):
+            # there are existing contacts with the same name, email, and organisation! let's just
+            # use that one instead of creating a new one. If there are multiple, get the one that
+            # was created first
+            contact = sorted(existing_contacts, key=lambda x: x.created_at)[0]
+        else:
+            # Creating a new contact and associating them with the organisation
+            contact = self.client.contacts(
+                {
+                    "name": form.cleaned_data["contact_name"],
+                    "email": form.cleaned_data["contact_email"],
+                    "organisation": organisation_id,
+                }
+            )
 
         # Associating this contact with the invitation
         self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": new_contact["id"]},
+            {"contact": contact.id},
         )
 
         updated_invitation = self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": new_contact["id"]}, fields=["submission", "contact"]
+            {"contact": contact.id}, fields=["submission", "contact"]
         )
 
         # Associating the submission with the new organisation
@@ -584,8 +588,7 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
     template_name = "v2/invite/invite_representative_check_and_submit.html"
 
     def post(self, request, *args, **kwargs):
-        #todo - mark submission as ready for review
-        #invitation = self.client.invitations(kwargs["invitation_id"]).send()
+        self.client.invitations(kwargs["invitation_id"]).send()
         self.client.submissions(self.invitation.submission.id).update_submission_status("received")
         return redirect(
             reverse("invite_representative_sent", kwargs={"invitation_id": self.invitation["id"]})
