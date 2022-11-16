@@ -1,3 +1,5 @@
+import logging
+
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -23,6 +25,8 @@ from config.utils import (
     get_uploaded_loa_document,
 )
 
+logger = logging.getLogger(__name__)
+
 
 class BaseInviteView(BasePublicView, TemplateView):
     def dispatch(self, request, *args, **kwargs):
@@ -33,6 +37,10 @@ class BaseInviteView(BasePublicView, TemplateView):
                     if inviting_organisation["id"] != request.user.contact["organisation"]["id"]:
                         # The user should not have access to this invitation,
                         # raise a 403 permission DENIED
+                        logger.info(
+                            f"User {request.user.id} requested access to Invitation "
+                            f"{invitation_id}. Permission denied."
+                        )
                         raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 

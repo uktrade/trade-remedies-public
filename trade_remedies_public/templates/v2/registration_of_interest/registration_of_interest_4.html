@@ -35,10 +35,18 @@
                         {% else %}
                             <p>My client:</p>
                         {% endif %}
-                        {{ submission.primary_contact.name }}
-                        <br>
-                        {{ submission.primary_contact.email }}
-                        <br><br>
+                        {% if submission.primary_contact %}
+                            {{ submission.primary_contact.name }}
+                            <br>
+                            {{ submission.primary_contact.email }}
+                            <br><br>
+                        {% elif user.organisation.id == submission.organisation.id %}
+                            {# ROI is on behalf of the user and it's V1 so don't have a primary contact, show the logged in user's details #}
+                            {{ user.contact.name }}
+                            <br>
+                            {{ user.contact.email }}
+                            <br><br>
+                        {% endif %}
                         {{ submission.organisation.name }}
                         <br>
                         {{ submission.organisation.address }}
