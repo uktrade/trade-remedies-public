@@ -1,6 +1,7 @@
 # ## IHTC compliance
 
-# current django version settings config docs: https://docs.djangoproject.com/en/3.2/ref/settings/
+# current django version settings config docs:
+# https://docs.djangoproject.com/en/3.2/ref/settings/
 
 # Set crsf cookie to be secure
 CSRF_COOKIE_SECURE = True
