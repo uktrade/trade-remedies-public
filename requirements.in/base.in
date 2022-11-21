@@ -25,6 +25,9 @@ whitenoise==5.3.0
 py>=1.10.0
 phonenumbers
 
+# Content-Security-Policy
+django-csp==3.7
+
 # SASS compilation
 libsass
 django-compressor
