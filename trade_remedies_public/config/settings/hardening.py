@@ -35,6 +35,10 @@ X_FRAME_OPTIONS = "DENY"
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+SECURE_HSTS_PRELOAD = True
+
 # SecurityMiddleware redirects all non-HTTPS requests
 # to HTTPS (except for those URLs matching a
 # regular expression listed in SECURE_REDIRECT_EXEMPT
