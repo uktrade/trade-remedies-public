@@ -397,7 +397,7 @@ class DashboardView(
         # Let's get the cases where the user is awaiting approval
         v2_client = TRSAPIClient(token=request.user.token)
         invitations = v2_client.invitations(
-            contact_id=request.user.contact["id"], fields=["submission", "case"]
+            contact_id=request.user.contact["id"], fields=["submission", "case", "invitation_type"]
         )
         unapproved_rep_invitations_cases = [
             invite.case

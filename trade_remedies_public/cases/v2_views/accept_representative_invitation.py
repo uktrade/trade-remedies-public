@@ -154,6 +154,10 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
                 "duns_number": form.cleaned_data.get("company_duns_number"),
             }
         )
+
+        # marking the submission as received so it can be verified by the caseworker
+        self.client.submissions(self.invitation.submission.id).update_submission_status("received")
+
         # now let's validate the person's email
         return redirect(
             reverse(

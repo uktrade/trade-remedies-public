@@ -276,9 +276,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -297,9 +297,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -391,27 +391,24 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
         invitations_sent = []
-        organisations_seen = []
         for sent_invitation in organisation["invitations"]:
             if invited_contact := sent_invitation.get("contact", None):
                 # Thn checking if there is an organisation associated with the invitation
                 if invited_organisation := invited_contact.get("organisation", None):
                     # If the invited contact doesn't belong to the user's organisation
                     if invited_organisation != self.request.user.contact["organisation"]["id"]:
-                        if invited_organisation not in organisations_seen:
-                            """validated = self.client.organisations(
-                                invited_organisation, fields=["validated"]
-                            )"""
-                            if sent_invitation.submission.status.sufficient:
-                                # We only want to include organisations which have been validated
-                                # by the TRA in the past By having the
-                                # invite 3rd party submission marked as sufficient.
-                                invitations_sent.append(sent_invitation)
-                            # Still include them on the seen list, so we don't bother checking them
-                            # again
-                            organisations_seen.append(invited_organisation)
-
-        self.invitations_sent = invitations_sent
+                        if sent_invitation.submission.status.sufficient:
+                            # We only want to include organisations which have been validated
+                            # by the TRA in the past By having the
+                            # invite 3rd party submission marked as sufficient.
+                            invitations_sent.append(sent_invitation)
+        organisations_seen = []
+        no_dupe_orgs_sent_invitations = []
+        for sent_invitation in invitations_sent:
+            if sent_invitation.contact.organisation not in organisations_seen:
+                no_dupe_orgs_sent_invitations.append(sent_invitation)
+                organisations_seen.append(sent_invitation.contact.organisation)
+        self.invitations_sent = no_dupe_orgs_sent_invitations
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -483,7 +480,11 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
 
         # Associating this contact with the invitation
         updated_invitation = self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": contact["id"]}, fields=["submission", "contact"]
+            {
+                "contact": contact["id"],
+                "name": contact.name,
+                "email": contact.email
+            }, fields=["submission", "contact", "name", "email"]
         )
 
         # Associating the submission with the inviter's organisation
@@ -523,9 +524,9 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
         organisation_id = self.kwargs["organisation_id"]
 
         if existing_contacts := self.client.contacts(
-            name=form.cleaned_data["contact_name"],
-            email=form.cleaned_data["contact_email"],
-            organisation_id=organisation_id,
+                name=form.cleaned_data["contact_name"],
+                email=form.cleaned_data["contact_email"],
+                organisation_id=organisation_id,
         ):
             # there are existing contacts with the same name, email, and organisation! let's just
             # use that one instead of creating a new one. If there are multiple, get the one that
@@ -543,15 +544,16 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
 
         # Associating this contact with the invitation
         self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": contact.id},
-        )
-
-        updated_invitation = self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": contact.id}, fields=["submission", "contact"]
+            {
+                "contact": contact.id,
+                "name": contact.name,
+                "email": contact.email
+            },
+            fields=["submission", "contact", "name", "email"]
         )
 
         # Associating the submission with the new organisation
-        self.client.submissions(updated_invitation["submission"]["id"]).update(
+        self.client.submissions(self.invitation.submission.id).update(
             {
                 "organisation": self.request.user.contact["organisation"]["id"],
             },
@@ -562,7 +564,7 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
         return redirect(
             reverse(
                 "invite_representative_task_list_exists",
-                kwargs={"invitation_id": updated_invitation["id"]},
+                kwargs={"invitation_id": self.invitation.id},
             )
         )
 
@@ -597,7 +599,7 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
 
     def post(self, request, *args, **kwargs):
         self.client.invitations(kwargs["invitation_id"]).send()
-        self.client.submissions(self.invitation.submission.id).update_submission_status("received")
+        self.client.submissions(self.invitation.submission.id).update_submission_status("sent")
         return redirect(
             reverse("invite_representative_sent", kwargs={"invitation_id": self.invitation["id"]})
         )
