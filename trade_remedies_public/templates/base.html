@@ -41,7 +41,7 @@
   {{ block.super }}
   {% block feedback_section %}
     <div class="feedback-section">
-      <a class="govuk-link" href="{% url 'collect_feedback' %}">Give feedback.</a>
+      <a class="govuk-link" href="{% url 'collect_feedback' %}?previous_url={{ request.path }}&previous_url_name={{ request.resolver_match.url_name }}&journey=Generic+Footer">Give feedback.</a>
     </div>
   {% endblock %}
 {% endblock %}
