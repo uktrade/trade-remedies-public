@@ -255,8 +255,8 @@ class RegistrationOfInterest1(RegistrationOfInterestBase, TemplateView):
         case_name = case_information[2]
         case_registration_deadline = case_information[3]
 
-        if datetime.datetime.strptime(
-            case_registration_deadline, "%Y-%m-%dT%H:%M:%S%z"
+        if datetime.datetime.fromisoformat(
+            case_registration_deadline
         ) < timezone.now() and not request.POST.get("confirmed_okay_to_proceed"):
             return render(
                 request,

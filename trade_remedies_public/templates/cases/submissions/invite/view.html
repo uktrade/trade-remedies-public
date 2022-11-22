@@ -3,26 +3,27 @@
 
 {% block breadcrumb_current %}Invite a 3rd party{% endblock %}
 {% block page_subtitle %}Your 3rd party invitation{% endblock %}
-{% block page_title  %}Invite submitted{% endblock %}
+{% block page_title %}Invite submitted{% endblock %}
 
-    {% block action_block %}
-        {% if case %}
-            <div>
-                You have requested to invite 3rd parties to :<br>
-                <strong >{{case.reference}}: {{case.name}}</strong>
-            </div>
-        {% endif %}
-    {% endblock %}
+{% block action_block %}
+    {% if case %}
+        <div>
+            You have requested to invite 3rd parties to :<br>
+            <strong>{{ case.reference }}: {{ case.name }}</strong>
+        </div>
+    {% endif %}
+{% endblock %}
 
 {% block status_block %}
     {% if submission.status.sufficient %}
-    This invitation was accepted.
+        This invitation was accepted.
     {% endif %}
 
     {% if submission.status.received %}
         The following were sent invitations to join your view of this case.
     {% else %}
-        The following will be sent invitations to join your view of this case when the Letter of Authority is reviewed by the Trade Remedies Authority:
+        The following will be sent invitations to join your view of this case when the Letter of Authority is reviewed
+        by the Trade Remedies Authority:
     {% endif %}
 
     <table>
@@ -32,16 +33,19 @@
             <th>Organisation</th>
         </tr>
         {% for invite in invites %}
-        <tr>
-            <td>{{invite.contact.name}}</td>
-            <td>{{invite.contact.email}}</td>
-            <td>{% if invite.submission.name == "Invite 3rd party" %}{{invite.contact.organisation.name}}{% else %}{{invite.organisation.name}}{% endif %}</td>
-        </tr>
+            <tr>
+                <td>{{ invite.contact.name }}</td>
+                <td>{{ invite.contact.email }}</td>
+                <td>{% if invite.submission.name == "Invite 3rd party" %}
+                    {{ invite.contact.organisation.name }}{% else %}{{ invite.organisation.name }}{% endif %}</td>
+            </tr>
         {% endfor %}
     </table>
 {% endblock %}
 
 {% block feedback_content %}
-    {{ block.super }}
-{% include "v2/feedback/stars_partial.html" with  journey="V1 Invite to representative sent" %}
+    {% if request.GET.just_created %}
+        {{ block.super }}
+        {% include "v2/feedback/stars_partial.html" with  journey="V1 Invite to representative sent" %}
+    {% endif %}
 {% endblock feedback_content %}
