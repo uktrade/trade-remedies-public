@@ -45,3 +45,24 @@ SECURE_HSTS_PRELOAD = True
 SECURE_SSL_REDIRECT = True
 
 SECURE_HSTS_SECONDS = 0
+
+CSP_DEFAULT_SRC = ("'self'", "https:")
+
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https:")
+
+CSP_IMG_SRC = (
+    "'self'",
+    "https:",
+)
+
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "'unsafe-hashes'",
+    "'unsafe-inline'",
+    "https:",
+)
+
+CSP_FONT_SRC = (
+    "'self'",
+    "https:",
+)
