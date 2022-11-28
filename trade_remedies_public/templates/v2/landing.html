@@ -34,7 +34,7 @@
         <p class="govuk-body">You will need to create an account to use the service. Please have any registration
             details for your organisation ready. It takes about 10 minutes.</p>
         <div class="govuk-button-group">
-            <a href="{% if request.GET.invitation %}{% url 'accept_invite_start' invitation_id=request.GET.invitation %}{% else %}{% url 'login' %}{% endif %}" id="sign_in_button" role="button" draggable="false"
+            <a href="{% url 'login' %}" id="sign_in_button" role="button" draggable="false"
                class="govuk-button govuk-button--start" data-module="govuk-button">
                 Sign in
                 <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19"
@@ -42,7 +42,7 @@
                     <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
                 </svg>
             </a>
-            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'v2_register_start' %}">Create an
+            <a class="govuk-link govuk-link--no-visited-state" href="{% if request.GET.invitation %}{% url 'accept_invite_start' invitation_id=request.GET.invitation %}{% else %}{% url 'v2_register_start' %}{% endif %}">Create an
                 account</a>
         </div>
     </div>
