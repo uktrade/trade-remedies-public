@@ -397,7 +397,7 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
                 if invited_organisation := invited_contact.get("organisation", None):
                     # If the invited contact doesn't belong to the user's organisation
                     if invited_organisation != self.request.user.contact["organisation"]["id"]:
-                        if sent_invitation.submission.status.sufficient:
+                        if sent_invitation.submission.status.review_ok:
                             # We only want to include organisations which have been validated
                             # by the TRA in the past By having the
                             # invite 3rd party submission marked as sufficient.
