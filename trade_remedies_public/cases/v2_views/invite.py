@@ -276,9 +276,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Letter of Authority",
                         "status": "Complete"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -297,9 +297,9 @@ class InviteRepresentativeTaskList(TaskListView):
                         "link_text": "Check and submit",
                         "status": "Not Started"
                         if (
-                                invitation
-                                and "submission" in invitation
-                                and get_uploaded_loa_document(invitation.get("submission"))
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
                         )
                         else "Not Started",
                     }
@@ -480,11 +480,8 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
 
         # Associating this contact with the invitation
         updated_invitation = self.client.invitations(self.kwargs["invitation_id"]).update(
-            {
-                "contact": contact["id"],
-                "name": contact.name,
-                "email": contact.email
-            }, fields=["submission", "contact", "name", "email"]
+            {"contact": contact["id"], "name": contact.name, "email": contact.email},
+            fields=["submission", "contact", "name", "email"],
         )
 
         # Associating the submission with the inviter's organisation
@@ -524,9 +521,9 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
         organisation_id = self.kwargs["organisation_id"]
 
         if existing_contacts := self.client.contacts(
-                name=form.cleaned_data["contact_name"],
-                email=form.cleaned_data["contact_email"],
-                organisation_id=organisation_id,
+            name=form.cleaned_data["contact_name"],
+            email=form.cleaned_data["contact_email"],
+            organisation_id=organisation_id,
         ):
             # there are existing contacts with the same name, email, and organisation! let's just
             # use that one instead of creating a new one. If there are multiple, get the one that
@@ -544,12 +541,8 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
 
         # Associating this contact with the invitation
         self.client.invitations(self.kwargs["invitation_id"]).update(
-            {
-                "contact": contact.id,
-                "name": contact.name,
-                "email": contact.email
-            },
-            fields=["submission", "contact", "name", "email"]
+            {"contact": contact.id, "name": contact.name, "email": contact.email},
+            fields=["submission", "contact", "name", "email"],
         )
 
         # Associating the submission with the new organisation

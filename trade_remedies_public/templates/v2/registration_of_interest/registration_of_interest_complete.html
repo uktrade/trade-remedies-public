@@ -29,7 +29,7 @@
                 Interested party:
                 {{ submission.organisation.name }}
                 <br>
-                Received on: <span id="date">{{ submission.received_at|format_date:'%d %b %Y' }}</span>
+                Received on: <span id="date">{{ submission.received_at|date:'d M Y' }}</span>
             </p>
             <h2 class="govuk-heading-m">What happens next</h2>
             <ul class="govuk-list govuk-list--bullet">
