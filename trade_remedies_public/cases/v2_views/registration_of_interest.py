@@ -46,8 +46,12 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         if request.user.is_authenticated and self.kwargs.get("submission_id"):
             submission_id = self.kwargs.get("submission_id")
             self.submission = self.client.submissions(submission_id)
-            if self.submission.created_by.id != request.user.id:
+            if (
+                self.submission.created_by.id != request.user.id
+                and request.resolver_match.url_name != "roi_already_exists"
+            ):
                 # This user did not create this ROI, raise a 403 permission DENIED
+                # However we can make an exception if they've tyring to create a duplicate ROI
                 logger.info(
                     f"User {request.user.id} requested access to ROI {submission_id}. "
                     f"Permission denied."

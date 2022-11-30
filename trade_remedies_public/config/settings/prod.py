@@ -9,4 +9,5 @@ INSTALLED_APPS += [  # noqa: F405
 
 MIDDLEWARE += [  # noqa: F405
     "config.middleware.CustomAuditLogMiddleware",
+    "csp.middleware.CSPMiddleware",
 ]

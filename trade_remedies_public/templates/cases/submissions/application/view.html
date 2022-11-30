@@ -46,3 +46,8 @@
 
     {% endif %}
 {% endblock %}
+
+{% block feedback_content %}
+        {{ block.super }}
+        {% include "v2/feedback/stars_partial.html" with  journey="V1 Apply for a new case" %}
+{% endblock feedback_content %}

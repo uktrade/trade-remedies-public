@@ -21,5 +21,8 @@
             </div>
         </form>
     </div>
-
 {% endblock row_content %}
+
+{% block additional_content %}
+    {% include "v2/feedback/stars_partial.html" with  journey="Invite - User already part of organisation" %}
+{% endblock additional_content %}
