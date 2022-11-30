@@ -1,0 +1,74 @@
+{% load static %}
+<form method="post" action="{% url 'collect_rating' %}">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <hr class="govuk-section-break govuk-section-break--visible">
+            <br>
+            <div class="address-card address-card-duplicate">
+                <div class="address-container">
+                    <div class="govuk-form-group">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s align"><h2
+                                class="govuk-fieldset__heading">
+                            Overall, how would you rate your experience with the Trade Remedies Service today?
+                        </h2>
+                        </legend>
+                        <div class="govuk-radios star-rating3__stars task" data-module="govuk-radios">
+                            <input class="star-rating3__input" type="radio" name="rating" value="1" id="rating-1">
+                            <label class="star-rating3__label" for="rating-1" aria-label="Very dissatisfied"><span
+                                    class="govuk-label text">Very dissatisfied</span></label>
+                            <input class="star-rating3__input" type="radio" name="rating" value="2" id="rating-2">
+                            <label class="star-rating3__label" for="rating-2" aria-label="Dissatisfied"><span
+                                    class="govuk-label text">Dissatisfied</span></label>
+                            <input class="star-rating3__input" type="radio" name="rating" value="3" id="rating-3">
+                            <label class="star-rating3__label" for="rating-3"
+                                   aria-label="Neither satisified or dissatisfied"><span class="govuk-label text">Neither satisified or dissatisfied</span></label>
+                            <input class="star-rating3__input" type="radio" name="rating" value="4" id="rating-4">
+                            <label class="star-rating3__label" for="rating-4" aria-label="Satisfied"><span
+                                    class="govuk-label text">Satisfied</span></label>
+                            <input class="star-rating3__input" type="radio" name="rating" value="5" id="rating-5">
+                            <label class="star-rating3__label" for="rating-5" aria-label="Very satisfied"><span
+                                    class="govuk-label text">Very satisfied</span></label>
+                            <div class="star-rating3__focus"></div>
+                            <span id="js_selected_rating" class="govuk-label js-hidden selected_rating"></span>
+                        </div>
+                        </fieldset>
+                    </div>
+                    <div class="flex-parent jc-center">
+                        <a class="govuk-button govuk-button--secondary" href="{% url "collect_feedback" %}?journey={{ journey|urlencode }}" id="submit_rating_button"
+                           data-module="govuk-button">
+                            Continue
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% csrf_token %}
+    <input type="hidden" id="existing_feedback_id">
+</form>
+
+<script type="text/javascript">
+
+    document.addEventListener('DOMContentLoaded', function () {
+        $('[name="rating"]').change(function () {
+            let rating = $(this).val()
+            $.ajax({
+                type: "POST",
+                headers: {'X-CSRFToken': $('[name="csrfmiddlewaretoken"]').val()},
+                url: "{% url 'collect_rating' %}",
+                data: {
+                    "rating": rating,
+                    "journey": "{{ journey }}",
+                    "existing_feedback_id": $('#existing_feedback_id').val(),
+                    "url": '{{ request.path }}',
+                    "url_name": '{{ request.resolver_match.url_name }}'
+                },
+                success: function (data) {
+                    $('#submit_rating_button').attr("href", data.second_step_url)
+                    $('#existing_feedback_id').val(data.feedback_id)
+                }
+            });
+        })
+    }, false);
+
+</script>

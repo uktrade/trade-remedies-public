@@ -28,3 +28,7 @@
         </div>
     </div>
 {% endblock row_content %}
+
+{% block additional_content %}
+    {% include "v2/feedback/stars_partial.html" with  journey="Invite representative sent" %}
+{% endblock additional_content %}
