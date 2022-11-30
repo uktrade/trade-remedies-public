@@ -8,7 +8,11 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+<<<<<<< HEAD
 *.env*
+=======
+*.env*/
+>>>>>>> 808eb1c (added ga tags)
 env/
 build/
 develop-eggs/

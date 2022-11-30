@@ -19,22 +19,26 @@
 
 {% block page_title %}Request a review of your draft application{% endblock %}
 
-{% block form_tag %}<form action="/case/{{case_id}}/submission/{{submission_id}}/review/" method="post" class="dd-form">{% endblock %}
+{% block form_tag %}<form action="/case/{{case_id}}/submission/{{submission_id}}/review/" method="post" class="dd-form">
+{% endblock %}
 
 {% block subtype_content %}
     <input type="hidden" name="instance" value="25">
     <input type="hidden" name="submission_status_id" value="2">
     <div class="form-group">
-        <p class="form-label ">When you have uploaded all the files associated with your draft application you can request they be reviewed here prior to final submission.</p>
+        <p class="form-label ">When you have uploaded all the files associated with your draft application you can
+            request they be reviewed here prior to final submission.</p>
         <p>If you are asked to make changes you can return to the previous step to upload replacement files.</p>
         {% if not case.type.meta.confidential_only %}
-            <p>Once your draft application is approved for final submission you will need to to upload non-confidential versions of the files.</p>
+            <p>Once your draft application is approved for final submission you will need to to upload non-confidential
+                versions of the files.</p>
         {% endif %}
     </div>
     <div class="form-group {% if errors.review %}form-group-error{% endif %}">
         {% error_message errors 'review' %}
         <div class="multiple-choice submit-widget">
-            <input type="hidden" name="review" value="required"> {% comment %} An error is given if this is not overriden {% endcomment %}
+            <input type="hidden" name="review" value="required"> {% comment %} An error is given if this is not
+            overriden {% endcomment %}
             <input class="pull-left" id="terms" name="review" type="checkbox" value="1">
             <label class="form-label">
                 Review my draft application for {% a_or_an case.type.name %} {{case.type.name}}.

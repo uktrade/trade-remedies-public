@@ -37,8 +37,5 @@
             </a>
             <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invitation_start' %}">Invite new user</a>
         </div>
+    </div>
 {% endblock row_content %}
-
-{% block additional_content %}
-    {% include "v2/feedback/stars_partial.html" with journey="Invite representative sent" %}
-{% endblock additional_content %}
