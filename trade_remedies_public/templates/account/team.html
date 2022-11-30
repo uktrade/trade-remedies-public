@@ -15,8 +15,8 @@
 
 {% block row_content %}
 
-    <div class="grid-row">
-        <div class="column-two-thirds">
+<div class="grid-row">
+    <div class="column-two-thirds">
 
             <div class="breadcrumbs" data-module="track-click">
                 <ol>
@@ -30,23 +30,18 @@
                 </ol>
             </div>
 
-            {% load alert_message %}
-            <h1 class="heading-large">Manage your team</h1>
+        {% load alert_message %}
+        <h1 class="heading-large">Manage your team</h1>
 
-            <p>From here, you can:</p>
-            <ul class="list-bullet indent">
-                <li>invite colleagues to your account</li>
-                <li>assign or remove case access</li>
-                <li>deactivate accounts</li>
-            </ul>
-            <p></p>
-            <p>An invited colleague needs to set up their account before being added to cases.</p>
+        <p>From here, you can:</p>
+        <ul class="list-bullet indent">
+            <li>invite colleagues to your account</li>
+            <li>assign or remove case access</li>
+            <li>deactivate accounts</li>
+        </ul>
+        <p></p>
+        <p>An invited colleague needs to set up their account before being added to cases.</p>
 
-        </div>
-        <div class="column-one-third">
-            {% include "partials/widgets/org_display_small.html" %}
-            {% include "partials/widgets/help_box.html" %}
-        </div>
     </div>
     <div class="grid-row manage-team-page">
         <div class="column-full">
@@ -82,23 +77,44 @@
                 </tbody>
             </table>
 
-            <!-- Only show the drafts section if there are drafts -->
-            {% set 'drafts' False %}
-            {% set 'pending' False %}
-            {% for submission in pending_assignments %}
-                {% if submission.status.draft or submission.status.default %}
-                    {% set 'drafts' True %}
-                {% endif %}
-                {% if submission.status.received and not submission.status.review %}
-                    {% set 'pending' True %}
-                {% endif %}
-            {% endfor %}
-            {% for loop in '01' %}
-                {% if loop == '0' and store.pending or loop == '1' and store.drafts %}
+        <!-- Only show the drafts section if there are drafts -->
+        {% set 'drafts' False %}
+        {% set 'pending' False %}
+        {% for submission in pending_assignments %}
+        {% if submission.status.draft or submission.status.default %}
+        {% set 'drafts' True %}
+        {% endif %}
+        {% if submission.status.received and not submission.status.review %}
+        {% set 'pending' True %}
+        {% endif %}
+        {% endfor %}
+        {% for loop in '01' %}
+        {% if loop == '0' and store.pending or loop == '1' and store.drafts %}
+        {% if loop == '0' %}
+        <h2 class="heading-medium">Pending user case assignments</h2>
+        {% else %}
+        <h2 class="heading-medium">Draft user case assignments</h2>
+        {% endif %}
+        <table class="table-action-column" data-attach="TableSort">
+            <thead>
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Case</th>
+                    <th scope="col">Representing</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in pending_assignments %}
+                <tr>
+                    {% set 'good' False %}
                     {% if loop == '0' %}
-                        <h2 class="heading-medium">Pending user case assignments</h2>
+                    {% if submission.status.received and not submission.status.review %}
+                    {% set 'good' True %}
+                    {% endif %}
                     {% else %}
-                        <h2 class="heading-medium">Draft user case assignments</h2>
+                    {% if submission.status.draft or submission.status.default %}
+                    {% set 'good' True %}
                     {% endif %}
                     <table class="table-action-column" data-attach="TableSort">
                         <thead>
@@ -144,10 +160,14 @@
                         </tbody>
                     </table>
                 {% endif %}
-            {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        {% endfor %}
 
-            {% if invites or third_party_invites %}
-                <h2 class="heading-medium">Pending user invitations</h2>
+        {% if invites or third_party_invites %}
+        <h2 class="heading-medium">Pending user invitations</h2>
 
                 <table data-attach="TableSort">
                     <thead>
@@ -242,5 +262,6 @@
             </div>
         </div>
     </div>
+</div>
 
 {% endblock %}

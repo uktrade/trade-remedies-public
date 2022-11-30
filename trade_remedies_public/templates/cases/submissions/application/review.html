@@ -22,7 +22,7 @@
 {% block form_tag %}<form action="/case/{{case_id}}/submission/{{submission_id}}/review/" method="post" class="dd-form">
 {% endblock %}
 
-{% block subtype_content %}
+    {% block subtype_content %}
     <input type="hidden" name="instance" value="25">
     <input type="hidden" name="submission_status_id" value="2">
     <div class="form-group">
@@ -45,4 +45,4 @@
             </label>
         </div>
     </div>
-{% endblock %}
+    {% endblock %}

@@ -15,27 +15,27 @@
 {% block back_button %}{% endblock back_button %}
 
 {% block row_content %}
-    <div class="govuk-grid-column-two-thirds">
-        <div class="govuk-panel govuk-panel--confirmation">
-            <h1 class="govuk-panel__title">
-                Invite sent
-            </h1>
-        </div>
-        <p>We have sent an email to invite a representative to join your account and act on your behalf.</p>
-        <p>
-            {{ invitation.contact.name }} - {{ invitation.contact.email }}<br>
-            {{ invitation.contact.organisation_name }}<br>
-            {{ invitation.submission.case.reference }} - {{ invitation.submission.case.name }}<br>
-        </p>
-        <p>The invite will ask your representative to register. This will give them access to the Trade Remedies
-            Service. </p>
-        <p>They will be able to act on your behalf once they have registered and their organisation has been verified by
-            us.</p>
-        <div class="govuk-button-group">
-            <a class="govuk-button" data-module="govuk-button" href="{% url 'team_view' %}">
-                Manage team
-            </a>
-            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invitation_start' %}">Invite new user</a>
-        </div>
+<div class="govuk-grid-column-two-thirds">
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+            Invite sent
+        </h1>
     </div>
+    <p>We have sent an email to invite a representative to join your account and act on your behalf.</p>
+    <p>
+        {{ invitation.contact.name }} - {{ invitation.contact.email }}<br>
+        {{ invitation.contact.organisation_name }}<br>
+        {{ invitation.submission.case.reference }} - {{ invitation.submission.case.name }}<br>
+    </p>
+    <p>The invite will ask your representative to register. This will give them access to the Trade Remedies
+        Service. </p>
+    <p>They will be able to act on your behalf once they have registered and their organisation has been verified by
+        us.</p>
+    <div class="govuk-button-group">
+        <a class="govuk-button" data-module="govuk-button" href="{% url 'team_view' %}">
+            Manage team
+        </a>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invitation_start' %}">Invite new user</a>
+    </div>
+</div>
 {% endblock row_content %}
