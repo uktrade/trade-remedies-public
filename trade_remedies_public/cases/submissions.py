@@ -1,4 +1,6 @@
 import json
+
+from django.urls import reverse
 from django.utils import timezone
 from trade_remedies_client.client import Client
 from django_countries import countries
@@ -77,6 +79,19 @@ class InviteThirdPartySubmission(BaseSubmissionHelper):
             invites = self.client.get_third_party_invites(self.case_id, self.submission["id"])
         context["invites"] = invites
         return context
+
+    def on_submit(self, **kwargs):
+        # return the correct URL
+        return (
+            reverse(
+                "sub_tasklist",
+                kwargs={
+                    "case_id": self.submission["case"]["id"],
+                    "submission_id": self.submission["id"],
+                },
+            )
+            + "?just_created=yes"
+        )
 
 
 class AssignUserSubmission(BaseSubmissionHelper):
