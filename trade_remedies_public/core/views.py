@@ -403,8 +403,9 @@ class DashboardView(
             invite.case
             for invite in invitations
             if invite.invitation_type == 2
-            and not invite.submission.status.sufficient
-            and not invite.submission.status.name.lower() == "deficient"
+            if invite.submission
+            and not invite.submission.status.review_ok
+            and not invite.submission.status.version
         ]
         return render(
             request,
