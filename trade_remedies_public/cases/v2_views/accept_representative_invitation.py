@@ -158,6 +158,20 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
         # marking the submission as received so it can be verified by the caseworker
         self.client.submissions(self.invitation.submission.id).update_submission_status("received")
 
+        # First let's add the invitee as an admin user to their organisation
+        self.client.organisations(self.invitation.contact.organisation).add_user(
+            user_id=self.invitation.invited_user.id,
+            group_name=SECURITY_GROUP_ORGANISATION_OWNER,
+            confirmed=True
+        )
+
+        # Then add them as a third party user of the inviting organisation
+        self.client.organisations(self.invitation.organisation.id).add_user(
+            user_id=self.invitation.invited_user.id,
+            group_name=SECURITY_GROUP_THIRD_PARTY_USER,
+            confirmed=True
+        )
+
         # now let's validate the person's email
         return redirect(
             reverse(
