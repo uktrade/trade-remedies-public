@@ -1,4 +1,4 @@
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 
 from cases.v2_forms.accept_representative_invite import WhoIsRegisteringForm
@@ -6,11 +6,25 @@ from cases.v2_views.accept_own_org_invitation import (
     AcceptOrganisationInvite,
     AcceptOrganisationSetPassword,
     AcceptOrganisationTwoFactorChoice,
-    BaseAcceptInviteView,
+    BaseAcceptInviteView as NormalBaseAcceptInviteView,
 )
 from config.base_views import FormInvalidMixin
 from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_THIRD_PARTY_USER
 from registration.forms.forms import NonUkEmployerForm, OrganisationFurtherDetailsForm
+
+
+class BaseAcceptInviteView(NormalBaseAcceptInviteView):
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        if not self.invitation.submission.status.sent:
+            # The invitation has either been marked as sufficient or deficient by caseworker, stop
+            # from proceeding
+            return render(
+                request=request,
+                template_name="v2/accept_invite/invitation_already_used.html",
+                context={},
+            )
+        return response
 
 
 class WhoIsRegisteringView(BaseAcceptInviteView, FormInvalidMixin):
