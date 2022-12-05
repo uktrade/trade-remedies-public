@@ -592,7 +592,6 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
 
     def post(self, request, *args, **kwargs):
         self.client.invitations(kwargs["invitation_id"]).send()
-        self.client.submissions(self.invitation.submission.id).update_submission_status("sent")
         return redirect(
             reverse("invite_representative_sent", kwargs={"invitation_id": self.invitation["id"]})
         )
