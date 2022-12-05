@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.urls import reverse
 
 from cases.v2_forms.accept_representative_invite import WhoIsRegisteringForm
@@ -19,11 +19,7 @@ class BaseAcceptInviteView(NormalBaseAcceptInviteView):
         if not self.invitation.submission.status.sent:
             # The invitation has either been marked as sufficient or deficient by caseworker, stop
             # from proceeding
-            return render(
-                request=request,
-                template_name="v2/accept_invite/invitation_already_used.html",
-                context={},
-            )
+            return redirect(reverse("login"))
         return response
 
 
