@@ -463,29 +463,80 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
             # and their organisation so that when they log in, TRS with process them as a rep
             contact = user.contact
         except NotFoundError:
-            # The user does not exist, let's create a new contact and org from scratch
+            # The user does not exist, let's create a new contact and org from scratch, unless there
+            # is already an org associated with this invitee, and it has the same name and number
+            # as the new one
+            create_new_organisation = True
+            create_new_contact = True
 
-            # Creating a new organisation
-            organisation = self.client.organisations(
-                {"name": form.cleaned_data["organisation_name"]}, fields=["id"]
-            )
-            # Creating a new contact and associating them with the organisation
-            contact = self.client.contacts(
-                {
-                    "name": form.cleaned_data["contact_name"],
-                    "email": form.cleaned_data["contact_email"],
-                    "organisation": organisation["id"],
-                }
-            )
+            contact = None
+            organisation_id = None
+
+            if existing_contact := self.invitation.contact:
+                # if a contact is already associated with this invitation (i.e. the user is
+                # revisiting this page), we don't want to create duplicates of the organisation and
+                # contact objects, so we run some checks to see if that's really necessary.
+                if existing_contact_organisation_name := self.invitation.contact.organisation_name:
+                    if existing_contact_organisation_name == form.cleaned_data["organisation_name"]:
+                        # it's the same organisation, reuse rather than recreate
+                        create_new_organisation = False
+                        organisation_id = self.invitation.contact.organisation
+                    else:
+                        # it's a new organisation, let's see if we want to delete the old one
+                        old_organisation = self.client.organisations(
+                            self.invitation.contact.organisation,
+                            fields=["draft"]
+                        )
+                        if old_organisation.draft:
+                            old_organisation.delete()
+
+                if (
+                    existing_contact.name == form.cleaned_data["contact_name"]
+                    and existing_contact.email == form.cleaned_data["contact_email"]
+                ):
+                    # it's the same contact, reuse rather than recreate
+                    create_new_contact = False
+                    contact = self.invitation.contact
+                else:
+                    # it's a new contact, let's see if we want to delete the old one
+                    old_contact = self.client.contacts(
+                        self.invitation.contact.id,
+                        fields=["draft"]
+                    )
+                    if old_contact.draft:
+                        old_contact.delete()
+
+            if create_new_organisation:
+                # Creating a new organisation
+                organisation_id = self.client.organisations({
+                    "name": form.cleaned_data["organisation_name"],
+                    "draft": True
+                }, fields=["id"]
+                ).id
+
+                # now we associate the new organisation with the invited contact
+                if contact:
+                    self.client.contacts(contact.id).update({"organisation": organisation_id})
+
+            if create_new_contact:
+                # Creating a new contact and associating them with the organisation
+                contact = self.client.contacts(
+                    {
+                        "name": form.cleaned_data["contact_name"],
+                        "email": form.cleaned_data["contact_email"],
+                        "organisation": organisation_id,
+                        "draft": True
+                    }
+                )
 
         # Associating this contact with the invitation
-        updated_invitation = self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": contact["id"], "name": contact.name, "email": contact.email},
+        updated_invitation = self.invitation.update(
+            {"contact": contact.id, "name": contact.name, "email": contact.email},
             fields=["submission", "contact", "name", "email"],
         )
 
         # Associating the submission with the inviter's organisation
-        self.client.submissions(updated_invitation["submission"]["id"]).update(
+        self.client.submissions(updated_invitation.submission.id).update(
             {
                 # The submission needs to be associating with the inviter's organisation, the
                 # invited organisation is stored in the contact object
@@ -501,16 +552,6 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
                 kwargs={"invitation_id": updated_invitation["id"]},
             )
         )
-
-
-"/public-side/{case_id}"
-
-
-class ViewCase(BaseInviteFormView):
-    def get(self, *args, **kwargs):
-        case = self.client.cases(self.kwargs["case_id"], fields=["name"])
-        new_case = self.client.cases({"name": "new case"})
-        case = self.client.cases(self.kwargs["case_id"]).update({"name": "updated_name"})
 
 
 class InviteExistingRepresentativeDetails(BaseInviteFormView):
