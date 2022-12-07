@@ -484,8 +484,7 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
                     else:
                         # it's a new organisation, let's see if we want to delete the old one
                         old_organisation = self.client.organisations(
-                            self.invitation.contact.organisation,
-                            fields=["draft"]
+                            self.invitation.contact.organisation, fields=["draft"]
                         )
                         if old_organisation.draft:
                             old_organisation.delete()
@@ -499,19 +498,14 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
                     contact = self.invitation.contact
                 else:
                     # it's a new contact, let's see if we want to delete the old one
-                    old_contact = self.client.contacts(
-                        self.invitation.contact.id,
-                        fields=["draft"]
-                    )
+                    old_contact = self.client.contacts(self.invitation.contact.id, fields=["draft"])
                     if old_contact.draft:
                         old_contact.delete()
 
             if create_new_organisation:
                 # Creating a new organisation
-                organisation_id = self.client.organisations({
-                    "name": form.cleaned_data["organisation_name"],
-                    "draft": True
-                }, fields=["id"]
+                organisation_id = self.client.organisations(
+                    {"name": form.cleaned_data["organisation_name"], "draft": True}, fields=["id"]
                 ).id
 
                 # now we associate the new organisation with the invited contact
@@ -525,7 +519,7 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
                         "name": form.cleaned_data["contact_name"],
                         "email": form.cleaned_data["contact_email"],
                         "organisation": organisation_id,
-                        "draft": True
+                        "draft": True,
                     }
                 )
 
