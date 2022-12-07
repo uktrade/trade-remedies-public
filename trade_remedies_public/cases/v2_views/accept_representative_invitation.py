@@ -154,9 +154,8 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
     form_class = OrganisationFurtherDetailsForm
 
     def form_valid(self, form):
-        invited_organisation = self.client.organisations(self.invitation.contact.organisation)
         # Let's update the Organisation object with the new details
-        invited_organisation.update(
+        self.client.organisations(self.invitation.contact.organisation).update(
             {
                 "organisation_website": form.cleaned_data["company_website"],
                 "vat_number": form.cleaned_data.get("company_vat_number"),
@@ -165,7 +164,7 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
             }
         )
 
-        # marking the submission as received so it can be verified by the caseworker
+        # marking the submission as received, so it can be verified by the caseworker
         self.client.submissions(self.invitation.submission.id).update_submission_status("received")
 
         # First let's add the invitee as an admin user to their organisation
@@ -173,6 +172,7 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
             user_id=self.invitation.invited_user.id,
             group_name=SECURITY_GROUP_ORGANISATION_OWNER,
             confirmed=True,
+            fields=["id"],
         )
 
         # Then add them as a third party user of the inviting organisation
