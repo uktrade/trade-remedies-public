@@ -72,12 +72,12 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
     form_class = TwoFactorChoiceForm
 
     def update_two_factor_choice(
-            self,
-            user_id,
-            two_factor_delivery_choice,
-            contact_id=None,
-            mobile=None,
-            mobile_country_code=None,
+        self,
+        user_id,
+        two_factor_delivery_choice,
+        contact_id=None,
+        mobile=None,
+        mobile_country_code=None,
     ):
         """Helper function to update the two-factor choice of a user instance from an invitation
         object.
