@@ -180,7 +180,7 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
             user_id=self.invitation.invited_user.id,
             group_name=SECURITY_GROUP_THIRD_PARTY_USER,
             confirmed=True,
-            fields=["id"]
+            fields=["id"],
         )
 
         # now let's validate the person's email
