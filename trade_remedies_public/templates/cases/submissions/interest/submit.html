@@ -1,21 +1,36 @@
 {% extends "../base_submit.html" %}
+{% if user.is_authenticated %}
+<script>
+	window.dataLayer = window.dataLayer || [];
+	window.dataLayer.push({
+		'event': 'register_interest',
+		"user_id": '{{user.id}}',
+		"client_type": "{{case.type}}",
+		"case_id": "{{case_id}}"
+	});
+</script>
+{% endif %}
+
 {% block breadcrumb_current %}Register your interest in a case{% endblock %}
 {% block page_subtitle %}5. Submit your registration{% endblock %}
-{% block page_title  %}Final check and submission{% endblock %}
+{% block page_title %}Final check and submission{% endblock %}
 
 {% block submission_main_text %}
-	<ul>
-	    <li>The information you have provided will determine whether you are granted entry to the case. You will be contacted with the result of this initial assessment.</li>
-	    <li>Your answers will determine whether your company will receive a questionnaire to complete. We will contact you if your company is selected for this.</li>
-	    <li>The list of companies receiving a questionnaire will be placed on the Public record of the case.</li>
-	</ul>
+<ul>
+	<li>The information you have provided will determine whether you are granted entry to the case. You will be
+		contacted
+		with the result of this initial assessment.</li>
+	<li>Your answers will determine whether your company will receive a questionnaire to complete. We will contact you
+		if
+		your company is selected for this.</li>
+	<li>The list of companies receiving a questionnaire will be placed on the Public record of the case.</li>
+</ul>
 {% endblock %}
 
 {% block conf_box %}
-	<input type="hidden" name="non_conf" value="included-non-conf">
+<input type="hidden" name="non_conf" value="included-non-conf">
 {% endblock %}
 
 {% block submission_checkbox_label %}
-     I have the authority to provide this information on behalf of my company.
+I have the authority to provide this information on behalf of my company.
 {% endblock %}
-
