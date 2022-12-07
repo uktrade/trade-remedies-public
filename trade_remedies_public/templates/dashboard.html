@@ -4,6 +4,16 @@
 {% load organisation_name %}
 {% load organisation_initialism %}
 
+{% if user.is_authenticated %}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'user_login',
+            'user_id': '{{user.id}}'
+        });
+    </script>
+{% endif %}
+
 {% block page_title %}Dashboard{% endblock %}
 
 {% block row_content %}
