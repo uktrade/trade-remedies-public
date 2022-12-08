@@ -2,37 +2,37 @@
 {% load link_lookup %}
 
 {% block row_content %}
-  {% include "partials/widgets/error_summary.html" with errors=errors message='Please correct the following errors'  %}
-  <div class="grid-row">
-    {% block login_title_banner %}
-    {% endblock %}
-
-    <div class="accounts-page">
-      <div class="column-one-half left-column">
-        <h1 class="heading-large">
-          {% block page_title %}
-            &lt;page_title&gt;
-          {% endblock %}
-        </h1>
-        {% if errors.lockdown %}
-          {{ errors.lockdown }}
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <input type="hidden" name="step" value="0"/>
-            <input type="hidden" name="code" value="{{code|default_if_none:''}}"/>
-            <input type="hidden" name="case_id" value="{{case_id|default_if_none:''}}"/>
-              {% block form_content %}
-                &lt;form_content&gt;
-              {% endblock %}
-        </form>
-      </div>
-      <div class="column-one-half right-column">
-        {% block right_column %}
-          &lt;right_column&gt;
+    {% include "partials/widgets/error_summary.html" with errors=errors message='Please correct the following errors'  %}
+    <div class="grid-row">
+        {% block login_title_banner %}
         {% endblock %}
-      </div>
+
+        <div class="accounts-page">
+            <div class="column-one-half left-column">
+                <h1 class="heading-large">
+                    {% block page_title %}
+                        &lt;page_title&gt;
+                    {% endblock %}
+                </h1>
+                {% if errors.lockdown %}
+                    {{ errors.lockdown }}
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="step" value="0"/>
+                    <input type="hidden" name="code" value="{{code|default_if_none:''}}"/>
+                    <input type="hidden" name="case_id" value="{{case_id|default_if_none:''}}"/>
+                    {% block form_content %}
+                        &lt;form_content&gt;
+                    {% endblock %}
+                </form>
+            </div>
+            <div class="column-one-half right-column">
+                {% block right_column %}
+                    &lt;right_column&gt;
+                {% endblock %}
+            </div>
+        </div>
     </div>
-  </div>
 
 {% endblock %}

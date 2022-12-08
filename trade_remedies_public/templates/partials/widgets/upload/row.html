@@ -11,8 +11,8 @@ side - left or right
 
 {% set 'warning' False %}
 {% if file and not file.child or file.deficient or file.child.deficient %}
-	{% if file.type.key != 'loa' %}
-		{% set 'warning' True %}
+    {% if file.type.key != 'loa' %}
+        {% set 'warning' True %}
     {% endif %}
 {% endif %}
 {# see if this is the last row to be uploaded or updated #}

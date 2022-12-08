@@ -23,9 +23,9 @@
                     {% for loa_document in loa_document_bundle.documents %}
                         <li>
                             <a href="{{ loa_document.file }}" target="_blank" class="govuk-link--no-visited-state"
-                               download>
+                                download>
                                 <img src="{% static 'v2/assets/images/file_icons/'|add:loa_document.extension|add:'.png' %}"
-                                     alt="File icon" width="24px">
+                                    alt="File icon" width="24px">
                                 {{ loa_document.name }}
                                 ({{ loa_document.size|filesizeformat }})
                             </a><span style="display:none;">✓</span>
@@ -75,9 +75,8 @@
 
 {% block scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
-            integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
-            {# /PS-IGNORE #}
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'v2/js/drag_and_drop.js' %}"></script>
     <script type="text/javascript">
         $('a[download]').click(function () {

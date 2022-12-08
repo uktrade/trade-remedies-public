@@ -3,15 +3,15 @@
 {% load a_or_an %}
 
 {% if user.is_authenticated %}
-<script>
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'apply_for_case',
-        'user_id': '{{user.id}}',
-        'case_id': '{{case_id}}',
-        'review_type': '{{review_type}}'
-    });
-</script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'apply_for_case',
+            'user_id': '{{user.id}}',
+            'case_id': '{{case_id}}',
+            'review_type': '{{review_type}}'
+        });
+    </script>
 {% endif %}
 
 {% block breadcrumb_current %}Apply for a new investigation{% endblock %}
@@ -20,9 +20,9 @@
 {% block page_title %}Request a review of your draft application{% endblock %}
 
 {% block form_tag %}<form action="/case/{{case_id}}/submission/{{submission_id}}/review/" method="post" class="dd-form">
-    {% endblock %}
+{% endblock %}
 
-    {% block subtype_content %}
+{% block subtype_content %}
     <input type="hidden" name="instance" value="25">
     <input type="hidden" name="submission_status_id" value="2">
     <div class="form-group">
@@ -30,8 +30,8 @@
             request they be reviewed here prior to final submission.</p>
         <p>If you are asked to make changes you can return to the previous step to upload replacement files.</p>
         {% if not case.type.meta.confidential_only %}
-        <p>Once your draft application is approved for final submission you will need to to upload non-confidential
-            versions of the files.</p>
+            <p>Once your draft application is approved for final submission you will need to to upload non-confidential
+                versions of the files.</p>
         {% endif %}
     </div>
     <div class="form-group {% if errors.review %}form-group-error{% endif %}">
@@ -45,4 +45,4 @@
             </label>
         </div>
     </div>
-    {% endblock %}
+{% endblock %}

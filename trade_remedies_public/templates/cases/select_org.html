@@ -10,12 +10,12 @@
         <input type="hidden" name="next" value="{{next}}"/>
         {% for organisation in organisations %}
             <div class="multiple-choice">
-            <input
-                id="org{{forloop.counter}}"
-                type="radio"
-                name="organisation_id"
-                value="{{organisation.id}}"
-                {% if user.organisations|length == 1  or forLoop.counter == 0 %}checked{% endif %}>
+                <input
+                    id="org{{forloop.counter}}"
+                    type="radio"
+                    name="organisation_id"
+                    value="{{organisation.id}}"
+                    {% if user.organisations|length == 1  or forLoop.counter == 0 %}checked{% endif %}>
                 <label for="org{{forloop.counter}}">{{organisation.name}}</label>
             </div>
         {% endfor %}

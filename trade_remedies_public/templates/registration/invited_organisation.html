@@ -2,12 +2,12 @@
 {% load text_element %}
 
 {% block page_title %}
-This invitation is for {{invite.contact.name}}
+    This invitation is for {{invite.contact.name}}
 {% endblock %}
 
 {% block right_column %}
-<h2 class="heading-small margin-top-1">Already have an account?</h2>
-<a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
+    <h2 class="heading-small margin-top-1">Already have an account?</h2>
+    <a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
 {% endblock %}
 
 {% block form_content %}

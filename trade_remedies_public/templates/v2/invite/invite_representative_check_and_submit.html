@@ -35,7 +35,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a href="{% url 'invite_representative_organisation_details' invitation_id=invitation_id %}"
-                       class="govuk-link--no-visited-state">
+                        class="govuk-link--no-visited-state">
                         Change
                         <span class="govuk-visually-hidden"> who is registering interest</span>
                     </a>
@@ -54,7 +54,7 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a href="{% url 'invite_representative_loa' invitation_id=invitation_id %}"
-                       class="govuk-link--no-visited-state">
+                        class="govuk-link--no-visited-state">
                         Change
                         <span class="govuk-visually-hidden"> Letter of Authority</span>
                     </a>
@@ -69,11 +69,11 @@
             <form method="post">
                 {% csrf_token %}
                 <button role="button" draggable="false"
-                        class="govuk-button" data-module="govuk-button">
+                    class="govuk-button" data-module="govuk-button">
                     Confirm and submit invite
                 </button>
                 <a class="govuk-link govuk-link--no-visited-state"
-                   href="{% url 'invite_representative_task_list_exists' invitation_id=invitation_id %}">Back</a>
+                    href="{% url 'invite_representative_task_list_exists' invitation_id=invitation_id %}">Back</a>
             </form>
 
         </div>

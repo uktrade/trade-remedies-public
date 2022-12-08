@@ -5,60 +5,60 @@
 
 {% block row_content %}
 
-<div class="breadcrumbs" data-module="track-click">
-    <ol>
-        <li class="">
-            <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard/">Dashboard</a>
-        </li>
-        <li class="">
-            <span>
-                <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/cases/">
-                    {% if archived %}My archived cases{% else %}Your organisation's cases{% endif %}
-                </a>
-            </span>
-        </li>
-        <li class="">
-            <span>{{case.reference}}: {{case.name}}</span>
-        </li>
-    </ol>
-</div>
+    <div class="breadcrumbs" data-module="track-click">
+        <ol>
+            <li class="">
+                <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard/">Dashboard</a>
+            </li>
+            <li class="">
+                <span>
+                    <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/cases/">
+                        {% if archived %}My archived cases{% else %}Your organisation's cases{% endif %}
+                    </a>
+                </span>
+            </li>
+            <li class="">
+                <span>{{case.reference}}: {{case.name}}</span>
+            </li>
+        </ol>
+    </div>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-        <h1 class="heading-large">{{case.reference}}: {{case.name |default:'<span class="grey">&lt;Untitled&gt;</span>' }}</h1>
-        <div class="govuk-box-highlight">
-            <h2 class="heading-medium">{{case.stage.public_name|default:case.stage.name}}</h2>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-large">{{case.reference}}: {{case.name |default:'<span class="grey">&lt;Untitled&gt;</span>' }}</h1>
+            <div class="govuk-box-highlight">
+                <h2 class="heading-medium">{{case.stage.public_name|default:case.stage.name}}</h2>
+            </div>
+        </div>
+        <div class="column-one-third">
+            {% include "partials/widgets/org_display_small.html" %}
+            {% include "partials/widgets/help_box.html" %}
         </div>
     </div>
-    <div class="column-one-third">
-        {% include "partials/widgets/org_display_small.html" %}
-        {% include "partials/widgets/help_box.html" %}
-    </div>
-</div>
-<div class="grid-row">
-    <table class="align-top">
-        <thead>
-            <tr>
-                <th>Organisation</th>
-                <th>Represented by</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="grid-row">
+        <table class="align-top">
+            <thead>
+                <tr>
+                    <th>Organisation</th>
+                    <th>Represented by</th>
+                </tr>
+            </thead>
+            <tbody>
 
-        {% for org, uoclist in orgs.items %}
-            <tr>
-                <td>
-                {{uoclist.0.representing.name}}
-                </td>
-                <td class="cell">
-                    {% for uoc in uoclist %}
-                        {{uoc.user.name}}<br>
-                    {% endfor %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
+                {% for org, uoclist in orgs.items %}
+                    <tr>
+                        <td>
+                            {{uoclist.0.representing.name}}
+                        </td>
+                        <td class="cell">
+                            {% for uoc in uoclist %}
+                                {{uoc.user.name}}<br>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
 {% endblock %}

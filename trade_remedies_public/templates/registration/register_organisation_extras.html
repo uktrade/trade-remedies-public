@@ -2,26 +2,26 @@
 {% load text_element %}
 
 {% block page_title %}
-Create an account
+    Create an account
 {% endblock %}
 
 {% block right_column %}
-<h2 class="heading-small margin-top-1">Already have an account?</h2>
-<a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
+    <h2 class="heading-small margin-top-1">Already have an account?</h2>
+    <a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
 {% endblock %}
 
 {% block form_content %}
-  <h2 class="heading-medium">
-      Additional company information
-  </h2>
-  <p>Provide as much information as you can to help us ensure we're communicating correctly.</p>
+    <h2 class="heading-medium">
+        Additional company information
+    </h2>
+    <p>Provide as much information as you can to help us ensure we're communicating correctly.</p>
 
-  {% text_element id='vat_number' label='VAT registration number (optional)' errors=errors hint='Fill this in if your company is registered for Value Added Tax.' %}
-  {% text_element id='eori_number' label='EORI number (optional)' errors=errors hint='Your company will have an EORI if you have brought goods into the UK or EU.' %}
-  {% text_element id='duns_number' label='DUNS number (optional)' errors=errors hint='Your company\'s 9-digit Data Universal Numbering System identifier.' %}
-  {% text_element id='organisation_website' label='Company website (optional)' errors=errors hint='Your company\'s main corporate website address.' %}
+    {% text_element id='vat_number' label='VAT registration number (optional)' errors=errors hint='Fill this in if your company is registered for Value Added Tax.' %}
+    {% text_element id='eori_number' label='EORI number (optional)' errors=errors hint='Your company will have an EORI if you have brought goods into the UK or EU.' %}
+    {% text_element id='duns_number' label='DUNS number (optional)' errors=errors hint='Your company\'s 9-digit Data Universal Numbering System identifier.' %}
+    {% text_element id='organisation_website' label='Company website (optional)' errors=errors hint='Your company\'s main corporate website address.' %}
 
-  <div class="button-set margin-bottom-1">
-  <button type="submit"  class="button">Continue</button>
-  </div>
+    <div class="button-set margin-bottom-1">
+        <button type="submit"  class="button">Continue</button>
+    </div>
 {% endblock %}

@@ -3,29 +3,29 @@
 {% load password_element %}
 
 {% block row_content %}
-{% include "partials/widgets/error_summary.html" with errors=errors message='Please correct the following errors'  %}
-  <div id="wrapper" class="site-wrapper direction-ltr">
-    <main role="main" id="content" lang="en">
-        <div class="grid-row">
-            <div class="column-full margin-top-2">
-                <h1 class="heading-large margin-bottom-1">
-                    Create account or sign in
-                </h1>
-                 <div class="pull-left">
-                    <p class="">
-                        To use the Trade Remedies service, you will need to 
-                        <a href="/accounts/register{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">create an account.</a>
-                    </p>
-                </div>
-                 <div class="pull-left">
-                    <p class="">
-                        If you have used the service before you 
-                        <a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">can sign in.</a>
-                    </p>
+    {% include "partials/widgets/error_summary.html" with errors=errors message='Please correct the following errors'  %}
+    <div id="wrapper" class="site-wrapper direction-ltr">
+        <main role="main" id="content" lang="en">
+            <div class="grid-row">
+                <div class="column-full margin-top-2">
+                    <h1 class="heading-large margin-bottom-1">
+                        Create account or sign in
+                    </h1>
+                    <div class="pull-left">
+                        <p class="">
+                            To use the Trade Remedies service, you will need to
+                            <a href="/accounts/register{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">create an account.</a>
+                        </p>
+                    </div>
+                    <div class="pull-left">
+                        <p class="">
+                            If you have used the service before you
+                            <a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">can sign in.</a>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
-</div>
+        </main>
+    </div>
 
 {% endblock %}
