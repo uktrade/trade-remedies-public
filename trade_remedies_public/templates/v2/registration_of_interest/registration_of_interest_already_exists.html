@@ -14,7 +14,7 @@
         <p>Someone has already registered interest in the following case on-behalf of your organisation:</p>
 
         <p><strong>{{ submission.case.reference }} - {{ submission.case.name }}</strong><br>
-            Submitted: <span id="date">{{ submission.received_at|format_date:'%d %b %Y' }}</span>
+            Submitted: <span id="date">{{ submission.received_at|date:'d M Y' }}</span>
         </p>
         <h2 class="govuk-heading-m">What happens next</h2>
         <ul class="govuk-list govuk-list--bullet">
@@ -31,3 +31,7 @@
 
     </div>
 {% endblock row_content %}
+
+{% block additional_content %}
+    {% include "v2/feedback/stars_partial.html" with  journey="ROI blocked as already exists" %}
+{% endblock additional_content %}

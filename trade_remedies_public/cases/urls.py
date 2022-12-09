@@ -1,7 +1,12 @@
 from django.urls import path
 
 from cases import views as case_views
-from cases.v2_views import invite, registration_of_interest, accept_invite
+from cases.v2_views import (
+    invite,
+    registration_of_interest,
+    accept_own_org_invitation,
+    accept_representative_invitation,
+)
 
 urlpatterns = [
     path("", case_views.TaskListView.as_view(), name="tasklist"),
@@ -405,22 +410,62 @@ urlpatterns += [
         invite.InviteRepresentativeSent.as_view(),
         name="invite_representative_sent",
     ),
+    path(
+        "invite/<uuid:invitation_id>/cancel/",
+        invite.CancelInvite.as_view(),
+        name="cancel_invite",
+    ),
 ]
 
+# accepting own-org invitations
 urlpatterns += [
     path(
         "accept_invite/<uuid:invitation_id>/start/",
-        accept_invite.AcceptOrganisationInvite.as_view(),
+        accept_own_org_invitation.AcceptOrganisationInvite.as_view(),
         name="accept_invite_start",
     ),
     path(
         "accept_invite/<uuid:invitation_id>/set_password/",
-        accept_invite.AcceptOrganisationSetPassword.as_view(),
+        accept_own_org_invitation.AcceptOrganisationSetPassword.as_view(),
         name="accept_invite_set_password",
     ),
     path(
         "accept_invite/<uuid:invitation_id>/two_factor_choice/",
-        accept_invite.AcceptOrganisationTwoFactorChoice.as_view(),
+        accept_own_org_invitation.AcceptOrganisationTwoFactorChoice.as_view(),
         name="accept_invite_two_factor_choice",
+    ),
+]
+
+# accepting representative invitations
+urlpatterns += [
+    path(
+        "accept_representative_invite/<uuid:invitation_id>/start/",
+        accept_representative_invitation.WhoIsRegisteringView.as_view(),
+        name="accept_representative_invitation_who_is_registering",
+    ),
+    path(
+        "accept_representative_invite/name_and_email/<uuid:invitation_id>/",
+        accept_representative_invitation.RegistrationNameAndEmailView.as_view(),
+        name="accept_representative_invitation_name_and_email",
+    ),
+    path(
+        "accept_representative_invite/set_password/<uuid:invitation_id>/",
+        accept_representative_invitation.SetPassword.as_view(),
+        name="accept_representative_invitation_set_password",
+    ),
+    path(
+        "accept_representative_invite/two_factor_choice/<uuid:invitation_id>/",
+        accept_representative_invitation.TwoFactorChoice.as_view(),
+        name="accept_representative_invitation_two_factor_choice",
+    ),
+    path(
+        "accept_representative_invite/organisation_details/<uuid:invitation_id>/",
+        accept_representative_invitation.OrganisationDetails.as_view(),
+        name="accept_representative_invitation_organisation_details",
+    ),
+    path(
+        "accept_representative_invite/organisation_further_details/<uuid:invitation_id>/",
+        accept_representative_invitation.OrganisationFurtherDetails.as_view(),
+        name="accept_representative_invitation_organisation_further_details",
     ),
 ]

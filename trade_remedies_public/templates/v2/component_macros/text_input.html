@@ -20,7 +20,8 @@
         {% endif %}
         <input class="govuk-input
                {% if width %}govuk-input--width-{{ width }}{% endif %}{% if input_class %} {{ input_class }} {% endif %}
-                {% if error %}govuk-input--error{% endif %}"
+                {% if error %}govuk-input--error{% endif %}
+                {% if disabled or readonly %}govuk-input--readonly{% endif %}"
                {% if disabled %}disabled{% endif %}
                {% if readonly %}readonly{% endif %}
                id="{{ id }}" name="{{ name }}" type="{{ type }}"
