@@ -178,15 +178,6 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
             fields=["id"],
         )
 
-        # Then add them as a third party user of the inviting organisation, this was also
-        # add them to the required group
-        self.client.organisations(self.invitation.organisation.id).add_user(
-            user_id=self.invitation.invited_user.id,
-            group_name=SECURITY_GROUP_THIRD_PARTY_USER,
-            confirmed=True,
-            fields=["id"],
-        )
-
         # now let's validate the person's email
         return redirect(
             reverse(
