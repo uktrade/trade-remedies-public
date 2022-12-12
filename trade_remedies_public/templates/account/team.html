@@ -12,7 +12,7 @@
                 <ol>
                     <li class="">
                         <a data-track-category="breadcrumbClicked" data-track-action="1" class=""
-                           aria-current="false" href="{% url 'dashboard' %}">Dashboard</a>
+                            aria-current="false" href="{% url 'dashboard' %}">Dashboard</a>
                     </li>
                     <li data-track-category="breadcrumbClicked" data-track-action="2" class="" aria-current="false">
                         Manage your team
@@ -42,33 +42,33 @@
         <div class="column-full">
             <table data-attach="TableSort" class="">
                 <thead>
-                <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Role</th>
-                    <th scope="col" class="no-sort">Actions</th>
-                </tr>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Role</th>
+                        <th scope="col" class="no-sort">Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {% for user in users %}
-                    <tr class="{% if not user.active %}line-through {% endif %}">
-                        <td title="{{ user.name }}"><a
+                    {% for user in users %}
+                        <tr class="{% if not user.active %}line-through {% endif %}">
+                            <td title="{{ user.name }}"><a
                                 href="/accounts/team/{{ user.organisation.id }}/user/{{ user.id }}/edit/">{{ user.name }}</a>
-                        </td>
-                        <td>
-                            {% if user.organisation.role.security_group == 'Organisation Owner' %}
-                                Administrator
-                            {% elif 'Third Party User' in user.groups %}
-                                Third Party User
-                            {% else %}
-                                User
-                            {% endif %}
-                        </td>
-                        <td>
-                            <a href="/accounts/team/{{ user.organisation.id }}/user/{{ user.id }}/cases/?edit=1"
-                               class="nobreak">Assign/remove case</a>
-                        </td>
-                    </tr>
-                {% endfor %}
+                            </td>
+                            <td>
+                                {% if user.organisation.role.security_group == 'Organisation Owner' %}
+                                    Administrator
+                                {% elif 'Third Party User' in user.groups %}
+                                    Third Party User
+                                {% else %}
+                                    User
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="/accounts/team/{{ user.organisation.id }}/user/{{ user.id }}/cases/?edit=1"
+                                    class="nobreak">Assign/remove case</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
                 </tbody>
             </table>
 
@@ -92,45 +92,45 @@
                     {% endif %}
                     <table class="table-action-column" data-attach="TableSort">
                         <thead>
-                        <tr>
-                            <th scope="col">Name</th>
-                            <th scope="col">Case</th>
-                            <th scope="col">Representing</th>
-                            <th scope="col">Action</th>
-                        </tr>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Case</th>
+                                <th scope="col">Representing</th>
+                                <th scope="col">Action</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {% for submission in pending_assignments %}
-                            <tr>
-                                {% set 'good' False %}
-                                {% if loop == '0' %}
-                                    {% if submission.status.received and not submission.status.review %}
-                                        {% set 'good' True %}
+                            {% for submission in pending_assignments %}
+                                <tr>
+                                    {% set 'good' False %}
+                                    {% if loop == '0' %}
+                                        {% if submission.status.received and not submission.status.review %}
+                                            {% set 'good' True %}
+                                        {% endif %}
+                                    {% else %}
+                                        {% if submission.status.draft or submission.status.default %}
+                                            {% set 'good' True %}
+                                        {% endif %}
                                     {% endif %}
-                                {% else %}
-                                    {% if submission.status.draft or submission.status.default %}
-                                        {% set 'good' True %}
+                                    {% if good %}
+                                        {% set 'user' submission.contact.user %}
+                                        <td>{{ user.name }}</td>
+                                        <td>{{ submission.case.name }}</td>
+                                        <td>{{ submission.organisation.name }}</td>
+                                        <td>
+                                            <a href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/">
+                                                <span>
+                                                    {% if loop == '0' %}
+                                                        View assignment
+                                                    {% else %}
+                                                        Edit draft
+                                                    {% endif %}
+                                                </span>
+                                            </a>
+                                        </td>
+                                        </tr>
                                     {% endif %}
-                                {% endif %}
-                                {% if good %}
-                                    {% set 'user' submission.contact.user %}
-                                    <td>{{ user.name }}</td>
-                                    <td>{{ submission.case.name }}</td>
-                                    <td>{{ submission.organisation.name }}</td>
-                                    <td>
-                                        <a href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/">
-                              <span>
-                                {% if loop == '0' %}
-                                    View assignment
-                                {% else %}
-                                    Edit draft
-                                {% endif %}
-                              </span>
-                                        </a>
-                                    </td>
-                                    </tr>
-                                {% endif %}
-                        {% endfor %}
+                            {% endfor %}
                         </tbody>
                     </table>
                 {% endif %}
@@ -141,92 +141,92 @@
 
                 <table data-attach="TableSort">
                     <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Role</th>
-                        <th scope="col" class="no-sort">Action</th>
-                    </tr>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Role</th>
+                            <th scope="col" class="no-sort">Action</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    {% for invite in invites %}
-                        <tr>
-                            <td title="{{ invite.meta.name }}"><a
+                        {% for invite in invites %}
+                            <tr>
+                                <td title="{{ invite.meta.name }}"><a
                                     href="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/edit/">{{ invite.meta.name }}</a>
-                            </td>
-                            <td>
-                                {% if user.organisation.role.security_group == 'Organisation Owner' %}
-                                    Administrator
-                                {% else %}
-                                    User
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                    <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel
-                                        invitation</a>
-                                {% else %}
-                                    <form class="inline" data-attach="ConfirmPost"
-                                          action="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/delete/"
-                                          method="post">
-                                        <button class="link no-debounce" type="submit"
-                                                style="font-size:19px;padding-left:0px;">Cancel
-                                            invitation
-                                        </button>
-                                        {% csrf_token %}
-                                        <span class="hidden confirmation-message">Are you sure you want to delete this invitation?</span>
-                                        <span class="hidden confirmation-title">Confirm delete</span>
-                                    </form>
-                                {% endif %}
-
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    {% for invite in third_party_invites %}
-                        <tr>
-                            <td title="{{ invite.contact.name }}">{{ invite.contact.name }}</td>
-                            <td>Third Party User</td>
-                            <td>
-                                {% if invite.locked %}
-                                    {% if invite.accepted_at %}
-                                        {# The invite is accepted, can no longer be cancelled #}
-                                        <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
+                                </td>
+                                <td>
+                                    {% if user.organisation.role.security_group == 'Organisation Owner' %}
+                                        Administrator
+                                    {% else %}
+                                        User
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
+                                        <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel
                                             invitation</a>
                                     {% else %}
-                                        {# The invite has been created but not accepted, it can be cancelled #}
-                                        {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                            <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel
-                                                invitation</a>
-                                        {% else %}
+                                        <form class="inline" data-attach="ConfirmPost"
+                                            action="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/delete/"
+                                            method="post">
+                                            <button class="link no-debounce" type="submit"
+                                                style="font-size:19px;padding-left:0px;">Cancel
+                                                invitation
+                                            </button>
+                                            {% csrf_token %}
+                                            <span class="hidden confirmation-message">Are you sure you want to delete this invitation?</span>
+                                            <span class="hidden confirmation-title">Confirm delete</span>
+                                        </form>
+                                    {% endif %}
+
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        {% for invite in third_party_invites %}
+                            <tr>
+                                <td title="{{ invite.contact.name }}">{{ invite.contact.name }}</td>
+                                <td>Third Party User</td>
+                                <td>
+                                    {% if invite.locked %}
+                                        {% if invite.accepted_at %}
+                                            {# The invite is accepted, can no longer be cancelled #}
                                             <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
                                                 invitation</a>
+                                        {% else %}
+                                            {# The invite has been created but not accepted, it can be cancelled #}
+                                            {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
+                                                <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel
+                                                    invitation</a>
+                                            {% else %}
+                                                <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
+                                                    invitation</a>
+                                            {% endif %}
                                         {% endif %}
-                                    {% endif %}
-                                {% else %}
-                                    {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                        <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.id %}">Update
-                                            invitation</a>
                                     {% else %}
-                                        <a href="/case/invite/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">Update
-                                            invitation</a>
-                                    {% endif %}
+                                        {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
+                                            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.id %}">Update
+                                                invitation</a>
+                                        {% else %}
+                                            <a href="/case/invite/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">Update
+                                                invitation</a>
+                                        {% endif %}
 
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
                 </table>
 
             {% endif %}
             {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
                 <a class="button margin-top-1 no-debounce" id="lnk_invite_colleague"
-                   href="{% url 'invitation_start' %}">Invite
+                    href="{% url 'invitation_start' %}">Invite
                     colleague</a>
                 <a class="button margin-top-1 no-debounce" id="lnk_invite_colleagu_old"
-                   href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague OLD</a>
+                    href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague OLD</a>
             {% else %}
                 <a class="button margin-top-1 no-debounce"
-                   href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague</a>
+                    href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague</a>
             {% endif %}
             <div class="margin-top-1">
                 <a class="link" href="{% url 'dashboard' %}">Back</a>

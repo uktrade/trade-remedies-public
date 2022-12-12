@@ -5,37 +5,37 @@
         <tr class="hidden template-line"><td><span class="filename"><a href="/file?id={id}">{name}</a></span></td><td class="file-size"><span class="nobreak">{size}</span></td><td><a href="/file?id={id}" class="file-delete" data-fileid="{id}">Remove</a></td></tr>
     </thead>
     <tbody>
-    {% for document in documents %}
-        <tr>
-            <td>
-                <span class="filename">
-                    {% if document_links %}<a href="/case/{{case_id}}/submission/{{submission_id}}/document/{{document.id}}/download/" target="_blank">{% endif %}{{document.name}}{% if document_links %}</a>{% endif %}
-                </span>
-            </td>
-            {% if enable_size %}
-                <td class="file-size">
-                    <span class="nobreak">{{document.size | filesizeformat}}</span>
+        {% for document in documents %}
+            <tr>
+                <td>
+                    <span class="filename">
+                        {% if document_links %}<a href="/case/{{case_id}}/submission/{{submission_id}}/document/{{document.id}}/download/" target="_blank">{% endif %}{{document.name}}{% if document_links %}</a>{% endif %}
+                    </span>
                 </td>
-            {% endif %}
-            {% if enable_date %}
-                <td class="file-date">
-                    <span class="nobreak">{% format_date document.created_at '%d %b %Y' %}</span>
-                </td>
-            {% endif %}
+                {% if enable_size %}
+                    <td class="file-size">
+                        <span class="nobreak">{{document.size | filesizeformat}}</span>
+                    </td>
+                {% endif %}
+                {% if enable_date %}
+                    <td class="file-date">
+                        <span class="nobreak">{% format_date document.created_at '%d %b %Y' %}</span>
+                    </td>
+                {% endif %}
 
-            {% if enable_remove %}
-	            <td>
-	                {% if not locked %}
-	                <a
-	                    href="javascript:confirmRemoveDocument('/case/{{case_id}}/submission/{{submission_id}}/remove/document/{{document.id}}/');"
-	                    class="file-delete"
-	                    data-id="{{document.id}}"
-	                    data-caseId="{{case_id}}"
-	                    data-submissionId="{{submission_id}}">Remove</a>
-	                {% endif %}
-	            </td>
-            {% endif %}
-        </tr>
-    {% endfor %}
+                {% if enable_remove %}
+                    <td>
+                        {% if not locked %}
+                            <a
+                                href="javascript:confirmRemoveDocument('/case/{{case_id}}/submission/{{submission_id}}/remove/document/{{document.id}}/');"
+                                class="file-delete"
+                                data-id="{{document.id}}"
+                                data-caseId="{{case_id}}"
+                                data-submissionId="{{submission_id}}">Remove</a>
+                        {% endif %}
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
     </tbody>
 </table>

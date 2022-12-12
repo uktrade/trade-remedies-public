@@ -8,12 +8,12 @@
 {% block breadcrumb_current %}Register interest in a case{% endblock %}
 
 {% block breadcrumb %}
-  <li class="">
-    <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
-  </li>
-  <li class="">
-    Case: {{case.reference}}
-  </li>
+    <li class="">
+        <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
+    </li>
+    <li class="">
+        Case: {{case.reference}}
+    </li>
 {% endblock %}
 
 {% block header %}
@@ -29,7 +29,7 @@
 
 {% block submission_received_message %}<p>This application has been submitted.</p>
     <p>If you want to report an omission, error or material change contact the <a target="_blank" href="/contact" class="nobreak">{% organisation_name %}</a>.</p>
-{{case}}
+    {{case}}
 {% endblock %}
 
 {% block tasklist_content %}
@@ -89,7 +89,7 @@
 
 {% block back_buttons %}
     <div class="margin-bottom-1">
-    <a href="/dashboard/">Back to dashboard</a>
+        <a href="/dashboard/">Back to dashboard</a>
     </div>
 {% endblock %}
 {% block cancel_button_text %}Cancel registration{% endblock  %}

@@ -26,8 +26,8 @@
         <div class="column-two-thirds">
             {% if not user.email_verified_at %}
                 <div class="govuk-notification-banner" style="margin-top: 1.875em;" role="region"
-                     aria-labelledby="govuk-notification-banner-title"
-                     data-module="govuk-notification-banner">
+                    aria-labelledby="govuk-notification-banner-title"
+                    data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">
                         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                             Important
@@ -38,7 +38,7 @@
                             Verify your email address
                         </p>
                         <p>Verify your email address to take part in a trade remedy investigation. <a
-                                href="{% url 'request_email_verify_code' user_pk=user.id %}?dont_send=yes">How to verify
+                            href="{% url 'request_email_verify_code' user_pk=user.id %}?dont_send=yes">How to verify
                             my email address</a>.
                         </p>
                     </div>
@@ -119,11 +119,11 @@
                     <p>Use your dashboard to:</p>
                     <ul class="list">
                         <li>
-                        <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
-                        <p>This will allow you to; have a chance to submit evidence, get updates on important
-                            developments, comment on {% organisation_initialism %}’s findings before a final
-                            decision is
-                            made, as well as being able to request a reconsideration of a final determination.</p>
+                            <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
+                            <p>This will allow you to; have a chance to submit evidence, get updates on important
+                                developments, comment on {% organisation_initialism %}’s findings before a final
+                                decision is
+                                made, as well as being able to request a reconsideration of a final determination.</p>
                         </li>
                         {% if pre_manage_team and is_org_owner %}
                             <li><a class="link bold" href="/accounts/team/">Manage your team</a>

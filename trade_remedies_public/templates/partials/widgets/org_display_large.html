@@ -1,9 +1,9 @@
 {% if org_indicator_type == 1 and current_organisation and not all_organisations %}
     <div class="organisation-block">
-    {% if is_third_party %}
-        You are {{ request.user.contact.organisation.name|default:'Third Party' }} representing {{ inviting_organisation_name|default:'N/A' }}
-    {% else %}
-        You are currently representing {{current_organisation.name|default:'N/A'}}
-    {% endif %}
+        {% if is_third_party %}
+            You are {{ request.user.contact.organisation.name|default:'Third Party' }} representing {{ inviting_organisation_name|default:'N/A' }}
+        {% else %}
+            You are currently representing {{current_organisation.name|default:'N/A'}}
+        {% endif %}
     </div>
 {% endif %}

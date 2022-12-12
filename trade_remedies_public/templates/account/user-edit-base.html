@@ -4,87 +4,87 @@
 {% load alert_message %}
 
 {% block row_content %}
-{% set 'invitation_param' '' %}
-{% if invitation_id %}
-	{% set 'invitation_param' '?invitation_id='|addstr:invitation_id %}
-{% endif %}
+    {% set 'invitation_param' '' %}
+    {% if invitation_id %}
+        {% set 'invitation_param' '?invitation_id='|addstr:invitation_id %}
+    {% endif %}
 
-<div class="grid-row">
-  	<div class="column-two-thirds">
-		<div class="breadcrumbs" data-module="track-click">
-		    <ol>
-				<li class="">
-					<a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
-				</li>
-				<li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
-					{% if self_details %}
-						<a href="/accounts/info/">Account details</a>
-					{% else %}
-						<a href="/accounts/team/">Manage your team</a>
-					{% endif %}
-				</li>
-				{% if not create_mode and not self_details %}
-					<li data-track-category="breadcrumbClicked" data-track-action="3"   class="" aria-current="false" >
-						{% if invitation_id %}
-							<a href="/accounts/team/{{organisation_id}}/invitation/{{ invitation_id }}/">{{ user_record.name }}</a>
-						{% else %}
-							<a href="/accounts/team/{{organisation_id}}/user/{{ user_record.id }}/">{{ user_record.name }}</a>
-						{% endif %}
-					</li>
-				{% endif %}
-				<li data-track-category="breadcrumbClicked" data-track-action="4"   class="" aria-current="true" >
-					<span>{% block task_name1 %}task_name1{% endblock %}</span>
-				</li>
-		    </ol>
-		</div>
-		 {% include "partials/widgets/error_summary.html" with errors=errors %}
-		 {% alert_message %}
-		<h2 class="heading-large"><span class="heading-secondary">{% block task_name2 %}task_name2{% endblock %}</span>{% block page_title %}{{ page_title }}{% endblock %}</h2>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <div class="breadcrumbs" data-module="track-click">
+                <ol>
+                    <li class="">
+                        <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+                    </li>
+                    <li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
+                        {% if self_details %}
+                            <a href="/accounts/info/">Account details</a>
+                        {% else %}
+                            <a href="/accounts/team/">Manage your team</a>
+                        {% endif %}
+                    </li>
+                    {% if not create_mode and not self_details %}
+                        <li data-track-category="breadcrumbClicked" data-track-action="3"   class="" aria-current="false" >
+                            {% if invitation_id %}
+                                <a href="/accounts/team/{{organisation_id}}/invitation/{{ invitation_id }}/">{{ user_record.name }}</a>
+                            {% else %}
+                                <a href="/accounts/team/{{organisation_id}}/user/{{ user_record.id }}/">{{ user_record.name }}</a>
+                            {% endif %}
+                        </li>
+                    {% endif %}
+                    <li data-track-category="breadcrumbClicked" data-track-action="4"   class="" aria-current="true" >
+                        <span>{% block task_name1 %}task_name1{% endblock %}</span>
+                    </li>
+                </ol>
+            </div>
+            {% include "partials/widgets/error_summary.html" with errors=errors %}
+            {% alert_message %}
+            <h2 class="heading-large"><span class="heading-secondary">{% block task_name2 %}task_name2{% endblock %}</span>{% block page_title %}{{ page_title }}{% endblock %}</h2>
 
-		{% block outer_form_block %}
-		<form action='{% if base_url %}{{base_url}}{% else %}/accounts/team/{{organisation_id}}/user/{% if user_record.id %}{{user_record.id}}/{% endif %}{% endif %}' method='post'>
-			{% if section %}<input type="hidden" name="section" value="{{section}}">{% endif %}
-			<!-- fill in fields not being edited in this form -->
-			{% for fieldname in "name,phone,email"|_aslist %}
-				<input type="hidden" name="{{fieldname}}" value="{{ user_record|_get:fieldname }}">
-			{% endfor %}
-			{% if create_mode %}
-				<input type="hidden" name="create_mode" value="true">
-			{% endif %}
-			{% csrf_token %}
+            {% block outer_form_block %}
+                <form action='{% if base_url %}{{base_url}}{% else %}/accounts/team/{{organisation_id}}/user/{% if user_record.id %}{{user_record.id}}/{% endif %}{% endif %}' method='post'>
+                    {% if section %}<input type="hidden" name="section" value="{{section}}">{% endif %}
+                    <!-- fill in fields not being edited in this form -->
+                    {% for fieldname in "name,phone,email"|_aslist %}
+                        <input type="hidden" name="{{fieldname}}" value="{{ user_record|_get:fieldname }}">
+                    {% endfor %}
+                    {% if create_mode %}
+                        <input type="hidden" name="create_mode" value="true">
+                    {% endif %}
+                    {% csrf_token %}
 
-			{% block form_content %}
-				form_content
-			{% endblock %}
-			<div class="form-group">
-			{% if create_mode and not user_record.wizard_complete %}
-				<button type="submit" id="btn_submit" class="button" value="save">Continue</button>
-				<a href="/accounts/team/" class="button button-grey pull-right" />Cancel</a>
-			{% else %}
-				<button type="submit" id="btn_submit" class="button pull-left" value="save">Save</button>
-				<a
-					{% if self_details %}
-						href="/accounts/info/"
-					{% elif user_record.id %}
-						href="/accounts/team/{{organisation_id}}/user/{{user_record.id}}/edit/"
-                    {% else %}
-                        href="/accounts/team/{{organisation_id}}/user/"
-					{% endif %}
-				class="link clear pull-left margin-top-1" />Back</a>
-			{% endif %}
-			</div>
-		</form>
-		{% endblock %}
+                    {% block form_content %}
+                        form_content
+                    {% endblock %}
+                    <div class="form-group">
+                        {% if create_mode and not user_record.wizard_complete %}
+                            <button type="submit" id="btn_submit" class="button" value="save">Continue</button>
+                            <a href="/accounts/team/" class="button button-grey pull-right" />Cancel</a>
+                        {% else %}
+                            <button type="submit" id="btn_submit" class="button pull-left" value="save">Save</button>
+                            <a
+                                {% if self_details %}
+                                    href="/accounts/info/"
+                                {% elif user_record.id %}
+                                    href="/accounts/team/{{organisation_id}}/user/{{user_record.id}}/edit/"
+                                {% else %}
+                                    href="/accounts/team/{{organisation_id}}/user/"
+                                {% endif %}
+                                class="link clear pull-left margin-top-1" />Back</a>
+                        {% endif %}
+                    </div>
+                </form>
+            {% endblock %}
 
-	</div>
-	<div class="column-one-third">
-	{% include "partials/widgets/org_display_small.html" %}
-	{% include "partials/widgets/help_box.html" %}
-	</div>
-</div>
-	{% block full_width_block %}
-	{% endblock %}
-</div>
+        </div>
+        <div class="column-one-third">
+            {% include "partials/widgets/org_display_small.html" %}
+            {% include "partials/widgets/help_box.html" %}
+        </div>
+    </div>
+    {% block full_width_block %}
+    {% endblock %}
+    </div>
 
 
 {% endblock %}

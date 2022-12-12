@@ -2,38 +2,38 @@
 {% load text_element %}
 
 {% block page_title %}
-Create an account
+    Create an account
 {% endblock %}
 
 {% block right_column %}
-<h2 class="heading-small margin-top-1">Already have an account?</h2>
-<a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
+    <h2 class="heading-small margin-top-1">Already have an account?</h2>
+    <a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
 {% endblock %}
 
 {% block form_content %}
-  <h2 class="heading-medium">
-      Your contact details
-  </h2>
-  {% text_element id='name' label='Name' errors=errors read_only=True %}
-  {% text_element id='email' label='Email address' read_only=True %}
-  {% text_element id='phone' label='Mobile phone number' errors=errors read_only=False %}
+    <h2 class="heading-medium">
+        Your contact details
+    </h2>
+    {% text_element id='name' label='Name' errors=errors read_only=True %}
+    {% text_element id='email' label='Email address' read_only=True %}
+    {% text_element id='phone' label='Mobile phone number' errors=errors read_only=False %}
 
-  {% text_element id='contact_address' textarea=True label='Contact address' errors=errors hint='The address where you can be contacted' %}
-  <div class="form-group edit-item type-text ">
-    <label class="form-label" for="country">Country</label>
-    {% if errors.contact_country %}<span class="error-message" id="organisation_country_error">{{ errors.contact_country }}</span>{% endif %}
-    <select class="form-control" name="country" id="country" {% if country %}disabled{% endif %}>
-        <option value="">Please select ...</option>
-        {% for country_code, country_name in countries %}
-            <option
-                value="{{country_code}}"
-                {% if country == country_code %}selected{% endif %}
-            >{{country_name}}</option>
-        {% endfor %}
-    </select>
-  </div>
+    {% text_element id='contact_address' textarea=True label='Contact address' errors=errors hint='The address where you can be contacted' %}
+    <div class="form-group edit-item type-text ">
+        <label class="form-label" for="country">Country</label>
+        {% if errors.contact_country %}<span class="error-message" id="organisation_country_error">{{ errors.contact_country }}</span>{% endif %}
+        <select class="form-control" name="country" id="country" {% if country %}disabled{% endif %}>
+            <option value="">Please select ...</option>
+            {% for country_code, country_name in countries %}
+                <option
+                    value="{{country_code}}"
+                    {% if country == country_code %}selected{% endif %}
+                >{{country_name}}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-  <div class="button-set margin-bottom-1">
-  <button type="submit"  class="button">Continue</button>
-  </div>
+    <div class="button-set margin-bottom-1">
+        <button type="submit"  class="button">Continue</button>
+    </div>
 {% endblock %}

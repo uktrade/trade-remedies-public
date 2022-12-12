@@ -4,15 +4,15 @@
 {% block back_button %}{% endblock back_button %}
 
 {% block page_title %}
-Sign in or create account
+    Sign in or create account
 {% endblock %}
 
 {% block heading %}
-Sign in to Trade Remedies
+    Sign in to Trade Remedies
 {% endblock heading %}
 
 {% block extra_css %}
-<link href="{% static 'v2/css/login.css' %}" rel="stylesheet">
+    <link href="{% static 'v2/css/login.css' %}" rel="stylesheet">
 {% endblock extra_css %}
 
 {% block form_content %}
@@ -36,11 +36,11 @@ Sign in to Trade Remedies
 
 {% block scripts %}
 
-<script src="{% static 'v2/js/show_password.js' %}"></script>
-<script type="text/javascript">
-    {% if request.session.login_email %}
-        $("#email").val("{{ request.session.login_email }}")
-    {% endif %}
-</script>
+    <script src="{% static 'v2/js/show_password.js' %}"></script>
+    <script type="text/javascript">
+        {% if request.session.login_email %}
+            $("#email").val("{{ request.session.login_email }}")
+        {% endif %}
+    </script>
 
 {% endblock %}

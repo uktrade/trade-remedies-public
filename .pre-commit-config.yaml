@@ -48,3 +48,8 @@ repos:
         name: Replaces line endings with the most commonly used one
       - id: detect-private-key
         name: Detects for the presence of private keys in the code
+  - repo: https://github.com/rtts/djhtml
+    rev: b26c4306e3676521961e69675afb31bea60a7110
+    hooks:
+      - id: djhtml
+        files: trade_remedies_public/templates/.*\.html$
