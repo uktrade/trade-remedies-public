@@ -4,16 +4,6 @@
 {% load organisation_name %}
 {% load organisation_initialism %}
 
-{% if user.is_authenticated %}
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'event': 'user_login',
-            'user_id': '{{user.id}}'
-        });
-    </script>
-{% endif %}
-
 {% block page_title %}Dashboard{% endblock %}
 
 {% block row_content %}
@@ -36,7 +26,8 @@
         <div class="column-two-thirds">
             {% if not user.email_verified_at %}
                 <div class="govuk-notification-banner" style="margin-top: 1.875em;" role="region"
-                     aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                     aria-labelledby="govuk-notification-banner-title"
+                     data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">
                         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                             Important
@@ -66,29 +57,27 @@
                 {% if user.email_verified_at %}
                     <h1 class="heading-large">Your cases</h1>
                     {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
-                    {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                        {# Cases waiting approval #}
-                        {% if cases_awaiting_approval %}
-                            <h2 class="heading-medium">Pending TRA Approval</h2>
-                            {% include "partials/widgets/dashboard_caselist.html" with cases=cases_awaiting_approval show_casenumber=True no_click=True %}
-                        {% endif %}
+                    {# Cases waiting approval #}
+                    {% if cases_awaiting_approval %}
+                        <h2 class="heading-medium">Pending TRA Approval</h2>
+                        {% include "partials/widgets/dashboard_caselist.html" with cases=cases_awaiting_approval show_casenumber=True no_click=True %}
                     {% endif %}
                     <!-- Draft applications -->
                     {% if applications %}
                         <div class="margin-top-2">
                             <h1 class="heading-medium">Your applications</h1>
-                            {% include "partials/widgets/dashboard_caselist.html" with cases=applications show_casenumber=True %}
+                            {% include "partials/widgets/dashboard_caselist.html" with cases=applications  show_casenumber=True %}
                         </div>
                     {% endif %}
                     <!-- Registrations of interest -->
                     <div class="margin-top-2">
                         {% if interest_cases %}
                             <h1 class="heading-medium">Your registrations of interest</h1>
-                            {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases show_casenumber=True %}
+                            {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases  show_casenumber=True %}
                         {% endif %}
                         {% if interest_cases_draft %}
                             <h1 class="heading-medium">Your draft registrations of interest</h1>
-                            {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases_draft show_casenumber=True %}
+                            {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases_draft  show_casenumber=True %}
                         {% endif %}
                     </div>
                     <!-- 3rd party invites -->
