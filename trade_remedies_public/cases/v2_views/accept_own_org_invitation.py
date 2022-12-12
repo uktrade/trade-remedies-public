@@ -116,8 +116,9 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
             mobile_country_code=form.cleaned_data["mobile_country_code"],
         )
 
-        # if this is a caseworker invite, we want them to provide organisation details, redirect
-        if self.invitation.invitation_type == 3:
+        # if this is a caseworker invite and the organisation was created as part of the invite,
+        # we want them to provide organisation details, redirect
+        if self.invitation.invitation_type == 3 and self.invitation.organisation.draft:
             return redirect(
                 reverse(
                     "accept_representative_invitation_organisation_details",
