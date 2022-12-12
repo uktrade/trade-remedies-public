@@ -125,11 +125,16 @@ class OrganisationDetails(BaseAcceptInviteView, FormInvalidMixin):
             }
         )
 
-        # Now let's add the correct groups to the user, so they can log in and the rest of the
-        # invitation can be processed
-        self.client.users(self.invitation.invited_user.id).add_group(
-            SECURITY_GROUP_THIRD_PARTY_USER, SECURITY_GROUP_ORGANISATION_OWNER
-        )
+        if self.invitation.invitation_type == 2:
+            # Now let's add the correct groups to the user, so they can log in and the rest of the
+            # invitation can be processed
+            self.client.users(self.invitation.invited_user.id).add_group(
+                SECURITY_GROUP_THIRD_PARTY_USER, SECURITY_GROUP_ORGANISATION_OWNER
+            )
+        elif self.invitation.invitation_type == 3:
+            self.client.users(self.invitation.invited_user.id).add_group(
+                self.invitation.organisation_security_group
+            )
 
         return redirect(
             reverse(
