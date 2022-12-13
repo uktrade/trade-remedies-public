@@ -136,7 +136,7 @@ class TestUkEmployerForm(TestCase):
                     },
                     "kind": "searchresults#company",
                     "title": "TEST COMPANY",
-                    "address_snippet": "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM",
+                    "address_snippet": "1 TEST ROAD, LONDON, UNITED KINGDOM, NNN NNN",
                     "company_number": "000000",
                 }
             )
@@ -147,7 +147,7 @@ class TestUkEmployerForm(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEqual(form.cleaned_data["country"], "GB")
         self.assertEqual(
-            form.cleaned_data["address_snippet"], "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM"
+            "1 TEST ROAD, LONDON, UNITED KINGDOM", form.cleaned_data["address_snippet"]
         )
         self.assertEqual(form.cleaned_data["company_number"], "000000")
         self.assertEqual(form.cleaned_data["company_name"], "TEST COMPANY")
