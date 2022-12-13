@@ -64,8 +64,11 @@ class UkEmployerForm(ValidationForm):
         elif not self.data.get("input-autocomplete"):
             self.add_error("company_search_container", "companies_house_not_searched")
         else:
-            self.cleaned_data["organisation_address"] = self.cleaned_data["organisation_address"]\
-                .removesuffix(self.cleaned_data["organisation_post_code"]).rstrip(", ")
+            self.cleaned_data["organisation_address"] = (
+                self.cleaned_data["organisation_address"]
+                .removesuffix(self.cleaned_data["organisation_post_code"])
+                .rstrip(", ")
+            )
 
             return self.cleaned_data
 
