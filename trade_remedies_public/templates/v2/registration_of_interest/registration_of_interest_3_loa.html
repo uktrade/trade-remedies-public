@@ -14,6 +14,32 @@
             <h1 class="govuk-heading-xl">
                 Upload a Letter of Authority
             </h1>
+            {% if is_deficient_document %}
+                <div class="address-card">
+                    <div class="address-container">
+                        <div class="govuk-warning-text">
+                            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                            <p class="govuk-warning-text__text">
+                                <strong>
+                                    <span class="govuk-warning-text__assistive">Warning</span>
+                                    Review Deficiency Notice
+                                </strong>
+                            </p>
+                            <p class="govuk-warning-text__text-p">You need to review documents marked as deficient.
+                                Download the following document for instructions.</p>
+                        </div>
+                        <ul class="govuk-list govuk-warning-text__text-p">
+                            <li>
+                                <a href="{{ submission.deficiency_notice.document.file }}" download=""
+                                   class="govuk-link--no-visited-state"><img
+                                        src="{% static 'v2/assets/images/file_icons/'|add:submission.deficiency_notice.document.extension|add:'.png' %}"
+                                        alt="File icon" width="24px">
+                                    {{ submission.deficiency_notice.document.name }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
             <p>Download the Letter of Authority and ask your client to complete it. This will confirm you have authority
                 to act on their behalf.</p>
             <p>Upload it when finished (max. file size 30MB). Your information is kept confidential.</p>
@@ -22,7 +48,8 @@
                 <ul class="govuk-list">
                     {% for loa_document in loa_document_bundle.documents %}
                         <li>
-                            <a href="{% url 'download_document' document_id=loa_document.id %}" target="_blank" class="govuk-link--no-visited-state" download>
+                            <a href="{% url 'download_document' document_id=loa_document.id %}" target="_blank"
+                               class="govuk-link--no-visited-state" download>
                                 <img src="{% static 'v2/assets/images/file_icons/'|add:loa_document.extension|add:'.png' %}"
                                      alt="File icon" width="24px">
                                 {{ loa_document.name }}
@@ -49,7 +76,7 @@
             <div class="govuk-grid-column-one-half">
                 <div class="row-colour">
                     <div class="govuk-grid-column-full">
-                        {% include "v2/component_macros/file_upload_card.html" with submission_document_type="loa" document=loa_document confidential=True %}
+                        {% include "v2/component_macros/file_upload_card.html" with submission_document_type="loa" document=loa_document confidential=True deficient=is_deficient_document %}
                     </div>
                 </div>
             </div>

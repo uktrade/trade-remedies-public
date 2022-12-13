@@ -71,7 +71,7 @@ def get_uploaded_loa_document(submission: dict) -> Union[dict, None]:
             None,
         )
         if loa_document:
-            return loa_document["document"]
+            return loa_document
     return None
 
 

@@ -20,11 +20,21 @@
                     </dt>
                     <dd class="govuk-summary-list__value">
                         <p>
-                            {{ submission.status.public_name }}<br>
-                            {% if submission.status.draft %}
-                                <span id="date">{{ submission.created_at|date:'d M Y' }}</span>
-                            {% elif submission.status.locking %}
-                                <span id="date">{{ submission.received_at|date:'d M Y' }}</span>
+                            {% if submission.status.version %}
+                                {# the ROI is deficient #}
+                                <p><strong class="govuk-tag govuk-tag--pink" id="pre-sampling-upload-status">Deficient
+                                    documentation</strong></p>
+                                <a href="{% url 'roi_submission_exists' submission_id=submission.id %}"
+                                   role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                                    Review documentation</a>
+                                <p><span>{{ submission.parent.deficiency_sent_at|date:'d M Y' }}</span></p>
+                            {% else %}
+                                {{ submission.status.public_name }}<br>
+                                {% if submission.status.draft %}
+                                    <span>{{ submission.created_at|date:'d M Y' }}</span>
+                                {% elif submission.status.locking %}
+                                    <span>{{ submission.received_at|date:'d M Y' }}</span>
+                                {% endif %}
                             {% endif %}
                         </p>
                     </dd>

@@ -153,12 +153,15 @@ $(document).on('click', '.delete_document_link', function (e) {
             upload_container.find(".file_upload_indicator").hide()
             upload_container.find('.waiting_for_upload').show()
         },
-        error: function (xhr) { // if error occured
+        error: function (xhr) { // if error occurred
             alert("Error occurred.please try again");
         },
         complete: function () {
         },
     })
+
+    // Now we need to set the parent of this to the other document if it's been uploaded.
+    if (!upload_container.attr("data-parent"))
 })
 
 $('#add_document_button').click(function (e) {
