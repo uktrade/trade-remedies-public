@@ -37,7 +37,7 @@
             {% url 'login' as button_url %}
             {% include "v2/component_macros/start_button.html" with button_text="Sign in" button_url=button_url id="sign_in_button" %}
             {% if request.GET.invitation %}
-                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'accept_invite_start' invitation_id=request.GET.invitationot %}">Create an
+                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'accept_invite_start' invitation_id=request.GET.invitation %}">Create an
                 account</a>
             {% else %}
                 <a class="govuk-link govuk-link--no-visited-state" href="{% url 'v2_register_start' %}">Create an
