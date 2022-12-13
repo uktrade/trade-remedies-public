@@ -239,13 +239,14 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
         if request.GET.get("confirm_access", False) or (
             self.submission and self.submission["status"]["locking"] and not self.submission.status.version
         ):
+            loa_document = get_uploaded_loa_document(self.submission)
             # The submission exists, show the user the overview page. Only if we have specified
             # the user wants to go to the review page, or the submission is locked but not
             # deficient (in which case we want them to go to the tasklist)
             return render(
                 request,
                 "v2/registration_of_interest/registration_of_interest_review.html",
-                context={"submission": self.submission},
+                context={"submission": self.submission, "loa_document": loa_document},
             )
         # If not, show the normal tasklist
         return super().get(request, *args, **kwargs)

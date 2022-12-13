@@ -66,14 +66,26 @@
                         <br>
                     </dd>
                 </div>
+                {% if submission.contact.organisation != submission.organisation.id and loa_document %}
+                    {# it's a rep ROI, show the LOA #}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Letter of Authority
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a download href="{{ loa_document.file }}">{{ loa_document.name }}</a>
+                        </dd>
+                    </div>
+                {% endif %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        Initial documentation
+                        Registration documentation
                     </dt>
                     <dd class="govuk-summary-list__value">
                         {% for document in submission.paired_documents %}
-                            {{ document.confidential.name }}<br>
-                            {{ document.non_confidential.name }}<br>
+                            <a download href="{{ document.confidential.file }}">{{ document.confidential.name }}</a><br>
+                            <a download
+                               href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a><br>
                         {% endfor %}
                     </dd>
                 </div>
