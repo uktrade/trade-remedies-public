@@ -137,7 +137,7 @@ class TestUkEmployerForm(TestCase):
     def setUp(self) -> None:
         self.mock_data = {
             "organisation_post_code": "NNN NNN",  # PS-IGNORE
-            "organisation_address": "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM",
+            "organisation_address": "1 TEST ROAD, LONDON, UNITED KINGDOM, NNN NNN",
             "companies_house_id": "000000",
             "organisation_name": "TEST COMPANY",
         }
@@ -147,14 +147,14 @@ class TestUkEmployerForm(TestCase):
         form = UkEmployerForm(data=self.mock_data)
         self.assertTrue(form.is_valid())
         self.assertEqual(
-            form.cleaned_data,
             {
                 "organisation_name": "TEST COMPANY",
                 "companies_house_id": "000000",
                 "organisation_post_code": "NNN NNN",
-                "organisation_address": "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM",
+                "organisation_address": "1 TEST ROAD, LONDON, UNITED KINGDOM",
                 "company_search_container": "",
             },
+            form.cleaned_data,
         )
 
     def test_companies_house_searched_but_not_selected(self):
