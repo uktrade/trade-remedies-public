@@ -28,6 +28,6 @@
         {% include 'v2/component_macros/text_input.html' with label="Enter your name" id="name" name="name" type="text" width="20" hint="How would you like to be addressed?" strong=True %}
         {% include 'v2/component_macros/text_input.html' with label="Your email address" id="email" name="email" type="text" width="20" hint="Use your professional email to sign in." strong=True %}
     {% endif %}
-    {% include 'v2/component_macros/checkbox.html' with heading="Terms of Use and Privacy Notice" label="I have read and understood the <a href='/termsofuse-privacypolicy/' target='_blank'> Terms of Use and Privacy Notice</a> (opens in a ne window)" id="terms_and_conditions_accept" name="terms_and_conditions_accept" %}
+    {% include 'v2/component_macros/checkbox.html' with heading="Terms of Use and Privacy Notice" label="I have read and understood the <a href='/termsofuse-privacypolicy/' target='_blank'> Terms of Use and Privacy Notice</a> (opens in a new window)" id="terms_and_conditions_accept" name="terms_and_conditions_accept" %}
     {% include "v2/component_macros/form_button_group.html" %}
 {% endblock form_content %}
