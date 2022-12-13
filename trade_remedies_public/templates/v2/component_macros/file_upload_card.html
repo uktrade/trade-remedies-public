@@ -29,6 +29,7 @@
          {% if submission_id %}data-submission-id="{{ submission_id }}"{% endif %}
          {% if parent_document %}data-parent-document="{{ parent_document }}"{% endif %}
          {% if submission_document_type %}data-submission-document-type="{{ submission_document_type }}"{% endif %}
+         {% if document_exists %}data-current-document="{{ document.id }}"{% endif %}
     >
 
         <div class="waiting_for_upload file_upload_indicator" {% if document_exists %}style="display:none;"{% endif %}>

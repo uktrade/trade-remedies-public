@@ -71,6 +71,8 @@ function file_upload(upload_container, files, submission_id) {
             upload_container.find(".upload_file_complete").show()
             upload_container.find(".uploaded_file").show()
             upload_container.find('.delete_document_link').data('document-id',uploaded_file['id']).attr('data-document-id', uploaded_file['id']);
+            upload_container.find('.deficient_document_warning').remove()
+            upload_container.find('.delete_document_link').html('Remove <span class="govuk-visually-hidden">file</span>')
 
             const part_of_pair = upload_container.closest('.confidential_and_non_confidential_file_row')
             if (part_of_pair) {
@@ -140,6 +142,12 @@ $(document).on('click', '.delete_document_link', function (e) {
     const document_id = $(this).data('document-id')
     const action = `${window.location.origin}/documents/document/?document_to_delete=${document_id}`
 
+    // Now we need to set the parent of this to the other document if it's been uploaded.
+    let other_uploaded_document_id = upload_container.closest(".confidential_and_non_confidential_file_row").find(".upload_container").not(upload_container).attr("data-current-document")
+    if (other_uploaded_document_id){
+        // The other document in this pair has been uploaded, replace the parent_id on this one with the already-uploaded one
+        upload_container.data('parent-document', other_uploaded_document_id).attr('data-parent-document', other_uploaded_document_id)
+    }
 
     $.ajax(action, {
         type: 'DELETE',
@@ -160,8 +168,6 @@ $(document).on('click', '.delete_document_link', function (e) {
         },
     })
 
-    // Now we need to set the parent of this to the other document if it's been uploaded.
-    if (!upload_container.attr("data-parent"))
 })
 
 $('#add_document_button').click(function (e) {
