@@ -20,7 +20,12 @@
                     </dt>
                     <dd class="govuk-summary-list__value">
                         <p>
-                            {% if submission.status.version %}
+                            {% if submission.status.draft %}
+                                Draft
+                            {% elif org_case_role and org_case_role.case_role_key == "rejected" %}
+                                {# the ROI has been reviewed but not approved and processed #}
+                                Rejected
+                            {% elif submission.status.version %}
                                 {# the ROI is deficient #}
                                 <p><strong class="govuk-tag govuk-tag--pink" id="pre-sampling-upload-status">Deficient
                                     documentation</strong></p>
@@ -28,14 +33,15 @@
                                    role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                                     Review documentation</a>
                                 <p><span>{{ submission.parent.deficiency_sent_at|date:'d M Y' }}</span></p>
-                            {% else %}
-                                {{ submission.status.public_name }}<br>
-                                {% if submission.status.draft %}
-                                    <span>{{ submission.created_at|date:'d M Y' }}</span>
-                                {% elif submission.status.locking %}
-                                    <span>{{ submission.received_at|date:'d M Y' }}</span>
-                                {% endif %}
+                            {% elif submission.status.received and not org_case_role %}
+                                Submitted, Awaiting TRA approval
                             {% endif %}
+                        <br>
+                        {% if submission.status.draft %}
+                            <span>{{ submission.created_at|date:'d M Y' }}</span>
+                        {% elif submission.status.locking %}
+                            <span>{{ submission.received_at|date:'d M Y' }}</span>
+                        {% endif %}
                         </p>
                     </dd>
                 </div>
@@ -73,7 +79,7 @@
                             Letter of Authority
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            <a download href="{{ loa_document.file }}">{{ loa_document.name }}</a>
+                            <a download href="{{ loa_document.document.file }}">{{ loa_document.document.name }}</a>
                         </dd>
                     </div>
                 {% endif %}

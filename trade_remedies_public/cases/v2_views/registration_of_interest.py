@@ -175,9 +175,19 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
 
             if submission.status.version:
                 # the ROI is deficient, check if the reg docs are deficient
-                deficient_registration_documents = [each.confidential for each in submission.paired_documents if each.confidential.deficient] + [each.non_confidential for each in submission.paired_documents if each.non_confidential.deficient]
+                deficient_registration_documents = [
+                    each.confidential
+                    for each in submission.paired_documents
+                    if each.confidential.deficient
+                ] + [
+                    each.non_confidential
+                    for each in submission.paired_documents
+                    if each.non_confidential.deficient
+                ]
                 if deficient_registration_documents:
-                    registration_documentation_status_text = f"DEFICIENT DOCUMENTS: {len(deficient_registration_documents)}"
+                    registration_documentation_status_text = (
+                        f"DEFICIENT DOCUMENTS: {len(deficient_registration_documents)}"
+                    )
                     registration_documentation_status = "Incomplete"
         documentation_sub_steps = [
             {
@@ -211,7 +221,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
                     "link": reverse("roi_3_loa", kwargs={"submission_id": submission["id"]}),
                     "link_text": "Letter of Authority",
                     "status": status,
-                    "status_text": status_text
+                    "status_text": status_text,
                 }
             )
 
@@ -237,16 +247,31 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
 
     def get(self, request, *args, **kwargs):
         if request.GET.get("confirm_access", False) or (
-            self.submission and self.submission["status"]["locking"] and not self.submission.status.version
+            self.submission
+            and self.submission["status"]["locking"]
+            and not self.submission.status.version
         ):
             loa_document = get_uploaded_loa_document(self.submission)
             # The submission exists, show the user the overview page. Only if we have specified
             # the user wants to go to the review page, or the submission is locked but not
             # deficient (in which case we want them to go to the tasklist)
+
+            # we want to find an org_case_role if it exists to see if the ROI has been processed
+            org_case_role = self.client.organisation_case_roles(
+                organisation_id=self.submission.organisation.id,
+                case_id=self.submission.case.id,
+                fields=["id", "case_role_key"],
+            )
+            if org_case_role:
+                org_case_role = org_case_role[0]
             return render(
                 request,
                 "v2/registration_of_interest/registration_of_interest_review.html",
-                context={"submission": self.submission, "loa_document": loa_document},
+                context={
+                    "submission": self.submission,
+                    "loa_document": loa_document,
+                    "org_case_role": org_case_role,
+                },
             )
         # If not, show the normal tasklist
         return super().get(request, *args, **kwargs)
@@ -526,7 +551,13 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
             ),
         )
         context["uploaded_documents"] = sorted_uploaded_documents
-        context["is_deficient_documents"] = any([each for each in self.submission.paired_documents if each.confidential.deficient or each.non_confidential.deficient])
+        context["is_deficient_documents"] = any(
+            [
+                each
+                for each in self.submission.paired_documents
+                if each.confidential.deficient or each.non_confidential.deficient
+            ]
+        )
         return context
 
     def post(self, request, *args, **kwargs):
