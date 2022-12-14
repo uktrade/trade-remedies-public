@@ -1,5 +1,8 @@
 # ## IHTC compliance
 
+# current django version settings config docs:
+# https://docs.djangoproject.com/en/3.2/ref/settings/
+
 # Set crsf cookie to be secure
 CSRF_COOKIE_SECURE = True
 
@@ -29,3 +32,34 @@ AUDIT_LOG_USER_FIELD = "username"
 
 # Default value for the X-Frame-Options header used by XFrameOptionsMiddleware.
 X_FRAME_OPTIONS = "DENY"
+
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+SECURE_HSTS_PRELOAD = True
+
+# SecurityMiddleware redirects all non-HTTPS requests
+# to HTTPS (except for those URLs matching a
+# regular expression listed in SECURE_REDIRECT_EXEMPT
+SECURE_SSL_REDIRECT = True
+
+SECURE_HSTS_SECONDS = 0
+
+CSP_DEFAULT_SRC = ("'self'", "https:", "data:")
+
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https:", "data:")
+
+CSP_IMG_SRC = ("'self'", "https:", "data:")
+
+CSP_SCRIPT_SRC = (
+    "'self'",
+    "'unsafe-hashes'",
+    "'unsafe-inline'",
+    "https:",
+)
+
+CSP_FONT_SRC = (
+    "'self'",
+    "https:",
+)

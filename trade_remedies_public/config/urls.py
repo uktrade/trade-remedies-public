@@ -13,17 +13,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from cases.views import CasesView
-from cookies import views as cookie_views
-from core import views as core_views
 from django.urls import (
     include,
     path,
 )
+
+from cases.views import CasesView
+from cookies import views as cookie_views
+from core import views as core_views
+from core.v2_views import feedback, manage_your_team
 from login import views as login_views
 from password import views as password_views
-from registration import views as register_views
-from core.v2_views import manage_your_team
+from registration.views import views as register_views
 
 # todo - config/urls.py should not contain anything, put these URLs in their relevant apps
 urlpatterns = [
@@ -300,5 +301,19 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path("manage_your_team", manage_your_team.ManageYourTeamView.as_view(), name="manage_your_team")
+    path(
+        "manage_your_team", manage_your_team.ManageYourTeamView.as_view(), name="manage_your_team"
+    ),
+    path("collect_feedback", feedback.CollectFeedbackView.as_view(), name="collect_feedback"),
+    path(
+        "collect_feedback_second_step/<uuid:feedback_id>",
+        feedback.CollectFeedbackView.as_view(),
+        name="collect_feedback_second_step",
+    ),
+    path("collect_rating", feedback.CollectRatingView.as_view(), name="collect_rating"),
+    path(
+        "feedback_sent/<uuid:feedback_id>",
+        feedback.FeedbackSentView.as_view(),
+        name="feedback_sent",
+    ),
 ]

@@ -32,7 +32,7 @@
 				value="{{group.0}}"
 				{% if group.0 == security_group %}checked{% endif %}
 			/>
-			{% set 'perm_name' 'Regular user with access to selected cases only' %}
+			{% set 'perm_name' 'User with access to selected cases only' %}
 			{% if group.0 == 'Organisation Owner' %}
 				{% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}
 			{% endif %}

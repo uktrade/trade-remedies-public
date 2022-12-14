@@ -64,7 +64,8 @@
                     the correct email address.</p>
                 <p>Check your spam or junk mail folders.</p> {# /PS-IGNORE #}
                 <p>If you still have not received your verification email, <a
-                        href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">request a new email</a>.</p>
+                        href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">request a new email</a>.
+                </p>
             </div>
         </details>
         <details class="govuk-details" data-module="govuk-details">
@@ -74,7 +75,8 @@
           </span>
             </summary>
             <div class="govuk-details__text">
-                <p><a href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">Request a new verification email</a>.
+                <p><a href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">Request a new verification
+                    email</a>.
                 </p>
             </div>
         </details>
@@ -84,6 +86,8 @@
             </a>
         {% endif %}
     </div>
-
-
 {% endblock row_content %}
+
+{% block additional_content %}
+    {% include "v2/feedback/stars_partial.html" with  journey="Account created" %}
+{% endblock additional_content %}

@@ -12,10 +12,9 @@
         </div>
         <p>We have sent an email to invite a representative to join your account and act on your behalf.</p>
         <p>
-            {{ invitation.submission.case.reference }} - {{ invitation.submission.case.name }}<br>
-            {{ invitation.contact.name }}<br>
+            {{ invitation.contact.name }} - {{ invitation.contact.email }}<br>
             {{ invitation.contact.organisation_name }}<br>
-            {{ invitation.contact.email }}
+            {{ invitation.submission.case.reference }} - {{ invitation.submission.case.name }}<br>
         </p>
         <p>The invite will ask your representative to register. This will give them access to the Trade Remedies
             Service. </p>
@@ -29,3 +28,7 @@
         </div>
     </div>
 {% endblock row_content %}
+
+{% block additional_content %}
+    {% include "v2/feedback/stars_partial.html" with  journey="Invite representative sent" %}
+{% endblock additional_content %}

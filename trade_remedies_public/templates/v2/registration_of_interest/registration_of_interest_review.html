@@ -22,9 +22,9 @@
                         <p>
                             {{ submission.status.public_name }}<br>
                             {% if submission.status.draft %}
-                                <span id="date">{{ submission.created_at|format_date:'%d %b %Y' }}</span>
+                                <span id="date">{{ submission.created_at|date:'d M Y' }}</span>
                             {% elif submission.status.locking %}
-                                <span id="date">{{ submission.received_at|format_date:'%d %b %Y' }}</span>
+                                <span id="date">{{ submission.received_at|date:'d M Y' }}</span>
                             {% endif %}
                         </p>
                     </dd>
@@ -46,7 +46,7 @@
                         Interested party
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        {% if user.organisation.id == submission.organisation.id %}
+                        {% if user.contact.organisation.id == submission.organisation.id %}
                             <p>My organisation:</p>
                         {% else %}
                             <p>My client:</p>

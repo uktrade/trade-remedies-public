@@ -22,13 +22,14 @@ certifi==2021.5.30
     #   sentry-sdk
 chardet==4.0.0
     # via requests
-django==3.2.15
+django==3.2.16
     # via
     #   -r requirements.in/base.in
     #   django-appconf
     #   django-audit-log-middleware
     #   django-basicauth
     #   django-chunk-upload-handlers
+    #   django-csp
     #   django-govuk-forms
     #   django-govuk-template
     #   django-redis
@@ -53,6 +54,8 @@ django-chunk-upload-handlers==0.0.11
 django-compressor==2.4.1
     # via -r requirements.in/base.in
 django-countries==7.2.1
+    # via -r requirements.in/base.in
+django-csp==3.7
     # via -r requirements.in/base.in
 django-environ==0.4.5
     # via -r requirements.in/base.in
@@ -113,7 +116,9 @@ py==1.10.0
 pyheck==0.1.5
     # via dotwiz
 python-dateutil==2.8.2
-    # via botocore
+    # via
+    #   botocore
+    #   v2-api-client
 pytz==2021.1
     # via
     #   -r requirements.in/base.in
@@ -155,7 +160,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
     # via -r requirements.in/base.in
 werkzeug==0.15.5
     # via -r requirements.in/base.in
