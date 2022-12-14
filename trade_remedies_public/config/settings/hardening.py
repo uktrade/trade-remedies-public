@@ -50,11 +50,7 @@ CSP_DEFAULT_SRC = ("'self'", "https:", "data:")
 
 CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https:", "data:")
 
-CSP_IMG_SRC = (
-    "'self'",
-    "https:",
-    "data:"
-)
+CSP_IMG_SRC = ("'self'", "https:", "data:")
 
 CSP_SCRIPT_SRC = (
     "'self'",
