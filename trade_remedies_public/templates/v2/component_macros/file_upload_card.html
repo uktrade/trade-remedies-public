@@ -70,8 +70,9 @@
                 <p class="govuk-tag govuk-tag--pink deficient_document_warning">Deficient document</p>
             {% endif %}
             <p class="file_name">{% if document_exists %}{{ document.truncated_name }}{% endif %}</p>
-            <p><a href="" class="govuk-link govuk-link--no-visited-state delete_document_link"
-                  data-document-id="{% if document_exists %}{{ document.id }}{% endif %}">
+            <p>
+                <a href="" class="govuk-link govuk-link--no-visited-state {% if deficient %}deficient_document_replace_link{% else %}delete_document_link{% endif %}"
+                   data-document-id="{% if document_exists %}{{ document.id }}{% endif %}">
                 {% if deficient %}
                     Replace
                 {% else %}
