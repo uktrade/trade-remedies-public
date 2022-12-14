@@ -19,8 +19,11 @@ from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.client import TRSAPIClient
 
-from cases.constants import CASE_ROLE_AWAITING_APPROVAL, CASE_TYPE_REPAYMENT, \
-    SUBMISSION_TYPE_REGISTER_INTEREST
+from cases.constants import (
+    CASE_ROLE_AWAITING_APPROVAL,
+    CASE_TYPE_REPAYMENT,
+    SUBMISSION_TYPE_REGISTER_INTEREST,
+)
 from cases.utils import decorate_due_status, decorate_rois
 from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
@@ -411,9 +414,7 @@ class DashboardView(
             case_id__in=[each.case.id for each in organisation.organisationcaserole_set],
             organisation_id=self.request.user.contact["organisation"]["id"],
         )
-        case_to_roi= {
-            each.case.id: each for each in roi_submissions
-        }
+        case_to_roi = {each.case.id: each for each in roi_submissions}
 
         return render(
             request,
