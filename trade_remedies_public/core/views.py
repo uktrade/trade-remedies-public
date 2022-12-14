@@ -404,8 +404,8 @@ class DashboardView(
             for invite in invitations
             if invite.invitation_type == 2
             if invite.submission
-            and not invite.submission.status.review_ok
-            and not invite.submission.status.version
+            and not invite.rejected_at
+            and not invite.approved_at
         ]
         return render(
             request,
