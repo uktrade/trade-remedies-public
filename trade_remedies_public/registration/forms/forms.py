@@ -87,9 +87,11 @@ class UkEmployerForm(ValidationForm):
                 )
                 # In fact, this goes for all of the fields, we want to extract them
                 # so they look the same as if we came from the non-UK company page
-                self.cleaned_data["address_snippet"] = self.cleaned_data["company_data"][
-                    "address_snippet"
-                ]
+                self.cleaned_data["address_snippet"] = (
+                    self.cleaned_data["company_data"]["address_snippet"]
+                    .removesuffix(self.cleaned_data["post_code"])
+                    .rstrip(", ")
+                )
                 self.cleaned_data["company_number"] = self.cleaned_data["company_data"][
                     "company_number"
                 ]
