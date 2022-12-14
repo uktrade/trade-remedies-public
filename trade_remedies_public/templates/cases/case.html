@@ -46,11 +46,22 @@
               <td sortVal="{{submission.updated_at}} ">{{ submission.updated_at|format_date:'%d %b %Y' }}</td>
               <td>{{ submission.name }}</td>
               <td>
-                <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">{{ submission.type.name }}</a>
+                  {% if submission.type.key == "interest" and submission.status.version %}
+                      {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
+                      <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">{{ submission.type.name }}</a>
+                  {% else %}
+                      <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">{{ submission.type.name }}</a>
+                  {% endif %}
+
               </td>
                 <td>
                   <div class="lozenge {{submission.status_class}}">
-                  <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">
+                  {% if submission.type.key == "interest" and submission.status.version %}
+                      {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
+                        <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">
+                      {% else %}
+                        <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">
+                  {% endif %}
                    <span>{% if submission.status %}{{ submission.status.public_name|default:submission.status.name }}{% else %}-{% endif %}</span>
                   </a>
                 </td>

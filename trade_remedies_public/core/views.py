@@ -19,7 +19,8 @@ from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.client import TRSAPIClient
 
-from cases.constants import CASE_ROLE_AWAITING_APPROVAL, CASE_TYPE_REPAYMENT
+from cases.constants import CASE_ROLE_AWAITING_APPROVAL, CASE_TYPE_REPAYMENT, \
+    SUBMISSION_TYPE_REGISTER_INTEREST
 from cases.utils import decorate_due_status, decorate_rois
 from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
@@ -405,6 +406,15 @@ class DashboardView(
             if not each.approved_at and each.role == CASE_ROLE_AWAITING_APPROVAL
         ]
 
+        roi_submissions = v2_client.submissions(
+            type_id=SUBMISSION_TYPE_REGISTER_INTEREST,
+            case_id__in=[each.case.id for each in organisation.organisationcaserole_set],
+            organisation_id=self.request.user.contact["organisation"]["id"],
+        )
+        case_to_roi= {
+            each.case.id: each for each in roi_submissions
+        }
+
         return render(
             request,
             self.template_name,
@@ -425,6 +435,7 @@ class DashboardView(
                 "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
                 in request.user.organisation_groups,
                 "cases_awaiting_approval": cases_awaiting_approval,
+                "case_to_roi": case_to_roi,
             },
         )
 

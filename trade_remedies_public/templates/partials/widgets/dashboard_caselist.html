@@ -1,27 +1,39 @@
+{% load get_item %}
+
 {% if cases %}
     <ul class="dashboard-case-list">
         {% for case in cases %}
             <li>
                 {% if no_click %}
-                <p style="margin-bottom: 0px;margin-top:0px;">
+                    <p style="margin-bottom: 0px;margin-top:0px;">
                 {% else %}
-                <a href="/case/{{ case.id }}/">
+                    <a href="/case/{{ case.id }}/">
                 {% endif %}
-                    {% if show_casenumber %}
-                        {{ case.reference }}:
-                    {% endif %}
-                    {% if case.name %}
-                        {{ case.name }}
-                    {% else %}
-                        {{ case.type.name }}
-                    {% endif %}
-                {% if no_click %}
-                </p>
+                {% if show_casenumber %}
+                    {{ case.reference }}:
+                {% endif %}
+                {% if case.name %}
+                    {{ case.name }}
                 {% else %}
-                </a>
+                    {{ case.type.name }}
+                {% endif %}
+                {% if no_click %}
+                    </p>
+                {% else %}
+                    </a>
                 {% endif %}
 
                 {% include "partials/widgets/aggregate_status.html" with state=case.due_state %}
+                {% if case.id in case_to_roi %}
+                    {% with case_to_roi|get_item:case.id as roi_submission %}
+                        {% if roi_submission.status.version %}
+                            {# the corresponding ROI to this case is deficient, let the user access it to reupload #}
+                            <div class="aggregate-status">
+                                <div class="number-circle small">1</div>
+                            </div>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
                 {% if case.user_organisations|length > 1 %}
                     <div class="hidden" data-attach="ChooseOrganisation">
                         <input type="hidden" value="/case/{{ case.id }}/" name="next">
