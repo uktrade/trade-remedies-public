@@ -403,9 +403,7 @@ class DashboardView(
             invite.case
             for invite in invitations
             if invite.invitation_type == 2
-            if invite.submission
-            and not invite.rejected_at
-            and not invite.approved_at
+            if invite.submission and not invite.rejected_at and not invite.approved_at
         ]
         return render(
             request,
