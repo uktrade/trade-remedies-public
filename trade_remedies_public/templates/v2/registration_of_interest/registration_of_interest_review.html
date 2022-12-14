@@ -24,6 +24,8 @@
                         {% elif org_case_role and org_case_role.case_role_key == "rejected" %}
                             {# the ROI has been reviewed but not approved and processed #}
                             Rejected
+                            <br>
+                            Registration of interest was rejected by the TRA
                         {% elif submission.status.version %}
                             {# the ROI is deficient #}
                             <p><strong class="govuk-tag govuk-tag--pink" id="pre-sampling-upload-status">Deficient
@@ -32,8 +34,10 @@
                                role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                                 Review documentation</a>
                             <p><span>{{ submission.parent.deficiency_sent_at|date:'d M Y' }}</span></p>
-                        {% elif submission.status.received and not org_case_role.case_role_key == "rejected" %}
-                            Submitted, Awaiting TRA approval
+                        {% elif submission.status.received or submission.status.sufficient and not org_case_role.case_role_key == "rejected" %}
+                            Submitted
+                            <br>
+                            Awaiting TRA approval
                         {% endif %}
                         {% if submission.status.draft %}
                             <br>
@@ -65,12 +69,15 @@
                         {% else %}
                             <p>My client:</p>
                         {% endif %}
+                        {{ submission.primary_contact.name }}
                         <br>
+                        {{ submission.primary_contact.email }}
+                        <br><br>
                         {{ submission.organisation.name }}
-                        {% if submission.organisation.address %}
-                            <br>
-                            {{ submission.organisation.address }}
-                        {% endif %}
+                        <br>
+                        {{ submission.organisation.address|default_if_none:"" }}
+                        <br>
+                        {{ submission.organisation.full_country_name|default_if_none:"" }}
                     </dd>
                 </div>
                 {% if submission.contact.organisation != submission.organisation.id and loa_document %}
