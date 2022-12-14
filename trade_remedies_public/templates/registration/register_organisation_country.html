@@ -2,32 +2,32 @@
 {% load radio_element %}
 
 {% block page_title %}
-Create an account
+    Create an account
 {% endblock %}
 
 {% block right_column %}
-<h2 class="heading-small margin-top-1">Already have an account?</h2>
-<a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
+    <h2 class="heading-small margin-top-1">Already have an account?</h2>
+    <a href="/accounts/login{% if code and case_id %}/{{code}}/{{case_id}}/{% endif %}">Sign in</a>
 {% endblock %}
 
 
 {% block form_content %}
-  <h2 class="heading-medium">
-      About your company
-  </h2>
-  <div class="notice margin-top-2">
-    <i class="icon icon-amber-warning">
-    <span class="visually-hidden">Warning</span>
-    </i>
-    <strong class="bold-small">
-      <p>
-        Tell us about your direct employer. If you are a lawyer or consultant you will be able to tell us about your client later.
-      </p>
-    </strong>
-  </div>
-  {% radio_element id='uk_company' label='Is your company registered in the UK?' options='[{"value":"yes","label":"Yes"}, {"value":"no","label":"No"}]' errors=errors %}
-  <div class="button-set margin-bottom-1">
-    <button type="submit"  class="button">Continue</button>
-  </div>
+    <h2 class="heading-medium">
+        About your company
+    </h2>
+    <div class="notice margin-top-2">
+        <i class="icon icon-amber-warning">
+            <span class="visually-hidden">Warning</span>
+        </i>
+        <strong class="bold-small">
+            <p>
+                Tell us about your direct employer. If you are a lawyer or consultant you will be able to tell us about your client later.
+            </p>
+        </strong>
+    </div>
+    {% radio_element id='uk_company' label='Is your company registered in the UK?' options='[{"value":"yes","label":"Yes"}, {"value":"no","label":"No"}]' errors=errors %}
+    <div class="button-set margin-bottom-1">
+        <button type="submit"  class="button">Continue</button>
+    </div>
 {% endblock %}
 

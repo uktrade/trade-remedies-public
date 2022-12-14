@@ -2,43 +2,43 @@
 {% load format_date %}
 
 {% block row_content %}
-   <h1 class="heading-xlarge">
-    Case Submissions
-  </h1>
-  <a href="/cases/">Back to Cases</a>
-  <hr/>
+    <h1 class="heading-xlarge">
+        Case Submissions
+    </h1>
+    <a href="/cases/">Back to Cases</a>
+    <hr/>
 
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">Submission</th>
-        <th scope="col">Created</th>
-        <th scope="col">Due</th>
-        <th scope="col">Received</th>
-        <th scope="col">Status</th>
-        <th scope="col"> </th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for submission in submissions %}
-        <tr>
-          <td>
-            {{submission.name|default:submission.type.name}}
-          </td>
-          <td>
-            {% format_date submission.sent_at '%d %b %Y' %}
-          </td>
-          <td>
-            {% format_date submission.due_at '%d %b %Y' %}
-          </td>
-          <td>
-            {% format_date submission.received_at '%d %b %Y' %}
-          </td>
-          <td>{{submission.status.name}}</td>
-          <td><a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">View</a></td>
-        </tr>
-      {% endfor %}
-    </tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th scope="col">Submission</th>
+                <th scope="col">Created</th>
+                <th scope="col">Due</th>
+                <th scope="col">Received</th>
+                <th scope="col">Status</th>
+                <th scope="col"> </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for submission in submissions %}
+                <tr>
+                    <td>
+                        {{submission.name|default:submission.type.name}}
+                    </td>
+                    <td>
+                        {% format_date submission.sent_at '%d %b %Y' %}
+                    </td>
+                    <td>
+                        {% format_date submission.due_at '%d %b %Y' %}
+                    </td>
+                    <td>
+                        {% format_date submission.received_at '%d %b %Y' %}
+                    </td>
+                    <td>{{submission.status.name}}</td>
+                    <td><a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">View</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}

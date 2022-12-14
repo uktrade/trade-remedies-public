@@ -2,10 +2,10 @@
 
 <div id="feedback-form" class="column-full">
     {% if not full_page %}
-        <button class="link close-link dlg-close">Close X</button> 
+        <button class="link close-link dlg-close">Close X</button>
     {% endif %}
     <h1 class="heading-large">
-       {{form.name}}
+        {{form.name}}
     </h1>
     <form action="/feedback/{{form.key}}/{% if placement_id %}placement/{{placement_id}}/{% endif %}" method="post">
         {% if not full_page %}

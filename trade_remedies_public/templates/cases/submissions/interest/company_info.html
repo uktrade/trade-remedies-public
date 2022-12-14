@@ -14,9 +14,9 @@
 {% endblock %}
 
 {% block save_button %}
-	{# The two buttons here allow us to detect non-javascript by the returned value.  Only one of them will be visible #}
-	<button type="submit" class="button {% if not representing_value %} no-js-hidden{% endif %}" name="btn-action" value="savecontinue">Save and continue</button>
-	{% if not representing_value %}
-		<button type="submit" class="button js-hidden" name="btn-action" value="no-js-save">Save and continue</button>
-	{% endif %}
+    {# The two buttons here allow us to detect non-javascript by the returned value.  Only one of them will be visible #}
+    <button type="submit" class="button {% if not representing_value %} no-js-hidden{% endif %}" name="btn-action" value="savecontinue">Save and continue</button>
+    {% if not representing_value %}
+        <button type="submit" class="button js-hidden" name="btn-action" value="no-js-save">Save and continue</button>
+    {% endif %}
 {% endblock %}
