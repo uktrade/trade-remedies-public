@@ -12,7 +12,7 @@
                         {{ case.type.name }}
                     {% endif %}
                     {% if case.organisation_case_role == 'rejected' %}
-                        <div class="lozenge red">Denied</div>
+                        <div class="lozenge red">Rejected</div>
                     {% endif %}
                 </a>
                 {% include "partials/widgets/aggregate_status.html" with state=case.due_state %}

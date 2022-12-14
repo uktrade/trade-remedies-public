@@ -19,30 +19,29 @@
                         Application status
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <p>
-                            {% if submission.status.draft %}
-                                Draft
-                            {% elif org_case_role and org_case_role.case_role_key == "rejected" %}
-                                {# the ROI has been reviewed but not approved and processed #}
-                                Rejected
-                            {% elif submission.status.version %}
-                                {# the ROI is deficient #}
-                                <p><strong class="govuk-tag govuk-tag--pink" id="pre-sampling-upload-status">Deficient
-                                    documentation</strong></p>
-                                <a href="{% url 'roi_submission_exists' submission_id=submission.id %}"
-                                   role="button" draggable="false" class="govuk-button" data-module="govuk-button">
-                                    Review documentation</a>
-                                <p><span>{{ submission.parent.deficiency_sent_at|date:'d M Y' }}</span></p>
-                            {% elif submission.status.received and not org_case_role %}
-                                Submitted, Awaiting TRA approval
-                            {% endif %}
-                        <br>
                         {% if submission.status.draft %}
+                            Draft
+                        {% elif org_case_role and org_case_role.case_role_key == "rejected" %}
+                            {# the ROI has been reviewed but not approved and processed #}
+                            Rejected
+                        {% elif submission.status.version %}
+                            {# the ROI is deficient #}
+                            <p><strong class="govuk-tag govuk-tag--pink" id="pre-sampling-upload-status">Deficient
+                                documentation</strong></p>
+                            <a href="{% url 'roi_submission_exists' submission_id=submission.id %}"
+                               role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                                Review documentation</a>
+                            <p><span>{{ submission.parent.deficiency_sent_at|date:'d M Y' }}</span></p>
+                        {% elif submission.status.received and not org_case_role.case_role_key == "rejected" %}
+                            Submitted, Awaiting TRA approval
+                        {% endif %}
+                        {% if submission.status.draft %}
+                            <br>
                             <span>{{ submission.created_at|date:'d M Y' }}</span>
                         {% elif submission.status.locking %}
+                            <br>
                             <span>{{ submission.received_at|date:'d M Y' }}</span>
                         {% endif %}
-                        </p>
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -50,9 +49,8 @@
                         Case details
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <p><a href="">
+                        <p>
                             {{ case.reference }} - {{ case.name }}
-                        </a><br>
                         </p>
                     </dd>
                 </div>
@@ -67,9 +65,12 @@
                         {% else %}
                             <p>My client:</p>
                         {% endif %}
-
-                        {{ submission.organisation.name }}
                         <br>
+                        {{ submission.organisation.name }}
+                        {% if submission.organisation.address %}
+                            <br>
+                            {{ submission.organisation.address }}
+                        {% endif %}
                     </dd>
                 </div>
                 {% if submission.contact.organisation != submission.organisation.id and loa_document %}
