@@ -1,0 +1,132 @@
+/* FEEDBAK RATING  https://www.cssscript.com/star-rating-radio/ */
+.star-rating3__stars {
+    position: relative;
+    height: 5rem;
+    width: 23.5rem;
+    background: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 70 70'%3e%3cpath fill='white' stroke='grey' stroke-width='2' d='m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z'/%3e%3c/svg%3e");
+    background-size: 5rem 5rem;
+    margin: 10px;
+}
+
+/* For when the rating is shown on a task completion page*/
+.star-rating3__stars.task {
+    margin: 0 auto;
+}
+
+.govuk-button.task {
+    margin: 0 auto;
+}
+
+.star-rating3__label {
+    position: absolute;
+    height: 100%;
+    background-size: 5rem 5rem;
+}
+
+.star-rating3__label .text {
+    visibility: hidden;
+    background: white;
+}
+
+.task-issue-hide {
+    display: none;
+}
+
+.task-issue-hide2 {
+    display: block;
+}
+
+.js-disabled .star-rating3__input:checked + .star-rating3__label .text, .star-rating3__label:hover .text, .selected_rating {
+    visibility: visible;
+    display: block;
+    position: relative;
+    width: 16.7em;
+    text-align: center;
+    top: 60px;
+    padding: 0 1.5em 0 1.5em;
+}
+
+.star-rating3__input {
+    margin: 0;
+    position: absolute;
+    height: 1px;
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(1) {
+    z-index: 5;
+    width: 20%;
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(2) {
+    z-index: 4;
+    width: 40%;
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(3) {
+    z-index: 3;
+    width: 60%;
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(4) {
+    z-index: 2;
+    width: 80%;
+}
+
+.star-rating3__stars .star-rating3__label:nth-of-type(5) {
+    z-index: 1;
+    width: 100%;
+}
+
+.star-rating3__input:checked + .star-rating3__label,
+.star-rating3__input:focus + .star-rating3__label,
+.star-rating3__label:hover {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 70 70'%3e%3cpath fill='%23ffdd00' stroke='grey' stroke-width='2' d='m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z'/%3e%3c/svg%3e");
+    background-size: 5rem 5rem;
+}
+
+.star-rating3__label:hover ~ .star-rating3__label {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 70 70'%3e%3cpath fill='white' stroke='grey' stroke-width='2' d='m25,1 6,17h18l-14,11 5,17-15-10-15,10 5-17-14-11h18z'/%3e%3c/svg%3e");
+}
+
+.star-rating3__input:focus ~ .star-rating3__focus {
+    position: absolute;
+    top: -0.6em;
+    right: -0.4em;
+    bottom: -0.6em;
+    left: -0.4em;
+    padding-bottom: 0px;
+    box-shadow: inset 0 0 0 2px;
+    outline: 3px solid #ffdd00;
+}
+
+.js-enabled .what_didnt_work_so_well {
+    display: none;
+}
+
+.js-disabled .what_didnt_work_so_well {
+    display: block;
+}
+
+.address-card-duplicate {
+    background-color: white;
+}
+
+.align {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.star-rating3__stars.task {
+    margin: 0 auto;
+}
+
+.jc-center {
+    justify-content: center;
+}
+
+.flex-parent {
+    display: flex;
+}

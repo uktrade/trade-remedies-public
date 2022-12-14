@@ -1,89 +1,102 @@
 {% extends "v2/govuk/base.html" %}
 {% load pop_session %}
+{% if user.is_authenticated %}
+<script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        'event': 'create_account',
+        'user_id': '{{user.id}}'
+    });
+</script>
+{% endif %}
 {% block page_title %}
-    Your account has been created
+Your account has been created
 {% endblock %}
 {% block back_button %}{% endblock back_button %}
 
 
 {% block row_content %}
 
-    <div class="govuk-grid-column-two-thirds">
-        {% if request.session.account_created or request.GET.account_created %}
-            <div class="govuk-panel govuk-panel--confirmation">
-                <h1 class="govuk-panel__title">
-                    Account created
-                </h1>
-            </div>
-        {% else %}
-            <h1 class="govuk-heading-l">
-                Verify your email address
-            </h1>
-        {% endif %}
-        {% if request.session.account_created or request.GET.account_created %}
-            {% if request|pop_session:"email_verification_link_resent" %}
-                <div class="govuk-inset-text">
-                    We have sent a new account activation email link to {{ email }}.
-                </div>
-            {% endif %}
-            <p class="govuk-body">
-                You can now access your account. To take part in a trade remedies investigation, verify your email
-                address.
-            </p>
-            <p class="govuk-body">
-                We have sent an email to <strong>{{ email }}</strong>.
-            </p>
-            <p class="govuk-body">
-                Open the email and click on the link to verify your email address.
-            </p>
-        {% else %}
-            {% if request|pop_session:"email_verification_link_resent" %}
-                <div class="govuk-inset-text">
-                    We have sent a new account activation email link to {{ email }}.
-                </div>
-            {% endif %}
-            <p class="govuk-body">
-                Check the inbox of the email address you used to create your account. You will have received a
-                verification email with a link.
-            </p>
-            <p class="govuk-body">
-                Click the link in the email to verify your email address.
-            </p>
-        {% endif %}
-        <p class="govuk-body">
-            The link is valid for 24 hours. If it expires, you can request a new verification email.
-        </p>
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-          <span class="govuk-details__summary-text">
-            I have not received an email
-          </span>
-            </summary>
-            <div class="govuk-details__text">
-                <p>Check that you entered your email address correctly. If it is incorrect, create an account again with
-                    the correct email address.</p>
-                <p>Check your spam or junk mail folders.</p> {# /PS-IGNORE #}
-                <p>If you still have not received your verification email, <a
-                        href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">request a new email</a>.</p>
-            </div>
-        </details>
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-          <span class="govuk-details__summary-text">
-            The link in my email has expired
-          </span>
-            </summary>
-            <div class="govuk-details__text">
-                <p><a href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">Request a new verification email</a>.
-                </p>
-            </div>
-        </details>
-        {% if not user.is_authenticated %}
-            <a href="{% url 'login' %}" class="govuk-button" data-module="govuk-button">
-                Sign in
-            </a>
-        {% endif %}
+<div class="govuk-grid-column-two-thirds">
+    {% if request.session.account_created or request.GET.account_created %}
+    <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">
+            Account created
+        </h1>
     </div>
-
-
+    {% else %}
+    <h1 class="govuk-heading-l">
+        Verify your email address
+    </h1>
+    {% endif %}
+    {% if request.session.account_created or request.GET.account_created %}
+    {% if request|pop_session:"email_verification_link_resent" %}
+    <div class="govuk-inset-text">
+        We have sent a new account activation email link to {{ email }}.
+    </div>
+    {% endif %}
+    <p class="govuk-body">
+        You can now access your account. To take part in a trade remedies investigation, verify your email
+        address.
+    </p>
+    <p class="govuk-body">
+        We have sent an email to <strong>{{ email }}</strong>.
+    </p>
+    <p class="govuk-body">
+        Open the email and click on the link to verify your email address.
+    </p>
+    {% else %}
+    {% if request|pop_session:"email_verification_link_resent" %}
+    <div class="govuk-inset-text">
+        We have sent a new account activation email link to {{ email }}.
+    </div>
+    {% endif %}
+    <p class="govuk-body">
+        Check the inbox of the email address you used to create your account. You will have received a
+        verification email with a link.
+    </p>
+    <p class="govuk-body">
+        Click the link in the email to verify your email address.
+    </p>
+    {% endif %}
+    <p class="govuk-body">
+        The link is valid for 24 hours. If it expires, you can request a new verification email.
+    </p>
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                I have not received an email
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>Check that you entered your email address correctly. If it is incorrect, create an account again with
+                the correct email address.</p>
+            <p>Check your spam or junk mail folders.</p> {# /PS-IGNORE #}
+            <p>If you still have not received your verification email, <a
+                    href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">request a new email</a>.
+            </p>
+        </div>
+    </details>
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                The link in my email has expired
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p><a href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">Request a new verification
+                    email</a>.
+            </p>
+        </div>
+    </details>
+    {% if not user.is_authenticated %}
+    <a href="{% url 'login' %}" class="govuk-button" data-module="govuk-button">
+        Sign in
+    </a>
+    {% endif %}
+</div>
 {% endblock row_content %}
+
+{% block additional_content %}
+{% include "v2/feedback/stars_partial.html" with journey="Account created" %}
+{% endblock additional_content %}

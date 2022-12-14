@@ -3,6 +3,16 @@
 {% load to_json %}
 {% load set %}
 
+{% if user.is_authenticated and request.GET.alert == 'added-employee' %}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'invite_team_member',
+            'user_id': '{{user.id}}',
+        });
+    </script>
+{% endif %}
+
 {% block row_content %}
 
     <div class="grid-row">
@@ -221,9 +231,9 @@
             {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
                 <a class="button margin-top-1 no-debounce" id="lnk_invite_colleague"
                    href="{% url 'invitation_start' %}">Invite
-                    colleague</a>
+                    colleague V2</a>
                 <a class="button margin-top-1 no-debounce" id="lnk_invite_colleagu_old"
-                   href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague OLD</a>
+                   href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague V1</a>
             {% else %}
                 <a class="button margin-top-1 no-debounce"
                    href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague</a>
