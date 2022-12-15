@@ -9308,3 +9308,24 @@ input.upload-button {
     margin-bottom: 0px;
     padding: 0px;
 }
+
+
+/* Add some padding inside the card container */
+.address-container .govuk-heading-m, .address-cover .govuk-form-group, .govuk-details__text .govuk-form-group {
+  margin-bottom: 10px;
+}
+
+.address-container .govuk-warning-text {
+  margin-bottom: 0px;
+  padding: 0px;
+}
+
+.govuk-warning-text__text-p {
+  padding-left: 45px;
+  padding-right: 20px;
+}
+
+.govuk-warning-text__text-p button {
+  margin-bottom: 0px;
+}
+

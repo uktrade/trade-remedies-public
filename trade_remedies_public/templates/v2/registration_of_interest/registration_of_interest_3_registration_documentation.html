@@ -13,28 +13,7 @@
                 Registration documentation
             </h1>
             {% if is_deficient_documents %}
-                <div class="address-card">
-                    <div class="address-container">
-                        <div class="govuk-warning-text">
-                            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                            <p class="govuk-warning-text__text">
-                                <strong>
-                                    <span class="govuk-warning-text__assistive">Warning</span>
-                                    Review Deficiency Notice
-                                </strong>
-                            </p>
-                            <p class="govuk-warning-text__text-p">You need to review documents marked as deficient.
-                                Download the following document for instructions.</p>
-                        </div>
-                        <ul class="govuk-list govuk-warning-text__text-p">
-                            <li>
-                                <a href="{{ submission.deficiency_notice.document.file }}" download="" class="govuk-link--no-visited-state"><img
-                                        src="{% static 'v2/assets/images/file_icons/'|add:submission.deficiency_notice.document.extension|add:'.png' %}" alt="File icon" width="24px">
-                                    {{ submission.deficiency_notice.document.name }}</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                {% include "v2/component_macros/deficiency_notice_warning_box.html" with submission=submission %}
             {% endif %}
             <p>Download the documentation and complete the relevant forms. Once complete, upload two versions of each:
                 one
@@ -100,8 +79,6 @@
 
 {% block scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
-            integrity="sha512-U2WE1ktpMTuRBPoCFDzomoIorbOyUv0sP8B+INA3EzNAhehbzED1rOJg6bCqPf/Tuposxb5ja/MAUnC8THSbLQ=="
-            {# /PS-IGNORE #}
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'v2/js/drag_and_drop.js' %}"></script>
     <script type="text/javascript">
