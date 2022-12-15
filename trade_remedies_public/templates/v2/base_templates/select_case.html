@@ -129,12 +129,12 @@
                                 <td class="govuk-table__cell">
                                     <span class="govuk-visually-hidden--desktop td-header">Status: </span>{{ case.case_status.stage }}
                                 </td>
-                                <td class="govuk-table__cell" data-order="{{ case.initiated_at|date:'U' }}">
-                                    <span class="govuk-visually-hidden--desktop td-header">Date Initiated: </span>{{ case.initiated_at|date:'d M Y' }}
+                                <td class="govuk-table__cell" data-order="{% format_date case.initiated_at '%s' %}">
+                                    <span class="govuk-visually-hidden--desktop td-header">Date Initiated: </span>{% format_date case.initiated_at '%d %b %Y' %}
                                 </td>
                                 <td class="govuk-table__cell"
-                                    data-order="{{ case.registration_deadline|date:'U' }}">
-                                    <span class="govuk-visually-hidden--desktop td-header">Registration due: </span>{{ case.registration_deadline|date:'d M Y' }}
+                                    data-order="{% format_date case.registration_deadline '%s' %}">
+                                    <span class="govuk-visually-hidden--desktop td-header">Registration due: </span>{% format_date case.registration_deadline '%d %b %Y' %}
                                 </td>
                                 <td class="govuk-table__cell">
                                     <span class="govuk-visually-hidden td-header">Action:</span>

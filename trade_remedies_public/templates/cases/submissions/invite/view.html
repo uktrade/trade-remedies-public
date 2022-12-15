@@ -9,7 +9,7 @@
     {% if case %}
         <div>
             You have requested to invite 3rd parties to :<br>
-            <strong>{{ case.reference }}: {{ case.name }}</strong>
+            <strong >{{case.reference}}: {{case.name}}</strong>
         </div>
     {% endif %}
 {% endblock %}
@@ -34,10 +34,9 @@
         </tr>
         {% for invite in invites %}
             <tr>
-                <td>{{ invite.contact.name }}</td>
-                <td>{{ invite.contact.email }}</td>
-                <td>{% if invite.submission.name == "Invite 3rd party" %}
-                    {{ invite.contact.organisation.name }}{% else %}{{ invite.organisation.name }}{% endif %}</td>
+                <td>{{invite.contact.name}}</td>
+                <td>{{invite.contact.email}}</td>
+                <td>{% if invite.submission.name == "Invite 3rd party" %}{{invite.contact.organisation.name}}{% else %}{{invite.organisation.name}}{% endif %}</td>
             </tr>
         {% endfor %}
     </table>
