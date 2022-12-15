@@ -6,16 +6,15 @@ those will be preloaded and ready for the request processing.
 """
 import json
 from django.urls import reverse
-from django.http import HttpRequest
 from trade_remedies_client.client import Client
 from config.version import __version__
 
 
-def motd_context(request: HttpRequest):
+def motd_context(request):
     return {"public_notice": Client().get_system_parameters("PUBLIC_NOTICE").get("value")}
 
 
-def user_context(request: HttpRequest):
+def user_context(request):
     token = request.session.get("token")
     context = {
         "authenticated": bool(token and request.user.is_authenticated),
@@ -49,11 +48,11 @@ def user_context(request: HttpRequest):
     return context
 
 
-def version_context(request: HttpRequest):
+def version_context(request):
     return {"version": {"api": request.session.get("version", ""), "ui": __version__}}
 
 
-def cookie_management(request: HttpRequest):
+def cookie_management(request):
     cookie_policy_set = True
     try:
         cookie_updated = request.GET.get("cookie-policy-updated")
@@ -69,7 +68,7 @@ def cookie_management(request: HttpRequest):
     }
 
 
-def add_form_errors(request: HttpRequest):
+def add_form_errors(request):
     """Pops the form errors from the request.session for front-end rendering.
 
     This "form_errors" key is then checked in the govuk/base_with_form.html BASE template, and is
