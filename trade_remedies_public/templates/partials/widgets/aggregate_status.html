@@ -6,10 +6,10 @@ Pass 'state' as state structure
 
 -->{% endcomment %}
 {% if state.submission_count or state.due_at %}
-<div class="aggregate-status">
-	{% if state.submission_count %}
-    	<div class="number-circle small">{{ state.submission_count }}</div>
-	{% endif %}    	
-    {% include "partials/widgets/due_date_status.html" with state=state %}
-</div>	
-{% endif %}            	
+    <div class="aggregate-status">
+        {% if state.submission_count %}
+            <div class="number-circle small">{{ state.submission_count }}</div>
+        {% endif %}
+        {% include "partials/widgets/due_date_status.html" with state=state %}
+    </div>
+{% endif %}

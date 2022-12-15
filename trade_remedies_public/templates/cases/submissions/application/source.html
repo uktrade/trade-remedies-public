@@ -7,57 +7,57 @@
 {% block page_title  %}Source of the exports{% endblock %}
 
 {% block subtype_content %}
-<script>
-function evaluateSourceSelect(value) {
-    if (value == 'ALL' || value == ':') {
-        $('#saveAndAddBtn').prop('disabled', true);
-        $('#evidenceOfSubsidy').hide();
-        if (value == 'ALL') {
-            $('#allCountriesHint').show();
+    <script>
+        function evaluateSourceSelect(value) {
+            if (value == 'ALL' || value == ':') {
+                $('#saveAndAddBtn').prop('disabled', true);
+                $('#evidenceOfSubsidy').hide();
+                if (value == 'ALL') {
+                    $('#allCountriesHint').show();
+                }
+            } else {
+                $('#saveAndAddBtn').prop('disabled', false);
+                $('#evidenceOfSubsidy').show();
+                $('#allCountriesHint').hide();
+            }
         }
-    } else {
-        $('#saveAndAddBtn').prop('disabled', false);
-        $('#evidenceOfSubsidy').show();
-        $('#allCountriesHint').hide();
-    }
-}
 
-function toggleHint(key) {
-    var keys = ['yes', 'no', 'unknown'];
-    for (var i=0; i < keys.length; i++) {
-        if (key == keys[i]) {
-            $('#evidenceHint-' + keys[i]).show();
-        } else {
-            $('#evidenceHint-' + keys[i]).hide();
+        function toggleHint(key) {
+            var keys = ['yes', 'no', 'unknown'];
+            for (var i=0; i < keys.length; i++) {
+                if (key == keys[i]) {
+                    $('#evidenceHint-' + keys[i]).show();
+                } else {
+                    $('#evidenceHint-' + keys[i]).hide();
+                }
+            }
         }
-    }
-}
-</script>
+    </script>
 
-<input type="hidden" name="page" value="{{page|default:'source'}}">
-{% if page == 'case' %}
-    {% if options %}
-        <input type="hidden" name="reference_case" value="{{reference_case}}">
-        <div class="radio-container">
-            {% include "cases/submissions/application/review_types.html" with options=options %}
-        </div>
-    {% else %}
-        <div class="form-group edit-item type-select {% if errors.reference_case %}form-group-error{% endif %}" data-fieldname="reference_case">
-            <label class="form-label" for="case_selector">
-                {% if organisation_role == 'importer' %}
-                    Select the case that gave rise to trade remedy measures for the goods you import into the UK?
-                {% elif organisation_role == 'exporter' %}
-                    Select the case that gave rise to the trade remedy measures for the goods you export to the UK?
-                {% elif organisation_role == 'producer' %}
-                    Select the case that gave rise to the trade remedy measures?
-                {% endif %}
-            </label>
-            {% if submission.locked %}
-                {{reference_case.name}}
-            {% else %}
-                {% error_message errors 'reference_case' %}
-                <select id="case_selector" class="form-control" name="reference_case">
-                    <option value="">Select a case ...</option>
+    <input type="hidden" name="page" value="{{page|default:'source'}}">
+    {% if page == 'case' %}
+        {% if options %}
+            <input type="hidden" name="reference_case" value="{{reference_case}}">
+            <div class="radio-container">
+                {% include "cases/submissions/application/review_types.html" with options=options %}
+            </div>
+        {% else %}
+            <div class="form-group edit-item type-select {% if errors.reference_case %}form-group-error{% endif %}" data-fieldname="reference_case">
+                <label class="form-label" for="case_selector">
+                    {% if organisation_role == 'importer' %}
+                        Select the case that gave rise to trade remedy measures for the goods you import into the UK?
+                    {% elif organisation_role == 'exporter' %}
+                        Select the case that gave rise to the trade remedy measures for the goods you export to the UK?
+                    {% elif organisation_role == 'producer' %}
+                        Select the case that gave rise to the trade remedy measures?
+                    {% endif %}
+                </label>
+                {% if submission.locked %}
+                    {{reference_case.name}}
+                {% else %}
+                    {% error_message errors 'reference_case' %}
+                    <select id="case_selector" class="form-control" name="reference_case">
+                        <option value="">Select a case ...</option>
                         {% if reference_cases %}<optgroup label="Cases">{% endif %}
                         {% for ref_case in reference_cases %}
                             {% if ref_case.type.acronym not in 'RI,NE' %}
@@ -74,115 +74,115 @@ function toggleHint(key) {
                                 {% endfor %}
                             </optgroup>
                         {% endif %}
-                </select>
-            {% endif %}
-        </div>
-        <div data-attach="ChooseCaseForReview" data-selector="#case_selector" class="hidden form-group" data-selectedcasetype="{{case.type.id}}" data-organisation-role="{{organisation_role}}">
-            <div class="radio-container">
+                    </select>
+                {% endif %}
             </div>
-        </div>
-    {% endif %}
-    <!-- <input type="hidden" name="selectedcasetype" value="{{case.type.id}}">
+            <div data-attach="ChooseCaseForReview" data-selector="#case_selector" class="hidden form-group" data-selectedcasetype="{{case.type.id}}" data-organisation-role="{{organisation_role}}">
+                <div class="radio-container">
+                </div>
+            </div>
+        {% endif %}
+        <!-- <input type="hidden" name="selectedcasetype" value="{{case.type.id}}">
     <input type="hidden" name="data-organisation-role" value="{{organisation_role}}"> -->
-{% else %}
+    {% else %}
         <fieldset>
             <div class="form-group">
-            <label class="form-label" for="country-selector">Which countries are the exports originating from?
-                <span class="form-hint">Only select 'All countries' if you are applying for
-                <a class="link" target="_blank" href="{% link_lookup 'LINK_GUIDANCE_SAFEGUARDS' %}">safeguard measures&nbsp;<i class="icon16 icon-outlink" title="Opens in a new tab"></i></a>.</span>
-            </label>
-            <ul class="country-selector margin-top-1 list">
-                {% for source in sources %}
-                    {% if source.country %}
+                <label class="form-label" for="country-selector">Which countries are the exports originating from?
+                    <span class="form-hint">Only select 'All countries' if you are applying for
+                        <a class="link" target="_blank" href="{% link_lookup 'LINK_GUIDANCE_SAFEGUARDS' %}">safeguard measures&nbsp;<i class="icon16 icon-outlink" title="Opens in a new tab"></i></a>.</span>
+                </label>
+                <ul class="country-selector margin-top-1 list">
+                    {% for source in sources %}
+                        {% if source.country %}
+                            <li>
+                                {{source.country}}
+                                <button class="remove link pull-right" title="Remove" name="btn-remove" value="{{source.id}}">remove</button>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if not submission.locked %}
                         <li>
-                            {{source.country}}
-                            <button class="remove link pull-right" title="Remove" name="btn-remove" value="{{source.id}}">remove</button>
+                            <select class="form-control" id="country-selector" name="country" onChange="evaluateSourceSelect(this.value);">
+                                <option disabled selected value>Add a country ...</option>
+                                <optgroup label="--------------">
+                                    <option value="ALL" {% if can_select_all and not has_sources %}selected{% endif %}>All Countries</option>
+                                </optgroup>
+                                <optgroup label="--------------">
+                                    {% for country_code, country_name in countries %}
+                                        <option value="{{country_code}}" {% if source.country_code == country_code %}selected{% endif %}>{{country_name}}</option>
+                                    {% endfor %}
+                                </optgroup>
+                            </select>
+                            <button type="submit" class="button button-grey margin-left-1" name="btn-action" id="saveAndAddBtn" value="save_add">Add another</button>
                         </li>
                     {% endif %}
-                {% endfor %}
-                {% if not submission.locked %}
-                    <li>
-                        <select class="form-control" id="country-selector" name="country" onChange="evaluateSourceSelect(this.value);">
-                            <option disabled selected value>Add a country ...</option>
-                            <optgroup label="--------------">
-                                <option value="ALL" {% if can_select_all and not has_sources %}selected{% endif %}>All Countries</option>
-                            </optgroup>
-                            <optgroup label="--------------">
-                                {% for country_code, country_name in countries %}
-                                    <option value="{{country_code}}" {% if source.country_code == country_code %}selected{% endif %}>{{country_name}}</option>
-                                {% endfor %}
-                            </optgroup>
-                        </select>
-                        <button type="submit" class="button button-grey margin-left-1" name="btn-action" id="saveAndAddBtn" value="save_add">Add another</button>
-                    </li>
-                {% endif %}
 
-            </ul>
+                </ul>
             </div>
         </fieldset>
 
-    {# Only include this question if a UK producer applying for a new investigation #}
-    {% set 'show_last_question' True %}
-    {% if submission.deficiency_notice_params.organisation_role %}
-        {% if submission.deficiency_notice_params.organisation_role != 'producer' or submission.deficiency_notice_params.case_category != 'AD' %}
-            {% set 'show_last_question' False %}
+        {# Only include this question if a UK producer applying for a new investigation #}
+        {% set 'show_last_question' True %}
+        {% if submission.deficiency_notice_params.organisation_role %}
+            {% if submission.deficiency_notice_params.organisation_role != 'producer' or submission.deficiency_notice_params.case_category != 'AD' %}
+                {% set 'show_last_question' False %}
+            {% endif %}
         {% endif %}
-    {% endif %}
-    {% if show_last_question %}
-        <div class="form-group" id="allCountriesHint" style="display: {% if can_select_all and not has_sources %} visible {% else %} none {% endif %};">
-            <div class="panel">
-                <div class="panel-border-wide">
-                    As you have selected ‘all countries’ as the source of exports this will be treated as an application for a safeguarding investigation
-                </div>
-            </div>
-        </div>
-        <div id="evidenceOfSubsidy" style="display: {% if can_select_all and not has_sources %} none {% else %} visible {% endif %};">
-            <div class="form-group edit-item">
-                <label class="form-label">
-                    Do you have evidence to demonstrate that the manufacture of the goods in question is subsidised
-                    by a foreign government or public body?
-                </label>
-                <div class="multiple-choice">
-                    <input id="evidence_of_subsidy_yes"
-                        type="radio"
-                        name="evidence_of_subsidy"
-                        onClick="toggleHint('yes');"
-                        value="yes"
-                        {% if evidence_of_subsidy == 'yes' %} checked="checked" {% endif %}>
-                    <label for="evidence_of_subsidy_yes">Yes</label>
-                    <div class="panel panel-border-wide" id="evidenceHint-yes" style="display: {% if evidence_of_subsidy == 'yes' %} visible {% else %} none {% endif %};">
-                        This will be treated as an application for a subsidy investigation
-                    </div>
-                </div>
-                <div class="multiple-choice">
-                    <input id="evidence_of_subsidy_no"
-                        type="radio"
-                        name="evidence_of_subsidy"
-                        onClick="toggleHint('no');"
-                        value="no"
-                        {% if evidence_of_subsidy == 'no' %} checked="checked" {% endif %}>
-                    <label for="evidence_of_subsidy_no">No</label>
-                    <div class="panel panel-border-wide"  id="evidenceHint-no" style="display: {% if evidence_of_subsidy == 'no' %} visible {% else %} none {% endif %};">
-                        This will be treated as an application for an anti-dumping investigation
-                    </div>
-                </div>
-                <div class="multiple-choice">
-                    <input id="evidence_of_subsidy_unknown"
-                        type="radio"
-                        name="evidence_of_subsidy"
-                        onClick="toggleHint('unknown');"
-                        value="unknown"
-                        {% if evidence_of_subsidy == 'unknown' %} checked="checked" {% endif %}>
-                    <label for="evidence_of_subsidy_unknown">Don't know</label>
-                    <div class="panel panel-border-wide"  id="evidenceHint-unknown" style="display: {% if evidence_of_subsidy == 'unknown' %} visible {% else %} none {% endif %};">
-                        This will be treated as an application for an anti-dumping investigation
+        {% if show_last_question %}
+            <div class="form-group" id="allCountriesHint" style="display: {% if can_select_all and not has_sources %} visible {% else %} none {% endif %};">
+                <div class="panel">
+                    <div class="panel-border-wide">
+                        As you have selected ‘all countries’ as the source of exports this will be treated as an application for a safeguarding investigation
                     </div>
                 </div>
             </div>
-        </div>
-    {% endif %}
+            <div id="evidenceOfSubsidy" style="display: {% if can_select_all and not has_sources %} none {% else %} visible {% endif %};">
+                <div class="form-group edit-item">
+                    <label class="form-label">
+                        Do you have evidence to demonstrate that the manufacture of the goods in question is subsidised
+                        by a foreign government or public body?
+                    </label>
+                    <div class="multiple-choice">
+                        <input id="evidence_of_subsidy_yes"
+                            type="radio"
+                            name="evidence_of_subsidy"
+                            onClick="toggleHint('yes');"
+                            value="yes"
+                            {% if evidence_of_subsidy == 'yes' %} checked="checked" {% endif %}>
+                        <label for="evidence_of_subsidy_yes">Yes</label>
+                        <div class="panel panel-border-wide" id="evidenceHint-yes" style="display: {% if evidence_of_subsidy == 'yes' %} visible {% else %} none {% endif %};">
+                            This will be treated as an application for a subsidy investigation
+                        </div>
+                    </div>
+                    <div class="multiple-choice">
+                        <input id="evidence_of_subsidy_no"
+                            type="radio"
+                            name="evidence_of_subsidy"
+                            onClick="toggleHint('no');"
+                            value="no"
+                            {% if evidence_of_subsidy == 'no' %} checked="checked" {% endif %}>
+                        <label for="evidence_of_subsidy_no">No</label>
+                        <div class="panel panel-border-wide"  id="evidenceHint-no" style="display: {% if evidence_of_subsidy == 'no' %} visible {% else %} none {% endif %};">
+                            This will be treated as an application for an anti-dumping investigation
+                        </div>
+                    </div>
+                    <div class="multiple-choice">
+                        <input id="evidence_of_subsidy_unknown"
+                            type="radio"
+                            name="evidence_of_subsidy"
+                            onClick="toggleHint('unknown');"
+                            value="unknown"
+                            {% if evidence_of_subsidy == 'unknown' %} checked="checked" {% endif %}>
+                        <label for="evidence_of_subsidy_unknown">Don't know</label>
+                        <div class="panel panel-border-wide"  id="evidenceHint-unknown" style="display: {% if evidence_of_subsidy == 'unknown' %} visible {% else %} none {% endif %};">
+                            This will be treated as an application for an anti-dumping investigation
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
 
-{% endif %}
+    {% endif %}
 {% endblock %}
 
 {% block save_button %}

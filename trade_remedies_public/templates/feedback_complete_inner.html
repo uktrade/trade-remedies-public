@@ -1,22 +1,22 @@
 {% if not full_page %}
-    <button class="link close-link dlg-close">Close X</button> 
+    <button class="link close-link dlg-close">Close X</button>
 {% endif %}
 <div class="column-full">
     <h1 class="heading-large">
-       {{form.name}}
+        {{form.name}}
     </h1>
-</div>    
+</div>
 
-<div class="govuk-box-highlight column-full">	
-	<div class="heading-large">Thank you</div>
-	<p>Your feedback has been received</p>
+<div class="govuk-box-highlight column-full">
+    <div class="heading-large">Thank you</div>
+    <p>Your feedback has been received</p>
 </div>
 {% if not full_page %}
-<div class="column-full center">
-	<button class="link dlg-close">Continue</button>
-</div>
+    <div class="column-full center">
+        <button class="link dlg-close">Continue</button>
+    </div>
 {% else %}
-<div class="column-full center">
-	Return to the previous tab to access the Trade Remedies Service.
-</div>
+    <div class="column-full center">
+        Return to the previous tab to access the Trade Remedies Service.
+    </div>
 {% endif %}

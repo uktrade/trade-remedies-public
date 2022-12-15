@@ -6,18 +6,18 @@
                     {{ message|default:'Please correct the following errors' }}
                 </h2>
                 {% if hint %}
-                <p>
-                    {{ hint }}
-                </p>
+                    <p>
+                        {{ hint }}
+                    </p>
                 {% endif %}
                 <ul class="error-summary-list">
                     {% for key, value in errors.items %}
                         <li>
-                        {% if key != 'general' %}<a href="#{{ key }}_error">{% else %}<span>{% endif %}
+                            {% if key != 'general' %}<a href="#{{ key }}_error">{% else %}<span>{% endif %}
                             {% autoescape off %}
                                 {{ value }}
                             {% endautoescape %}
-                        {% if key != 'general' %}</a>{% else %}</span>{% endif %}
+                            {% if key != 'general' %}</a>{% else %}</span>{% endif %}
                         </li>
                     {% endfor %}
                 </ul>

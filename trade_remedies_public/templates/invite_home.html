@@ -3,40 +3,40 @@
 
 {% block row_content %}
 
-<div id="wrapper" class="site-wrapper direction-ltr">
-  <main role="main" id="content" lang="en">
+    <div id="wrapper" class="site-wrapper direction-ltr">
+        <main role="main" id="content" lang="en">
 
-    <div class="grid-row">
-      <div class="column">
-        <h1 class="heading-xlarge">
-          <span class="heading-secondary">Trade remedies</span>
-            Join a trade remedy case
-        </h1>
+            <div class="grid-row">
+                <div class="column">
+                    <h1 class="heading-xlarge">
+                        <span class="heading-secondary">Trade remedies</span>
+                        Join a trade remedy case
+                    </h1>
 
-        <div class="column-two-thirds">
-          <p>You have been invited to represent <span class="bold">{{invitation.organisation.name}}</span> in the following trade remedies case:</p>
-          <P class="bold">
-            {% if invitation.case.reference %}
-              {{invitation.case.reference}}:
-            {% endif %}
-            {{invitation.case.name}}
-          </P>
-          Joining the case will allow you to:
-          <ul class="list list-bullet">
-            <li>view the case details</li>
-            <li>submit evidence as part of the investigation</li>
-          </ul>
-          <p>
-            You will need to create an account before you can see the case details, or use an existing account if you have one.
-          </p>
-          <div class="margin-top-1">
-            <a class="button button-start" href="{% url 'invitation_confirm_organisation' code=code case_id=case_id %}" role="button">Start now</a>
-          </div>
-        </div>
+                    <div class="column-two-thirds">
+                        <p>You have been invited to represent <span class="bold">{{invitation.organisation.name}}</span> in the following trade remedies case:</p>
+                        <P class="bold">
+                            {% if invitation.case.reference %}
+                                {{invitation.case.reference}}:
+                            {% endif %}
+                            {{invitation.case.name}}
+                        </P>
+                        Joining the case will allow you to:
+                        <ul class="list list-bullet">
+                            <li>view the case details</li>
+                            <li>submit evidence as part of the investigation</li>
+                        </ul>
+                        <p>
+                            You will need to create an account before you can see the case details, or use an existing account if you have one.
+                        </p>
+                        <div class="margin-top-1">
+                            <a class="button button-start" href="{% url 'invitation_confirm_organisation' code=code case_id=case_id %}" role="button">Start now</a>
+                        </div>
+                    </div>
 
-      </div>
+                </div>
+            </div>
+        </main>
     </div>
-  </main>
-</div>
 
 {% endblock %}
