@@ -118,6 +118,8 @@ django-timezone-field==4.2.3
     # via -r requirements.in/base.in
 djangorestframework==3.12.4
     # via feed-gov-back
+djhtml==1.5.2
+    # via -r requirements.in/dev.in
 dotwiz==0.3.1
     # via v2-api-client
 dpath==1.4.2
@@ -331,7 +333,7 @@ urllib3==1.26.5
     #   requests
     #   selenium
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
     # via -r requirements.in/base.in
 virtualenv==20.14.0
     # via pre-commit

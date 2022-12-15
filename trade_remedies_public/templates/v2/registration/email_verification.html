@@ -75,28 +75,48 @@ Your account has been created
             <p>If you still have not received your verification email, <a
                     href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">request a new email</a>.
             </p>
-        </div>
-    </details>
-    <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                The link in my email has expired
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-            <p><a href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">Request a new verification
-                    email</a>.
+            {% endif %}
+            <p class="govuk-body">
+                The link is valid for 24 hours. If it expires, you can request a new verification email.
             </p>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        I have not received an email
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>Check that you entered your email address correctly. If it is incorrect, create an account again
+                        with
+                        the correct email address.</p>
+                    <p>Check your spam or junk mail folders.</p> {# /PS-IGNORE #}
+                    <p>If you still have not received your verification email, <a
+                            href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">request a new
+                            email</a>.
+                    </p>
+                </div>
+            </details>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        The link in my email has expired
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p><a href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">Request a new
+                            verification
+                            email</a>.
+                    </p>
+                </div>
+            </details>
+            {% if not user.is_authenticated %}
+            <a href="{% url 'login' %}" class="govuk-button" data-module="govuk-button">
+                Sign in
+            </a>
+            {% endif %}
         </div>
-    </details>
-    {% if not user.is_authenticated %}
-    <a href="{% url 'login' %}" class="govuk-button" data-module="govuk-button">
-        Sign in
-    </a>
-    {% endif %}
-</div>
-{% endblock row_content %}
+        {% endblock row_content %}
 
-{% block additional_content %}
-{% include "v2/feedback/stars_partial.html" with journey="Account created" %}
-{% endblock additional_content %}
+        {% block additional_content %}
+        {% include "v2/feedback/stars_partial.html" with journey="Account created" %}
+        {% endblock additional_content %}

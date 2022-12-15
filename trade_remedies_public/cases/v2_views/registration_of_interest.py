@@ -500,12 +500,10 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         sorted_uploaded_documents = sorted(
             uploaded_documents,
             key=lambda x: (
-                datetime.datetime.strptime(
-                    x["non_confidential"]["created_at"], "%Y-%m-%dT%H:%M:%S%z"
-                )
+                x["non_confidential"]["created_at"]
                 if x.get("non_confidential", {}).get("created_at", None)
                 else long_time_ago,
-                datetime.datetime.strptime(x["confidential"]["created_at"], "%Y-%m-%dT%H:%M:%S%z")
+                x["confidential"]["created_at"]
                 if x.get("confidential", {}).get("created_at", None)
                 else long_time_ago,
             ),

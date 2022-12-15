@@ -9,29 +9,29 @@
         {% if hint %}
             <div id={{ name }}-hint" class="govuk-hint">
                 {{ hint }}
-            </div>
+                </div>
         {% endif %}
         {% if error %}
             <p id="{{ name }}-error" class="govuk-error-message">
                 {% for error in error %}
                     <span class="govuk-visually-hidden">Error:</span> {{ error }}
                 {% endfor %}
-            </p>
+                </p>
         {% endif %}
         <input class="govuk-input
-               {% if width %}govuk-input--width-{{ width }}{% endif %}{% if input_class %} {{ input_class }} {% endif %}
-                {% if error %}govuk-input--error{% endif %}
-                {% if disabled or readonly %}govuk-input--readonly{% endif %}"
-               {% if disabled %}disabled{% endif %}
-               {% if readonly %}readonly{% endif %}
-               id="{{ id }}" name="{{ name }}" type="{{ type }}"
-               {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
-               autocomplete="off"
+    {% if width %}govuk-input--width-{{ width }}{% endif %}{% if input_class %} {{ input_class }} {% endif %}
+    {% if error %}govuk-input--error{% endif %}
+    {% if disabled or readonly %}govuk-input--readonly{% endif %}"
+        {% if disabled %}disabled{% endif %}
+        {% if readonly %}readonly{% endif %}
+        id="{{ id }}" name="{{ name }}" type="{{ type }}"
+            {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+            autocomplete="off"
                 {% if value %}
-               value="{{ value }}"
+                    value="{{ value }}"
                 {% elif form.data|get_item:name %}
-               value="{{ form.data|get_item:name }}"
+                    value="{{ form.data|get_item:name }}"
                 {% endif %}
-        >
-    </div>
+                >
+                </div>
 {% endwith %}

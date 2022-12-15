@@ -71,11 +71,11 @@
             {% if submission.status.draft %}
                 <div class="govuk-button-group">
                     <a href="{% url 'roi_submission_exists' submission_id=submission.id %}" role="button"
-                       draggable="false" class="govuk-button" data-module="govuk-button">
+                        draggable="false" class="govuk-button" data-module="govuk-button">
                         Continue application
                     </a>
                     <a class="govuk-link govuk-link--no-visited-state"
-                       href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete
+                        href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete
                         application</a>
                 </div>
             {% endif %}
@@ -88,8 +88,8 @@
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
                             <a class="link"
-                               href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
-                               target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
+                                href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
+                                target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
                         </li>
 
                         <li>

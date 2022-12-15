@@ -51,9 +51,9 @@
 {% endblock %}
 
 {% block submission_checkbox_label %}
-{% if representing %}
-    I understand my request will need to be authorised and approved by the {% organisation_name %}.
-{% else %}
-    I understand the user will be assiged to the case as soon as this form is submitted.
-{% endif %}
+    {% if representing %}
+        I understand my request will need to be authorised and approved by the {% organisation_name %}.
+    {% else %}
+        I understand the user will be assiged to the case as soon as this form is submitted.
+    {% endif %}
 {% endblock %}
