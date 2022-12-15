@@ -2,21 +2,20 @@
 {% load format_date %}
 
 {% block page_title %}
-    Registration of Interest Application
+    Registration of Interest
 {% endblock page_title %}
 
 {% block row_content %}
     {% with case=submission.case %}
         <div class="govuk-grid-column-two-thirds-from-desktop">
             <h1 class="govuk-heading-xl">
-                Registration of Interest application
+                Registration of Interest
             </h1>
 
-            <h2 class="govuk-heading-m">Your application</h2>
             <dl class="govuk-summary-list govuk-!-margin-bottom-2">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        Application status
+                        Status
                     </dt>
                     <dd class="govuk-summary-list__value">
                         {% if submission.status.draft %}
@@ -108,11 +107,10 @@
                 <div class="govuk-button-group">
                     <a href="{% url 'roi_submission_exists' submission_id=submission.id %}" role="button"
                        draggable="false" class="govuk-button" data-module="govuk-button">
-                        Continue application
+                        Continue registration of interest
                     </a>
                     <a class="govuk-link govuk-link--no-visited-state"
-                       href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete
-                        application</a>
+                       href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete</a>
                 </div>
             {% endif %}
         </div>
