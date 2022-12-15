@@ -119,6 +119,10 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
 class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
     template_name = "v2/registration_of_interest/tasklist.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        self.deficient_documents = False
+        return super().dispatch(request, *args, **kwargs)
+
     def get_task_list(self):
         submission = getattr(self, "submission", {})
 
@@ -189,6 +193,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
                         f"DEFICIENT DOCUMENTS: {len(deficient_registration_documents)}"
                     )
                     registration_documentation_status = "Incomplete"
+                    self.deficient_documents = True
         documentation_sub_steps = [
             {
                 "link": reverse(
@@ -215,6 +220,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
             if uploaded_loa_document and uploaded_loa_document.deficient:
                 status = "Incomplete"
                 status_text = "DEFICIENT DOCUMENT"
+                self.deficient_documents = True
 
             documentation_sub_steps.append(
                 {
@@ -244,6 +250,11 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
             }
         )
         return steps
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_deficient_documents"] = self.deficient_documents
+        return context
 
     def get(self, request, *args, **kwargs):
         if request.GET.get("confirm_access", False) or (
