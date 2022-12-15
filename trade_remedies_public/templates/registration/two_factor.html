@@ -1,5 +1,14 @@
 {% extends "base.html" %}
 {% load format_date %}
+{% if user.is_authenticated %}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'user_login',
+            'user_id': '{{user.id}}'
+        });
+    </script>
+{% endif %}
 
 {% block cookie_message %}{% endblock %}
 
@@ -29,7 +38,9 @@
                                             {{user.email}}
                                         {% endif %}
 
-                                    </span>.</p><p>Enter the code in the box below.</p>
+                                    </span>.
+                                </p>
+                                <p>Enter the code in the box below.</p>
                             </div>
                         {% endif %}
                         {% if not locked_until %}
@@ -37,7 +48,8 @@
                                 <input class="form-control" type="text" name="code" value="">
                             </div>
                             <details>
-                                <summary style="display: list-item;text-decoration: underline;">I have not received a code</summary>
+                                <summary style="display: list-item;text-decoration: underline;">I have not received a code
+                                </summary>
                                 <div class="panel panel-border-narrow">
                                     <p>
                                         Re-request an authentication code is resent using the
@@ -46,7 +58,8 @@
                                         re-enabled after a set period of time.
                                     </p>
                                     <div class="form-group">
-                                        <a href="?resend=true{% if delivery_type == 'email' %}&delivery_type=email{% endif %}">Resend my code</a>
+                                        <a href="?resend=true{% if delivery_type == 'email' %}&delivery_type=email{% endif %}">Resend
+                                            my code</a>
                                     </div>
                                     <p>
                                         Sometimes getting the authentication code via SMS can be slow or
@@ -59,7 +72,7 @@
                                 </div>
                             </details>
                             <div class="form-group margin-top-1">
-                                <button type="submit" class="button"/>Submit</button>
+                                <button type="submit" class="button" />Submit</button>
                             </div>
                         {% else %}
                             <P style="margin-top: 70px;">
@@ -76,8 +89,8 @@
     {% if locked_for_seconds %}
         <script>
             var buttonEl = $('#timerButton')
-            var timeLeft = {{locked_for_seconds}};
-            var interval = setInterval(function() {
+            var timeLeft = {{ locked_for_seconds }};
+            var interval = setInterval(function () {
                 timeLeft--;
                 var minutes = Math.floor(timeLeft / 60);
                 var seconds = timeLeft % 60;
@@ -85,7 +98,7 @@
                     clearInterval(interval);
                     buttonEl.html("Click to log in again");
                     buttonEl.attr('disabled', false)
-                    buttonEl.click(function() {document.location.reload()})
+                    buttonEl.click(function () { document.location.reload() })
                 } else {
                     buttonEl.html("Locked for " + minutes + " minute " + seconds + " seconds.");
 
