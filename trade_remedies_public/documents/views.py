@@ -46,6 +46,9 @@ class DocumentView(View, APIClientMixin):
                         }
                     )
                 )
+                # if this file is replacing another, let's delete the replacement
+                if replace_document_id := request.POST.get("replace_document_id"):
+                    self.client.documents(replace_document_id).delete()
                 return JsonResponse(
                     {
                         "uploaded_files": uploaded_files,
