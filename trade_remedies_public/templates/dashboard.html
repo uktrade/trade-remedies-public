@@ -62,18 +62,16 @@
                     {% endif %}
                 </p>
             </div>
-            {% if cases_awaiting_approval or cases or applications or interest_cases or interest_cases_draft or
+            {% if unapproved_rep_invitations_cases or cases or applications or interest_cases or interest_cases_draft or
             invite_submissions %}
             {% if user.email_verified_at %}
                 <h1 class="heading-large">Your cases</h1>
                 {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
-                {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                    {# Cases waiting approval #}
-                    {% if cases_awaiting_approval %}
-                        <h2 class="heading-medium">Pending TRA Approval</h2>
-                        {% include "partials/widgets/dashboard_caselist.html" with cases=cases_awaiting_approval show_casenumber=True
-                        no_click=True %}
-                    {% endif %}
+                {# Cases waiting approval #}
+                {% if unapproved_rep_invitations_cases %}
+                    <h2 class="heading-medium">Pending TRA Approval</h2>
+                    {% include "partials/widgets/dashboard_caselist.html" with cases=unapproved_rep_invitations_cases
+                    show_casenumber=True no_click=True %}
                 {% endif %}
                 <!-- Draft applications -->
                 {% if applications %}
@@ -82,44 +80,52 @@
                         {% include "partials/widgets/dashboard_caselist.html" with cases=applications show_casenumber=True %}
                     </div>
                 {% endif %}
-                <!-- Registrations of interest -->
+            {% endif %}
+            <!-- Draft applications -->
+            {% if applications %}
                 <div class="margin-top-2">
-                    {% if interest_cases %}
-                        <h1 class="heading-medium">Your registrations of interest</h1>
-                        {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases show_casenumber=True %}
-                    {% endif %}
-                    {% if interest_cases_draft %}
-                        <h1 class="heading-medium">Your draft registrations of interest</h1>
-                        {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases_draft
-                        show_casenumber=True %}
-                    {% endif %}
-                </div>
-                <!-- 3rd party invites -->
-                <div class="margin-top-2">
-                    {% if invite_submissions %}
-                        <h1 class="heading-medium">Your 3rd Party invites</h1>
-                        <UL>
-                            {% for invite in invite_submissions %}
-                                {% if not invite.invitations.0.deleted_at %}
-                                    <LI>
-                                        {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
-                                            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{
-                                                invite.case.reference }}
-                                                - {% format_date invite.created_at '%d %b %Y' %}</a>
-                                        {% else %}
-                                            <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
-                                                {{ invite.case.reference }}
-                                                - {% format_date invite.created_at '%d %b %Y' %}
-                                            </a>
-                                        {% endif %}
-                                        ({{ invite.name }} - {{ invite.status.name }})
-                                    </LI>
-                                {% endif %}
-                            {% endfor %}
-                        </UL>
-                    {% endif %}
+                    <h1 class="heading-medium">Your applications</h1>
+                    {% include "partials/widgets/dashboard_caselist.html" with cases=applications show_casenumber=True %}
                 </div>
             {% endif %}
+            <!-- Registrations of interest -->
+            <div class="margin-top-2">
+                {% if interest_cases %}
+                    <h1 class="heading-medium">Your registrations of interest</h1>
+                    {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases show_casenumber=True %}
+                {% endif %}
+                {% if interest_cases_draft %}
+                    <h1 class="heading-medium">Your draft registrations of interest</h1>
+                    {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases_draft
+                    show_casenumber=True %}
+                {% endif %}
+            </div>
+            <!-- 3rd party invites -->
+            <div class="margin-top-2">
+                {% if invite_submissions %}
+                    <h1 class="heading-medium">Your 3rd Party invites</h1>
+                    <UL>
+                        {% for invite in invite_submissions %}
+                            {% if not invite.invitations.0.deleted_at %}
+                                <LI>
+                                    {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
+                                        <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{
+                                            invite.case.reference }}
+                                            - {% format_date invite.created_at '%d %b %Y' %}</a>
+                                    {% else %}
+                                        <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
+                                            {{ invite.case.reference }}
+                                            - {% format_date invite.created_at '%d %b %Y' %}
+                                        </a>
+                                    {% endif %}
+                                    ({{ invite.name }} - {{ invite.status.name }})
+                                </LI>
+                            {% endif %}
+                        {% endfor %}
+                    </UL>
+                {% endif %}
+            </div>
+{% endif %}
 {% else %}
     {# The help text before any cases or applications exist #}
     <p>This is your dashboard to interact with the {% organisation_name %} ({% organisation_initialism %})
