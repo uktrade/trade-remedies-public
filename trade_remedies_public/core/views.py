@@ -413,7 +413,7 @@ class DashboardView(
             type_id=SUBMISSION_TYPE_REGISTER_INTEREST,
             case_id__in=[each.case.id for each in organisation.organisationcaserole_set],
             organisation_id=self.request.user.contact["organisation"]["id"],
-            fields=["case", "status"]
+            fields=["case", "status"],
         )
         case_to_roi = {each.case.id: each for each in roi_submissions}
 
