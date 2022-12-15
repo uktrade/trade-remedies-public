@@ -1,109 +1,109 @@
 {% extends "base.html" %}
 {% load format_date %}
 {% if user.is_authenticated %}
-<script>
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'user_login',
-        'user_id': '{{user.id}}'
-    });
-</script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'user_login',
+            'user_id': '{{user.id}}'
+        });
+    </script>
 {% endif %}
 
 {% block cookie_message %}{% endblock %}
 
 {% block row_content %}
 
-<div id="wrapper" class="site-wrapper direction-ltr">
-    <form action="/twofactor/" method="post">
-        {% csrf_token %}
-        <main role="main" id="content" lang="en">
-            <div class="grid-row">
-                <div class="column-full margin-top-2">
-                    <h1 class="heading-large margin-bottom-1">
-                        Two factor authentication
-                    </h1>
-                    {% include "partials/email_verified_notice.html" %}
-                    {% if twofactor_error %}
-                    <div class="form-group-error">
-                        <p>{{twofactor_error}}</p>
-                    </div>
-                    {% else %}
-                    <div>
-                        <p>We have sent a code to
-                            <span class="">
-                                {% if delivery_type != 'email' %}
-                                {{user.phone}}
-                                {% else %}
-                                {{user.email}}
-                                {% endif %}
+    <div id="wrapper" class="site-wrapper direction-ltr">
+        <form action="/twofactor/" method="post">
+            {% csrf_token %}
+            <main role="main" id="content" lang="en">
+                <div class="grid-row">
+                    <div class="column-full margin-top-2">
+                        <h1 class="heading-large margin-bottom-1">
+                            Two factor authentication
+                        </h1>
+                        {% include "partials/email_verified_notice.html" %}
+                        {% if twofactor_error %}
+                            <div class="form-group-error">
+                                <p>{{twofactor_error}}</p>
+                            </div>
+                        {% else %}
+                            <div>
+                                <p>We have sent a code to
+                                    <span class="">
+                                        {% if delivery_type != 'email' %}
+                                            {{user.phone}}
+                                        {% else %}
+                                            {{user.email}}
+                                        {% endif %}
 
-                            </span>.
-                        </p>
-                        <p>Enter the code in the box below.</p>
-                    </div>
-                    {% endif %}
-                    {% if not locked_until %}
-                    <div class="form-group">
-                        <input class="form-control" type="text" name="code" value="">
-                    </div>
-                    <details>
-                        <summary style="display: list-item;text-decoration: underline;">I have not received a code
-                        </summary>
-                        <div class="panel panel-border-narrow">
-                            <p>
-                                Re-request an authentication code is resent using the
-                                link below. Note you will have a limited number attempts before
-                                your account is temporarily locked. It will however be automatically
-                                re-enabled after a set period of time.
-                            </p>
-                            <div class="form-group">
-                                <a href="?resend=true{% if delivery_type == 'email' %}&delivery_type=email{% endif %}">Resend
-                                    my code</a>
+                                    </span>.
+                                </p>
+                                <p>Enter the code in the box below.</p>
                             </div>
-                            <p>
-                                Sometimes getting the authentication code via SMS can be slow or
-                                unreliable. If you are having issues receiving an authentication
-                                code this way, then click the link below to get your code via email.
-                            </p>
+                        {% endif %}
+                        {% if not locked_until %}
                             <div class="form-group">
-                                <a href="?delivery_type=email&resend=true">Email me instead</a>
+                                <input class="form-control" type="text" name="code" value="">
                             </div>
-                        </div>
-                    </details>
-                    <div class="form-group margin-top-1">
-                        <button type="submit" class="button" />Submit</button>
+                            <details>
+                                <summary style="display: list-item;text-decoration: underline;">I have not received a code
+                                </summary>
+                                <div class="panel panel-border-narrow">
+                                    <p>
+                                        Re-request an authentication code is resent using the
+                                        link below. Note you will have a limited number attempts before
+                                        your account is temporarily locked. It will however be automatically
+                                        re-enabled after a set period of time.
+                                    </p>
+                                    <div class="form-group">
+                                        <a href="?resend=true{% if delivery_type == 'email' %}&delivery_type=email{% endif %}">Resend
+                                            my code</a>
+                                    </div>
+                                    <p>
+                                        Sometimes getting the authentication code via SMS can be slow or
+                                        unreliable. If you are having issues receiving an authentication
+                                        code this way, then click the link below to get your code via email.
+                                    </p>
+                                    <div class="form-group">
+                                        <a href="?delivery_type=email&resend=true">Email me instead</a>
+                                    </div>
+                                </div>
+                            </details>
+                            <div class="form-group margin-top-1">
+                                <button type="submit" class="button" />Submit</button>
+                            </div>
+                        {% else %}
+                            <P style="margin-top: 70px;">
+                                <button id="timerButton" type="button" class="button" style="width: 320px;" disabled>
+                                    Locked until {% format_date locked_until '%d %b %Y %H:%M' %}
+                                </button>
+                            </P>
+                        {% endif %}
                     </div>
-                    {% else %}
-                    <P style="margin-top: 70px;">
-                        <button id="timerButton" type="button" class="button" style="width: 320px;" disabled>
-                            Locked until {% format_date locked_until '%d %b %Y %H:%M' %}
-                        </button>
-                    </P>
-                    {% endif %}
                 </div>
-            </div>
-        </main>
-    </form>
-</div>
-{% if locked_for_seconds %}
-<script>
-    var buttonEl = $('#timerButton')
-    var timeLeft = {{ locked_for_seconds }};
-    var interval = setInterval(function () {
-        timeLeft--;
-        var minutes = Math.floor(timeLeft / 60);
-        var seconds = timeLeft % 60;
-        if (timeLeft < 0) {
-            clearInterval(interval);
-            buttonEl.html("Click to log in again");
-            buttonEl.attr('disabled', false)
-            buttonEl.click(function () { document.location.reload() })
-        } else {
-            buttonEl.html("Locked for " + minutes + " minute " + seconds + " seconds.");
+            </main>
+        </form>
+    </div>
+    {% if locked_for_seconds %}
+        <script>
+            var buttonEl = $('#timerButton')
+            var timeLeft = {{ locked_for_seconds }};
+            var interval = setInterval(function () {
+                timeLeft--;
+                var minutes = Math.floor(timeLeft / 60);
+                var seconds = timeLeft % 60;
+                if (timeLeft < 0) {
+                    clearInterval(interval);
+                    buttonEl.html("Click to log in again");
+                    buttonEl.attr('disabled', false)
+                    buttonEl.click(function () { document.location.reload() })
+                } else {
+                    buttonEl.html("Locked for " + minutes + " minute " + seconds + " seconds.");
 
-        }
-    }, 1000);
-</script>
-{% endif %}
+                }
+            }, 1000);
+        </script>
+    {% endif %}
 {% endblock %}
