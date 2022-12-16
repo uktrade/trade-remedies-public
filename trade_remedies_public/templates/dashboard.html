@@ -36,7 +36,8 @@
         <div class="column-two-thirds">
             {% if not user.email_verified_at %}
                 <div class="govuk-notification-banner" style="margin-top: 1.875em;" role="region"
-                    aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                    aria-labelledby="govuk-notification-banner-title"
+                    data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">
                         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                             Important
@@ -62,116 +63,114 @@
                     {% endif %}
                 </p>
             </div>
-            {% if cases_awaiting_approval or cases or applications or interest_cases or interest_cases_draft or
-            invite_submissions %}
-            {% if user.email_verified_at %}
-                <h1 class="heading-large">Your cases</h1>
-                {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
-                {# Cases waiting approval #}
-                {% if cases_awaiting_approval %}
-                    <h2 class="heading-medium">Pending TRA Approval</h2>
-                    {% include "partials/widgets/dashboard_caselist.html" with cases=unapproved_rep_invitations_cases show_casenumber=True no_click=True %}
-                {% endif %}
-                <!-- Draft applications -->
-                {% if applications %}
+            {% if unapproved_rep_invitations_cases or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
+                {% if user.email_verified_at %}
+                    <h1 class="heading-large">Your cases</h1>
+                    {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
+                    {# Cases waiting approval #}
+                    {% if unapproved_rep_invitations_cases %}
+                        <h2 class="heading-medium">Pending TRA Approval</h2>
+                        {% include "partials/widgets/dashboard_caselist.html" with cases=unapproved_rep_invitations_cases show_casenumber=True no_click=True %}
+                    {% endif %}
+                    <!-- Draft applications -->
+                    {% if applications %}
+                        <div class="margin-top-2">
+                            <h1 class="heading-medium">Your applications</h1>
+                            {% include "partials/widgets/dashboard_caselist.html" with cases=applications  show_casenumber=True %}
+                        </div>
+                    {% endif %}
+                    <!-- Registrations of interest -->
                     <div class="margin-top-2">
-                        <h1 class="heading-medium">Your applications</h1>
-                        {% include "partials/widgets/dashboard_caselist.html" with cases=applications show_casenumber=True %}
+                        {% if interest_cases %}
+                            <h1 class="heading-medium">Your registrations of interest</h1>
+                            {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases  show_casenumber=True %}
+                        {% endif %}
+                        {% if interest_cases_draft %}
+                            <h1 class="heading-medium">Your draft registrations of interest</h1>
+                            {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases_draft  show_casenumber=True %}
+                        {% endif %}
+                    </div>
+                    <!-- 3rd party invites -->
+                    <div class="margin-top-2">
+                        {% if invite_submissions %}
+                            <h1 class="heading-medium">Your 3rd Party invites</h1>
+                            <UL>
+                                {% for invite in invite_submissions %}
+                                    {% if not invite.invitations.0.deleted_at %}
+                                        <LI>
+                                            {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
+                                                <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{ invite.case.reference }}
+                                                    - {% format_date invite.created_at '%d %b %Y' %}</a>
+                                            {% else %}
+                                                <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
+                                                    {{ invite.case.reference }}
+                                                    - {% format_date invite.created_at '%d %b %Y' %}
+                                                </a>
+                                            {% endif %}
+                                            ({{ invite.name }} - {{ invite.status.name }})
+                                        </LI>
+                                    {% endif %}
+                                {% endfor %}
+                            </UL>
+                        {% endif %}
                     </div>
                 {% endif %}
-                <!-- Registrations of interest -->
-                <div class="margin-top-2">
-                    {% if interest_cases %}
-                        <h1 class="heading-medium">Your registrations of interest</h1>
-                        {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases show_casenumber=True %}
-                    {% endif %}
-                    {% if interest_cases_draft %}
-                        <h1 class="heading-medium">Your draft registrations of interest</h1>
-                        {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases_draft show_casenumber=True %}
-                    {% endif %}
-                </div>
-                <!-- 3rd party invites -->
-                <div class="margin-top-2">
-                    {% if invite_submissions %}
-                        <h1 class="heading-medium">Your 3rd Party invites</h1>
-                        <UL>
-                            {% for invite in invite_submissions %}
-                                {% if not invite.invitations.0.deleted_at %}
-                                    <LI>
-                                        {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
-                                            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{
-                                                invite.case.reference }}
-                                                - {% format_date invite.created_at '%d %b %Y' %}</a>
-                                        {% else %}
-                                            <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
-                                                {{ invite.case.reference }}
-                                                - {% format_date invite.created_at '%d %b %Y' %}
-                                            </a>
-                                        {% endif %}
-                                        ({{ invite.name }} - {{ invite.status.name }})
-                                    </LI>
-                                {% endif %}
-                            {% endfor %}
-                        </UL>
-                    {% endif %}
-                </div>
+            {% else %}
+                {# The help text before any cases or applications exist #}
+                <p>This is your dashboard to interact with the {% organisation_name %} ({% organisation_initialism %})
+                    on trade remedies investigations.</p>
+                <p>Cases you are involved in will display on your dashboard below. Clicking on a case will allow you to
+                    see more information relating to the case as well as your interactions
+                    with {% organisation_initialism %}.</p>
+                {% if not is_org_owner %}
+                    <p>You can be added to any of your organisation's cases by an administrator.</p>
+                {% endif %}
+                {% if user.email_verified_at %}
+                    <p>Use your dashboard to:</p>
+                    <ul class="list">
+                        <li>
+                            <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
+                            <p>This will allow you to; have a chance to submit evidence, get updates on important
+                                developments, comment on {% organisation_initialism %}’s findings before a final
+                                decision is
+                                made, as well as being able to request a reconsideration of a final determination.</p>
+                        </li>
+                        {% if pre_manage_team and is_org_owner %}
+                            <li><a class="link bold" href="/accounts/team/">Manage your team</a>
+                                <p>Grant access to your organisation's active cases or invite new users into your
+                                    team.</p>
+                            </li>
+                        {% endif %}
+                        <li><a class="link bold" href="/accounts/info/">Manage your account details</a>
+                            <p>Update your contact details from the top right of your screen.</p>
+                        </li>
+                    </ul>
+                {% endif %}
             {% endif %}
-{% else %}
-    {# The help text before any cases or applications exist #}
-    <p>This is your dashboard to interact with the {% organisation_name %} ({% organisation_initialism %})
-        on trade remedies investigations.</p>
-    <p>Cases you are involved in will display on your dashboard below. Clicking on a case will allow you to
-        see more information relating to the case as well as your interactions
-        with {% organisation_initialism %}.</p>
-    {% if not is_org_owner %}
-        <p>You can be added to any of your organisation's cases by an administrator.</p>
-    {% endif %}
-    {% if user.email_verified_at %}
-        <p>Use your dashboard to:</p>
-        <ul class="list">
-            <li>
-                <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
-                <p>This will allow you to; have a chance to submit evidence, get updates on important
-                    developments, comment on {% organisation_initialism %}’s findings before a final
-                    decision is
-                    made, as well as being able to request a reconsideration of a final determination.</p>
-            </li>
-            {% if pre_manage_team and is_org_owner %}
-                <li><a class="link bold" href="/accounts/team/">Manage your team</a>
-                    <p>Grant access to your organisation's active cases or invite new users into your
-                        team.</p>
-                </li>
-            {% endif %}
-            <li><a class="link bold" href="/accounts/info/">Manage your account details</a>
-                <p>Update your contact details from the top right of your screen.</p>
-            </li>
-        </ul>
-    {% endif %}
-{% endif %}
-</div>
-
-<div class="column-one-third">
-    {% include "partials/widgets/help_box.html" %}
-    {% if user.email_verified_at %}
-        <div class="other-services-links-widget">
-            <div class="service-links">
-                <h1 class="heading-medium">Other things you can do</h1>
-                <ul>
-                    {% if pre_register_interest %}
-                        <li><a href="{% url 'roi' %}">Register interest in a case</a></li>
-                    {% endif %}
-                    {% if pre_applications %}
-                        <li><a href="/case/">Apply for an investigation</a></li>{% endif %}
-                    {% if pre_manage_team and is_org_owner %}
-                        <li><a href="/accounts/team/" id="lnk_manage_your_team">Manage your team</a>
-                        </li>{% endif %}
-                    {% if pre_manage_team and is_org_owner %}
-                        <li><a href="/cases/">See all cases</a></li>{% endif %}
-                </ul>
-            </div>
         </div>
-    {% endif %}
-</div>
-</div>
+
+        <div class="column-one-third">
+            {% include "partials/widgets/help_box.html" %}
+            {% if user.email_verified_at %}
+                <div class="other-services-links-widget">
+                    <div class="service-links">
+                        <h1 class="heading-medium">Other things you can do</h1>
+                        <ul>
+                            {% if pre_register_interest %}
+                                <li><a href="{% url 'roi' %}">Register interest in a case</a></li>
+                            {% endif %}
+                            {% if pre_applications %}
+                                <li><a href="/case/">Apply for an investigation</a></li>{% endif %}
+                            {% if pre_manage_team and is_org_owner %}
+                                <li><a href="/accounts/team/" id="lnk_manage_your_team">Manage your team</a>
+                                </li>{% endif %}
+                            {% if pre_manage_team and is_org_owner %}
+                                <li><a href="/cases/">See all cases</a></li>{% endif %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 
 {% endblock %}
