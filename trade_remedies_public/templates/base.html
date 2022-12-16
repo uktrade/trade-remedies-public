@@ -41,7 +41,7 @@
     {{ block.super }}
     {% block feedback_section %}
         <div class="feedback-section">
-            <a class="link" target="_blank" data-attach="ModalForm" data-url="/feedback/TR-FEEDBACK/placement/FOOTER/inner/" href="/feedback/TR-FEEDBACK/placement/FOOTER/">Give feedback</a>
+            <a class="govuk-link" href="{% url 'collect_feedback' %}?previous_url={{ request.path }}&previous_url_name={{ request.resolver_match.url_name }}&journey=Generic+Footer">Give feedback.</a>
         </div>
     {% endblock %}
 {% endblock %}
@@ -102,9 +102,6 @@
     {% endif %}
 
     {% include "partials/widgets/org_display_large.html" %}
-
-    {% block row_content %}
-    {% endblock %}
 
     {% block row_content %}
     {% endblock %}

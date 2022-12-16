@@ -132,12 +132,17 @@
                                 <td class="govuk-table__cell" data-order="{{ case.initiated_at|date:'U' }}">
                                     <span class="govuk-visually-hidden--desktop td-header">Date Initiated: </span>{{ case.initiated_at|date:'d M Y' }}
                                 </td>
-                                <td class="govuk-table__cell" data-order="{{ case.registration_deadline|date:'U' }}">
+                                <td class="govuk-table__cell"
+                                    data-order="{{ case.registration_deadline|date:'U' }}">
                                     <span class="govuk-visually-hidden--desktop td-header">Registration due: </span>{{ case.registration_deadline|date:'d M Y' }}
                                 </td>
                                 <td class="govuk-table__cell">
                                     <span class="govuk-visually-hidden td-header">Action:</span>
-                                    <button type="submit" class="govuk-button govuk-button--secondary link_button" value="{{ case.reference }}*-*{{ case.id }}*-*{{ case.name }}*-*{{ case.registration_deadline|date:'c' }}" name="case_information"> Select<span class="govuk-visually-hidden--desktop td-header"> case {{ case.reference }}</span>
+                                    <button type="submit"
+                                        class="govuk-button govuk-button--secondary link_button"
+                                        value="{{ case.reference }}*-*{{ case.id }}*-*{{ case.name }}*-*{{ case.registration_deadline|date:'c' }}"
+                                        name="case_information">
+                                        Select<span class="govuk-visually-hidden--desktop td-header"> case {{ case.reference }}</span>
                                     </button>
                                 </td>
                             </tr>
