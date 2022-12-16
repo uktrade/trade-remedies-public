@@ -70,8 +70,7 @@
                 {# Cases waiting approval #}
                 {% if cases_awaiting_approval %}
                     <h2 class="heading-medium">Pending TRA Approval</h2>
-                    {% include "partials/widgets/dashboard_caselist.html" with cases=cases_awaiting_approval show_casenumber=True
-                    no_click=True %}
+                    {% include "partials/widgets/dashboard_caselist.html" with cases=unapproved_rep_invitations_cases show_casenumber=True no_click=True %}
                 {% endif %}
                 <!-- Draft applications -->
                 {% if applications %}
@@ -88,8 +87,7 @@
                     {% endif %}
                     {% if interest_cases_draft %}
                         <h1 class="heading-medium">Your draft registrations of interest</h1>
-                        {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases_draft
-                        show_casenumber=True %}
+                        {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases_draft show_casenumber=True %}
                     {% endif %}
                 </div>
                 <!-- 3rd party invites -->
