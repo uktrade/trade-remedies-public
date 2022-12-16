@@ -270,6 +270,15 @@
 
                 // Initialising the GOV.UK Frontend
                 window.GOVUKFrontend.initAll()
+
+                // Feedback stars if JS is enabled
+                $('.star-rating3__label').click(function () {
+                    $('#js_selected_rating').text($(this).find("span").text())
+                })
+                {# sorry about this #}
+                {% if feedback_object %}
+                    $('label[for="rating-{{ feedback_object.rating }}"]').trigger("click")
+                {% endif %}
             })
         </script>
         {% block scripts %}{% endblock scripts %}
