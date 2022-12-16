@@ -61,9 +61,8 @@
                 <tbody>
                     {% for user in users %}
                         <tr class="{% if not user.active %}line-through {% endif %}">
-                            <td title="{{ user.name }}"><a
-                                href="/accounts/team/{{ user.organisation.id }}/user/{{ user.id }}/edit/">{{ user.name
-                                }}</a>
+                            <td title="{{ user.name }}">
+                                <a href="/accounts/team/{{ user.organisation.id }}/user/{{ user.id }}/edit/">{{ user.name}}</a>
                             </td>
                             <td>
                                 {% if user.organisation.role.security_group == 'Organisation Owner' %}
@@ -161,9 +160,9 @@
                     <tbody>
                         {% for invite in invites %}
                             <tr>
-                                <td title="{{ invite.meta.name }}"><a
-                                    href="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/edit/">{{
-                                    invite.meta.name }}</a>
+                                <td title="{{ invite.meta.name }}">
+                                    <a
+                                        href="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/edit/">{{invite.meta.name}}</a>
                                 </td>
                                 <td>
                                     {% if user.organisation.role.security_group == 'Organisation Owner' %}
@@ -202,13 +201,11 @@
                                     {% if invite.locked %}
                                         {% if invite.accepted_at %}
                                             {# The invite is accepted, can no longer be cancelled #}
-                                            <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
-                                                invitation</a>
+                                            <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View invitation</a>
                                         {% else %}
                                             {# The invite has been created but not accepted, it can be cancelled #}
                                             {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                                <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel
-                                                    invitation</a>
+                                                <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel invitation</a>
                                             {% else %}
                                                 <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
                                                     invitation</a>
