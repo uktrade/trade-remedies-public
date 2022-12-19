@@ -30,7 +30,7 @@
                             <p><strong class="govuk-tag govuk-tag--pink" id="pre-sampling-upload-status">Deficient
                                 documentation</strong></p>
                             <a href="{% url 'roi_submission_exists' submission_id=submission.id %}"
-                               role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                                role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                                 Review documentation</a>
                             <p><span>{{ submission.parent.deficiency_sent_at|date:'d M Y' }}</span></p>
                         {% elif submission.status.received or submission.status.sufficient and not org_case_role.case_role_key == "rejected" %}
@@ -98,7 +98,7 @@
                         {% for document in submission.paired_documents %}
                             <a download href="{{ document.confidential.file }}">{{ document.confidential.name }}</a><br>
                             <a download
-                               href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a><br>
+                                href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a><br>
                         {% endfor %}
                     </dd>
                 </div>
@@ -106,11 +106,11 @@
             {% if submission.status.draft %}
                 <div class="govuk-button-group">
                     <a href="{% url 'roi_submission_exists' submission_id=submission.id %}" role="button"
-                       draggable="false" class="govuk-button" data-module="govuk-button">
+                        draggable="false" class="govuk-button" data-module="govuk-button">
                         Continue registration of interest
                     </a>
                     <a class="govuk-link govuk-link--no-visited-state"
-                       href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete</a>
+                        href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete</a>
                 </div>
             {% endif %}
         </div>
@@ -122,8 +122,8 @@
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
                             <a class="link"
-                               href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
-                               target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
+                                href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
+                                target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
                         </li>
 
                         <li>

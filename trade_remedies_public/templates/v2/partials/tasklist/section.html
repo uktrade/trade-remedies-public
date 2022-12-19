@@ -15,16 +15,16 @@
     <ul class="app-task-list__items">
 
         <li class="app-task-list__item">
-      <span class="app-task-list__task-name">
-          {% if ready_to_start %}
-              <a href="{{ url }}" class="govuk-link--no-visited-state" aria-describedby="{{ number }}_status">
-          {{ link_text }}
-        </a>
-          {% else %}
-              {{ link_text }}
-          {% endif %}
+            <span class="app-task-list__task-name">
+                {% if ready_to_start %}
+                    <a href="{{ url }}" class="govuk-link--no-visited-state" aria-describedby="{{ number }}_status">
+                        {{ link_text }}
+                    </a>
+                {% else %}
+                    {{ link_text }}
+                {% endif %}
 
-      </span>
+            </span>
             <strong class="govuk-tag govuk-tag--grey app-task-list__tag" id="{{ number }}_status">{{ status }}</strong>
         </li>
     </ul>

@@ -9,95 +9,95 @@
 
     <div class="breadcrumbs" data-module="track-click">
         <ol>
-          <li class="">
-              <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
-          </li>
-          <li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
-            <a href="/accounts/team/">Account details</a>
-          </li>
-          <li data-track-category="breadcrumbClicked" data-track-action="3"   class="" aria-current="false" >
-            My details
-          </li>
+            <li class="">
+                <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+            </li>
+            <li data-track-category="breadcrumbClicked" data-track-action="2"   class="" aria-current="false" >
+                <a href="/accounts/team/">Account details</a>
+            </li>
+            <li data-track-category="breadcrumbClicked" data-track-action="3"   class="" aria-current="false" >
+                My details
+            </li>
         </ol>
-      </div>
+    </div>
     <form action='/accounts/team/user/{{user.id}}/' method='post'>
         {% csrf_token %}
         <input type="hidden" name="redirect" value="/accounts/info/">
         <div class="grid-row">
             <div class="column-two-thirds">
-              <!--{% text_element id='email' label='Email (username)' errors=errors value=user.email%}-->
-              <label for="email" class="form-label">Email (username)</label>
-              <input type="text" name="email" id="email" type="email" class="form-control" readonly value="{{user.email}}"/>
-              <!--
+                <!--{% text_element id='email' label='Email (username)' errors=errors value=user.email%}-->
+                <label for="email" class="form-label">Email (username)</label>
+                <input type="text" name="email" id="email" type="email" class="form-control" readonly value="{{user.email}}"/>
+                <!--
               {% if not user.id %}
                   <input type="text" class="form-control {% if errors.email %}form-control-error{% endif %}" id="email" name="email" value="{{user.email}}"> {% error_message errors 'email' %}
               {% else %}
                   <input type="text" readonly class="form-control" name="email" value="{{user.email}}"/>
               {% endif %}
               -->
-              {% text_element id='name' autocomplete="off" label='Name' errors=errors value=user.name %}
-              {% text_element id='phone' label='Phone number' type="tel" autocomplete="off" errors=errors value=user.phone %}
-              {% password_element id='current_password' label='Current password' errors=errors %}
-              {% password_element id='password' label='Password' errors=errors %}
-              {% password_element id='password_confirm' label='Confirm password' errors=errors %}
-              <div class="form-group type-text ">
-                <label for="country" class="form-label">Country </label>
-                <select name="country_code" class="form-control" id="country">
-                    <option value="">Select Country</option>
-                    {% for country in countries %}
-                        <option
-                            value="{{ country.0 }}"
-                            {% if country.0 == user.country_code %}selected{% endif %}>{{ country.1 }}
-                        </option>
-                    {% endfor %}
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="timezone" class="form-label">Time Zone </label>
-                <select name="timezone" class="form-control" id="timezone">
-                    <option value="">Select Time Zone</option>
-                    {% for timezone in timezones %}
-                        <option
-                            value="{{timezone}}"
-                            {% if timezone == user.timezone %}selected{% endif %}>{{timezone}}
-                        </option>
-                    {% endfor %}
-                </select>
-              </div>
+                {% text_element id='name' autocomplete="off" label='Name' errors=errors value=user.name %}
+                {% text_element id='phone' label='Phone number' type="tel" autocomplete="off" errors=errors value=user.phone %}
+                {% password_element id='current_password' label='Current password' errors=errors %}
+                {% password_element id='password' label='Password' errors=errors %}
+                {% password_element id='password_confirm' label='Confirm password' errors=errors %}
+                <div class="form-group type-text ">
+                    <label for="country" class="form-label">Country </label>
+                    <select name="country_code" class="form-control" id="country">
+                        <option value="">Select Country</option>
+                        {% for country in countries %}
+                            <option
+                                value="{{ country.0 }}"
+                                {% if country.0 == user.country_code %}selected{% endif %}>{{ country.1 }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="timezone" class="form-label">Time Zone </label>
+                    <select name="timezone" class="form-control" id="timezone">
+                        <option value="">Select Time Zone</option>
+                        {% for timezone in timezones %}
+                            <option
+                                value="{{timezone}}"
+                                {% if timezone == user.timezone %}selected{% endif %}>{{timezone}}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
             <div class="column-one-half">
-              <ul>
-              {% for case in cases %}
-              <hr>
-                <li>
-                    {{case.sequence|stringformat:'04d'}}: {{case.name}}
-                    <input type="hidden" name="case_id" value="{{case.id}}"/>
+                <ul>
+                    {% for case in cases %}
+                        <hr>
+                        <li>
+                            {{case.sequence|stringformat:'04d'}}: {{case.name}}
+                            <input type="hidden" name="case_id" value="{{case.id}}"/>
 
-                    <div class="multiple-choice">
-                        <input
-                            type="radio"
-                            id="case_assigned_{{forloop.counter}}"
-                            name="case_id_{{case.id}}"
-                            value="yes"
-                            {% if case.id in user.case_ids %}checked{% endif %}
-                        />
-                        <label for="case_assigned_{{forloop.counter}}" class="form-label">Assigned</label>
-                    </div>
-                    <div class="multiple-choice">
-                        <input
-                            type="radio"
-                            id="case_unassigned_{{forloop.counter}}"
-                            name="case_id_{{case.id}}"
-                            value="no"
-                            {% if case.id not in user.case_ids %}checked{% endif %}
-                        />
-                        <label for="case_unassigned_{{forloop.counter}}" class="form-label">Unassigned</label>
-                    </div>
-                </li>
-              {% endfor %}
-            </ul>
+                            <div class="multiple-choice">
+                                <input
+                                    type="radio"
+                                    id="case_assigned_{{forloop.counter}}"
+                                    name="case_id_{{case.id}}"
+                                    value="yes"
+                                    {% if case.id in user.case_ids %}checked{% endif %}
+                                />
+                                <label for="case_assigned_{{forloop.counter}}" class="form-label">Assigned</label>
+                            </div>
+                            <div class="multiple-choice">
+                                <input
+                                    type="radio"
+                                    id="case_unassigned_{{forloop.counter}}"
+                                    name="case_id_{{case.id}}"
+                                    value="no"
+                                    {% if case.id not in user.case_ids %}checked{% endif %}
+                                />
+                                <label for="case_unassigned_{{forloop.counter}}" class="form-label">Unassigned</label>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
-          </div>
+        </div>
         <input type="submit" class="button" value="Save and continue"/>
 
     </form>

@@ -15,7 +15,7 @@
         <ul class="govuk-list govuk-warning-text__text-p">
             <li>
                 <a href="{{ submission.deficiency_notice.document.file }}" download=""
-                   class="govuk-link--no-visited-state"><img
+                    class="govuk-link--no-visited-state"><img
                         src="{% static 'v2/assets/images/file_icons/'|add:submission.deficiency_notice.document.extension|add:'.png' %}"
                         alt="File icon" width="24px">
                     {{ submission.deficiency_notice.document.name }}</a>
