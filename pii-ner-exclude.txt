@@ -1,3 +1,4 @@
+approved_at
 Upload Letter
 SecurityMiddleware
 https
