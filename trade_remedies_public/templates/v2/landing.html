@@ -31,12 +31,18 @@
             <li>invite an organisation or individual to represent you in an active case</li>
             <li>add a colleague to your account or an active case</li>
         </ul>
-        <p class="govuk-body">You will need to create an account to use the service. Please have any registration details for your organisation ready. It takes about 10 minutes.</p>
-
+        <p class="govuk-body">You will need to create an account to use the service. Please have any registration
+            details for your organisation ready. It takes about 10 minutes.</p>
         <div class="govuk-button-group">
-            {% url 'login' as button_url %}
-            {% include "v2/component_macros/start_button.html" with button_text="Sign in" button_url=button_url id="sign_in_button" %}
-            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'v2_register_start' %}">Create an
+            <a href="{% url 'login' %}" id="sign_in_button" role="button" draggable="false"
+                class="govuk-button govuk-button--start" data-module="govuk-button">
+                Sign in
+                <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19"
+                    viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
+                </svg>
+            </a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{% if request.GET.invitation %}{% url 'accept_invite_start' invitation_id=request.GET.invitation %}{% else %}{% url 'v2_register_start' %}{% endif %}">Create an
                 account</a>
         </div>
     </div>

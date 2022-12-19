@@ -643,11 +643,9 @@ class RegistrationOfInterest4(RegistrationOfInterestBase, FormView):
 
     def form_valid(self, form):
         # First we need to update the relevant OrganisationCaseRole object to AWAITING_APPROVAL
-        organisation_case_roles = (
-            self.client.organisation_case_roles.get_with_case_and_organisation(
-                case_id=self.submission["case"]["id"],
-                organisation_id=self.submission["organisation"]["id"],
-            )
+        organisation_case_roles = self.client.organisation_case_roles(
+            case_id=self.submission["case"]["id"],
+            organisation_id=self.submission["organisation"]["id"],
         )
         for organisation_case_role in organisation_case_roles:
             self.client.organisation_case_roles(organisation_case_role["id"]).update(
