@@ -396,11 +396,12 @@ class DashboardView(
         invite_submissions = []
         case_to_roi = {}
         unapproved_rep_invitations_cases = []
+        v2_client = TRSAPIClient(token=request.user.token)
         if organisation:
+            v2_organisation = v2_client.organisations(organisation["id"])
             invite_submissions = client.get_organisation_invite_submissions(organisation["id"])
 
             # Let's get the cases where the user is awaiting approval
-            v2_client = TRSAPIClient(token=request.user.token)
             invitations = v2_client.invitations(
                 contact_id=request.user.contact["id"],
                 fields=["submission", "case", "invitation_type"],
@@ -414,7 +415,7 @@ class DashboardView(
 
             roi_submissions = v2_client.submissions(
                 type_id=SUBMISSION_TYPE_REGISTER_INTEREST,
-                case_id__in=[each.case.id for each in organisation.organisationcaserole_set],
+                case_id__in=[each.case.id for each in v2_organisation["organisationcaserole_set"]],
                 organisation_id=self.request.user.contact["organisation"]["id"],
                 fields=["case", "status"],
             )
