@@ -19,9 +19,7 @@ from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.client import TRSAPIClient
 
-from cases.constants import CASE_TYPE_REPAYMENT
 from cases.constants import (
-    CASE_ROLE_AWAITING_APPROVAL,
     CASE_TYPE_REPAYMENT,
     SUBMISSION_TYPE_REGISTER_INTEREST,
 )
@@ -396,28 +394,31 @@ class DashboardView(
         # get any 3rd party invites
         organisation = request.user.organisation
         invite_submissions = []
+        case_to_roi = {}
+        unapproved_rep_invitations_cases = []
         if organisation:
             invite_submissions = client.get_organisation_invite_submissions(organisation["id"])
 
-        # Let's get the cases where the user is awaiting approval
-        v2_client = TRSAPIClient(token=request.user.token)
-        invitations = v2_client.invitations(
-            contact_id=request.user.contact["id"], fields=["submission", "case", "invitation_type"]
-        )
-        unapproved_rep_invitations_cases = [
-            invite.case
-            for invite in invitations
-            if invite.invitation_type == 2
-            if invite.submission and not invite.rejected_at and not invite.approved_at
-        ]
+            # Let's get the cases where the user is awaiting approval
+            v2_client = TRSAPIClient(token=request.user.token)
+            invitations = v2_client.invitations(
+                contact_id=request.user.contact["id"],
+                fields=["submission", "case", "invitation_type"],
+            )
+            unapproved_rep_invitations_cases = [
+                invite.case
+                for invite in invitations
+                if invite.invitation_type == 2
+                if invite.submission and not invite.rejected_at and not invite.approved_at
+            ]
 
-        roi_submissions = v2_client.submissions(
-            type_id=SUBMISSION_TYPE_REGISTER_INTEREST,
-            case_id__in=[each.case.id for each in organisation.organisationcaserole_set],
-            organisation_id=self.request.user.contact["organisation"]["id"],
-            fields=["case", "status"],
-        )
-        case_to_roi = {each.case.id: each for each in roi_submissions}
+            roi_submissions = v2_client.submissions(
+                type_id=SUBMISSION_TYPE_REGISTER_INTEREST,
+                case_id__in=[each.case.id for each in organisation.organisationcaserole_set],
+                organisation_id=self.request.user.contact["organisation"]["id"],
+                fields=["case", "status"],
+            )
+            case_to_roi = {each.case.id: each for each in roi_submissions}
 
         return render(
             request,

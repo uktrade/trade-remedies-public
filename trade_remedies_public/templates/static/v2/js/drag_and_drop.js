@@ -18,7 +18,9 @@ function file_upload(upload_container, files, submission_id) {
     form_data.append('type', upload_container.data("type"));
     form_data.append('submission_id', submission_id);
     form_data.append('unique_id', upload_container.attr('id'));
-    form_data.append('replace_document_id', upload_container.attr('data-replace-document-id'));
+    if (upload_container.attr('data-replace-document-id')){
+        form_data.append('replace_document_id', upload_container.attr('data-replace-document-id'));
+    }
     if (upload_container.attr('data-parent-document')) {
         form_data.append('parent', upload_container.attr('data-parent-document'));
     }
