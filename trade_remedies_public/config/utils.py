@@ -30,8 +30,12 @@ def add_form_error_to_session(
     if field:
         request.session["form_errors"][field] = error_text
 
-    if [field, error_summary] not in request.session["form_errors"]["error_summaries"]:
-        # We don't want to add the exact same error summary in twice
+    try:
+        if [field, error_summary] not in request.session["form_errors"]["error_summaries"]:
+            # We don't want to add the exact same error summary in twice
+            request.session["form_errors"]["error_summaries"].append([field, error_summary])
+    except TypeError:
+        # if "error_summaries" is not in the form_errors dict, this will raise a TypeError, pass
         request.session["form_errors"]["error_summaries"].append([field, error_summary])
     request.session.modified = True
 
