@@ -19,6 +19,7 @@ from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.client import TRSAPIClient
 
+from cases.constants import CASE_TYPE_REPAYMENT
 from cases.constants import (
     CASE_ROLE_AWAITING_APPROVAL,
     CASE_TYPE_REPAYMENT,
@@ -400,13 +401,14 @@ class DashboardView(
 
         # Let's get the cases where the user is awaiting approval
         v2_client = TRSAPIClient(token=request.user.token)
-        organisation = v2_client.organisations(
-            self.request.user.organisation["id"], fields=["organisationcaserole_set"]
+        invitations = v2_client.invitations(
+            contact_id=request.user.contact["id"], fields=["submission", "case", "invitation_type"]
         )
-        cases_awaiting_approval = [
-            each.case
-            for each in organisation.organisationcaserole_set
-            if not each.approved_at and each.role == CASE_ROLE_AWAITING_APPROVAL
+        unapproved_rep_invitations_cases = [
+            invite.case
+            for invite in invitations
+            if invite.invitation_type == 2
+            if invite.submission and not invite.rejected_at and not invite.approved_at
         ]
 
         roi_submissions = v2_client.submissions(
@@ -436,8 +438,8 @@ class DashboardView(
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
                 "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
                 in request.user.organisation_groups,
-                "cases_awaiting_approval": cases_awaiting_approval,
                 "case_to_roi": case_to_roi,
+                "unapproved_rep_invitations_cases": unapproved_rep_invitations_cases,
             },
         )
 
