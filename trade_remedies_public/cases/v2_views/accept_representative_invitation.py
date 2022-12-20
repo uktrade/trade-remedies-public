@@ -17,7 +17,7 @@ from registration.forms.forms import NonUkEmployerForm, OrganisationFurtherDetai
 class BaseAcceptInviteView(NormalBaseAcceptInviteView):
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
-        if not self.invitation.submission.status.sent:
+        if self.invitation.submission and not self.invitation.submission.status.sent:
             # The invitation has either been marked as sufficient or deficient by caseworker, stop
             # from proceeding
             return redirect(reverse("login"))
@@ -173,9 +173,10 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
             }
         )
 
-        # marking the submission as received, so it can be verified by the caseworker
-        self.client.submissions(self.invitation.submission.id).update_submission_status("received")
-        self.invitation.update({"accepted_at": timezone.now()})
+        if self.invitation.invitation_type == 2:
+            # marking the submission as received, so it can be verified by the caseworker
+            self.client.submissions(self.invitation.submission.id).update_submission_status("received")
+            self.invitation.update({"accepted_at": timezone.now()})
 
         # First let's add the invitee as an admin user to their organisation, this was also
         # add them to the required group
