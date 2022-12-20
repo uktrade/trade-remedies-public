@@ -413,13 +413,16 @@ class DashboardView(
                 if invite.submission and not invite.rejected_at and not invite.approved_at
             ]
 
-            roi_submissions = v2_client.submissions(
-                type_id=SUBMISSION_TYPE_REGISTER_INTEREST,
-                case_id__in=[each.case.id for each in v2_organisation["organisationcaserole_set"]],
-                organisation_id=self.request.user.contact["organisation"]["id"],
-                fields=["case", "status"],
-            )
-            case_to_roi = {each.case.id: each for each in roi_submissions}
+            if contact_id := self.request.user.contact.get("organisation", {}).get("id"):
+                roi_submissions = v2_client.submissions(
+                    type_id=SUBMISSION_TYPE_REGISTER_INTEREST,
+                    case_id__in=[
+                        each.case.id for each in v2_organisation["organisationcaserole_set"]
+                    ],
+                    organisation_id=contact_id,
+                    fields=["case", "status"],
+                )
+                case_to_roi = {each.case.id: each for each in roi_submissions}
 
         return render(
             request,

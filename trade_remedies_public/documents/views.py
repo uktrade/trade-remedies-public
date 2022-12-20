@@ -42,19 +42,11 @@ class DocumentView(View, APIClientMixin):
                         "submission_document_type": request.POST.get(
                             "submission_document_type", None
                         ),
+                        "replace_document_id": request.POST.get("replace_document_id", None),
                     }
                 )
                 uploaded_files.append(new_document_upload)
 
-                # if this file is replacing another, let's delete the replacement
-                if replace_document_id := request.POST.get("replace_document_id"):
-                    # first let's re-associate any children of the one to delete to the new one
-                    child_documents = self.client.documents(parent_id=replace_document_id)
-                    for child in child_documents:
-                        self.client.documents(child.id).update({"parent": new_document_upload.id})
-
-                    # now let's delete the replacement
-                    self.client.documents(replace_document_id).delete()
                 return JsonResponse(
                     {
                         "uploaded_files": uploaded_files,
