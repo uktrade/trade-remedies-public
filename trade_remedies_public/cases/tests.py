@@ -171,8 +171,8 @@ class TestUkEmployerForm(TestCase):
         form = UkEmployerForm(data={"input-autocomplete": "TEST"})
         self.assertFalse(form.is_valid())
         self.assertEqual(
-            form.errors.as_json(),
             '{"company_data": [{"message": "companies_house_not_selected",' ' "code": ""}]}',
+            form.errors.as_json(),
         )
 
     def test_companies_house_not_searched(self):
