@@ -398,12 +398,12 @@ class DashboardView(
         v2_client = TRSAPIClient(token=request.user.token)
         invitations = v2_client.invitations(
             contact_id=request.user.contact["id"],
+            invitation_type=2,
             fields=["submission", "case", "invitation_type", "rejected_at", "approved_at"],
         )
         unapproved_rep_invitations_cases = [
             invite.case
             for invite in invitations
-            if invite.invitation_type == 2
             if invite.submission and not invite.rejected_at and not invite.approved_at
         ]
         return render(

@@ -105,7 +105,7 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
         contact_id = self.invitation["contact"]["id"]
 
         # Marking the user as active
-        user = self.client.users(self.invitation["invited_user"]["id"]).update({"is_active": True})
+        self.client.users(self.invitation["invited_user"]["id"]).update({"is_active": True})
 
         # Updating two-factor-choice of user
         self.update_two_factor_choice(
@@ -115,6 +115,16 @@ class AcceptOrganisationTwoFactorChoice(BaseAcceptInviteView, FormInvalidMixin):
             mobile=form.cleaned_data["mobile"],
             mobile_country_code=form.cleaned_data["mobile_country_code"],
         )
+
+        # if this is a caseworker invite and the organisation was created as part of the invite,
+        # we want them to provide organisation details, redirect
+        if self.invitation.invitation_type == 3 and self.invitation.organisation.draft:
+            return redirect(
+                reverse(
+                    "accept_representative_invitation_organisation_details",
+                    kwargs={"invitation_id": self.invitation.id},
+                )
+            )
 
         # Redirect to email verification page
         return redirect(
