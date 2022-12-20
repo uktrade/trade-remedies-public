@@ -32,18 +32,18 @@ class DocumentView(View, APIClientMixin):
             if form.is_valid():
                 # Sending it to the API for storage
                 new_document_upload = self.client.documents(
-                        {
-                            "type": request.POST["type"],
-                            "stored_name": file.name,
-                            "original_name": file.original_name,
-                            "file_size": file.file_size,
-                            "submission_id": request.POST["submission_id"],
-                            "parent": request.POST.get("parent", None),
-                            "submission_document_type": request.POST.get(
-                                "submission_document_type", None
-                            ),
-                        }
-                    )
+                    {
+                        "type": request.POST["type"],
+                        "stored_name": file.name,
+                        "original_name": file.original_name,
+                        "file_size": file.file_size,
+                        "submission_id": request.POST["submission_id"],
+                        "parent": request.POST.get("parent", None),
+                        "submission_document_type": request.POST.get(
+                            "submission_document_type", None
+                        ),
+                    }
+                )
                 uploaded_files.append(new_document_upload)
 
                 # if this file is replacing another, let's delete the replacement
