@@ -147,8 +147,9 @@ class OrganisationDetails(BaseAcceptInviteView, FormInvalidMixin):
                 self.invitation.organisation_security_group
             )
 
-            # Set the organisation as not draft, as we know we have details for it
+            # Set the organisation and contact as not draft, as we know we have details for it
             self.client.organisations(self.invitation.organisation.id).update({"draft": False})
+            self.client.contacts(self.invitation.contact.id).update({"draft": False})
 
         return redirect(
             reverse(
