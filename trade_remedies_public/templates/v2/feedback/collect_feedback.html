@@ -27,7 +27,7 @@
                                 {% endfor %}
                             </p>
                         {% endif %}
-                        <div class="govuk-radios star-rating3__stars" data-module="govuk-radios">
+                        <div class="govuk-radios star-rating3__stars" id="rating" data-module="govuk-radios">
                             <input class="star-rating3__input" type="radio" name="rating" value="1" id="rating-1"
                                    {% if feedback_object.rating == 1 %}checked{% endif %}>
                             <label class="star-rating3__label" for="rating-1" aria-label="Very dissatisfied"><span
