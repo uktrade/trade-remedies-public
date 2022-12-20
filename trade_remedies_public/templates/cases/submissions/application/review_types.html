@@ -2,59 +2,59 @@
 {% set 'question_label' 'What type of review are you applying for?' %}
 {# radio_element id='case_type' label=question_label  options=options errors=errors #}
 {% if not options %}
-	<div>No review investigations can be initiated against this case at present</div>
+    <div>No review investigations can be initiated against this case at present</div>
 {% else %}
-	{% if organisation_role == 'importer' %}
-		{% set 'RI_present' False %}
-		{% for option in options %}
-			{% if option.acronym == 'RI' %}
-				{% set 'RI_present' True %}
-			{% endif %}
-		{% endfor %}
-		{% if store.RI_present %}
-			<p>Are you applying for a repayment investigation?</p>
-			<table class="review-types">
-				{% for option in options %}
-					{% if option.acronym == 'RI' %}
-						{% include "cases/submissions/application/review_type_inner.html" with option=option %}
-					{% endif %}
-				{% endfor %}
-			</table>
-			<p class="margin-top-2">.. or one of the following review investigations</p>
-		{% endif %}
+    {% if organisation_role == 'importer' %}
+        {% set 'RI_present' False %}
+        {% for option in options %}
+            {% if option.acronym == 'RI' %}
+                {% set 'RI_present' True %}
+            {% endif %}
+        {% endfor %}
+        {% if store.RI_present %}
+            <p>Are you applying for a repayment investigation?</p>
+            <table class="review-types">
+                {% for option in options %}
+                    {% if option.acronym == 'RI' %}
+                        {% include "cases/submissions/application/review_type_inner.html" with option=option %}
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <p class="margin-top-2">.. or one of the following review investigations</p>
+        {% endif %}
 
-	{% elif organisation_role == 'exporter' %}
-		{% set 'NE_present' False %}
-		{% for option in options %}
-			{% if option.acronym in 'NE' %}
-				{% set 'NE_present' True %}
-			{% endif %}
-		{% endfor %}
-		{% if store.NE_present %}
-			<p>Are you applying for a new exporter review or a repayment investigation?</p>
-			<table class="review-types">
-				{% for option in options %}
-					{% if option.acronym in 'NE' %}
-						{% include "cases/submissions/application/review_type_inner.html" with option=option %}
-					{% endif %}
-				{% endfor %}
-			</table>
-			<p class="margin-top-2">.. or one of the following review investigations</p>
-		{% endif %}
+    {% elif organisation_role == 'exporter' %}
+        {% set 'NE_present' False %}
+        {% for option in options %}
+            {% if option.acronym in 'NE' %}
+                {% set 'NE_present' True %}
+            {% endif %}
+        {% endfor %}
+        {% if store.NE_present %}
+            <p>Are you applying for a new exporter review or a repayment investigation?</p>
+            <table class="review-types">
+                {% for option in options %}
+                    {% if option.acronym in 'NE' %}
+                        {% include "cases/submissions/application/review_type_inner.html" with option=option %}
+                    {% endif %}
+                {% endfor %}
+            </table>
+            <p class="margin-top-2">.. or one of the following review investigations</p>
+        {% endif %}
 
-	{% else %} {# producer #}
+    {% else %} {# producer #}
 
-		<p>What type of review are you applying for?</p>
+        <p>What type of review are you applying for?</p>
 
-	{% endif %}
-	<table class="review-types">
-		{% for option in options %}
-			{% if organisation_role == 'producer' and option.acronym in 'SE,ER' %}
-				{% include "cases/submissions/application/review_type_inner.html" with option=option %}
-			{% elif option.acronym not in 'RI,NE,SE,ER' %}
-				{% include "cases/submissions/application/review_type_inner.html" with option=option %}
-			{% endif %}
-		{% endfor %}
-	</table>
+    {% endif %}
+    <table class="review-types">
+        {% for option in options %}
+            {% if organisation_role == 'producer' and option.acronym in 'SE,ER' %}
+                {% include "cases/submissions/application/review_type_inner.html" with option=option %}
+            {% elif option.acronym not in 'RI,NE,SE,ER' %}
+                {% include "cases/submissions/application/review_type_inner.html" with option=option %}
+            {% endif %}
+        {% endfor %}
+    </table>
 
 {% endif %}

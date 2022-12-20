@@ -2,42 +2,42 @@
 {% load text_element %}
 
 {% block task_name1 %}
-	{% if create_mode %}
-		Invite a colleague
-	{% else %}
-		Edit contact details
-	{% endif %}
+    {% if create_mode %}
+        Invite a colleague
+    {% else %}
+        Edit contact details
+    {% endif %}
 {% endblock %}
 {% block task_name2 %}
-	{% if create_mode %}
-		Enter contact details
-	{% else %}
-		Edit contact details
-	{% endif %}
+    {% if create_mode %}
+        Enter contact details
+    {% else %}
+        Edit contact details
+    {% endif %}
 {% endblock %}
 {% block page_title %}
-	{% if self_details %}
-		Account details
-	{% else %}
-		{{ page_title }}
-	{% endif %}
+    {% if self_details %}
+        Account details
+    {% else %}
+        {{ page_title }}
+    {% endif %}
 {% endblock %}
 
 {% block form_content %}
-	<div class="form-group">
-		{% if create_mode %}
-			<div class="warning-text">
-				Only add members of your organisation to your account as Administrators or
+    <div class="form-group">
+        {% if create_mode %}
+            <div class="warning-text">
+                Only add members of your organisation to your account as Administrators or
                 Users.
-			</div>
-		{% else %}
-			{% if self_details %}
-				Use this form to edit your name and contact details.
-			{% else %}
-				Use this form to edit the user's name and contact details.
-			{% endif %}
-		{% endif %}
-	</div>
+            </div>
+        {% else %}
+            {% if self_details %}
+                Use this form to edit your name and contact details.
+            {% else %}
+                Use this form to edit the user's name and contact details.
+            {% endif %}
+        {% endif %}
+    </div>
     {% if create_mode %}
         {% if errors.group %}<span class="error-message" id="group_error">{{ errors.group }}</span>{% endif %}
         <div class="form-group {% if errors.group %}form-group-error{% endif %}">
@@ -69,7 +69,7 @@
                         <li>When your 3rd Party invitation is approved the 3rd Party will receive an
                             invite to this organisation.</li>
                     </ul>
-              </div>
+                </div>
             </details>
             {% set 'security_group' user_record.group %}
             {% if user_record.organisation.role.security_group %}
@@ -80,21 +80,21 @@
             {% for group in groups %}
                 <div class="multiple-choice">
                     <input
-                            type="radio"
-                            id="role_{{forloop.counter}}"
-                            name="group"
-                            value="{{group.0}}"
-                            autocomplete="off"
-                            {% if group.0 == 'Third Party User' %}
-                                onclick="document.getElementById('form-fields').hidden = true;
+                        type="radio"
+                        id="role_{{forloop.counter}}"
+                        name="group"
+                        value="{{group.0}}"
+                        autocomplete="off"
+                        {% if group.0 == 'Third Party User' %}
+                            onclick="document.getElementById('form-fields').hidden = true;
                                 document.getElementById('third-party-message').hidden = false;"
-                            {% else %}
-                                onclick="document.getElementById('form-fields').hidden = false;
-                                         document.getElementById('third-party-message').hidden = true;"
-                            {% endif %}
-                            {% if user_record.group == group.0 %}
-                                checked
-                            {% endif %}
+                        {% else %}
+                            onclick="document.getElementById('form-fields').hidden = false;
+                                document.getElementById('third-party-message').hidden = true;"
+                        {% endif %}
+                        {% if user_record.group == group.0 %}
+                            checked
+                        {% endif %}
                     />
                     {% if group.0 == 'Organisation Owner' %}
                         {% set 'perm_name' 'Administrator with the ability to assign cases and add new users' %}

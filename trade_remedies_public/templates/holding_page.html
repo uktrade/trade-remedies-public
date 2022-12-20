@@ -5,35 +5,35 @@
 
 {% block row_content %}
 
-<div id="wrapper" class="site-wrapper direction-ltr">
-    <main role="main" id="content" lang="en">
-        <div class="grid-row">
-            <div class="column-fulls">
-                <h1 class="heading-xlarge">
-                <span class="heading-secondary">Trade remedies service</span>
-                System is not currently available
-                </h1>
+    <div id="wrapper" class="site-wrapper direction-ltr">
+        <main role="main" id="content" lang="en">
+            <div class="grid-row">
+                <div class="column-fulls">
+                    <h1 class="heading-xlarge">
+                        <span class="heading-secondary">Trade remedies service</span>
+                        System is not currently available
+                    </h1>
+                </div>
+                <div class="column-full">
+                    <p><strong>{{message}}</strong></p>
+                    <p>When the service is available, you will be able to create an account in order to provide information during a trade remedy investigation.</p>
+                    <p>You will not need an account to view the public file for a case. This will be published online for anyone to view.</p>
+                </div>
+                <div class="column-full margin-top-1">
+                    <p>Further information: <a href="{% link_lookup 'LINK_HELP_BOX_GUIDANCE' %}">Understand trade remedy investigations</a></p>
+                </div>
             </div>
-            <div class="column-full">
-                <p><strong>{{message}}</strong></p>
-                <p>When the service is available, you will be able to create an account in order to provide information during a trade remedy investigation.</p>
-                <p>You will not need an account to view the public file for a case. This will be published online for anyone to view.</p>
-            </div>
-            <div class="column-full margin-top-1">
-                <p>Further information: <a href="{% link_lookup 'LINK_HELP_BOX_GUIDANCE' %}">Understand trade remedy investigations</a></p>
-            </div>
-        </div>
-    </main>
-</div>
+        </main>
+    </div>
 
-  {% if authenticated %}
-    <!-- <a href="/accounts/logout/">Log Out</a><br/> -->
-  {% else %}
-    <!--
+    {% if authenticated %}
+        <!-- <a href="/accounts/logout/">Log Out</a><br/> -->
+    {% else %}
+        <!--
     <a href="/accounts/register/">Register</a><br/>
     <a href="/accounts/login/">Log In</a><br/>
     -->
-  {% endif %}
+    {% endif %}
     <!--
     <BR>
     <a href="/dashboard/">Dashboard</a><br/>

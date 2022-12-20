@@ -12,7 +12,7 @@
 <li>
     {% include "./section_heading.html" with section_heading=section_heading|default:'Submit your application' %}
     <ul class="task-list-items">
-       <li class="task-list-item edit-item">
+        <li class="task-list-item edit-item">
             {% if submission.id  and enable_submit %}
                 <a href="/case/{{case_id}}/submission/{{submission.id}}/submit/">Final check and submission</a>
             {% else %}

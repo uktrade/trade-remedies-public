@@ -2,22 +2,22 @@
 {% if option.dates.status != 'invalid_case_type' %}
     <tr class="{% if option.dates.status != 'ok' %}disabled{% endif %}">
         <td>
-			<div class="multiple-choice">
-				<input id="sel-{{option.id}}" type="radio" value="{{option.id}}" name="review_type" {% if option.id == selected_case_type %}checked{% endif %} {% if option.dates.status != 'ok' %}disabled{% endif %}>
-				<label class="form-label" for="sel-{{option.id}}"></label>
-			</div>
+            <div class="multiple-choice">
+                <input id="sel-{{option.id}}" type="radio" value="{{option.id}}" name="review_type" {% if option.id == selected_case_type %}checked{% endif %} {% if option.dates.status != 'ok' %}disabled{% endif %}>
+                <label class="form-label" for="sel-{{option.id}}"></label>
+            </div>
         </td>
         <td class="cell bold">{{option.name}}</td>
         <td>
-			{% if option.dates.status == 'invalid_case_type' %}
-				Not available for this case
-			{% elif option.dates.status == 'before_start' %}
-				Not available before {{option.dates.start|format_date:'%d %b %Y'}}
-			{% elif option.dates.status == 'ok' %}
-				Available until {{option.dates.end|format_date:'%d %b %Y'}}
-			{% elif option.dates.status == 'after_end' %}
-				No longer available
-			{% endif %}
+            {% if option.dates.status == 'invalid_case_type' %}
+                Not available for this case
+            {% elif option.dates.status == 'before_start' %}
+                Not available before {{option.dates.start|format_date:'%d %b %Y'}}
+            {% elif option.dates.status == 'ok' %}
+                Available until {{option.dates.end|format_date:'%d %b %Y'}}
+            {% elif option.dates.status == 'after_end' %}
+                No longer available
+            {% endif %}
         </td>
     </tr>
 {% endif %}

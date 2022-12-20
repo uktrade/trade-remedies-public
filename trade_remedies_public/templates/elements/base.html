@@ -1,9 +1,9 @@
 <div class="form-group">
-	<label class="form-label" for="{ id }">{{ element.label }}
-		{% if element.description %}
-			<span class="form-hint">{{ element.description }}</span>
-		{% endif %}
-	</label>
+    <label class="form-label" for="{ id }">{{ element.label }}
+        {% if element.description %}
+            <span class="form-hint">{{ element.description }}</span>
+        {% endif %}
+    </label>
     {% block element_body %}
     {% endblock %}
 </div>

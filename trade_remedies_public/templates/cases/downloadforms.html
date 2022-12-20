@@ -2,21 +2,21 @@
 {% load back_link %}
 
 {% block row_content %}
-<div class="grid-row">
-    <div class="column">
+    <div class="grid-row">
+        <div class="column">
 
-        {% include 'cases/submissions/'|add:download_template %}
+            {% include 'cases/submissions/'|add:download_template %}
 
 
-    </div>
+        </div>
 
-    <div class="column-third">
-        <div class="community-contact">
-            <p>
-            <!-- <a class="feedback" href="/contact/govuk">Give feedback about this page</a> -->
-            </p>
+        <div class="column-third">
+            <div class="community-contact">
+                <p>
+                    <!-- <a class="feedback" href="/contact/govuk">Give feedback about this page</a> -->
+                </p>
+            </div>
         </div>
     </div>
-</div>
 
 {% endblock %}

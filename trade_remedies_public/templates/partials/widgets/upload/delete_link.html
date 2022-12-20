@@ -5,13 +5,13 @@
 file - document structure
 submission
 side - left or right 
-{% endcomment %} 
+{% endcomment %}
 {% load set %}
 <form data-attach="ConfirmPost" action="/case/{{ case_id }}/submission/{{ submission.id }}/remove/document/{{ file.id }}/" method='POST'>
     {% csrf_token %}
-        <input type="hidden" name="redirect" value="/case/{{ case_id }}/submission/{{ submission.id }}/upload/{% if public_str %}{{ public_str }}/{% endif %}">
+    <input type="hidden" name="redirect" value="/case/{{ case_id }}/submission/{{ submission.id }}/upload/{% if public_str %}{{ public_str }}/{% endif %}">
     <div class="confirmation-title hidden">
-      Remove documents
+        Remove documents
     </div>
     <div class="confirmation-message hidden">
         <p>The following documents will be removed from your submission.</p>

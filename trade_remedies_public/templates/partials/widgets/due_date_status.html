@@ -8,11 +8,11 @@ If the 'state' is actually a submission, and it's locked, the display of the due
 
 -->{% endcomment %}
 
-    {% if state.due_at and not state.status.locking %}
-      <span class="due-date {% if state.due_soon %}soon{% endif %}" >{% format_date state.due_at '%d %b %Y' %}</span>
-      {% if state.due_soon %}
+{% if state.due_at and not state.status.locking %}
+    <span class="due-date {% if state.due_soon %}soon{% endif %}" >{% format_date state.due_at '%d %b %Y' %}</span>
+    {% if state.due_soon %}
         <i class="icon {% if state.due_very_soon %} icon-warning{% else %} icon-amber-warning{% endif %}"><span class="visually-hidden">{% if state.due_very_soon %}strong {% endif %}alert</span></i>
-      {% endif %}              
-    {% elif show_na %}
-    	<span class="due-date">N/A</span>
-	{% endif %}
+    {% endif %}
+{% elif show_na %}
+    <span class="due-date">N/A</span>
+{% endif %}

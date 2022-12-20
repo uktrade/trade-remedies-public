@@ -2,14 +2,14 @@
 {% load organisation_name %}
 
 {% if user.is_authenticated %}
-<script>
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'apply_for_case',
-        'user_id': '{{user.id}}',
-        'case_id': '{{case_id}}'
-    });
-</script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'apply_for_case',
+            'user_id': '{{user.id}}',
+            'case_id': '{{case_id}}'
+        });
+    </script>
 {% endif %}
 
 {% block breadcrumb_current %}Apply for a new investigation{% endblock %}
@@ -18,10 +18,10 @@
 {% block page_title %}Submit your {{case.type.name|lower}} application{% endblock %}
 
 {% block submission_main_text %}
-<p>Once you submit this form you will not be able to make changes to your submitted information.</p>
-<p>If you become aware of any errors or omissions please notify the {% organisation_name %} as quickly as possible.</p>
+    <p>Once you submit this form you will not be able to make changes to your submitted information.</p>
+    <p>If you become aware of any errors or omissions please notify the {% organisation_name %} as quickly as possible.</p>
 {% endblock %}
 
 {% block submission_checkbox_label %}
-I have completed my application and I am happy for the {% organisation_name %} to consider it
+    I have completed my application and I am happy for the {% organisation_name %} to consider it
 {% endblock %}

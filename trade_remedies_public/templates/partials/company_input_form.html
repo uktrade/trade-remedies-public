@@ -18,14 +18,14 @@
     <label class="form-label">
         Company name
     </label>
-        {% for organisation in user.organisations %}
+    {% for organisation in user.organisations %}
         <div class="multiple-choice">
-        <input
-            id="org{{forLoop.counter}}"
-            type="radio"
-            name="organisation_id"
-            value="{{organisation.id}}"
-            {% if user.organisations|length == 1  or forloop.counter == 1 %}checked{% endif %}>
+            <input
+                id="org{{forLoop.counter}}"
+                type="radio"
+                name="organisation_id"
+                value="{{organisation.id}}"
+                {% if user.organisations|length == 1  or forloop.counter == 1 %}checked{% endif %}>
             <label for="org{{forLoop.counter}}">{{organisation.name}}</label>
         </div>
     {% endfor %}
@@ -60,19 +60,19 @@
         {{submission.organisation.name}}
     {% else %}
         {% if countries %}
-        <div id="typeAheadWrapper" class="type-typeahead">
-            <div  class="form-group" >
-                <label class="form-label" for="countrySelector">Country of the company you are representing</label>
-                <select class="form-control" id="countrySelector" name="organisation_country" onChange="onCountryChange(this.value);">
-                    {% for country_code, country_name in countries %}
-                        <option
-                            value="{{country_code}}"
-                            {% if country == country_code %}selected{% endif %}
-                        >{{country_name}}</option>
-                    {% endfor %}
-                </select>
+            <div id="typeAheadWrapper" class="type-typeahead">
+                <div  class="form-group" >
+                    <label class="form-label" for="countrySelector">Country of the company you are representing</label>
+                    <select class="form-control" id="countrySelector" name="organisation_country" onChange="onCountryChange(this.value);">
+                        {% for country_code, country_name in countries %}
+                            <option
+                                value="{{country_code}}"
+                                {% if country == country_code %}selected{% endif %}
+                            >{{country_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-        </div>
         {% endif %}
         {% text_element id='organisation_name' label='Name of company you are representing' errors=errors value=organisation_name data_mode='company' input_classes='form-control-3-4' %}
         {% text_element id='company_number' name="companies_house_id" hint="If this organisation is not a registered company, enter its postcode (zipcode) instead." label='Company number' errors=errors value=companies_house_id %}
