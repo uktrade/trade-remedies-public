@@ -175,7 +175,9 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
 
         if self.invitation.invitation_type == 2:
             # marking the submission as received, so it can be verified by the caseworker
-            self.client.submissions(self.invitation.submission.id).update_submission_status("received")
+            self.client.submissions(self.invitation.submission.id).update_submission_status(
+                "received"
+            )
             self.invitation.update({"accepted_at": timezone.now()})
 
         # First let's add the invitee as an admin user to their organisation, this was also
