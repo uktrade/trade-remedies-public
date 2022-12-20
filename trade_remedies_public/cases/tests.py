@@ -163,15 +163,16 @@ class TestUkEmployerForm(TestCase):
         self.assertEqual("TEST COMPANY", form.cleaned_data["organisation_name"])
         self.assertEqual("000000", form.cleaned_data["companies_house_id"])
         self.assertEqual("NNN NNN", form.cleaned_data["organisation_post_code"])
-        self.assertEqual("1 TEST ROAD, LONDON, UNITED KINGDOM", form.cleaned_data["organisation_address"])
+        self.assertEqual(
+            "1 TEST ROAD, LONDON, UNITED KINGDOM", form.cleaned_data["organisation_address"]
+        )
 
     def test_companies_house_searched_but_not_selected(self):
         form = UkEmployerForm(data={"input-autocomplete": "TEST"})
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_data": [{"message": "companies_house_not_selected",'
-            ' "code": ""}]}',
+            '{"company_data": [{"message": "companies_house_not_selected",' ' "code": ""}]}',
         )
 
     def test_companies_house_not_searched(self):
@@ -180,8 +181,7 @@ class TestUkEmployerForm(TestCase):
         print(form.errors.as_json())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_data": [{"message": "companies_house_not_searched",'
-            ' "code": ""}]}',
+            '{"company_data": [{"message": "companies_house_not_searched",' ' "code": ""}]}',
         )
 
 

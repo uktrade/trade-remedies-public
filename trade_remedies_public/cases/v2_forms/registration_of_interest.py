@@ -59,9 +59,7 @@ class UkEmployerForm(ValidationForm):
             self.cleaned_data["companies_house_id"] = company["company_number"]
             self.cleaned_data["organisation_name"] = company["title"]
             self.cleaned_data["organisation_address"] = (
-                company["address_snippet"]
-                .removesuffix(company_postcode)
-                .rstrip(", ")
+                company["address_snippet"].removesuffix(company_postcode).rstrip(", ")
             )
             self.cleaned_data["organisation_post_code"] = company_postcode
 
