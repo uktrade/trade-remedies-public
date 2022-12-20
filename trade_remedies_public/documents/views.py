@@ -30,9 +30,8 @@ class DocumentView(View, APIClientMixin):
             form = DocumentForm(data={"file": file}, user=request.user)
             # Checking the file is valid (size, virus, extension)
             if form.is_valid():
-                uploaded_files.append(
-                    # Sending it to the API for storage
-                    self.client.documents(
+                # Sending it to the API for storage
+                new_document_upload = self.client.documents(
                         {
                             "type": request.POST["type"],
                             "stored_name": file.name,
@@ -45,9 +44,16 @@ class DocumentView(View, APIClientMixin):
                             ),
                         }
                     )
-                )
+                uploaded_files.append(new_document_upload)
+
                 # if this file is replacing another, let's delete the replacement
                 if replace_document_id := request.POST.get("replace_document_id"):
+                    # first let's re-associate any children of the one to delete to the new one
+                    child_documents = self.client.documents(parent_id=replace_document_id)
+                    for child in child_documents:
+                        self.client.documents(child.id).update({"parent": new_document_upload.id})
+
+                    # now let's delete the replacement
                     self.client.documents(replace_document_id).delete()
                 return JsonResponse(
                     {
