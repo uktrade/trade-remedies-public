@@ -178,7 +178,6 @@ class TestUkEmployerForm(TestCase):
     def test_companies_house_not_searched(self):
         form = UkEmployerForm(data={})
         self.assertFalse(form.is_valid())
-        print(form.errors.as_json())
         self.assertEqual(
             form.errors.as_json(),
             '{"company_data": [{"message": "companies_house_not_searched",' ' "code": ""}]}',
