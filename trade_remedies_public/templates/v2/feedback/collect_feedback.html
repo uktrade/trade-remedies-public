@@ -182,10 +182,6 @@
             <input type="hidden" name="url" value="
                     {% if request.GET.previous_url %}{{ request.GET.previous_url }}{% else %}{{ url }}{% endif %}">
             <input type="hidden" name="previous_url_name" value="
-
-
-
-
                     {% if request.GET.previous_url_name %}{{ request.GET.previous_url_name }}{% else %}{{ previous_url_name }}{% endif %}">
         </form>
     </div>
