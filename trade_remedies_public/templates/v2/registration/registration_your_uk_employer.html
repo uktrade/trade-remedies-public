@@ -20,7 +20,7 @@
                 </label>
             </h1>
             <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
-                 data-module="govuk-error-summary" id="companies-house-error" style="display:none;">
+                data-module="govuk-error-summary" id="companies-house-error" style="display:none;">
                 <h2 class="govuk-error-summary__title" id="error-summary-title">
                     There is a problem
                 </h2>
@@ -54,13 +54,13 @@
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
-              If you can’t find your organisation
+                If you can’t find your organisation
             </span>
         </summary>
         <div class="govuk-details__text">
             <p class="govuk-body">Search for your organisation on the <a
-                    href="https://www.gov.uk/get-information-about-a-company" target="_blank" rel="noopener noreferrer"
-                    class="govuk-link">Companies House register (opens in a new tab).</a></p>
+                href="https://www.gov.uk/get-information-about-a-company" target="_blank" rel="noopener noreferrer"
+                class="govuk-link">Companies House register (opens in a new tab).</a></p>
             <p>If the organisation is not on the register, it is not a UK registered company. Go back to the previous
                 page and select "No".</p>
         </div>
@@ -74,70 +74,5 @@
 
 {% block scripts %}
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
-    <script type="text/javascript">
-
-        function clearCompany() {
-            $('[name=company_data]').val("")
-            $('#selected_company_wrapper').hide();
-            $('#selected_company').text("")
-        }
-
-        $(document).on("keyup", '[name="input-autocomplete"]', function () {
-            if ($(this).val().trim().length === 0) {
-                clearCompany()
-            }
-        })
-
-        var proposed_names = {}
-        accessibleAutocomplete({
-            element: document.querySelector('#company_search_container'),
-            placeholder: "Enter a registered company name or number",
-            id: 'my-autocomplete',
-            autoselect: true,
-            minLength: 3,
-            confirmOnBlur: false,
-            source: function (query, populateResults) {
-                if (query.trim().length < 3) {
-                    populateResults([])
-                    clearCompany()
-                } else {
-                    $.ajax
-                    ({
-                        type: "GET",
-                        url: `{% url 'companieshouse' %}?term=${query}`,
-                        success: function (data) {
-                            $('#companies-house-error').hide()
-                            if (data) {
-                                let names = data.map(result => `${result.title} (${result.company_number})`)
-                                proposed_names = Object.fromEntries(data.map(result => [`${result.title} (${result.company_number})`, result]));
-                                populateResults(names)
-                                if (names.length == 0) {
-                                    clearCompany()
-                                }
-                            }
-                        },
-                        error: function () {
-
-                        }
-                    })
-                    .fail(function() {
-                        $('#companies-house-error').show()
-                    })
-                }
-            },
-            onConfirm: function (confirmed_name) {
-                if (typeof (confirmed_name) != "undefined") {
-                    if (confirmed_name in proposed_names) {
-                        let company_data = proposed_names[confirmed_name]
-                        $('[name=company_data]').val(JSON.stringify(company_data))
-                        $('#selected_company_wrapper').show();
-                        $('#selected_company').text(`${company_data.title} (${company_data.company_number}) ${company_data.address_snippet}`)
-                        return true
-                    }
-                    $('#selected_company_wrapper').hide();
-                    $('#selected_company').text('')
-                }
-            }
-        })
-    </script>
+    <script src="{% static 'v2/js/companies_house_search.js' %}"></script>
 {% endblock %}

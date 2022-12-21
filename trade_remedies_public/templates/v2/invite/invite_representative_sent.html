@@ -1,5 +1,16 @@
 {% extends 'v2/govuk/base.html' %}
 
+{% if user.is_authenticated %}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'invite_representative',
+            'user_id': '{{user.id}}',
+            'case_id': '{{invitation.submission.case.id}}'
+        });
+    </script>
+{% endif %}
+
 {% block page_title %}Check and submit{% endblock page_title %}
 {% block back_button %}{% endblock back_button %}
 
@@ -26,9 +37,8 @@
             </a>
             <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invitation_start' %}">Invite new user</a>
         </div>
-    </div>
 {% endblock row_content %}
 
 {% block additional_content %}
-    {% include "v2/feedback/stars_partial.html" with  journey="Invite representative sent" %}
+    {% include "v2/feedback/stars_partial.html" with journey="Invite representative sent" %}
 {% endblock additional_content %}

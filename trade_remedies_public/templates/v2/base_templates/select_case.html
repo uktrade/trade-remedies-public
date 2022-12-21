@@ -53,7 +53,7 @@
 
 
                 <button class="govuk-button govuk-button--secondary" data-module="govuk-button" type="button"
-                        id="mobile_sort_button">
+                    id="mobile_sort_button">
                     Sort
                 </button>
 
@@ -71,84 +71,84 @@
                         A table listing all of the open Trade Remedies cases
                     </caption>
                     <thead class="govuk-table__head">
-                    <tr class="govuk-table__row govuk-visually-hidden--mobile">
-                        <th class="govuk-table__header" aria-sort="ascending">
-                            <button class="govuk-button govuk-button--secondary" data-column-index="0" type="button">
-                                <span class="govuk-visually-hidden--desktop">Sort by: </span>No.
-                                <span class="indicator" aria-hidden="true"></span>
-                            </button>
-                        </th>
-                        <th class="govuk-table__header">
-                            <button class="govuk-button govuk-button--secondary" data-column-index="1" type="button">
-                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Case
-                                <span class="indicator" aria-hidden="true"></span>
-                            </button>
-                        </th>
-                        <th class="govuk-table__header">
-                            <button class="govuk-button govuk-button--secondary" data-column-index="2" type="button">
-                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Type
-                                <span class="indicator" aria-hidden="true"></span>
-                            </button>
-                        </th>
-                        <th class="govuk-table__header">
-                            <button class="govuk-button govuk-button--secondary" data-column-index="3" type="button">
-                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
-                                <span class="indicator" aria-hidden="true"></span>
-                            </button>
-                        </th>
-                        <th class="govuk-table__header">
-                            <button class="govuk-button govuk-button--secondary" data-column-index="4" type="button">
-                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Initiated
-                                <span class="indicator" aria-hidden="true"></span>
-                            </button>
-                        </th>
-                        <th class="govuk-table__header">
-                            <button class="govuk-button govuk-button--secondary" data-column-index="5" type="button">
-                                <span class="govuk-visually-hidden--desktop">Sort by: </span>Reg due
-                                <span class="indicator" aria-hidden="true"></span>
-                            </button>
-                        </th>
-                        <th class="govuk-table__header">
-                            <span class="govuk-visually-hidden">Action: </span>
-                        </th>
-                    </tr>
+                        <tr class="govuk-table__row govuk-visually-hidden--mobile">
+                            <th class="govuk-table__header" aria-sort="ascending">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="0" type="button">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>No.
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="1" type="button">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Case
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="2" type="button">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Type
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="3" type="button">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="4" type="button">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Initiated
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="5" type="button">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Reg due
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <span class="govuk-visually-hidden">Action: </span>
+                            </th>
+                        </tr>
                     </thead>
                     <tbody class="govuk-table__body">
 
-                    {% for case in cases %}
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden--desktop td-header">No. </span>{{ case.reference }}
-                            </td>
-                            <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden--desktop td-header">Case: </span>{{ case.name }}
-                            </td>
-                            <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden--desktop td-header">Type: </span>{{ case.type.name }}
-                            </td>
-                            <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden--desktop td-header">Status: </span>{{ case.case_status.stage }}
-                            </td>
-                            <td class="govuk-table__cell" data-order="{{ case.initiated_at|date:'U' }}">
-                                <span class="govuk-visually-hidden--desktop td-header">Date Initiated: </span>{{ case.initiated_at|date:'d M Y' }}
-                            </td>
-                            <td class="govuk-table__cell"
-                                data-order="{{ case.registration_deadline|date:'U' }}">
-                                <span class="govuk-visually-hidden--desktop td-header">Registration due: </span>{{ case.registration_deadline|date:'d M Y' }}
-                            </td>
-                            <td class="govuk-table__cell">
-                                <span class="govuk-visually-hidden td-header">Action:</span>
-                                <button type="submit"
+                        {% for case in cases %}
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop td-header">No. </span>{{ case.reference }}
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop td-header">Case: </span>{{ case.name }}
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop td-header">Type: </span>{{ case.type.name }}
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop td-header">Status: </span>{{ case.case_status.stage }}
+                                </td>
+                                <td class="govuk-table__cell" data-order="{{ case.initiated_at|date:'U' }}">
+                                    <span class="govuk-visually-hidden--desktop td-header">Date Initiated: </span>{{ case.initiated_at|date:'d M Y' }}
+                                </td>
+                                <td class="govuk-table__cell"
+                                    data-order="{{ case.registration_deadline|date:'U' }}">
+                                    <span class="govuk-visually-hidden--desktop td-header">Registration due: </span>{{ case.registration_deadline|date:'d M Y' }}
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden td-header">Action:</span>
+                                    <button type="submit"
                                         class="govuk-button govuk-button--secondary link_button"
                                         value="{{ case.reference }}*-*{{ case.id }}*-*{{ case.name }}*-*{{ case.registration_deadline|date:'c' }}"
                                         name="case_information">
-                                    Select<span class="govuk-visually-hidden--desktop td-header"> case {{ case.reference }}</span>
-                                </button>
-                            </td>
-                        </tr>
-                        {% csrf_token %}
+                                        Select<span class="govuk-visually-hidden--desktop td-header"> case {{ case.reference }}</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% csrf_token %}
 
-                    {% endfor %}
+                        {% endfor %}
 
                     </tbody>
                 </table>

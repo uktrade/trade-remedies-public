@@ -3,56 +3,56 @@
 {% load format_date %}
 {% load organisation_name %}
 {% block row_content %}
-  <div class="breadcrumbs" data-module="track-click">
-    <ol>
-      <li class="">
-        <a data-track-category="breadcrumbClicked" aria-current="false" href="{% link_lookup 'LINK_TRA_CASELIST' %}">Trade remedies</a>
-      </li>
-      <li class="">
-          Active cases
-      </li>
-    </ol>
-  </div>
-  <div class="grid-row">
-    <div class="column-full">
-      <h1 class="heading-large inverse-header margin-top-0"><span class="heading-secondary">{% organisation_name %}</span>Investigations currently in progress</h1>
+    <div class="breadcrumbs" data-module="track-click">
+        <ol>
+            <li class="">
+                <a data-track-category="breadcrumbClicked" aria-current="false" href="{% link_lookup 'LINK_TRA_CASELIST' %}">Trade remedies</a>
+            </li>
+            <li class="">
+                Active cases
+            </li>
+        </ol>
     </div>
-    <div class="column-full">
-      <p>The {% organisation_name %} investigates claims that dumped and subsidised imports have injured UK industry.</p>
-      <p>This page contains a list of our currently active investigations. Link through to each case to see non-confidential versions of documents submitted by registered participants in the case.</p>
-      <p>If you want to contribute to a case, you will need to <a href="/dashboard/">sign in or create an account with the Trade Remedies service</a>.</p>
-      <p><a class="link" href="{% link_lookup 'LINK_HELP_BOX_GUIDANCE' %}" target='_blank'>You can find out more about trade remedy investigations here.&nbsp;<i class="icon16 icon-outlink"></i></a></p>
+    <div class="grid-row">
+        <div class="column-full">
+            <h1 class="heading-large inverse-header margin-top-0"><span class="heading-secondary">{% organisation_name %}</span>Investigations currently in progress</h1>
+        </div>
+        <div class="column-full">
+            <p>The {% organisation_name %} investigates claims that dumped and subsidised imports have injured UK industry.</p>
+            <p>This page contains a list of our currently active investigations. Link through to each case to see non-confidential versions of documents submitted by registered participants in the case.</p>
+            <p>If you want to contribute to a case, you will need to <a href="/dashboard/">sign in or create an account with the Trade Remedies service</a>.</p>
+            <p><a class="link" href="{% link_lookup 'LINK_HELP_BOX_GUIDANCE' %}" target='_blank'>You can find out more about trade remedy investigations here.&nbsp;<i class="icon16 icon-outlink"></i></a></p>
+        </div>
     </div>
-  </div>
-  <div class="grid-row">
-    <div class="column-full">
-      <h1 class="heading-medium">Recent notices</h1>
-      <table class="align-top">
-        <thead>
-          <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Notice</th>
-            <th scope="col">Case</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for notice in notices %}
-            {% if notice.case_initiated %}
-              <tr>
-                <td class="nobreak">{{notice.issued_at|format_date:'%d %b %Y'}}</td>
-                <td><a href="{% if notice.url %}{{notice.url}}{% else %}/public/case/{{notice.case.reference}}/submission/{{notice.id}}/{% endif %}" target="_blank">{{notice.type}}</a></td>
-                <td><a href="/public/case/{{notice.case.reference}}/">{{notice.case.reference}}:{{notice.case.name}}</a></td>
-              </tr>
-            {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
+    <div class="grid-row">
+        <div class="column-full">
+            <h1 class="heading-medium">Recent notices</h1>
+            <table class="align-top">
+                <thead>
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Notice</th>
+                        <th scope="col">Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for notice in notices %}
+                        {% if notice.case_initiated %}
+                            <tr>
+                                <td class="nobreak">{{notice.issued_at|format_date:'%d %b %Y'}}</td>
+                                <td><a href="{% if notice.url %}{{notice.url}}{% else %}/public/case/{{notice.case.reference}}/submission/{{notice.id}}/{% endif %}" target="_blank">{{notice.type}}</a></td>
+                                <td><a href="/public/case/{{notice.case.reference}}/">{{notice.case.reference}}:{{notice.case.name}}</a></td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
-  <div class="grid-row">
-    <div class="column-full margin-top-1">
-      <h1 class="heading-medium">Active cases</h1>
-      {% comment %}
+    <div class="grid-row">
+        <div class="column-full margin-top-1">
+            <h1 class="heading-medium">Active cases</h1>
+            {% comment %}
       This section shows a key for case types to potentially save space in the case list
       <ul>
         {% set 'typelist' '' %}
@@ -65,35 +65,35 @@
       </ul>
       {% endcomment %}
 
-      <table data-attach="TableSort" class="align-top">
-        <thead>
-          <tr>
-            <th scope="col" class="sort-active asc">Initiated</th>
-            <th scope="col">Commodity</th>
-            <th scope="col">Country</th>
-            <th scope="col">Case type</th>
-            <th scope="col">Case</th>
-            <th scope="col">Updated</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for case in cases %}
-          <tr>
-            <td class="nobreak" sortVal="{{ case.initiated_at }} ">{{case.initiated_at|format_date:'%d %b %Y'}}</td>
-            <td>{{case.state.COMMODITY_NAME.value}}</td>
-            <td>{{case.state.COUNTRY.value}}</td>
-            <td>{{case.type.name}}</td>
-            <td title="{{case.name}}"><a href="/public/case/{{case.reference}}/">{{case.reference}}:{{case.name |default:'<span class="grey">&lt;Untitled&gt;</span>'}}</a></td>
-            <td class="nobreak" sortVal="{{ case.state.LAST_PUBLICATION }} ">{{case.state.LAST_PUBLICATION|format_date:'%d %b %Y'}}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+            <table data-attach="TableSort" class="align-top">
+                <thead>
+                    <tr>
+                        <th scope="col" class="sort-active asc">Initiated</th>
+                        <th scope="col">Commodity</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">Case type</th>
+                        <th scope="col">Case</th>
+                        <th scope="col">Updated</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for case in cases %}
+                        <tr>
+                            <td class="nobreak" sortVal="{{ case.initiated_at }} ">{{case.initiated_at|format_date:'%d %b %Y'}}</td>
+                            <td>{{case.state.COMMODITY_NAME.value}}</td>
+                            <td>{{case.state.COUNTRY.value}}</td>
+                            <td>{{case.type.name}}</td>
+                            <td title="{{case.name}}"><a href="/public/case/{{case.reference}}/">{{case.reference}}:{{case.name |default:'<span class="grey">&lt;Untitled&gt;</span>'}}</a></td>
+                            <td class="nobreak" sortVal="{{ case.state.LAST_PUBLICATION }} ">{{case.state.LAST_PUBLICATION|format_date:'%d %b %Y'}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if show_archive_link %}
+            <div class="column-full margin-top-2">
+                <a class="link" href="/public/archive/">Archived cases</a>
+            </div>
+        {% endif %}
     </div>
-    {% if show_archive_link %}
-      <div class="column-full margin-top-2">
-        <a class="link" href="/public/archive/">Archived cases</a>
-      </div>
-    {% endif %}
-  </div>
 {% endblock %}

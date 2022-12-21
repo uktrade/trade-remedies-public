@@ -18,7 +18,7 @@
     {% set 'enable_review' False %}
 {% endif %}
 {% if upload_loa and count_loa == 0 %}
-     {% set 'enable_review' False %}
+    {% set 'enable_review' False %}
 {% endif %}
 <li>
     {% include "./section_heading.html" with section_heading=section_heading|default:'Final check and submit' %}

@@ -5,61 +5,72 @@
 {% load draft_count %}
 {% load set %}
 {% load format_date %}
+{% if user.is_authenticated %}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'submit_evidence',
+            'user_id': '{{user.id}}',
+            'case_id': '{{case_id}}',
+        });
+    </script>
+{% endif %}
 {% block row_content %}
 
-{% block breadcrumb %}
-    BC BLOCK default
-{% endblock %}
+    {% block breadcrumb %}
+        BC BLOCK default
+    {% endblock %}
 
 
-{% with bc_current_page="Create" %}
-  {% if submission %}
-    {% set 'bc_current_page' submission.type.name %}
-  {% endif %}
-  {% include "partials/widgets/breadcrumb.html" with bc_case=case bc_submission=submission bc_organisation=submission.organisation %}
-{% endwith %}
-
-<div class="grid-row">
-    <div class="column-full">
-        {% block tasklist_header %}
-        {% endblock %}
-
-
-        {% if submission.deficiency_sent_at %}
-          <h3 class="heading-small">
-            Deficiency Notice ({%format_date submission.deficiency_sent_at '%d %b %Y' %})
-          </h3>
-
+    {% with bc_current_page="Create" %}
+        {% if submission %}
+            {% set 'bc_current_page' submission.type.name %}
         {% endif %}
+        {% include "partials/widgets/breadcrumb.html" with bc_case=case bc_submission=submission
+        bc_organisation=submission.organisation %}
+    {% endwith %}
 
-        {% if case %}
+    <div class="grid-row">
+        <div class="column-full">
+            {% block tasklist_header %}
+            {% endblock %}
 
-            <h2 class="heading-large">
-              {{case.reference}}:
-              {{case.name}}
-            </h2>
 
-        {% endif %}
-        {% if submission.locked %}
-            <!-- LOCKED -->
-        {% endif %}
-        <div class="grid-row">
-          <div class="column-two-thirds">
-            <form action="#" method="post" class="dd-form">
-              <input type="hidden" name="instance" value="25">
-              <input type="hidden" name="page" value="142">
+            {% if submission.deficiency_sent_at %}
+                <h3 class="heading-small">
+                    Deficiency Notice ({%format_date submission.deficiency_sent_at '%d %b %Y' %})
+                </h3>
 
-                  <div class="form-group edit-item type-review">
-                      <div class="nav">
-                          {% include 'cases/submissions/'|add:tasklist_template %}
-                      </div>
-                  </div>
-                <a href="\dashboard">Back to dashboard</a>
-            </form>
-          </div>
-          {% include "partials/widgets/help_box.html" %}
-        </div>
-        <!-- h2 class="heading-small heading-contents">Contents:</h2>
+            {% endif %}
+
+            {% if case %}
+
+                <h2 class="heading-large">
+                    {{case.reference}}:
+                    {{case.name}}
+                </h2>
+
+            {% endif %}
+            {% if submission.locked %}
+                <!-- LOCKED -->
+            {% endif %}
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <form action="#" method="post" class="dd-form">
+                        <input type="hidden" name="instance" value="25">
+                        <input type="hidden" name="page" value="142">
+
+                        <div class="form-group edit-item type-review">
+                            <div class="nav">
+                                {% include 'cases/submissions/'|add:tasklist_template %}
+                            </div>
+                        </div>
+                        <a href="\dashboard">Back to dashboard</a>
+                    </form>
+                </div>
+                {% include "partials/widgets/help_box.html" %}
+            </div>
+            <!-- h2 class="heading-small heading-contents">Contents:</h2>
               <div class="grid-row">
                 <div class="column-two-thirds">
                   <ul class="list list-contents">
@@ -70,15 +81,15 @@
                   </ul>
                 </div>
               </div -->
-          <div class="column-third">
-            <div class="community-contact">
-              <p>
-                <!-- <a class="feedback" href="/contact/govuk">Give feedback about this page</a> -->
-              </p>
+            <div class="column-third">
+                <div class="community-contact">
+                    <p>
+                        <!-- <a class="feedback" href="/contact/govuk">Give feedback about this page</a> -->
+                    </p>
+                </div>
             </div>
-          </div>
         </div>
-<!--
+        <!--
   <h2 class="heading-medium">
     {% if case_id %}
       Application for an anti-dumping investigation
@@ -121,6 +132,6 @@
         </OL>
     </LI>
   </OL>
--->
+        -->
 
 {% endblock %}

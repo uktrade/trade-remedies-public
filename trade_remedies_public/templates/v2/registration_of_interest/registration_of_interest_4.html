@@ -47,18 +47,18 @@
                             {{ user.contact.email }}
                             <br><br>
                         {% endif %}
-                        {{ submission.organisation.name }}
+                        {{ submission.organisation.name|default_if_none:"" }}
                         <br>
-                        {{ submission.organisation.address }}
+                        {{ submission.organisation.address|default_if_none:"" }}
                         <br>
-                        {{ submission.organisation.post_code }}
+                        {{ submission.organisation.post_code|default_if_none:"" }}
                         <br>
-                        {{ submission.organisation.country }}
+                        {{ submission.organisation.country|default_if_none:"" }}
                         <br>
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a href="{% url 'interest_client_type' submission_id=submission_id %}"
-                           class="govuk-link--no-visited-state">
+                            class="govuk-link--no-visited-state">
                             Change
                             <span class="govuk-visually-hidden"> who is registering interest</span>
                         </a>
@@ -76,7 +76,7 @@
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a href="{% url 'roi_3_loa' submission_id=submission_id %}"
-                               class="govuk-link--no-visited-state">
+                                class="govuk-link--no-visited-state">
                                 Change
                                 <span class="govuk-visually-hidden"> Letter of Authority</span>
                             </a>
@@ -98,7 +98,7 @@
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a href="{% url 'roi_3_registration_documentation' submission_id=submission_id %}"
-                           class="govuk-link--no-visited-state">
+                            class="govuk-link--no-visited-state">
                             Change
                             <span class="govuk-visually-hidden"> initial documentation</span>
                         </a>
@@ -118,8 +118,8 @@
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
                             <a class="link"
-                               href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
-                               target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
+                                href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
+                                target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
                         </li>
 
                         <li>

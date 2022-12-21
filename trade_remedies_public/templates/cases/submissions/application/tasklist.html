@@ -15,11 +15,11 @@
 {% block submission_received_title %}Application submitted{% endblock %}
 
 {% block submission_received_message %}
-      {% if submission.status.received or submission.status.review %}
+    {% if submission.status.received or submission.status.review %}
         <p>This application has been submitted{% if submission.status.review %} for review.{% else %}.{% endif %}</p>
         <p>If you want to report an omission, error or material change contact the <a target="_blank" href="/contact" class="nobreak">{% organisation_name %}</a>.</p>
-      {% endif %}
-      {% endblock %}
+    {% endif %}
+{% endblock %}
 
 
 {% block tasklist_content %}
@@ -70,10 +70,10 @@
                 <div class="pull-right">{% download_count documents.caseworker 'Downloaded' '' %}</div>
             </li>
             {% if documents.deficiency %}
-            <li class="task-list-item">
-                <a href="/case/{{case.id}}/submission/{{submission.id}}/download/deficiency/">Download deficiency documents</a>
-                <div class="pull-right">{% download_count documents.deficiency 'Downloaded' '' warning=True %}</div>
-            </li>
+                <li class="task-list-item">
+                    <a href="/case/{{case.id}}/submission/{{submission.id}}/download/deficiency/">Download deficiency documents</a>
+                    <div class="pull-right">{% download_count documents.deficiency 'Downloaded' '' warning=True %}</div>
+                </li>
             {% endif %}
         </ul>
     </li>

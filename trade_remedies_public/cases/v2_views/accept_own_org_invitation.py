@@ -12,7 +12,7 @@ class BaseAcceptInviteView(APIClientMixin, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         try:
             invitation = self.client.invitations(self.kwargs["invitation_id"])
-            if invitation["accepted_at"]:
+            if invitation.accepted_at:
                 # The invitation has already been accepted, it is invalid
                 return render(
                     request=request,

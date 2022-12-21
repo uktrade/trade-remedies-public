@@ -12,7 +12,7 @@
                         {{ case.type.name }}
                     {% endif %}
                     {% if case.organisation_case_role == 'rejected' %}
-                        <div class="lozenge red">Denied</div>
+                        <div class="lozenge red">Rejected</div>
                     {% endif %}
                 </a>
                 {% include "partials/widgets/aggregate_status.html" with state=case.due_state %}
@@ -22,7 +22,7 @@
                         {% for organisation in case.user_organisations %}
                             <div class="multiple-choice">
                                 <input type="radio" id="id-{{ organisation.id }}" name="next"
-                                       value="{% url 'roi_submission_exists' submission_id=organisation.submission_id %}?confirm_access=yes"/>
+                                    value="{% url 'roi_submission_exists' submission_id=organisation.submission_id %}?confirm_access=yes"/>
                                 <label for="id-{{ organisation.id }}">
                                     <div class="pull-left">{{ organisation.name }}</div>
                                     {% include "partials/widgets/aggregate_status.html" with state=organisation.org_state %}

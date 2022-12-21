@@ -14,6 +14,9 @@
             <h1 class="govuk-heading-xl">
                 Upload a Letter of Authority
             </h1>
+            {% if is_deficient_document %}
+                {% include "v2/component_macros/deficiency_notice_warning_box.html" with submission=submission %}
+            {% endif %}
             <p>Download the Letter of Authority and ask your client to complete it. This will confirm you have authority
                 to act on their behalf.</p>
             <p>Upload it when finished (max. file size 30MB). Your information is kept confidential.</p>
@@ -22,9 +25,10 @@
                 <ul class="govuk-list">
                     {% for loa_document in loa_document_bundle.documents %}
                         <li>
-                            <a href="{% url 'download_document' document_id=loa_document.id %}" target="_blank" class="govuk-link--no-visited-state" download>
+                            <a href="{% url 'download_document' document_id=loa_document.id %}" target="_blank"
+                                class="govuk-link--no-visited-state" download>
                                 <img src="{% static 'v2/assets/images/file_icons/'|add:loa_document.extension|add:'.png' %}"
-                                     alt="File icon" width="24px">
+                                    alt="File icon" width="24px">
                                 {{ loa_document.name }}
                                 ({{ loa_document.size|filesizeformat }})
                             </a><span style="display:none;">✓</span>
@@ -49,7 +53,7 @@
             <div class="govuk-grid-column-one-half">
                 <div class="row-colour">
                     <div class="govuk-grid-column-full">
-                        {% include "v2/component_macros/file_upload_card.html" with submission_document_type="loa" document=loa_document confidential=True %}
+                        {% include "v2/component_macros/file_upload_card.html" with submission_document_type="loa" document=loa_document confidential=True deficient=is_deficient_document %}
                     </div>
                 </div>
             </div>
@@ -68,7 +72,7 @@
 
 {% block scripts %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'v2/js/drag_and_drop.js' %}"></script>
     <script type="text/javascript">
         $('a[download]').click(function () {

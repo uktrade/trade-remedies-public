@@ -391,27 +391,24 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
         invitations_sent = []
-        organisations_seen = []
         for sent_invitation in organisation["invitations"]:
             if invited_contact := sent_invitation.get("contact", None):
                 # Thn checking if there is an organisation associated with the invitation
                 if invited_organisation := invited_contact.get("organisation", None):
                     # If the invited contact doesn't belong to the user's organisation
                     if invited_organisation != self.request.user.contact["organisation"]["id"]:
-                        if invited_organisation not in organisations_seen:
-                            """validated = self.client.organisations(
-                                invited_organisation, fields=["validated"]
-                            )"""
-                            if sent_invitation.submission.status.sufficient:
-                                # We only want to include organisations which have been validated
-                                # by the TRA in the past By having the
-                                # invite 3rd party submission marked as sufficient.
-                                invitations_sent.append(sent_invitation)
-                            # Still include them on the seen list, so we don't bother checking them
-                            # again
-                            organisations_seen.append(invited_organisation)
-
-        self.invitations_sent = invitations_sent
+                        if sent_invitation.submission.status.review_ok:
+                            # We only want to include organisations which have been validated
+                            # by the TRA in the past By having the
+                            # invite 3rd party submission marked as sufficient.
+                            invitations_sent.append(sent_invitation)
+        organisations_seen = []
+        no_dupe_orgs_sent_invitations = []
+        for sent_invitation in invitations_sent:
+            if sent_invitation.contact.organisation not in organisations_seen:
+                no_dupe_orgs_sent_invitations.append(sent_invitation)
+                organisations_seen.append(sent_invitation.contact.organisation)
+        self.invitations_sent = no_dupe_orgs_sent_invitations
         return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
@@ -466,28 +463,74 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
             # and their organisation so that when they log in, TRS with process them as a rep
             contact = user.contact
         except NotFoundError:
-            # The user does not exist, let's create a new contact and org from scratch
+            # The user does not exist, let's create a new contact and org from scratch, unless there
+            # is already an org associated with this invitee, and it has the same name and number
+            # as the new one
+            create_new_organisation = True
+            create_new_contact = True
 
-            # Creating a new organisation
-            organisation = self.client.organisations(
-                {"name": form.cleaned_data["organisation_name"]}, fields=["id"]
-            )
-            # Creating a new contact and associating them with the organisation
-            contact = self.client.contacts(
-                {
-                    "name": form.cleaned_data["contact_name"],
-                    "email": form.cleaned_data["contact_email"],
-                    "organisation": organisation["id"],
-                }
-            )
+            contact = None
+            organisation_id = None
+
+            if existing_contact := self.invitation.contact:
+                # if a contact is already associated with this invitation (i.e. the user is
+                # revisiting this page), we don't want to create duplicates of the organisation and
+                # contact objects, so we run some checks to see if that's really necessary.
+                if existing_contact_organisation_name := self.invitation.contact.organisation_name:
+                    if existing_contact_organisation_name == form.cleaned_data["organisation_name"]:
+                        # it's the same organisation, reuse rather than recreate
+                        create_new_organisation = False
+                        organisation_id = self.invitation.contact.organisation
+                    else:
+                        # it's a new organisation, let's see if we want to delete the old one
+                        old_organisation = self.client.organisations(
+                            self.invitation.contact.organisation, fields=["draft"]
+                        )
+                        if old_organisation.draft:
+                            old_organisation.delete()
+
+                if (
+                    existing_contact.name == form.cleaned_data["contact_name"]
+                    and existing_contact.email == form.cleaned_data["contact_email"]
+                ):
+                    # it's the same contact, reuse rather than recreate
+                    create_new_contact = False
+                    contact = self.invitation.contact
+                else:
+                    # it's a new contact, let's see if we want to delete the old one
+                    old_contact = self.client.contacts(self.invitation.contact.id, fields=["draft"])
+                    if old_contact.draft:
+                        old_contact.delete()
+
+            if create_new_organisation:
+                # Creating a new organisation
+                organisation_id = self.client.organisations(
+                    {"name": form.cleaned_data["organisation_name"], "draft": True}, fields=["id"]
+                ).id
+
+                # now we associate the new organisation with the invited contact
+                if contact:
+                    self.client.contacts(contact.id).update({"organisation": organisation_id})
+
+            if create_new_contact:
+                # Creating a new contact and associating them with the organisation
+                contact = self.client.contacts(
+                    {
+                        "name": form.cleaned_data["contact_name"],
+                        "email": form.cleaned_data["contact_email"],
+                        "organisation": organisation_id,
+                        "draft": True,
+                    }
+                )
 
         # Associating this contact with the invitation
-        updated_invitation = self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": contact["id"]}, fields=["submission", "contact"]
+        updated_invitation = self.invitation.update(
+            {"contact": contact.id, "name": contact.name, "email": contact.email},
+            fields=["submission", "contact", "name", "email"],
         )
 
         # Associating the submission with the inviter's organisation
-        self.client.submissions(updated_invitation["submission"]["id"]).update(
+        self.client.submissions(updated_invitation.submission.id).update(
             {
                 # The submission needs to be associating with the inviter's organisation, the
                 # invited organisation is stored in the contact object
@@ -512,26 +555,33 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
     def form_valid(self, form):
         organisation_id = self.kwargs["organisation_id"]
 
-        # Creating a new contact and associating them with the organisation
-        new_contact = self.client.contacts(
-            {
-                "name": form.cleaned_data["contact_name"],
-                "email": form.cleaned_data["contact_email"],
-                "organisation": organisation_id,
-            }
-        )
+        if existing_contacts := self.client.contacts(
+            name=form.cleaned_data["contact_name"],
+            email=form.cleaned_data["contact_email"],
+            organisation_id=organisation_id,
+        ):
+            # there are existing contacts with the same name, email, and organisation! let's just
+            # use that one instead of creating a new one. If there are multiple, get the one that
+            # was created first
+            contact = sorted(existing_contacts, key=lambda x: x.created_at)[0]
+        else:
+            # Creating a new contact and associating them with the organisation
+            contact = self.client.contacts(
+                {
+                    "name": form.cleaned_data["contact_name"],
+                    "email": form.cleaned_data["contact_email"],
+                    "organisation": organisation_id,
+                }
+            )
 
         # Associating this contact with the invitation
         self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": new_contact["id"]},
-        )
-
-        updated_invitation = self.client.invitations(self.kwargs["invitation_id"]).update(
-            {"contact": new_contact["id"]}, fields=["submission", "contact"]
+            {"contact": contact.id, "name": contact.name, "email": contact.email},
+            fields=["submission", "contact", "name", "email"],
         )
 
         # Associating the submission with the new organisation
-        self.client.submissions(updated_invitation["submission"]["id"]).update(
+        self.client.submissions(self.invitation.submission.id).update(
             {
                 "organisation": self.request.user.contact["organisation"]["id"],
             },
@@ -542,7 +592,7 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
         return redirect(
             reverse(
                 "invite_representative_task_list_exists",
-                kwargs={"invitation_id": updated_invitation["id"]},
+                kwargs={"invitation_id": self.invitation.id},
             )
         )
 
@@ -555,7 +605,10 @@ class InviteRepresentativeLoa(BaseInviteView):
         invitation = context["invitation"]
         context["loa_document_bundle"] = get_loa_document_bundle()
         # Getting the uploaded LOA document if it exists
-        context["uploaded_loa_document"] = get_uploaded_loa_document(invitation["submission"])
+        uploaded_loa_document = get_uploaded_loa_document(invitation["submission"])
+        if uploaded_loa_document:
+            uploaded_loa_document = uploaded_loa_document["document"]
+        context["uploaded_loa_document"] = uploaded_loa_document
         return context
 
     def post(self, request, *args, **kwargs):
@@ -576,9 +629,9 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
     template_name = "v2/invite/invite_representative_check_and_submit.html"
 
     def post(self, request, *args, **kwargs):
-        invitation = self.client.invitations(kwargs["invitation_id"]).send()
+        self.client.invitations(kwargs["invitation_id"]).send()
         return redirect(
-            reverse("invite_representative_sent", kwargs={"invitation_id": invitation["id"]})
+            reverse("invite_representative_sent", kwargs={"invitation_id": self.invitation["id"]})
         )
 
 

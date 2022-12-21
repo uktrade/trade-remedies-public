@@ -94,7 +94,7 @@
     <li>
         {% include "partials/task_list/section_heading.html" with section_heading='Submit your request' %}
         <ul class="task-list-items">
-           <li class="task-list-item edit-item">
+            <li class="task-list-item edit-item">
                 {% if enable_submit %}
                     {% if representing %}
                         <a href="/case/{{case.id}}/submission/{{submission_id}}/submit/">Final check and submission</a>
