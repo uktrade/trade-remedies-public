@@ -33,7 +33,7 @@
             {% endif %}
         </ul>
         <a class="govuk-button" data-module="govuk-button"
-           href="{% if request.user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
+            href="{% if request.user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">
             Continue
         </a>
     </div>

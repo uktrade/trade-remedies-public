@@ -3,75 +3,75 @@
 {% load get_item %}
 
 {% block task_name1 %}
-	{% if create_mode %}
-		Invite an employee
-	{% else %}
-		Assign user to cases
-	{% endif %}
+    {% if create_mode %}
+        Invite an employee
+    {% else %}
+        Assign user to cases
+    {% endif %}
 {% endblock %}
 {% block task_name2 %}
-	Assign/remove case
+    Assign/remove case
 {% endblock %}
 
 {% block outer_form_block %}
-  <p>You will not be able to assign colleagues to cases until your completed registration of interest has been accepted by investigators.</p>
-  <p>If your organisation is participating directly in a case then you can give a colleague direct access to the case page.</p>
-  <p>If however, your orgnisation is representing a third party client, you will need to submit a signed letter of authority from your client.
-  Your submitted request will be reviewed by investigators prior to granting your colleague access to the case.</p>
+    <p>You will not be able to assign colleagues to cases until your completed registration of interest has been accepted by investigators.</p>
+    <p>If your organisation is participating directly in a case then you can give a colleague direct access to the case page.</p>
+    <p>If however, your orgnisation is representing a third party client, you will need to submit a signed letter of authority from your client.
+        Your submitted request will be reviewed by investigators prior to granting your colleague access to the case.</p>
 {% endblock %}
 {% block full_width_block %}
-<div class="grid-row">
-    <div class="column-full">
-      <a class="button margin-top-1" href="/accounts/team/assign/{{ user_record.id }}/">Assign to another case</a>
-      <table class="align-top" data-attach="TableSort">
-        <thead>
-          <tr>
-            <th scope="col">Case</th>
-            <th scope="col">Representing</th>
-            <th scope="col">Status</th>
-            <th scope="col" class="no-sort">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for user_case in user_cases %}
-          {% if user_case.user.id == user_record.id %}
-            <tr>
-            	<!--<textarea>{{user_case|to_json}}</textarea>-->
-              <td>{{user_case.case.reference}}:{{user_case.case.name}}</td>
-              <td>{{user_case.representing.name}}</td>
-              <td>{% if user_case.submission%}{{user_case.submission.status.name}}{% endif %}</td>
-              <td>
-                {% if not user_case.submission %}
-                  <!-- We can only delete after an assignment is accepted -->
-                  <form data-attach="ConfirmPost" action="/accounts/team/assign/{{user_record.id}}/case/{{user_case.case.id}}/remove/" method='post'>
-                    <input type="hidden" name="redirect" value="/accounts/team/{{user_record.organisation.id}}/user/cases/">
-                    <input type="hidden" name="representing_id" value="{{user_case.representing.id}}">
-                    <input type="hidden" name="organisation_id" value="{{user_record.organisation.id}}">
-                    <div class="confirmation-title hidden">
-                      Remove assignment
-                    </div>
-                    <div class="confirmation-message hidden">
-                      <p>Are you sure?</p>
-                      <p>This will remove <span class="bold">{{user_record.name}}</span> from the case <span class="bold">{{user_case.case.name}}</span> representing the organisation <span class="bold">{{user_case.representing.name}}</span>.<br>To re-assign the user later you will have to complete the task list again.</p>
-                    </div>
-                    <button class="link no-debounce nobreak" >Remove from case</button>
-                    {% csrf_token %}
-                  </form>
-                {% endif %}
-              </td>
-            </tr>
-          {% endif %}
-        {% endfor %}
-        </tbody>
-       </table>
+    <div class="grid-row">
+        <div class="column-full">
+            <a class="button margin-top-1" href="/accounts/team/assign/{{ user_record.id }}/">Assign to another case</a>
+            <table class="align-top" data-attach="TableSort">
+                <thead>
+                    <tr>
+                        <th scope="col">Case</th>
+                        <th scope="col">Representing</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" class="no-sort">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user_case in user_cases %}
+                        {% if user_case.user.id == user_record.id %}
+                            <tr>
+                                <!--<textarea>{{user_case|to_json}}</textarea>-->
+                                <td>{{user_case.case.reference}}:{{user_case.case.name}}</td>
+                                <td>{{user_case.representing.name}}</td>
+                                <td>{% if user_case.submission%}{{user_case.submission.status.name}}{% endif %}</td>
+                                <td>
+                                    {% if not user_case.submission %}
+                                        <!-- We can only delete after an assignment is accepted -->
+                                        <form data-attach="ConfirmPost" action="/accounts/team/assign/{{user_record.id}}/case/{{user_case.case.id}}/remove/" method='post'>
+                                            <input type="hidden" name="redirect" value="/accounts/team/{{user_record.organisation.id}}/user/cases/">
+                                            <input type="hidden" name="representing_id" value="{{user_case.representing.id}}">
+                                            <input type="hidden" name="organisation_id" value="{{user_record.organisation.id}}">
+                                            <div class="confirmation-title hidden">
+                                                Remove assignment
+                                            </div>
+                                            <div class="confirmation-message hidden">
+                                                <p>Are you sure?</p>
+                                                <p>This will remove <span class="bold">{{user_record.name}}</span> from the case <span class="bold">{{user_case.case.name}}</span> representing the organisation <span class="bold">{{user_case.representing.name}}</span>.<br>To re-assign the user later you will have to complete the task list again.</p>
+                                            </div>
+                                            <button class="link no-debounce nobreak" >Remove from case</button>
+                                            {% csrf_token %}
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
-	{% if create_mode %}
-		<input type="hidden" name="wizard_complete" value="true">
-		<input type="hidden" name="redirect" value="../user/">
-	{% else %}
-      <div>
-        <a class="link pull-left margin-top-1" href="/accounts/team/{{user_record.organisation.id}}/user/{{ user_record.id }}/">Back</a>
-      </div>
-  {% endif %}
+    {% if create_mode %}
+        <input type="hidden" name="wizard_complete" value="true">
+        <input type="hidden" name="redirect" value="../user/">
+    {% else %}
+        <div>
+            <a class="link pull-left margin-top-1" href="/accounts/team/{{user_record.organisation.id}}/user/{{ user_record.id }}/">Back</a>
+        </div>
+    {% endif %}
 {% endblock %}

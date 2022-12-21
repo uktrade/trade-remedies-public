@@ -28,14 +28,14 @@
                                 {% if invitation.contact.organisation_name %}
                                     <div class="govuk-radios__item">
                                         <input class="govuk-radios__input" id="{{ invitation.contact.organisation }}"
-                                               name="organisation"
-                                               type="radio" value="{{ invitation.contact.organisation }}"
-                                               {% if invitation.contact.organisation == original_invitation.contact.organisation %}
-                                               checked
-                                               {% endif %}
+                                            name="organisation"
+                                            type="radio" value="{{ invitation.contact.organisation }}"
+                                            {% if invitation.contact.organisation == original_invitation.contact.organisation %}
+                                                checked
+                                            {% endif %}
                                         >
                                         <label class="govuk-label govuk-radios__label"
-                                               for="{ invitation.organisation_id }}">
+                                            for="{ invitation.organisation_id }}">
                                             {{ invitation.contact.organisation_name }}
                                         </label>
                                     </div>
@@ -44,7 +44,7 @@
                             <div class="govuk-radios__divider">or</div>
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="new" name="organisation"
-                                       type="radio" value="new">
+                                    type="radio" value="new">
                                 <label class="govuk-label govuk-radios__label" for="new">
                                     An organisation that has not represented us before
                                 </label>

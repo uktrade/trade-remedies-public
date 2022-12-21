@@ -37,7 +37,11 @@
                         <ul id="proposition-links">
                             {% for link in service_settings.header_links.all %}
                                 <li><a href="{{ link.url }}"
+<<<<<<< HEAD
+                                       class="{% if link.link_is_view_name and link.link == request.resolver_match.view_name %}active{% endif %}">{{ link.localised_name }}</a>
+=======
                                     class="{% if link.link_is_view_name and link.link == request.resolver_match.view_name %}active{% endif %}">{{ link.localised_name }}</a>
+>>>>>>> develop
                                 </li>
                             {% endfor %}
                         </ul>

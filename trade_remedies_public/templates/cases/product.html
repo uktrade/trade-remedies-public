@@ -6,16 +6,16 @@
     <div class="breadcrumbs" data-module="track-click">
         <ol class="">
             <li class="">
-              <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
+                <a data-track-category="breadcrumbClicked" data-track-action="1" class="" aria-current="false" href="/dashboard">Dashboard</a>
             </li>
-          <li class="">
-            <span>Apply for a new investigation</span>
-          </li>
+            <li class="">
+                <span>Apply for a new investigation</span>
+            </li>
         </ol>
     </div>
 
     <div class="grid-row">
-          {% include "partials/widgets/error_summary.html" with errors=errors %}
+        {% include "partials/widgets/error_summary.html" with errors=errors %}
         <div class="column-two-thirds">
 
             <h1 class="heading-xlarge edit-item">
@@ -65,12 +65,12 @@
                         {% error_message errors 'sector' %}
                         <select id="sector" class="form-control" name="sector">
                             <option value="">Please select ...</option>
-                                {% for sector in sectors %}
-                                    <option
-                                      value="{{sector.id}}"
-                                      {% if product.sector.id == sector.id %}selected{% endif %}
-                                    >{{sector.code}}: {{sector.name}}</option>
-                                {% endfor %}
+                            {% for sector in sectors %}
+                                <option
+                                    value="{{sector.id}}"
+                                    {% if product.sector.id == sector.id %}selected{% endif %}
+                                >{{sector.code}}: {{sector.name}}</option>
+                            {% endfor %}
                         </select>
                     {% endif %}
                 </div>
@@ -113,14 +113,14 @@
                                             name="delete"
                                             value="{{hs_code_value.id}}"
                                             type="submit">
-                                                <span class="visually-hidden">Delete hs code
-                                                    <span class="replace-with-value">{{hs_code_value.code}}</span>
-                                                </span>Remove
+                                            <span class="visually-hidden">Delete hs code
+                                                <span class="replace-with-value">{{hs_code_value.code}}</span>
+                                            </span>Remove
                                         </button>
                                     {% endif %}
                                 </fieldset>
                             </div>
-                            {% empty %}
+                        {% empty %}
                             <div class="product-classification-code margin-bottom-1 template row">
                                 <fieldset>
                                     <label for="hs-code-empty"><span class="visually-hidden">New hs code</span></label>
@@ -138,13 +138,13 @@
                     </div>
                     <span class="error-message"></span>
                     <button type="submit" class="link" name="btn-action" value="add">
-                            + Add another
+                        + Add another
                     </button>
                     <!-- <a class="link bold" href="?add=1" >&#x2795 Add code</a> -->
                 </div>
                 <div class="button-container">
                     <button type="submit" class="button margin-bottom-2" name="btn-action" value="142">
-                            Save and continue
+                        Save and continue
                     </button>
                 </div>
             </form>

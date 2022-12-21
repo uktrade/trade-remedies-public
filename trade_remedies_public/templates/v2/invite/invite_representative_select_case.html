@@ -30,7 +30,7 @@
                             {% for user_case in user_cases %}
                                 <div class="govuk-radios__item">
                                     <input class="govuk-radios__input" name="user_case"
-                                           type="radio" value="{{ user_case.id }}">
+                                        type="radio" value="{{ user_case.id }}">
                                     <label class="govuk-label govuk-radios__label">
                                         {{ user_case.case.reference }} - {{ user_case.case.name }}
                                     </label>
@@ -41,9 +41,9 @@
                 </div>
                 <details class="govuk-details" data-module="govuk-details">
                     <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                      Why can’t I view more active cases?
-                    </span>
+                        <span class="govuk-details__summary-text">
+                            Why can’t I view more active cases?
+                        </span>
                     </summary>
                     <div class="govuk-details__text">
                         <p>You can only select cases that you are currently participating in.</p>

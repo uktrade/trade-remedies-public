@@ -73,19 +73,19 @@
             {% endif %}
         {% endfor %}
 
-    {% if handling_confidential %}
-        {% set 'documents_list' documents.orphan %}
-        {% if documents_list %}
-            <div class="conf-mismatch" >
-                       <div class="column-full center bold">Mismatched non-confidential document(s). Please remove.</div>
-                {% for file in documents_list %}
-                    {% if new_document.id != file.id %}
-                        {% include "partials/widgets/upload/orphan.html" with file=file %}
-                    {% endif %}
-                {% endfor %}
-            </div>
+        {% if handling_confidential %}
+            {% set 'documents_list' documents.orphan %}
+            {% if documents_list %}
+                <div class="conf-mismatch" >
+                    <div class="column-full center bold">Mismatched non-confidential document(s). Please remove.</div>
+                    {% for file in documents_list %}
+                        {% if new_document.id != file.id %}
+                            {% include "partials/widgets/upload/orphan.html" with file=file %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
         {% endif %}
-     {% endif %}
     </div>
 
     {% if not submission.locked %}

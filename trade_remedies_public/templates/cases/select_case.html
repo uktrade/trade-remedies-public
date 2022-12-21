@@ -5,45 +5,45 @@
 {% block page_title %}Select case{% endblock %}
 
 {% block subtype_content %}
-<p>If you register after the first 15 days, you may not be eligible to receive a questionnaire. Registering later may restrict your opportunities to participate in the process.</p>
+    <p>If you register after the first 15 days, you may not be eligible to receive a questionnaire. Registering later may restrict your opportunities to participate in the process.</p>
 {% endblock %}
 
 {% block wide_content %}
-<form action="{{redirect}}" method="GET">
-  <table class="case-list margin-top-1 compact-radio" data-attach="TableSort">
-  <thead>
-    <tr>
-      <th scope="col">Ref.</th>
-      <th scope="col">Case</th>
-      <th scope="col">Type</th>
-      <th scope="col" class="date-column">Start date</th>
-      <th scope="col" class="date-column">Registration due</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for case in cases %}
-    <tr>
-      <td title="{{case.reference}}">
-          <div class="multiple-choice">
-              <input type="radio" id="choose_case_{{forloop.counter}}"
-                name="case_id"
-                value="{{case.id}}"
-              />
-              <label for="choose_case_{{forloop.counter}}" class="form-label">
-              </label>
-            </div>
-            {{case.reference}}
-      </td>
-      <td title="{{case.name}}">{{case.name |default:'<span class="grey">&lt;Untitled&gt;</span>'}}</td>
-      <td title="{{case.type.name}}">{{case.type.name}}</td>
-      <td>{% format_date case.initiated_at '%d %b %Y' %}</td>
-      <td>{% format_date case.registration_deadline '%d %b %Y' %}</td>
-    </tr>
-    {% endfor %}
-</tbody>
-</table>
-<button class="button margin-top-1">Save selection</button>
-</form>
+    <form action="{{redirect}}" method="GET">
+        <table class="case-list margin-top-1 compact-radio" data-attach="TableSort">
+            <thead>
+                <tr>
+                    <th scope="col">Ref.</th>
+                    <th scope="col">Case</th>
+                    <th scope="col">Type</th>
+                    <th scope="col" class="date-column">Start date</th>
+                    <th scope="col" class="date-column">Registration due</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for case in cases %}
+                    <tr>
+                        <td title="{{case.reference}}">
+                            <div class="multiple-choice">
+                                <input type="radio" id="choose_case_{{forloop.counter}}"
+                                    name="case_id"
+                                    value="{{case.id}}"
+                                />
+                                <label for="choose_case_{{forloop.counter}}" class="form-label">
+                                </label>
+                            </div>
+                            {{case.reference}}
+                        </td>
+                        <td title="{{case.name}}">{{case.name |default:'<span class="grey">&lt;Untitled&gt;</span>'}}</td>
+                        <td title="{{case.type.name}}">{{case.type.name}}</td>
+                        <td>{% format_date case.initiated_at '%d %b %Y' %}</td>
+                        <td>{% format_date case.registration_deadline '%d %b %Y' %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="button margin-top-1">Save selection</button>
+    </form>
 {% endblock %}
 
 {% block continue_button %} {% endblock %}
