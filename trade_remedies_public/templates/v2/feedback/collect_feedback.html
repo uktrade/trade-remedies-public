@@ -1,4 +1,5 @@
 {% extends 'v2/govuk/base.html' %}
+{% load get_item %}
 
 {% block page_title %}Give feedback{% endblock page_title %}
 {% block feedback_link %}{% endblock %}
@@ -11,39 +12,48 @@
         </h1>
         <form method="post">
             {% csrf_token %}
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s"><h2
-                            class="govuk-fieldset__heading">
-                        Overall, how would you rate your experience with the Trade Remedies Service today?
-                    </h2>
-                    </legend>
-                    <div class="govuk-radios star-rating3__stars" data-module="govuk-radios">
-                        <input class="star-rating3__input" type="radio" name="rating" value="1" id="rating-1"
-                               {% if feedback_object.rating == 1 %}checked{% endif %}>
-                        <label class="star-rating3__label" for="rating-1" aria-label="Very dissatisfied"><span
-                                class="govuk-label text">Very dissatisfied</span></label>
-                        <input class="star-rating3__input" type="radio" name="rating" value="2" id="rating-2"
-                               {% if feedback_object.rating == 2 %}checked{% endif %}>
-                        <label class="star-rating3__label" for="rating-2" aria-label="Dissatisfied"><span
-                                class="govuk-label text">Dissatisfied</span></label>
-                        <input class="star-rating3__input" type="radio" name="rating" value="3" id="rating-3"
-                               {% if feedback_object.rating == 3 %}checked{% endif %}>
-                        <label class="star-rating3__label" for="rating-3"
-                               aria-label="Neither satisified or dissatisfied"><span class="govuk-label text">Neither satisified or dissatisfied</span></label>
-                        <input class="star-rating3__input" type="radio" name="rating" value="4" id="rating-4"
-                               {% if feedback_object.rating == 4 %}checked{% endif %}>
-                        <label class="star-rating3__label" for="rating-4" aria-label="Satisfied"><span
-                                class="govuk-label text">Satisfied</span></label>
-                        <input class="star-rating3__input" type="radio" name="rating" value="5" id="rating-5"
-                               {% if feedback_object.rating == 5 %}checked{% endif %}>
-                        <label class="star-rating3__label" for="rating-5" aria-label="Very satisfied"><span
-                                class="govuk-label text">Very satisfied</span></label>
-                        <div class="star-rating3__focus"></div>
-                        <span id="js_selected_rating" class="govuk-label js-hidden selected_rating"></span>
-                    </div>
-                </fieldset>
-            </div>
+            {% with form_errors|get_item:"rating" as error %}
+                <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--s"><h2
+                                class="govuk-fieldset__heading">
+                            Overall, how would you rate your experience with the Trade Remedies Service today?
+                        </h2>
+                        </legend>
+                        {% if error %}
+                            <p id="rating-error" class="govuk-error-message">
+                                {% for error in error %}
+                                    <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                        <div class="govuk-radios star-rating3__stars" id="rating" data-module="govuk-radios">
+                            <input class="star-rating3__input" type="radio" name="rating" value="1" id="rating-1"
+                                   {% if feedback_object.rating == 1 %}checked{% endif %}>
+                            <label class="star-rating3__label" for="rating-1" aria-label="Very dissatisfied"><span
+                                    class="govuk-label text">Very dissatisfied</span></label>
+                            <input class="star-rating3__input" type="radio" name="rating" value="2" id="rating-2"
+                                   {% if feedback_object.rating == 2 %}checked{% endif %}>
+                            <label class="star-rating3__label" for="rating-2" aria-label="Dissatisfied"><span
+                                    class="govuk-label text">Dissatisfied</span></label>
+                            <input class="star-rating3__input" type="radio" name="rating" value="3" id="rating-3"
+                                   {% if feedback_object.rating == 3 %}checked{% endif %}>
+                            <label class="star-rating3__label" for="rating-3"
+                                   aria-label="Neither satisfied or dissatisfied"><span class="govuk-label text">Neither satisfied or dissatisfied</span></label>
+                            <input class="star-rating3__input" type="radio" name="rating" value="4" id="rating-4"
+                                   {% if feedback_object.rating == 4 %}checked{% endif %}>
+                            <label class="star-rating3__label" for="rating-4" aria-label="Satisfied"><span
+                                    class="govuk-label text">Satisfied</span></label>
+                            <input class="star-rating3__input" type="radio" name="rating" value="5" id="rating-5"
+                                   {% if feedback_object.rating == 5 %}checked{% endif %}>
+                            <label class="star-rating3__label" for="rating-5" aria-label="Very satisfied"><span
+                                    class="govuk-label text">Very satisfied</span></label>
+                            <div class="star-rating3__focus"></div>
+                            <span id="js_selected_rating" class="govuk-label js-hidden selected_rating"></span>
+                        </div>
+                    </fieldset>
+                </div>
+            {% endwith %}
             <div class="govuk-form-group what_didnt_work_so_well">
                 <fieldset class="govuk-fieldset" aria-describedby="what_didnt_work_so_well-hint">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -162,7 +172,8 @@
                     </div>
                 </div>
             </div>
-            <p>We use feedback to help us improve the service and cannot respond to any requests for support you make on this form.</p>
+            <p>We use feedback to help us improve the service and cannot respond to any requests for support you make on
+                this form.</p>
             <button class="govuk-button" data-module="govuk-button">
                 Submit
             </button>
@@ -171,8 +182,6 @@
             <input type="hidden" name="url" value="
                     {% if request.GET.previous_url %}{{ request.GET.previous_url }}{% else %}{{ url }}{% endif %}">
             <input type="hidden" name="previous_url_name" value="
-
-
                     {% if request.GET.previous_url_name %}{{ request.GET.previous_url_name }}{% else %}{{ previous_url_name }}{% endif %}">
         </form>
     </div>
