@@ -1,3 +1,8 @@
+JAWS
+VoiceOver)</li>
+Sector Bodies
+WCAG 2.4.7
+Labels
 upload_container.attr("data
 Upload Letter
 % elif submission.status.version %
