@@ -119,6 +119,10 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
 class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
     template_name = "v2/registration_of_interest/tasklist.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        self.deficient_documents = False
+        return super().dispatch(request, *args, **kwargs)
+
     def get_task_list(self):
         submission = getattr(self, "submission", {})
 
@@ -168,10 +172,28 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
 
             if submission["paired_documents"] and not submission["orphaned_documents"]:
                 registration_documentation_status = "Complete"
-            elif orphaned_documents := submission["orphaned_documents"]:
+            elif submission["orphaned_documents"]:
                 registration_documentation_status = "Incomplete"
             else:
                 registration_documentation_status = "Not Started"
+
+            if submission.status.version:
+                # the ROI is deficient, check if the reg docs are deficient
+                deficient_registration_documents = [
+                    each.confidential
+                    for each in submission.paired_documents
+                    if each.confidential.deficient
+                ] + [
+                    each.non_confidential
+                    for each in submission.paired_documents
+                    if each.non_confidential.deficient
+                ]
+                if deficient_registration_documents:
+                    registration_documentation_status_text = (
+                        f"DEFICIENT DOCUMENTS: {len(deficient_registration_documents)}"
+                    )
+                    registration_documentation_status = "Incomplete"
+                    self.deficient_documents = True
         documentation_sub_steps = [
             {
                 "link": reverse(
@@ -191,13 +213,21 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
             and submission.organisation.id != self.request.user.contact["organisation"]["id"]
         ):
             # THe user is representing someone else, we should show the letter of authority
+            uploaded_loa_document = get_uploaded_loa_document(self.submission)
+            status = "Complete" if uploaded_loa_document else "Not Started"
+            status_text = None
+
+            if uploaded_loa_document and uploaded_loa_document.deficient:
+                status = "Incomplete"
+                status_text = "DEFICIENT DOCUMENT"
+                self.deficient_documents = True
+
             documentation_sub_steps.append(
                 {
                     "link": reverse("roi_3_loa", kwargs={"submission_id": submission["id"]}),
                     "link_text": "Letter of Authority",
-                    "status": "Complete"
-                    if get_uploaded_loa_document(self.submission)
-                    else "Not Started",
+                    "status": status,
+                    "status_text": status_text,
                 }
             )
 
@@ -221,15 +251,38 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
         )
         return steps
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_deficient_documents"] = self.deficient_documents
+        return context
+
     def get(self, request, *args, **kwargs):
         if request.GET.get("confirm_access", False) or (
-            self.submission and self.submission["status"]["locking"]
+            self.submission
+            and self.submission["status"]["locking"]
+            and not self.submission.status.version
         ):
-            # The submission exists, show the user the overview page
+            loa_document = get_uploaded_loa_document(self.submission)
+            # The submission exists, show the user the overview page. Only if we have specified
+            # the user wants to go to the review page, or the submission is locked but not
+            # deficient (in which case we want them to go to the tasklist)
+
+            # we want to find an org_case_role if it exists to see if the ROI has been processed
+            org_case_role = self.client.organisation_case_roles(
+                organisation_id=self.submission.organisation.id,
+                case_id=self.submission.case.id,
+                fields=["id", "case_role_key"],
+            )
+            if org_case_role:
+                org_case_role = org_case_role[0]
             return render(
                 request,
                 "v2/registration_of_interest/registration_of_interest_review.html",
-                context={"submission": self.submission},
+                context={
+                    "submission": self.submission,
+                    "loa_document": loa_document,
+                    "org_case_role": org_case_role,
+                },
             )
         # If not, show the normal tasklist
         return super().get(request, *args, **kwargs)
@@ -518,7 +571,7 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
             self.submission["paired_documents"] + self.submission["orphaned_documents"]
         )
 
-        long_time_ago = timezone.now() - datetime.timedelta(days=1000)
+        long_time_ago = timezone.now() - datetime.timedelta(days=99999)
         sorted_uploaded_documents = sorted(
             uploaded_documents,
             key=lambda x: (
@@ -531,7 +584,13 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
             ),
         )
         context["uploaded_documents"] = sorted_uploaded_documents
-
+        context["is_deficient_documents"] = any(
+            [
+                each
+                for each in self.submission.paired_documents
+                if each.confidential.deficient or each.non_confidential.deficient
+            ]
+        )
         return context
 
     def post(self, request, *args, **kwargs):
@@ -565,7 +624,11 @@ class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
         context["loa_document_bundle"] = get_loa_document_bundle()
         if self.submission:
             # Getting the uploaded LOA document if it exists
-            context["loa_document"] = get_uploaded_loa_document(self.submission)
+            uploaded_loa_document = get_uploaded_loa_document(self.submission)
+            if uploaded_loa_document:
+                context["is_deficient_document"] = uploaded_loa_document.deficient
+                uploaded_loa_document = uploaded_loa_document["document"]
+            context["loa_document"] = uploaded_loa_document
         return context
 
     def post(self, request, *args, **kwargs):
