@@ -1,3 +1,4 @@
+import json
 from unittest import TestCase
 
 from cases.v2_forms.invite import (
@@ -136,42 +137,42 @@ class TestYourEmployerForm(TestCase):
 class TestUkEmployerForm(TestCase):
     def setUp(self) -> None:
         self.mock_data = {
-            "organisation_post_code": "NNN NNN",  # PS-IGNORE
-            "organisation_address": "1 TEST ROAD, LONDON, UNITED KINGDOM, NNN NNN",
-            "companies_house_id": "000000",
-            "organisation_name": "TEST COMPANY",
+            "company_data": json.dumps(
+                {
+                    "address": {
+                        "postal_code": "NNN NNN",
+                        "locality": "London",
+                        "address_line_1": "1 TEST ROAD",
+                        "country": "United Kingdom",
+                        "premises": "1",
+                    },
+                    "kind": "searchresults#company",
+                    "title": "TEST COMPANY",
+                    "address_snippet": "1 TEST ROAD, LONDON, UNITED KINGDOM, NNN NNN",
+                    "company_number": "000000",
+                }
+            )
         }
 
     def test_valid_form(self):
         self.mock_data["input-autocomplete"] = "TEST"
+
         form = UkEmployerForm(data=self.mock_data)
+
         self.assertTrue(form.is_valid())
+        self.assertEqual("TEST COMPANY", form.cleaned_data["organisation_name"])
+        self.assertEqual("000000", form.cleaned_data["companies_house_id"])
+        self.assertEqual("NNN NNN", form.cleaned_data["organisation_post_code"])
         self.assertEqual(
-            {
-                "organisation_name": "TEST COMPANY",
-                "companies_house_id": "000000",
-                "organisation_post_code": "NNN NNN",
-                "organisation_address": "1 TEST ROAD, LONDON, UNITED KINGDOM",
-                "company_search_container": "",
-            },
-            form.cleaned_data,
+            "1 TEST ROAD, LONDON, UNITED KINGDOM", form.cleaned_data["organisation_address"]
         )
 
     def test_companies_house_searched_but_not_selected(self):
         form = UkEmployerForm(data={"input-autocomplete": "TEST"})
         self.assertFalse(form.is_valid())
         self.assertEqual(
+            '{"company_data": [{"message": "companies_house_not_selected",' ' "code": ""}]}',
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"companies_house_id": [{"message": "This field is required.", '
-            '"code": "required"}], '
-            '"organisation_post_code": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"organisation_address": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"company_search_container": [{"message": "companies_house_not_selected",'
-            ' "code": ""}]}',
         )
 
     def test_companies_house_not_searched(self):
@@ -179,16 +180,7 @@ class TestUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"organisation_name": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"companies_house_id": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"organisation_post_code": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"organisation_address": [{"message": "This field is required.",'
-            ' "code": "required"}], '
-            '"company_search_container": [{"message": "companies_house_not_searched",'
-            ' "code": ""}]}',
+            '{"company_data": [{"message": "companies_house_not_searched",' ' "code": ""}]}',
         )
 
 

@@ -444,13 +444,21 @@ class InterestNonUkRegisteredStep2(RegistrationOfInterestBase, FormView):
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
         contact_id = self.kwargs["contact_id"]
+
+        new_organisation = self.client.organisations(
+            {
+                "name": form.cleaned_data["organisation_name"],
+                "companies_house_id": form.cleaned_data["company_number"],
+                "address": form.cleaned_data["address_snippet"],
+                "post_code": form.cleaned_data["post_code"],
+                "country": form.cleaned_data["country"],
+            }
+        )
+        self.client.contacts(contact_id).update({"organisation": new_organisation.id})
         return redirect(
-            f"/case/interest/{submission_id}/{contact_id}/submit/?name="
-            f"{form.cleaned_data.get('organisation_name')}&companies_house_id="
-            f"{form.cleaned_data.get('company_number')}&"
-            f"post_code={form.cleaned_data.get('post_code')}&non_uk_registered=true&"
-            f"address={form.cleaned_data.get('address_snippet')}&"
-            f"country={form.cleaned_data.get('country')}"  # noqa: E501
+            reverse(
+                "interest_submit", kwargs={"submission_id": submission_id, "contact_id": contact_id}
+            )
         )
 
 
@@ -461,12 +469,22 @@ class InterestIsUkRegisteredStep2(RegistrationOfInterestBase, FormView):
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
         contact_id = self.kwargs["contact_id"]
+
+        new_organisation = self.client.organisations(
+            {
+                "name": form.cleaned_data["organisation_name"],
+                "companies_house_id": form.cleaned_data["companies_house_id"],
+                "address": form.cleaned_data["organisation_address"],
+                "post_code": form.cleaned_data["organisation_post_code"],
+                "country": "GB",
+            }
+        )
+        self.client.contacts(contact_id).update({"organisation": new_organisation.id})
+
         return redirect(
-            f"/case/interest/{submission_id}/{contact_id}/submit/?name="
-            f"{form.cleaned_data.get('organisation_name')}&"
-            f"companies_house_id={form.cleaned_data.get('companies_house_id')}&"
-            f"post_code={form.cleaned_data.get('organisation_post_code')}&"
-            f"address={form.cleaned_data.get('organisation_address')}"  # noqa: E501
+            reverse(
+                "interest_submit", kwargs={"submission_id": submission_id, "contact_id": contact_id}
+            )
         )
 
 
@@ -484,9 +502,13 @@ class InterestUkSubmitStep2(RegistrationOfInterestBase, FormView):
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
         contact_id = self.kwargs["contact_id"]
-        get_dictionary = self.request.GET.dict()
-        # Creating the new organisation
-        organisation = self.client.organisations({**get_dictionary, **form.cleaned_data})
+        contact = self.client.contacts(contact_id)
+
+        # Updating the new organisation
+        organisation = self.client.organisations(contact.organisation).update(
+            data={**form.cleaned_data}
+        )
+
         # Associating the ROI with the organisation and redirecting to tasklist
         return self.add_organisation_to_registration_of_interest(
             organisation_id=organisation["id"], submission_id=submission_id, contact_id=contact_id
