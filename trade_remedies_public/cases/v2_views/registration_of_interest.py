@@ -519,6 +519,11 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/who_you_representing_existing.html"
     form_class = ExistingClientForm
 
+    def dispatch(self, request, *args, **kwargs):
+        self.existing_clients = self.get_existing_clients()
+        response = super().dispatch(request, *args, **kwargs)
+        return response
+
     def get_existing_clients(self):
         org_parties = get_org_parties(
             TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
@@ -526,7 +531,7 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         # extract and return tuples of id and name in a list (from a list of dictionaries)
         # removing duplicates
         if representing_ids := self.request.user.representing_ids:
-            org_parties += [self.client.organisations(each) for each in representing_ids]
+            org_parties += [self.client.organisations(each, fields=["id", "name"]) for each in representing_ids]
 
         return [
             (each["id"], each["name"])
@@ -537,12 +542,12 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
-        context["existing_clients"] = self.get_existing_clients()
+        context["existing_clients"] = self.existing_clients
         return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["existing_clients"] = self.get_existing_clients()
+        kwargs["existing_clients"] = self.existing_clients
         return kwargs
 
     def form_valid(self, form):
