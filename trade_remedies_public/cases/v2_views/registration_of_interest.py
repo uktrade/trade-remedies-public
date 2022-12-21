@@ -409,18 +409,21 @@ class InterestIsUkRegisteredStep2(RegistrationOfInterestBase, FormView):
         submission_id = self.kwargs["submission_id"]
         contact_id = self.kwargs["contact_id"]
 
-        new_organisation = self.client.organisations({
-            "name": form.cleaned_data["organisation_name"],
-            "companies_house_id": form.cleaned_data["companies_house_id"],
-            "address": form.cleaned_data["organisation_address"],
-            "post_code": form.cleaned_data["organisation_post_code"],
-        })
+        new_organisation = self.client.organisations(
+            {
+                "name": form.cleaned_data["organisation_name"],
+                "companies_house_id": form.cleaned_data["companies_house_id"],
+                "address": form.cleaned_data["organisation_address"],
+                "post_code": form.cleaned_data["organisation_post_code"],
+            }
+        )
         self.client.contacts(contact_id).update({"organisation": new_organisation.id})
 
-        return redirect(reverse("interest_submit", kwargs={
-            "submission_id": submission_id,
-            "contact_id": contact_id
-        }))
+        return redirect(
+            reverse(
+                "interest_submit", kwargs={"submission_id": submission_id, "contact_id": contact_id}
+            )
+        )
 
 
 class InterestUkSubmitStep2(RegistrationOfInterestBase, FormView):
@@ -440,7 +443,9 @@ class InterestUkSubmitStep2(RegistrationOfInterestBase, FormView):
         contact = self.client.contacts(contact_id)
 
         # Updating the new organisation
-        organisation = self.client.organisations(contact.organisation).update(data={**form.cleaned_data})
+        organisation = self.client.organisations(contact.organisation).update(
+            data={**form.cleaned_data}
+        )
 
         # Associating the ROI with the organisation and redirecting to tasklist
         return self.add_organisation_to_registration_of_interest(
