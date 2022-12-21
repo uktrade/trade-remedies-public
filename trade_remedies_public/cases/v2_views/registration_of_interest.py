@@ -531,7 +531,9 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         # extract and return tuples of id and name in a list (from a list of dictionaries)
         # removing duplicates
         if representing_ids := self.request.user.representing_ids:
-            org_parties += [self.client.organisations(each, fields=["id", "name"]) for each in representing_ids]
+            org_parties += [
+                self.client.organisations(each, fields=["id", "name"]) for each in representing_ids
+            ]
 
         return [
             (each["id"], each["name"])
