@@ -1,5 +1,14 @@
 {% extends "v2/govuk/base.html" %}
 {% load pop_session %}
+{% if user.is_authenticated %}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'create_account',
+            'user_id': '{{user.id}}'
+        });
+    </script>
+{% endif %}
 {% block page_title %}
     Your account has been created
 {% endblock %}
@@ -89,5 +98,5 @@
 {% endblock row_content %}
 
 {% block additional_content %}
-    {% include "v2/feedback/stars_partial.html" with  journey="Account created" %}
+    {% include "v2/feedback/stars_partial.html" with journey="Account created" %}
 {% endblock additional_content %}

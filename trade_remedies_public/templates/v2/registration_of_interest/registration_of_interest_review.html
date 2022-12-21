@@ -2,31 +2,49 @@
 {% load format_date %}
 
 {% block page_title %}
-    Registration of Interest Application
+    Registration of Interest
 {% endblock page_title %}
 
 {% block row_content %}
     {% with case=submission.case %}
         <div class="govuk-grid-column-two-thirds-from-desktop">
             <h1 class="govuk-heading-xl">
-                Registration of Interest application
+                Registration of Interest
             </h1>
 
-            <h2 class="govuk-heading-m">Your application</h2>
             <dl class="govuk-summary-list govuk-!-margin-bottom-2">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        Application status
+                        Status
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <p>
-                            {{ submission.status.public_name }}<br>
-                            {% if submission.status.draft %}
-                                <span id="date">{{ submission.created_at|date:'d M Y' }}</span>
-                            {% elif submission.status.locking %}
-                                <span id="date">{{ submission.received_at|date:'d M Y' }}</span>
-                            {% endif %}
-                        </p>
+                        {% if submission.status.draft %}
+                            Draft
+                        {% elif org_case_role and org_case_role.case_role_key == "rejected" %}
+                            {# the ROI has been reviewed but not approved and processed #}
+                            Rejected
+                            <br>
+                            Registration of interest was rejected by the TRA
+                        {% elif submission.status.version %}
+                            {# the ROI is deficient #}
+                            <p><strong class="govuk-tag govuk-tag--pink" id="pre-sampling-upload-status">Deficient
+                                documentation</strong></p>
+                            <a href="{% url 'roi_submission_exists' submission_id=submission.id %}"
+                                role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+                                Review documentation</a>
+                            <p><span>{{ submission.parent.deficiency_sent_at|date:'d M Y' }}</span></p>
+                        {% elif submission.status.received or submission.status.sufficient and not org_case_role.case_role_key == "rejected" %}
+                            Submitted
+                            <br>
+                            Awaiting TRA approval
+                        {% endif %}
+                        {% if submission.status.draft %}
+                            <br>
+                            <span>{{ submission.created_at|date:'d M Y' }}</span>
+                        {% elif submission.status.locking %}
+                            <br>
+                            <span>{{ submission.received_at|date:'d M Y' }}</span>
+                        {% endif %}
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -34,9 +52,8 @@
                         Case details
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <p><a href="">
+                        <p>
                             {{ case.reference }} - {{ case.name }}
-                        </a><br>
                         </p>
                     </dd>
                 </div>
@@ -51,19 +68,37 @@
                         {% else %}
                             <p>My client:</p>
                         {% endif %}
-
+                        {{ submission.primary_contact.name }}
+                        <br>
+                        {{ submission.primary_contact.email }}
+                        <br><br>
                         {{ submission.organisation.name }}
                         <br>
+                        {{ submission.organisation.address|default_if_none:"" }}
+                        <br>
+                        {{ submission.organisation.full_country_name|default_if_none:"" }}
                     </dd>
                 </div>
+                {% if submission.contact.organisation != submission.organisation.id and loa_document %}
+                    {# it's a rep ROI, show the LOA #}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            Letter of Authority
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            <a download href="{{ loa_document.document.file }}">{{ loa_document.document.name }}</a>
+                        </dd>
+                    </div>
+                {% endif %}
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
-                        Initial documentation
+                        Registration documentation
                     </dt>
                     <dd class="govuk-summary-list__value">
                         {% for document in submission.paired_documents %}
-                            {{ document.confidential.name }}<br>
-                            {{ document.non_confidential.name }}<br>
+                            <a download href="{{ document.confidential.file }}">{{ document.confidential.name }}</a><br>
+                            <a download
+                                href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a><br>
                         {% endfor %}
                     </dd>
                 </div>
@@ -72,11 +107,10 @@
                 <div class="govuk-button-group">
                     <a href="{% url 'roi_submission_exists' submission_id=submission.id %}" role="button"
                         draggable="false" class="govuk-button" data-module="govuk-button">
-                        Continue application
+                        Continue registration of interest
                     </a>
                     <a class="govuk-link govuk-link--no-visited-state"
-                        href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete
-                        application</a>
+                        href="{% url 'roi_delete_roi' submission_id=submission.id %}">Delete</a>
                 </div>
             {% endif %}
         </div>

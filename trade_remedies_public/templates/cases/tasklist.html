@@ -5,6 +5,16 @@
 {% load draft_count %}
 {% load set %}
 {% load format_date %}
+{% if user.is_authenticated %}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'submit_evidence',
+            'user_id': '{{user.id}}',
+            'case_id': '{{case_id}}',
+        });
+    </script>
+{% endif %}
 {% block row_content %}
 
     {% block breadcrumb %}
@@ -16,7 +26,8 @@
         {% if submission %}
             {% set 'bc_current_page' submission.type.name %}
         {% endif %}
-        {% include "partials/widgets/breadcrumb.html" with bc_case=case bc_submission=submission bc_organisation=submission.organisation %}
+        {% include "partials/widgets/breadcrumb.html" with bc_case=case bc_submission=submission
+        bc_organisation=submission.organisation %}
     {% endwith %}
 
     <div class="grid-row">

@@ -1,0 +1,31 @@
+{% load static %}
+<div class="address-card">
+    <div class="address-container">
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <p class="govuk-warning-text__text">
+                <strong>
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    Review Deficiency Notice
+                </strong>
+            </p>
+            <p class="govuk-warning-text__text-p">You need to review documents marked as deficient.
+                Download the following document for instructions.</p>
+        </div>
+        <ul class="govuk-list govuk-warning-text__text-p">
+            {% for deficiency_notice in submission.deficiency_notices %}
+                <li>
+                    <a href="{{ deficiency_notice.document.file }}" download=""
+                        class="govuk-link--no-visited-state download_file_check_link" data-check-id="{{ deficiency_notice.document.id }}"><img
+                            src="{% static 'v2/assets/images/file_icons/'|add:deficiency_notice.document.extension|add:'.png' %}"
+                            alt="File icon" width="24px">
+                        {{ deficiency_notice.document.name }}</a>
+                    <span id="{{ deficiency_notice.document.id }}"
+                        style="display:{% if deficiency_notice.document.id in request.session.downloaded_files %}block{% else %}none{% endif %};">
+                        ✓
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

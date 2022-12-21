@@ -136,7 +136,7 @@ class TestUkEmployerForm(TestCase):
                     },
                     "kind": "searchresults#company",
                     "title": "TEST COMPANY",
-                    "address_snippet": "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM",
+                    "address_snippet": "1 TEST ROAD, LONDON, UNITED KINGDOM, NNN NNN",
                     "company_number": "000000",
                 }
             )
@@ -145,12 +145,12 @@ class TestUkEmployerForm(TestCase):
     def test_valid_form(self):
         form = UkEmployerForm(data=self.mock_data)
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.cleaned_data["country"], "GB")
+        self.assertEqual("GB", form.cleaned_data["country"])
         self.assertEqual(
-            form.cleaned_data["address_snippet"], "1 TEST ROAD, NNN NNN, LONDON, UNITED KINGDOM"
+            "1 TEST ROAD, LONDON, UNITED KINGDOM", form.cleaned_data["address_snippet"]
         )
-        self.assertEqual(form.cleaned_data["company_number"], "000000")
-        self.assertEqual(form.cleaned_data["company_name"], "TEST COMPANY")
+        self.assertEqual("000000", form.cleaned_data["company_number"])
+        self.assertEqual("TEST COMPANY", form.cleaned_data["company_name"])
 
     def test_invalid_form_not_selected(self):
         self.mock_data["input-autocomplete"] = "trying to search for test"

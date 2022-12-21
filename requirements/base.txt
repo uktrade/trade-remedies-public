@@ -16,8 +16,9 @@ botocore==1.20.112
     # via
     #   boto3
     #   s3transfer
-certifi==2021.5.30
+certifi==2022.12.7
     # via
+    #   -r requirements.in/base.in
     #   requests
     #   sentry-sdk
 chardet==4.0.0
@@ -154,7 +155,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@pythonic-structure
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 werkzeug==0.15.5
     # via -r requirements.in/base.in

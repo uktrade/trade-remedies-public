@@ -1,16 +1,27 @@
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils import timezone
 
 from cases.v2_forms.accept_representative_invite import WhoIsRegisteringForm
 from cases.v2_views.accept_own_org_invitation import (
     AcceptOrganisationInvite,
     AcceptOrganisationSetPassword,
     AcceptOrganisationTwoFactorChoice,
-    BaseAcceptInviteView,
+    BaseAcceptInviteView as NormalBaseAcceptInviteView,
 )
 from config.base_views import FormInvalidMixin
 from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_THIRD_PARTY_USER
 from registration.forms.forms import NonUkEmployerForm, OrganisationFurtherDetailsForm
+
+
+class BaseAcceptInviteView(NormalBaseAcceptInviteView):
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        if not self.invitation.submission.status.sent:
+            # The invitation has either been marked as sufficient or deficient by caseworker, stop
+            # from proceeding
+            return redirect(reverse("login"))
+        return response
 
 
 class WhoIsRegisteringView(BaseAcceptInviteView, FormInvalidMixin):
@@ -144,9 +155,8 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
     form_class = OrganisationFurtherDetailsForm
 
     def form_valid(self, form):
-        invited_organisation = self.client.organisations(self.invitation.contact.organisation)
         # Let's update the Organisation object with the new details
-        invited_organisation.update(
+        self.client.organisations(self.invitation.contact.organisation).update(
             {
                 "organisation_website": form.cleaned_data["company_website"],
                 "vat_number": form.cleaned_data.get("company_vat_number"),
@@ -154,6 +164,20 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
                 "duns_number": form.cleaned_data.get("company_duns_number"),
             }
         )
+
+        # marking the submission as received, so it can be verified by the caseworker
+        self.client.submissions(self.invitation.submission.id).update_submission_status("received")
+        self.invitation.update({"accepted_at": timezone.now()})
+
+        # First let's add the invitee as an admin user to their organisation, this was also
+        # add them to the required group
+        self.client.organisations(self.invitation.contact.organisation).add_user(
+            user_id=self.invitation.invited_user.id,
+            group_name=SECURITY_GROUP_ORGANISATION_OWNER,
+            confirmed=True,
+            fields=["id"],
+        )
+
         # now let's validate the person's email
         return redirect(
             reverse(

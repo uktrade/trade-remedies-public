@@ -30,22 +30,23 @@ class DocumentView(View, APIClientMixin):
             form = DocumentForm(data={"file": file}, user=request.user)
             # Checking the file is valid (size, virus, extension)
             if form.is_valid():
-                uploaded_files.append(
-                    # Sending it to the API for storage
-                    self.client.documents(
-                        {
-                            "type": request.POST["type"],
-                            "stored_name": file.name,
-                            "original_name": file.original_name,
-                            "file_size": file.file_size,
-                            "submission_id": request.POST["submission_id"],
-                            "parent": request.POST.get("parent", None),
-                            "submission_document_type": request.POST.get(
-                                "submission_document_type", None
-                            ),
-                        }
-                    )
+                # Sending it to the API for storage
+                new_document_upload = self.client.documents(
+                    {
+                        "type": request.POST["type"],
+                        "stored_name": file.name,
+                        "original_name": file.original_name,
+                        "file_size": file.file_size,
+                        "submission_id": request.POST["submission_id"],
+                        "parent": request.POST.get("parent", None),
+                        "submission_document_type": request.POST.get(
+                            "submission_document_type", None
+                        ),
+                        "replace_document_id": request.POST.get("replace_document_id", None),
+                    }
                 )
+                uploaded_files.append(new_document_upload)
+
                 return JsonResponse(
                     {
                         "uploaded_files": uploaded_files,

@@ -46,27 +46,38 @@
                                     <td sortVal="{{submission.updated_at}} ">{{ submission.updated_at|format_date:'%d %b %Y' }}</td>
                                     <td>{{ submission.name }}</td>
                                     <td>
-                                        <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">{{ submission.type.name }}</a>
+                                        {% if submission.type.key == "interest" and submission.status.version %}
+                                            {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
+                                            <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">{{ submission.type.name }}</a>
+                                        {% else %}
+                                            <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">{{ submission.type.name }}</a>
+                                        {% endif %}
+
                                     </td>
                                     <td>
                                         <div class="lozenge {{submission.status_class}}">
-                                            <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">
-                                                <span>{% if submission.status %}{{ submission.status.public_name|default:submission.status.name }}{% else %}-{% endif %}</span>
-                                            </a>
-                                        </td>
-                                        <td sortVal="{% if submission.due_at and not submission.status.locking %}{{submission.due_at}}{% endif %}z">
-                                            <div class="due-date">
-                                                {% include "partials/widgets/due_date_status.html" with state=submission show_na=True %}
-                                            </div>
-                                        </td>
-                                        <!--
+                                            {% if submission.type.key == "interest" and submission.status.version %}
+                                                {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
+                                                <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">
+                                            {% else %}
+                                                <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">
+                                            {% endif %}
+                                            <span>{% if submission.status %}{{ submission.status.public_name|default:submission.status.name }}{% else %}-{% endif %}</span>
+                                        </a>
+                                    </td>
+                                    <td sortVal="{% if submission.due_at and not submission.status.locking %}{{submission.due_at}}{% endif %}z">
+                                        <div class="due-date">
+                                            {% include "partials/widgets/due_date_status.html" with state=submission show_na=True %}
+                                        </div>
+                                    </td>
+                                    <!--
                 this is a cancel button to delete the submission from the case page if required.
               <td>{% if submission.status.default %}
                   <form action="/case/{{submission.case.id}}/submission/{{submission.id}}/remove/" method='post'><button class="link">Cancel</button>{% csrf_token %}</form>
                   {% endif %}
               </td>
               -->
-                                    </tr>
+                                </tr>
                             {% endif %}
                         {% endfor %}
                     </tbody>

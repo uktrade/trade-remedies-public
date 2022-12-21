@@ -279,6 +279,23 @@
                 {% if feedback_object %}
                     $('label[for="rating-{{ feedback_object.rating }}"]').trigger("click")
                 {% endif %}
+
+                {# file download checks #}
+                $(document).on("click", ".download_file_check_link", function(){
+                    if ($(this).attr("data-check-id")){
+                        let document_id = $(this).attr("data-check-id")
+                        document.cookie = `${document_id}=downloaded; max-age=${3600*24}; path=/`
+                        $(`#${check_id}`).show()
+                    }
+                })
+
+                let cookies = Object.fromEntries(document.cookie.split('; ').map(v=>v.split(/=(.*)/s).map(decodeURIComponent)))
+                $.each(cookies, function(key, value){
+                    if (value === "downloaded"){
+                        $(`#${key}`).show()
+                    }
+                })
+
             })
         </script>
         {% block scripts %}{% endblock scripts %}
