@@ -398,7 +398,9 @@ class DashboardView(
         unapproved_rep_invitations_cases = []
         v2_client = TRSAPIClient(token=request.user.token)
         if organisation:
-            v2_organisation = v2_client.organisations(organisation["id"])
+            v2_organisation = v2_client.organisations(
+                organisation["id"], fields=["organisationcaserole_set"]
+            )
             invite_submissions = client.get_organisation_invite_submissions(organisation["id"])
 
             # Let's get the cases where the user is awaiting approval
