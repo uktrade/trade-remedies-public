@@ -406,7 +406,7 @@ class DashboardView(
             # Let's get the cases where the user is awaiting approval
             invitations = v2_client.invitations(
                 contact_id=request.user.contact["id"],
-                fields=["submission", "case", "invitation_type"],
+                fields=["submission", "case", "invitation_type", "rejected_at", "approved_at"],
             )
             unapproved_rep_invitations_cases = [
                 invite.case
