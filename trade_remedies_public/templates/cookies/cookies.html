@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load to_json %}
+
+ {% block cookie_message %}{% endblock %}
+
+{% block row_content %}
+  <div class="cookie-preferences-page">
+    <div class="column-two-thirds left-column">
+      <h1 class="heading-xlarge"><span class="heading-secondary">Trade Remedies Digital Service</span>
+        Cookies on the Trade Remedies Digital service
+      </h1>
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="redirect_url" value="{{redirect_url}}">
+
+        <p>Cookies are files saved on your phone, tablet or computer when you visit a website.</p>
+        <p>We use cookies to store information about how you use the Trade Remedies website, such as the pages you visit.</p>
+
+        <h2 class="heading-large">Cookie settings</h2>
+        <p>We use two types of cookie. You can choose which cookies you're happy for us to use.</p>
+        <fieldset>
+          <legend class="heading-medium">Cookies that measure website use</legend>
+          <div class="form-hint">
+            <span>We use Google Analytics to measure how you use the website so we can improve it based on user needs. Google Analytics sets cookies that store anonymised information about:</span>
+            <ul class="list list-bullet">
+              <li>how you got to the site</li>
+              <li>the pages you visit on GOV.UK and government digital services, and how long you spend on each page</li>
+              <li>what you click on while you're visiting the site</li>
+            </ul>
+            <span>We do not allow Google to use or share the data about how you use this site.</span>
+          </div>
+          <div class="form-group inline">
+            <div class="multiple-choice">
+                <input
+                    type="radio"
+                    id="accept_gi_yes"
+                    name="cookies"
+                    value="accept"
+                    {% if cookie_policy.accept_gi == 'on' %}checked{% endif %}
+                />
+                <label for="case_unassigned_{{forloop.counter}}" class="form-label">On</label>
+            </div>
+            <div class="multiple-choice">
+                <input
+                    type="radio"
+                    id="accept_gi_no"
+                    name="cookies"
+                    value="reject"
+                    {% if cookie_policy.accept_gi == 'off' %}checked{% endif %}
+                />
+                <label for="case_unassigned_{{forloop.counter}}" class="form-label">Off</label>
+            </div>
+          </div>
+        </fieldset>
+        <h3 class="heading-medium">Strictly necessary cookies</h3>
+        <p>These essential cookies do things like remember your progress through a form (for example a licence application)</p>
+
+        <p>They always need to be on.</p>
+
+        <p><a href="/cookiepolicy/">Find out more about cookies on the TRA Digital Service</a></p>
+        <div>
+          <button class="button" type="submit">Save changes</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="column-one-third right-column">
+      {% block right_column %}
+      {% endblock %}
+    </div>
+  </div>
+
+{% endblock %}
