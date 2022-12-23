@@ -47,13 +47,13 @@
                             {{ user.contact.email }}
                             <br><br>
                         {% endif %}
-                        {{ submission.organisation.name }}
+                        {{ submission.organisation.name|default_if_none:"" }}
                         <br>
-                        {{ submission.organisation.address }}
+                        {{ submission.organisation.address|default_if_none:"" }}
                         <br>
-                        {{ submission.organisation.post_code }}
+                        {{ submission.organisation.post_code|default_if_none:"" }}
                         <br>
-                        {{ submission.organisation.country }}
+                        {{ submission.organisation.country|default_if_none:"" }}
                         <br>
                     </dd>
                     <dd class="govuk-summary-list__actions">

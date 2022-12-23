@@ -119,6 +119,10 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
 class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
     template_name = "v2/registration_of_interest/tasklist.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        self.deficient_documents = False
+        return super().dispatch(request, *args, **kwargs)
+
     def get_task_list(self):
         submission = getattr(self, "submission", {})
 
@@ -168,10 +172,28 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
 
             if submission["paired_documents"] and not submission["orphaned_documents"]:
                 registration_documentation_status = "Complete"
-            elif orphaned_documents := submission["orphaned_documents"]:
+            elif submission["orphaned_documents"]:
                 registration_documentation_status = "Incomplete"
             else:
                 registration_documentation_status = "Not Started"
+
+            if submission.status.version:
+                # the ROI is deficient, check if the reg docs are deficient
+                deficient_registration_documents = [
+                    each.confidential
+                    for each in submission.paired_documents
+                    if each.confidential.deficient
+                ] + [
+                    each.non_confidential
+                    for each in submission.paired_documents
+                    if each.non_confidential.deficient
+                ]
+                if deficient_registration_documents:
+                    registration_documentation_status_text = (
+                        f"DEFICIENT DOCUMENTS: {len(deficient_registration_documents)}"
+                    )
+                    registration_documentation_status = "Incomplete"
+                    self.deficient_documents = True
         documentation_sub_steps = [
             {
                 "link": reverse(
@@ -191,13 +213,21 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
             and submission.organisation.id != self.request.user.contact["organisation"]["id"]
         ):
             # THe user is representing someone else, we should show the letter of authority
+            uploaded_loa_document = get_uploaded_loa_document(self.submission)
+            status = "Complete" if uploaded_loa_document else "Not Started"
+            status_text = None
+
+            if uploaded_loa_document and uploaded_loa_document.deficient:
+                status = "Incomplete"
+                status_text = "DEFICIENT DOCUMENT"
+                self.deficient_documents = True
+
             documentation_sub_steps.append(
                 {
                     "link": reverse("roi_3_loa", kwargs={"submission_id": submission["id"]}),
                     "link_text": "Letter of Authority",
-                    "status": "Complete"
-                    if get_uploaded_loa_document(self.submission)
-                    else "Not Started",
+                    "status": status,
+                    "status_text": status_text,
                 }
             )
 
@@ -221,15 +251,38 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
         )
         return steps
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_deficient_documents"] = self.deficient_documents
+        return context
+
     def get(self, request, *args, **kwargs):
         if request.GET.get("confirm_access", False) or (
-            self.submission and self.submission["status"]["locking"]
+            self.submission
+            and self.submission["status"]["locking"]
+            and not self.submission.status.version
         ):
-            # The submission exists, show the user the overview page
+            loa_document = get_uploaded_loa_document(self.submission)
+            # The submission exists, show the user the overview page. Only if we have specified
+            # the user wants to go to the review page, or the submission is locked but not
+            # deficient (in which case we want them to go to the tasklist)
+
+            # we want to find an org_case_role if it exists to see if the ROI has been processed
+            org_case_role = self.client.organisation_case_roles(
+                organisation_id=self.submission.organisation.id,
+                case_id=self.submission.case.id,
+                fields=["id", "case_role_key"],
+            )
+            if org_case_role:
+                org_case_role = org_case_role[0]
             return render(
                 request,
                 "v2/registration_of_interest/registration_of_interest_review.html",
-                context={"submission": self.submission},
+                context={
+                    "submission": self.submission,
+                    "loa_document": loa_document,
+                    "org_case_role": org_case_role,
+                },
             )
         # If not, show the normal tasklist
         return super().get(request, *args, **kwargs)
@@ -391,13 +444,21 @@ class InterestNonUkRegisteredStep2(RegistrationOfInterestBase, FormView):
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
         contact_id = self.kwargs["contact_id"]
+
+        new_organisation = self.client.organisations(
+            {
+                "name": form.cleaned_data["organisation_name"],
+                "companies_house_id": form.cleaned_data["company_number"],
+                "address": form.cleaned_data["address_snippet"],
+                "post_code": form.cleaned_data["post_code"],
+                "country": form.cleaned_data["country"],
+            }
+        )
+        self.client.contacts(contact_id).update({"organisation": new_organisation.id})
         return redirect(
-            f"/case/interest/{submission_id}/{contact_id}/submit/?name="
-            f"{form.cleaned_data.get('organisation_name')}&companies_house_id="
-            f"{form.cleaned_data.get('company_number')}&"
-            f"post_code={form.cleaned_data.get('post_code')}&non_uk_registered=true&"
-            f"address={form.cleaned_data.get('address_snippet')}&"
-            f"country={form.cleaned_data.get('country')}"  # noqa: E501
+            reverse(
+                "interest_submit", kwargs={"submission_id": submission_id, "contact_id": contact_id}
+            )
         )
 
 
@@ -408,12 +469,22 @@ class InterestIsUkRegisteredStep2(RegistrationOfInterestBase, FormView):
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
         contact_id = self.kwargs["contact_id"]
+
+        new_organisation = self.client.organisations(
+            {
+                "name": form.cleaned_data["organisation_name"],
+                "companies_house_id": form.cleaned_data["companies_house_id"],
+                "address": form.cleaned_data["organisation_address"],
+                "post_code": form.cleaned_data["organisation_post_code"],
+                "country": "GB",
+            }
+        )
+        self.client.contacts(contact_id).update({"organisation": new_organisation.id})
+
         return redirect(
-            f"/case/interest/{submission_id}/{contact_id}/submit/?name="
-            f"{form.cleaned_data.get('organisation_name')}&"
-            f"companies_house_id={form.cleaned_data.get('companies_house_id')}&"
-            f"post_code={form.cleaned_data.get('organisation_post_code')}&"
-            f"address={form.cleaned_data.get('organisation_address')}"  # noqa: E501
+            reverse(
+                "interest_submit", kwargs={"submission_id": submission_id, "contact_id": contact_id}
+            )
         )
 
 
@@ -431,9 +502,13 @@ class InterestUkSubmitStep2(RegistrationOfInterestBase, FormView):
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
         contact_id = self.kwargs["contact_id"]
-        get_dictionary = self.request.GET.dict()
-        # Creating the new organisation
-        organisation = self.client.organisations({**get_dictionary, **form.cleaned_data})
+        contact = self.client.contacts(contact_id)
+
+        # Updating the new organisation
+        organisation = self.client.organisations(contact.organisation).update(
+            data={**form.cleaned_data}
+        )
+
         # Associating the ROI with the organisation and redirecting to tasklist
         return self.add_organisation_to_registration_of_interest(
             organisation_id=organisation["id"], submission_id=submission_id, contact_id=contact_id
@@ -444,6 +519,11 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/who_you_representing_existing.html"
     form_class = ExistingClientForm
 
+    def dispatch(self, request, *args, **kwargs):
+        self.existing_clients = self.get_existing_clients()
+        response = super().dispatch(request, *args, **kwargs)
+        return response
+
     def get_existing_clients(self):
         org_parties = get_org_parties(
             TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
@@ -451,7 +531,9 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         # extract and return tuples of id and name in a list (from a list of dictionaries)
         # removing duplicates
         if representing_ids := self.request.user.representing_ids:
-            org_parties += [self.client.organisations(each) for each in representing_ids]
+            org_parties += [
+                self.client.organisations(each, fields=["id", "name"]) for each in representing_ids
+            ]
 
         return [
             (each["id"], each["name"])
@@ -462,12 +544,12 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(self.request.GET)
-        context["existing_clients"] = self.get_existing_clients()
+        context["existing_clients"] = self.existing_clients
         return context
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs["existing_clients"] = self.get_existing_clients()
+        kwargs["existing_clients"] = self.existing_clients
         return kwargs
 
     def form_valid(self, form):
@@ -496,7 +578,7 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
             self.submission["paired_documents"] + self.submission["orphaned_documents"]
         )
 
-        long_time_ago = timezone.now() - datetime.timedelta(days=1000)
+        long_time_ago = timezone.now() - datetime.timedelta(days=99999)
         sorted_uploaded_documents = sorted(
             uploaded_documents,
             key=lambda x: (
@@ -509,7 +591,13 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
             ),
         )
         context["uploaded_documents"] = sorted_uploaded_documents
-
+        context["is_deficient_documents"] = any(
+            [
+                each
+                for each in self.submission.paired_documents
+                if each.confidential.deficient or each.non_confidential.deficient
+            ]
+        )
         return context
 
     def post(self, request, *args, **kwargs):
@@ -543,7 +631,11 @@ class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
         context["loa_document_bundle"] = get_loa_document_bundle()
         if self.submission:
             # Getting the uploaded LOA document if it exists
-            context["loa_document"] = get_uploaded_loa_document(self.submission)
+            uploaded_loa_document = get_uploaded_loa_document(self.submission)
+            if uploaded_loa_document:
+                context["is_deficient_document"] = uploaded_loa_document.deficient
+                uploaded_loa_document = uploaded_loa_document["document"]
+            context["loa_document"] = uploaded_loa_document
         return context
 
     def post(self, request, *args, **kwargs):

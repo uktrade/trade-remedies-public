@@ -605,7 +605,10 @@ class InviteRepresentativeLoa(BaseInviteView):
         invitation = context["invitation"]
         context["loa_document_bundle"] = get_loa_document_bundle()
         # Getting the uploaded LOA document if it exists
-        context["uploaded_loa_document"] = get_uploaded_loa_document(invitation["submission"])
+        uploaded_loa_document = get_uploaded_loa_document(invitation["submission"])
+        if uploaded_loa_document:
+            uploaded_loa_document = uploaded_loa_document["document"]
+        context["uploaded_loa_document"] = uploaded_loa_document
         return context
 
     def post(self, request, *args, **kwargs):

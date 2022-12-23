@@ -5,6 +5,9 @@ from django.views.generic import TemplateView
 from django.views.generic.base import View
 from v2_api_client.mixins import APIClientMixin
 
+from config.base_views import FormInvalidMixin
+from core.v2_forms.feedback import FeedbackForm
+
 
 class CollectRatingView(APIClientMixin, View):
     def post(self, request, *args, **kwargs):
@@ -34,8 +37,9 @@ class CollectRatingView(APIClientMixin, View):
         )
 
 
-class CollectFeedbackView(APIClientMixin, TemplateView):
+class CollectFeedbackView(APIClientMixin, FormInvalidMixin):
     template_name = "v2/feedback/collect_feedback.html"
+    form_class = FeedbackForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -43,27 +47,26 @@ class CollectFeedbackView(APIClientMixin, TemplateView):
             context["feedback_object"] = self.client.feedback(feedback_id)
         return context
 
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
         feedback_dictionary = {
-            "what_didnt_work_so_well": request.POST.getlist("what_didnt_work_so_well"),
-            "what_didnt_work_so_well_other": request.POST["what_didnt_work_so_well_other"],
-            "how_could_we_improve_service": request.POST["how_could_we_improve_service"],
-            "rating": request.POST[
-                "rating"
-            ],  # keep this here as maybe they want to update the rating
+            "what_didnt_work_so_well": self.request.POST.getlist("what_didnt_work_so_well"),
+            "what_didnt_work_so_well_other": self.request.POST["what_didnt_work_so_well_other"],
+            "how_could_we_improve_service": self.request.POST["how_could_we_improve_service"],
+            # keep this here as maybe they want to update the rating
+            "rating": form.cleaned_data["rating"],
         }
 
-        if existing_feedback_id := request.POST.get("existing_feedback_id"):
+        if existing_feedback_id := self.request.POST.get("existing_feedback_id"):
             # we are updating an existing feedback object, just add the previously unseen data
             feedback_object = self.client.feedback(existing_feedback_id).update(feedback_dictionary)
         else:
             # this is a new, organic piece of feedback, construct from scratch
             feedback_dictionary.update(
                 {
-                    "logged_in": request.user.is_authenticated,
-                    "url": request.GET.get("previous_url", "N/A"),
-                    "url_name": request.GET.get("previous_url_name", "N/A"),
-                    "journey": request.GET.get("journey", "N/A"),
+                    "logged_in": self.request.user.is_authenticated,
+                    "url": self.request.GET.get("previous_url", "N/A"),
+                    "url_name": self.request.GET.get("previous_url_name", "N/A"),
+                    "journey": self.request.GET.get("journey", "N/A"),
                 }
             )
             feedback_object = self.client.feedback(feedback_dictionary)
