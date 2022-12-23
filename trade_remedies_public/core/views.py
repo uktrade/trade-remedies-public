@@ -401,11 +401,19 @@ class DashboardView(
             invitation_type=2,
             fields=["submission", "case", "invitation_type", "rejected_at", "approved_at"],
         )
+
         unapproved_rep_invitations_cases = [
             invite.case
             for invite in invitations
             if invite.submission and not invite.rejected_at and not invite.approved_at
         ]
+        seen_case_ids = []
+        no_duplicate_unapproved_rep_invitations_cases = []
+        for case in unapproved_rep_invitations_cases:
+            if case.id not in seen_case_ids:
+                no_duplicate_unapproved_rep_invitations_cases.append(case)
+                seen_case_ids.append(case.id)
+
         return render(
             request,
             self.template_name,
@@ -425,7 +433,7 @@ class DashboardView(
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
                 "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
                 in request.user.organisation_groups,
-                "unapproved_rep_invitations_cases": unapproved_rep_invitations_cases,
+                "unapproved_rep_invitations_cases": no_duplicate_unapproved_rep_invitations_cases,
             },
         )
 
