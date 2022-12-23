@@ -17,7 +17,7 @@ from registration.forms.forms import NonUkEmployerForm, OrganisationFurtherDetai
 class BaseAcceptInviteView(NormalBaseAcceptInviteView):
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
-        if self.invitation.submission and not self.invitation.submission.status.sent:
+        if self.invitation and self.invitation.submission and not self.invitation.submission.status.sent:
             # The invitation has either been marked as sufficient or deficient by caseworker, stop
             # from proceeding
             return redirect(reverse("login"))

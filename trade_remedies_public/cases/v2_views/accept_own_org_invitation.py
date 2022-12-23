@@ -10,6 +10,7 @@ from registration.forms.forms import PasswordForm, RegistrationStartForm, TwoFac
 
 class BaseAcceptInviteView(APIClientMixin, TemplateView):
     def dispatch(self, request, *args, **kwargs):
+        self.invitation = None
         try:
             invitation = self.client.invitations(self.kwargs["invitation_id"])
             if invitation.accepted_at:
