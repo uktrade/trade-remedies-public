@@ -4,7 +4,7 @@
     <ul class="task-list-items">
         <li class="task-list-item">
             {% if submission.id and submission.status.default or submission_type.name == 'Ad hoc' %}
-            <a href="/case/{{case_id}}/submission/{%if submission.id %}{{submission.id}}{% else %}{{submission_type_id}}{% endif %}/uploaded/confidential">Upload your confidential documents</a>
+                <a href="/case/{{case_id}}/submission/{%if submission.id %}{{submission.id}}{% else %}{{submission_type_id}}{% endif %}/uploaded/confidential">Upload your confidential documents</a>
             {% else %}
                 <span>Upload your confidential documents</span>
             {% endif %}

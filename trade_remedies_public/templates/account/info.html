@@ -6,75 +6,75 @@
 
 {% block row_content %}
 
-{% include "partials/widgets/breadcrumb.html" with bc_dashboard_only=true bc_current_page='Account details'  %}
-<div class="grid-row">
-  <div class="column-two-thirds">
-      {% alert_message %}
-      <h1 class="heading-xlarge">Account details</h1>
-      <div class="account-details">
-        <dl class="table width-100">
-          <div class="row">
-            <dt class="cell">Name</dt>
-            <dd class="cell">{{ user.name|default:"&nbsp;" }}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">Telephone</dt>
-            <dd class="cell">{{ user.contact.phone|default:user.phone|default:"&nbsp;" }}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">Email address</dt>
-            <dd  class="cell" title={{user.email}}>{% masked_email user.email|default:"&nbsp;" %}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">Address</dt>
-            <dd class="cell">{{ user.address|default:user.contact.address|default:"-"|linebreaksbr }}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">Country</dt>
-            <dd class="cell">{{ user.country|default:user.contact.country.name|default:"&nbsp;" }}</dd>
-          </div>
-        </dl>
-      </div>
-      <h1 class="heading-medium">Your organisation details</h1>
-      <div class="account-details">
-        <dl class="table width-100">
-          <div class="row">
-            <dt class="cell">Name</dt>
-            <dd class="cell">{{ organisation.name|default:"-" }}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">Registration number</dt>
-            <dd class="cell">{{ organisation.companies_house_id|default:"-" }}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">Address</dt>
-            <dd class="cell">{{ organisation.address|default:"-"|linebreaksbr }}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">VAT number</dt>
-            <dd class="cell">{{ organisation.vat_number|default:"-" }}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">EORI number</dt>
-            <dd class="cell">{{ organisation.eori_number|default:"-" }}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">D-U-N-S number</dt>
-            <dd class="cell">{{ organisation.duns_number|default:"-" }}</dd>
-          </div>
-          <div class="row">
-            <dt class="cell">Website</dt>
-            <dd class="cell">{{ organisation.organisation_website|default:"-" }}</dd>
-          </div>
-        </dl>
-      </div>
-      {% if pre_manage_team %}
-        <a href="/accounts/info/user/" class="button">Edit</a>
-      {% endif %}
+    {% include "partials/widgets/breadcrumb.html" with bc_dashboard_only=true bc_current_page='Account details'  %}
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            {% alert_message %}
+            <h1 class="heading-xlarge">Account details</h1>
+            <div class="account-details">
+                <dl class="table width-100">
+                    <div class="row">
+                        <dt class="cell">Name</dt>
+                        <dd class="cell">{{ user.name|default:"&nbsp;" }}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">Telephone</dt>
+                        <dd class="cell">{{ user.contact.phone|default:user.phone|default:"&nbsp;" }}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">Email address</dt>
+                        <dd  class="cell" title={{user.email}}>{% masked_email user.email|default:"&nbsp;" %}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">Address</dt>
+                        <dd class="cell">{{ user.address|default:user.contact.address|default:"-"|linebreaksbr }}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">Country</dt>
+                        <dd class="cell">{{ user.country|default:user.contact.country.name|default:"&nbsp;" }}</dd>
+                    </div>
+                </dl>
+            </div>
+            <h1 class="heading-medium">Your organisation details</h1>
+            <div class="account-details">
+                <dl class="table width-100">
+                    <div class="row">
+                        <dt class="cell">Name</dt>
+                        <dd class="cell">{{ organisation.name|default:"-" }}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">Registration number</dt>
+                        <dd class="cell">{{ organisation.companies_house_id|default:"-" }}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">Address</dt>
+                        <dd class="cell">{{ organisation.address|default:"-"|linebreaksbr }}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">VAT number</dt>
+                        <dd class="cell">{{ organisation.vat_number|default:"-" }}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">EORI number</dt>
+                        <dd class="cell">{{ organisation.eori_number|default:"-" }}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">D-U-N-S number</dt>
+                        <dd class="cell">{{ organisation.duns_number|default:"-" }}</dd>
+                    </div>
+                    <div class="row">
+                        <dt class="cell">Website</dt>
+                        <dd class="cell">{{ organisation.organisation_website|default:"-" }}</dd>
+                    </div>
+                </dl>
+            </div>
+            {% if pre_manage_team %}
+                <a href="/accounts/info/user/" class="button">Edit</a>
+            {% endif %}
 
-  </div>
-  <div class="column-one-third">
-    {% include "partials/widgets/help_box.html" %}
-  </div>
-</div>
+        </div>
+        <div class="column-one-third">
+            {% include "partials/widgets/help_box.html" %}
+        </div>
+    </div>
 {% endblock %}

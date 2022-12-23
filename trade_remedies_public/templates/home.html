@@ -1,52 +1,52 @@
 {% extends "base.html" %}
 {% block row_content %}
-{% load organisation_initialism %}
+    {% load organisation_initialism %}
 
-<div id="wrapper" class="site-wrapper direction-ltr">
-    <main role="main" id="content" lang="en">
-        <div class="grid-row">
-            <div class="column-two-thirds">
-                <h1 class="heading-xlarge">
-                <span class="heading-secondary">Trade remedies services</span>Sign in or create an account
-                </h1>
-            </div>
-            <div class="column-full">
-            <p>
-                Create an account if:
-            </p>
-            <ul class="ul">
-                <li>you want to participate in a trade remedies investigation by submitting evidence</li>
-                <li>you have the authority to represent your company (or a third party)</li>
-            </ul>
-
-            <p>You do not need an account to view the public file for a case. You can find this on the case page of the {% organisation_initialism %} website.</p>
-            <p>When you have an account, you will be able to:</p>
-            <ul class="ul">
-                <li>register interest in a case</li>
-                <li>upload documents in a case you’re already involved in
-                <li>add other people from your company to a case
-                <li>invite a third party (for example a lawyer or consultant) to represent you
-            </ul>
-
-            </div>
-            <div class="column-full">
-                <div class="margin-top-2">
-                    <a class="button button-start" href="/dashboard/" role="button">Start now</a>
+    <div id="wrapper" class="site-wrapper direction-ltr">
+        <main role="main" id="content" lang="en">
+            <div class="grid-row">
+                <div class="column-two-thirds">
+                    <h1 class="heading-xlarge">
+                        <span class="heading-secondary">Trade remedies services</span>Sign in or create an account
+                    </h1>
                 </div>
-            </div>
-        </div>
-    </main>
-</div>
+                <div class="column-full">
+                    <p>
+                        Create an account if:
+                    </p>
+                    <ul class="ul">
+                        <li>you want to participate in a trade remedies investigation by submitting evidence</li>
+                        <li>you have the authority to represent your company (or a third party)</li>
+                    </ul>
 
-  {% if authenticated %}
-    <!-- <a href="/accounts/logout/">Log Out</a><br/> -->
-  {% else %}
-    <!--
+                    <p>You do not need an account to view the public file for a case. You can find this on the case page of the {% organisation_initialism %} website.</p>
+                    <p>When you have an account, you will be able to:</p>
+                    <ul class="ul">
+                        <li>register interest in a case</li>
+                        <li>upload documents in a case you’re already involved in
+                            <li>add other people from your company to a case
+                                <li>invite a third party (for example a lawyer or consultant) to represent you
+                                </ul>
+
+                            </div>
+                            <div class="column-full">
+                                <div class="margin-top-2">
+                                    <a class="button button-start" href="/dashboard/" role="button">Start now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+
+                {% if authenticated %}
+                    <!-- <a href="/accounts/logout/">Log Out</a><br/> -->
+                {% else %}
+                    <!--
     <a href="/accounts/register/">Register</a><br/>
     <a href="/accounts/login/">Log In</a><br/>
     -->
-  {% endif %}
-    <!--
+                {% endif %}
+                <!--
     <BR>
     <a href="/dashboard/">Dashboard</a><br/>
     -->

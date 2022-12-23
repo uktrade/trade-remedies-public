@@ -4,6 +4,16 @@
 {% load organisation_name %}
 {% load organisation_initialism %}
 
+{% if user.is_authenticated %}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'user_login',
+            'user_id': '{{user.id}}'
+        });
+    </script>
+{% endif %}
+
 {% block page_title %}Dashboard{% endblock %}
 
 {% block row_content %}
@@ -26,8 +36,8 @@
         <div class="column-two-thirds">
             {% if not user.email_verified_at %}
                 <div class="govuk-notification-banner" style="margin-top: 1.875em;" role="region"
-                     aria-labelledby="govuk-notification-banner-title"
-                     data-module="govuk-notification-banner">
+                    aria-labelledby="govuk-notification-banner-title"
+                    data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">
                         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                             Important
@@ -38,7 +48,7 @@
                             Verify your email address
                         </p>
                         <p>Verify your email address to take part in a trade remedy investigation. <a
-                                href="{% url 'request_email_verify_code' user_pk=user.id %}?dont_send=yes">How to verify
+                            href="{% url 'request_email_verify_code' user_pk=user.id %}?dont_send=yes">How to verify
                             my email address</a>.
                         </p>
                     </div>
@@ -53,16 +63,14 @@
                     {% endif %}
                 </p>
             </div>
-            {% if cases_awaiting_approval or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
+            {% if unapproved_rep_invitations_cases or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
                 {% if user.email_verified_at %}
                     <h1 class="heading-large">Your cases</h1>
                     {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
-                    {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                        {# Cases waiting approval #}
-                        {% if cases_awaiting_approval %}
-                            <h2 class="heading-medium">Pending TRA Approval</h2>
-                            {% include "partials/widgets/dashboard_caselist.html" with cases=cases_awaiting_approval show_casenumber=True no_click=True %}
-                        {% endif %}
+                    {# Cases waiting approval #}
+                    {% if unapproved_rep_invitations_cases and 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
+                        <h2 class="heading-medium">Pending TRA Approval</h2>
+                        {% include "partials/widgets/dashboard_caselist.html" with cases=unapproved_rep_invitations_cases show_casenumber=True no_click=True %}
                     {% endif %}
                     <!-- Draft applications -->
                     {% if applications %}
@@ -121,11 +129,11 @@
                     <p>Use your dashboard to:</p>
                     <ul class="list">
                         <li>
-                        <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
-                        <p>This will allow you to; have a chance to submit evidence, get updates on important
-                            developments, comment on {% organisation_initialism %}’s findings before a final
-                            decision is
-                            made, as well as being able to request a reconsideration of a final determination.</p>
+                            <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
+                            <p>This will allow you to; have a chance to submit evidence, get updates on important
+                                developments, comment on {% organisation_initialism %}’s findings before a final
+                                decision is
+                                made, as well as being able to request a reconsideration of a final determination.</p>
                         </li>
                         {% if pre_manage_team and is_org_owner %}
                             <li><a class="link bold" href="/accounts/team/">Manage your team</a>

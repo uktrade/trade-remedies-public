@@ -19,7 +19,10 @@ from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.client import TRSAPIClient
 
-from cases.constants import CASE_ROLE_AWAITING_APPROVAL, CASE_TYPE_REPAYMENT
+from cases.constants import (
+    CASE_TYPE_REPAYMENT,
+    SUBMISSION_TYPE_REGISTER_INTEREST,
+)
 from cases.utils import decorate_due_status, decorate_rois
 from config.constants import (
     SECURITY_GROUP_ORGANISATION_OWNER,
@@ -391,19 +394,37 @@ class DashboardView(
         # get any 3rd party invites
         organisation = request.user.organisation
         invite_submissions = []
+        case_to_roi = {}
+        unapproved_rep_invitations_cases = []
+        v2_client = TRSAPIClient(token=request.user.token)
         if organisation:
+            v2_organisation = v2_client.organisations(
+                organisation["id"], fields=["organisationcaserole_set"]
+            )
             invite_submissions = client.get_organisation_invite_submissions(organisation["id"])
 
-        # Let's get the cases where the user is awaiting approval
-        v2_client = TRSAPIClient(token=request.user.token)
-        organisation = v2_client.organisations(
-            self.request.user.organisation["id"], fields=["organisationcaserole_set"]
-        )
-        cases_awaiting_approval = [
-            each.case
-            for each in organisation.organisationcaserole_set
-            if not each.approved_at and each.role == CASE_ROLE_AWAITING_APPROVAL
-        ]
+            # Let's get the cases where the user is awaiting approval
+            invitations = v2_client.invitations(
+                contact_id=request.user.contact["id"],
+                fields=["submission", "case", "invitation_type", "rejected_at", "approved_at"],
+            )
+            unapproved_rep_invitations_cases = [
+                invite.case
+                for invite in invitations
+                if invite.invitation_type == 2
+                if invite.submission and not invite.rejected_at and not invite.approved_at
+            ]
+
+            if contact_id := self.request.user.contact.get("organisation", {}).get("id"):
+                roi_submissions = v2_client.submissions(
+                    type_id=SUBMISSION_TYPE_REGISTER_INTEREST,
+                    case_id__in=[
+                        each.case.id for each in v2_organisation["organisationcaserole_set"]
+                    ],
+                    organisation_id=contact_id,
+                    fields=["case", "status"],
+                )
+                case_to_roi = {each.case.id: each for each in roi_submissions}
 
         return render(
             request,
@@ -424,7 +445,8 @@ class DashboardView(
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
                 "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
                 in request.user.organisation_groups,
-                "cases_awaiting_approval": cases_awaiting_approval,
+                "case_to_roi": case_to_roi,
+                "unapproved_rep_invitations_cases": unapproved_rep_invitations_cases,
             },
         )
 

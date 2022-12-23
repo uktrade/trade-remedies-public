@@ -6,7 +6,7 @@
 {% block page_title %}Select case{% endblock %}
 
 {% block subtype_content %}
-<p>Select one case and organisation combination.</p>
+    <p>Select one case and organisation combination.</p>
 {% endblock %}
 
 {% block breadcrumb %}
@@ -24,51 +24,51 @@
 {% block breadcrumb_current %}Assign a user to a case{% endblock %}
 
 {% block wide_content %}
-{% alert_message %}
-<form action="{{redirect}}" method="POST">
-  {% csrf_token %}
-  <input type="hidden" name="case_org_selection" value="true"/>
-  <table class="case-list margin-top-1 compact-radio" data-attach="TableSort">
-  <thead>
-    <tr>
-      <th scope="col">Ref.</th>
-      <th scope="col">Case</th>
-      <th scope="col">Representing</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for case in cases %}
-      {% if case.has_non_draft_subs %}
-        {% set 'org_id' case.organisation.id %}
-        {% set 'compound_id' case.case.id|addstr:':'|addstr:org_id %}
-        {% set 'disable' False %}
-        {% if compound_id in user_case_ids %}
-        {% set 'disable' True %}
-        {% endif %}
-        <tr {% if disable %}class="disabled" title="Already assigned"{% endif %}>
-          <td>
-              <div class="multiple-choice">
-                  <input type="radio" id="choose_case_{{forloop.counter}}"
-                    name="case_org_id"
-                    value="{{case.case.id}}:{{case.organisation.id}}"
-                    {% if disable %}disabled="disabled"{% endif %}
-                  />
-                  <label for="choose_case_{{forloop.counter}}" class="form-label">
-                    </label>
-                </div>
-                {{case.case.reference|default_if_none:''}}
-            </td>
-          <td title="{{case.case.name}}">
-            <span title="Already assigned">{{case.case.name}}</span>
-          </td>
-          <td>{{case.organisation.name}}</td>
-        </tr>
-      {% endif %}
-    {% endfor %}
-  </tbody>
-  </table>
-  <button class="button margin-top-1">Save selection</button>
-</form>
+    {% alert_message %}
+    <form action="{{redirect}}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="case_org_selection" value="true"/>
+        <table class="case-list margin-top-1 compact-radio" data-attach="TableSort">
+            <thead>
+                <tr>
+                    <th scope="col">Ref.</th>
+                    <th scope="col">Case</th>
+                    <th scope="col">Representing</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for case in cases %}
+                    {% if case.has_non_draft_subs %}
+                        {% set 'org_id' case.organisation.id %}
+                        {% set 'compound_id' case.case.id|addstr:':'|addstr:org_id %}
+                        {% set 'disable' False %}
+                        {% if compound_id in user_case_ids %}
+                            {% set 'disable' True %}
+                        {% endif %}
+                        <tr {% if disable %}class="disabled" title="Already assigned"{% endif %}>
+                            <td>
+                                <div class="multiple-choice">
+                                    <input type="radio" id="choose_case_{{forloop.counter}}"
+                                        name="case_org_id"
+                                        value="{{case.case.id}}:{{case.organisation.id}}"
+                                        {% if disable %}disabled="disabled"{% endif %}
+                                    />
+                                    <label for="choose_case_{{forloop.counter}}" class="form-label">
+                                    </label>
+                                </div>
+                                {{case.case.reference|default_if_none:''}}
+                            </td>
+                            <td title="{{case.case.name}}">
+                                <span title="Already assigned">{{case.case.name}}</span>
+                            </td>
+                            <td>{{case.organisation.name}}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="button margin-top-1">Save selection</button>
+    </form>
 {% endblock %}
 
 {% block continue_button %} {% endblock %}

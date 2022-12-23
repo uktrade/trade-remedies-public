@@ -23,14 +23,14 @@
         {% endif %}
 
         <div class="govuk-grid-column-one-half non_confidential_file_row">
-            {% include 'v2/component_macros/file_upload_card.html' with confidential=False document=document_pair.non_confidential unique_row_id=unique_row_id %}
+            {% include 'v2/component_macros/file_upload_card.html' with confidential=False document=document_pair.non_confidential unique_row_id=unique_row_id deficient=document_pair.non_confidential.deficient %}
         </div>
         <div class="govuk-grid-column-one-half confidential_file_row">
-            {% include 'v2/component_macros/file_upload_card.html' with confidential=True document=document_pair.confidential unique_row_id=unique_row_id %}
+            {% include 'v2/component_macros/file_upload_card.html' with confidential=True document=document_pair.confidential unique_row_id=unique_row_id deficient=document_pair.confidential.deficient %}
         </div>
         <div class="remove_document_panel remove-doc-panel" style="display: none;">
             <a href alt="Delete panel" title="Delete panel"
-               class="govuk-link govuk-link--no-visited-state remove_document_link">
+                class="govuk-link govuk-link--no-visited-state remove_document_link">
                 Remove documents
             </a>
         </div>

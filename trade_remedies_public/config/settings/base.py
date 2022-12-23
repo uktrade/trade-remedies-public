@@ -224,11 +224,13 @@ S3_DOCUMENT_ROOT_DIRECTORY = "documents"
 CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
 CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
+USE_CLAM_AV = env.bool("USE_CLAM_AV", default=True)
+FILE_UPLOAD_HANDLERS = []
 
-FILE_UPLOAD_HANDLERS = (
-    "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler",
-    "django_chunk_upload_handlers.s3.S3FileUploadHandler",
-)  # Order is important
+if USE_CLAM_AV:
+    FILE_UPLOAD_HANDLERS.append("django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler")
+
+FILE_UPLOAD_HANDLERS.append("django_chunk_upload_handlers.s3.S3FileUploadHandler")
 
 if basic_auth_user:
     BASICAUTH_USERS = json.loads(basic_auth_user)
