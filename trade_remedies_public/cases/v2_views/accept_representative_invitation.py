@@ -10,14 +10,18 @@ from cases.v2_views.accept_own_org_invitation import (
     BaseAcceptInviteView as NormalBaseAcceptInviteView,
 )
 from config.base_views import FormInvalidMixin
-from config.constants import SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_THIRD_PARTY_USER
+from config.constants import SECURITY_GROUP_ORGANISATION_OWNER
 from registration.forms.forms import NonUkEmployerForm, OrganisationFurtherDetailsForm
 
 
 class BaseAcceptInviteView(NormalBaseAcceptInviteView):
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
-        if not self.invitation.submission.status.sent:
+        if (
+            self.invitation
+            and self.invitation.submission
+            and not self.invitation.submission.status.sent
+        ):
             # The invitation has either been marked as sufficient or deficient by caseworker, stop
             # from proceeding
             return redirect(reverse("login"))
@@ -136,11 +140,20 @@ class OrganisationDetails(BaseAcceptInviteView, FormInvalidMixin):
             }
         )
 
-        # Now let's add the correct groups to the user, so they can log in and the rest of the
-        # invitation can be processed
-        self.client.users(self.invitation.invited_user.id).add_group(
-            SECURITY_GROUP_THIRD_PARTY_USER, SECURITY_GROUP_ORGANISATION_OWNER
-        )
+        if self.invitation.invitation_type == 2:
+            # Now let's add the correct groups to the user, so they can log in and the rest of the
+            # invitation can be processed
+            self.client.users(self.invitation.invited_user.id).add_group(
+                SECURITY_GROUP_ORGANISATION_OWNER
+            )
+        elif self.invitation.invitation_type == 3:
+            self.client.users(self.invitation.invited_user.id).add_group(
+                self.invitation.organisation_security_group
+            )
+
+            # Set the organisation and contact as not draft, as we know we have details for it
+            self.client.organisations(self.invitation.organisation.id).update({"draft": False})
+            self.client.contacts(self.invitation.contact.id).update({"draft": False})
 
         return redirect(
             reverse(
@@ -165,9 +178,12 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
             }
         )
 
-        # marking the submission as received, so it can be verified by the caseworker
-        self.client.submissions(self.invitation.submission.id).update_submission_status("received")
-        self.invitation.update({"accepted_at": timezone.now()})
+        if self.invitation.invitation_type == 2:
+            # marking the submission as received, so it can be verified by the caseworker
+            self.client.submissions(self.invitation.submission.id).update_submission_status(
+                "received"
+            )
+            self.invitation.update({"accepted_at": timezone.now()})
 
         # First let's add the invitee as an admin user to their organisation, this was also
         # add them to the required group
