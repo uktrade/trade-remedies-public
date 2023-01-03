@@ -1,10 +1,27 @@
 <div class="govuk-button-group">
-    <button class="govuk-button" data-module="govuk-button">
-        {% if forward_button_text %}
-            {{ forward_button_text }}
-        {% else %}
-            Continue
-        {% endif %}
-    </button>
+    {% if javascript %}
+        <button class="govuk-button without-js" data-module="govuk-button" disabled>
+            {% if disabled_button_text %}
+                {{ disabled_button_text }}
+            {% else %}
+                Continue
+            {% endif %}
+        </button>
+        <button class="govuk-button with-js" data-module="govuk-button">
+            {% if forward_button_text %}
+                {{ forward_button_text }}
+            {% else %}
+                Continue
+            {% endif %}
+        </button>
+    {% else %}
+        <button class="govuk-button" data-module="govuk-button">
+            {% if forward_button_text %}
+                {{ forward_button_text }}
+            {% else %}
+                Continue
+            {% endif %}
+        </button>
+    {% endif %}
     <a class="govuk-link" href="javascript: window.history.go(-1)">Back</a>
 </div>

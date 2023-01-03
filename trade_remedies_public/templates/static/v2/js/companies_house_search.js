@@ -1,4 +1,4 @@
-/* globals accessibleAutocomplete: true */
+/* globals accessibleAutocomplete: true, redirect_url: true */
 
 function clearCompany() {
   "use strict";
@@ -67,10 +67,10 @@ accessibleAutocomplete({
             $('div.govuk-hint').after(`
               <p id="uk_employer-error" class="govuk-error-message">
                 <span class="govuk-visually-hidden">Error:</span> The Companies House search is currently not working.
-                Try again shortly, or <a class="govuk-link" href="../no">enter your organisation details manually</a>.
+                Try again shortly, or <a class="govuk-link" href=${redirect_url}>enter your organisation details manually</a>.
               </p>
             `);
-            $('button.govuk-button').after('<a class="govuk-button" href="../no">Add company details manually</a>').remove();
+            $('button.govuk-button.with-js').after(`<a class="govuk-button" href=${redirect_url}>Add company details manually</a>`).remove();
           }
         });
     }
