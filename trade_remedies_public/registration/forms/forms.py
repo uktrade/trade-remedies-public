@@ -75,27 +75,45 @@ class UkEmployerForm(ValidationForm):
             self.add_error("company_data", "companies_house_not_selected")
         else:
             if self.cleaned_data.get("company_data"):
+                company = self.cleaned_data["company_data"]
                 # We only want to progress if they've selected something from
                 # the companies house dropdown
-                self.cleaned_data["country"] = "GB"  # Always going to be a UK company
+
+                countries = [
+                    "Wales",
+                    "England",
+                    "Scotland",
+                    "Great Britain",
+                    "United Kingdom",
+                    "Northern Ireland",
+                ]
+
+                # Check if country property contains a "GB" country
+                if (
+                    "country" not in company["address"]
+                    or company["address"]["country"] == "Not specified"
+                ):
+                    self.cleaned_data["country"] = ""
+                else:
+                    if any(country in company["address"]["country"] for country in countries):
+                        self.cleaned_data["country"] = "GB"
+
                 # We want to extract the postcode and put it in a
                 # recognisable field, so we don't have to duplicate the nested dictionary for
                 # a NON-UK company, as the company_data variable is fed
                 # to the same create_or_update_organisation() method on the API
-                self.cleaned_data["post_code"] = self.cleaned_data["company_data"]["address"].get(
-                    "postal_code"
-                )
+                self.cleaned_data["post_code"] = company["address"].get("postal_code")
+
                 # In fact, this goes for all of the fields, we want to extract them
                 # so they look the same as if we came from the non-UK company page
                 self.cleaned_data["address_snippet"] = (
-                    self.cleaned_data["company_data"]["address_snippet"]
+                    company["address_snippet"]
                     .removesuffix(self.cleaned_data["post_code"])
                     .rstrip(", ")
                 )
-                self.cleaned_data["company_number"] = self.cleaned_data["company_data"][
-                    "company_number"
-                ]
-                self.cleaned_data["company_name"] = self.cleaned_data["company_data"]["title"]
+                self.cleaned_data["company_number"] = company["company_number"]
+                self.cleaned_data["company_name"] = company["title"]
+
                 return self.cleaned_data
 
 

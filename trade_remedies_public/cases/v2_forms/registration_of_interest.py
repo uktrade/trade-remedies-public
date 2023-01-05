@@ -54,7 +54,11 @@ class UkEmployerForm(ValidationForm):
             self.add_error("company_data", "companies_house_not_searched")
         else:
             company = self.cleaned_data["company_data"]
-            company_postcode = company["address"]["postal_code"]
+
+            if "postal_code" in company["address"]:
+                company_postcode = company["address"]["postal_code"]
+            else:
+                company_postcode = ""
 
             self.cleaned_data["companies_house_id"] = company["company_number"]
             self.cleaned_data["organisation_name"] = company["title"]
@@ -62,6 +66,25 @@ class UkEmployerForm(ValidationForm):
                 company["address_snippet"].removesuffix(company_postcode).rstrip(", ")
             )
             self.cleaned_data["organisation_post_code"] = company_postcode
+
+            countries = [
+                "Wales",
+                "England",
+                "Scotland",
+                "Great Britain",
+                "United Kingdom",
+                "Northern Ireland",
+            ]
+
+            # Check if country property contains a "GB" country
+            if (
+                "country" not in company["address"]
+                or company["address"]["country"] == "Not specified"
+            ):
+                self.cleaned_data["organisation_country"] = ""
+            else:
+                if any(country in company["address"]["country"] for country in countries):
+                    self.cleaned_data["organisation_country"] = "GB"
 
             return self.cleaned_data
 
