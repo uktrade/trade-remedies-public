@@ -194,7 +194,7 @@ class TestUkEmployerForm(TestCase):
         form = UkEmployerForm(data=self.mock_data)
 
         self.assertTrue(form.is_valid())
-        self.assertEqual("", form.cleaned_data["organisation_country"])
+        self.assertEqual(None, form.cleaned_data["organisation_country"])
 
     def test_companies_house_address_country_not_supplied(self):
         self.mock_data["input-autocomplete"] = "TEST"
@@ -203,12 +203,10 @@ class TestUkEmployerForm(TestCase):
         del company["address"]["country"]
         self.mock_data["company_data"] = company
 
-        print(self.mock_data)
-
         form = UkEmployerForm(data=self.mock_data)
 
         self.assertTrue(form.is_valid())
-        self.assertEqual("", form.cleaned_data["organisation_country"])
+        self.assertEqual(None, form.cleaned_data["organisation_country"])
 
 
 class TestNonUkEmployerForm(TestCase):

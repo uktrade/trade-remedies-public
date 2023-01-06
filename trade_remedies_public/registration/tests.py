@@ -160,7 +160,7 @@ class TestUkEmployerForm(TestCase):
         form = UkEmployerForm(data=self.mock_data)
 
         self.assertTrue(form.is_valid())
-        self.assertEqual("", form.cleaned_data["country"])
+        self.assertEqual(None, form.cleaned_data["country"])
 
     def test_companies_house_address_country_not_supplied(self):
         company = json.loads(self.mock_data["company_data"])
@@ -170,7 +170,7 @@ class TestUkEmployerForm(TestCase):
         form = UkEmployerForm(data=self.mock_data)
 
         self.assertTrue(form.is_valid())
-        self.assertEqual("", form.cleaned_data["country"])
+        self.assertEqual(None, form.cleaned_data["country"])
 
     def test_invalid_form_not_selected(self):
         self.mock_data["input-autocomplete"] = "trying to search for test"
