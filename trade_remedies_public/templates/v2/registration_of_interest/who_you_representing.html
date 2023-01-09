@@ -27,8 +27,16 @@
                 Search Companies House to find your client's UK registered company details.
             </div>
             <p class="govuk-error-message">
-                <span class="govuk-visually-hidden">Error:</span> Turn on Javascript to use the Companies House search.
-                Or you will need to <span class="govuk-error-summary__list"><a href="{% url "interest_ch_no" submission_id contact_id %}">enter your organisation details manually</a></span>.
+                <span class="govuk-visually-hidden">Error: </span>
+                You cannot use the Companies House search feature
+                because JavaScript is not running in your browser. To fix this, try:
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-error-message">
+                <li>turning on JavaScript in your browser settings</li>
+                <li>reloading this page</li>
+            </ul>
+            <p class="govuk-error-message">
+                If you cannot turn on JavaScript, you will need to <span class="govuk-error-summary__list"><a href="{% url "interest_ch_no" submission_id contact_id %}">enter your organisation details manually</a></span>.
             </p>
             <input class="govuk-input" id="company-search" name="search-reg-org" placeholder="Enter a registered company name or number" disabled />
         </div>
