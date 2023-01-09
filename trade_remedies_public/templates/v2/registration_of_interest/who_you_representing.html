@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block error_summaries %}
-    {% include 'v2/component_macros/error_summaries.html' with javascript=True %}
+    {% include 'v2/component_macros/error_summaries.html' with javascript=True input_error_id="company-search" %}
 {% endblock error_summaries %}
 
 {% block noheading %}
@@ -28,7 +28,7 @@
             </div>
             <p class="govuk-error-message">
                 <span class="govuk-visually-hidden">Error:</span> Turn on Javascript to use the Companies House search.
-                Or you will need to <a href="{% url "interest_ch_no" submission_id contact_id %}">enter your organisation details manually</a>.
+                Or you will need to <span class="govuk-error-summary__list"><a href="{% url "interest_ch_no" submission_id contact_id %}">enter your organisation details manually</a></span>.
             </p>
             <input class="govuk-input" id="company-search" name="search-reg-org" placeholder="Enter a registered company name or number" disabled />
         </div>
@@ -77,7 +77,7 @@
                 and select "No".</p>
         </div>
     </details>
-    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="I confirm these details are correct" javascript=True disabled_button_text="Add company details manually" %}
+    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="I confirm these details are correct" javascript=True %}
     <input type="hidden" name="company_data">
 {% endblock form_content %}
 

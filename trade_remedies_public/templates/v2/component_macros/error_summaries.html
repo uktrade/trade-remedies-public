@@ -8,7 +8,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li class="govuk-error-message without-js">
-                        You need to enable Javascript
+                        <a href="#{{ input_error_id }}">You need to enable Javascript</a>
                     </li>
                     {% for error in form_errors.error_summaries %}
                         <li>
@@ -27,7 +27,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li class="govuk-error-message">
-                        You need to enable Javascript
+                        <a href="#{{ input_error_id }}">You need to enable Javascript</a>
                     </li>
                 </ul>
             </div>

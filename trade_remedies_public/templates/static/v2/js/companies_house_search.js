@@ -1,5 +1,7 @@
 /* globals accessibleAutocomplete: true, redirect_url: true */
 
+$(".without-js").remove();
+
 function clearCompany() {
   "use strict";
 
