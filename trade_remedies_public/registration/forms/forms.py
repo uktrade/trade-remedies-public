@@ -4,6 +4,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
+from django.conf import settings
+
 
 class RegistrationStartForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_name_entered"})
@@ -95,15 +97,6 @@ class UkEmployerForm(ValidationForm):
                 self.cleaned_data["company_number"] = company["company_number"]
                 self.cleaned_data["company_name"] = company["title"]
 
-                countries = [
-                    "England",
-                    "Great Britain",
-                    "Northern Ireland",
-                    "Scotland",
-                    "United Kingdom",
-                    "Wales",
-                ]
-
                 # Check if country property contains a "GB" country
                 if (
                     "country" not in company["address"]
@@ -111,7 +104,10 @@ class UkEmployerForm(ValidationForm):
                 ):
                     self.cleaned_data["country"] = None
                 else:
-                    if any(country in company["address"]["country"] for country in countries):
+                    if any(
+                        country in company["address"]["country"]
+                        for country in settings.CH_COUNTRIES
+                    ):
                         self.cleaned_data["country"] = "GB"
 
                 return self.cleaned_data

@@ -3,6 +3,7 @@ from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
 from config.forms import BaseYourEmployerForm, ValidationForm
+from django.conf import settings
 
 
 class ClientTypeForm(ValidationForm):
@@ -63,15 +64,6 @@ class UkEmployerForm(ValidationForm):
             )
             self.cleaned_data["organisation_post_code"] = company_postcode
 
-            countries = [
-                "Wales",
-                "England",
-                "Scotland",
-                "Great Britain",
-                "United Kingdom",
-                "Northern Ireland",
-            ]
-
             # Check if country property contains a "GB" country
             if (
                 "country" not in company["address"]
@@ -79,7 +71,9 @@ class UkEmployerForm(ValidationForm):
             ):
                 self.cleaned_data["organisation_country"] = None
             else:
-                if any(country in company["address"]["country"] for country in countries):
+                if any(
+                    country in company["address"]["country"] for country in settings.CH_COUNTRIES
+                ):
                     self.cleaned_data["organisation_country"] = "GB"
 
             return self.cleaned_data
