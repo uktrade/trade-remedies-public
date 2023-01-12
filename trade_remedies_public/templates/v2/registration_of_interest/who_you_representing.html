@@ -16,8 +16,7 @@
 
 {% block form_content %}
     {% with form_errors.company_data as error %}
-        {# when JS is disabled #}
-        <div class="govuk-form-group govuk-form-group--error without-js">
+        <div class="govuk-form-group govuk-form-group--error">
             <h1 class="govuk-label-wrapper">
                 <label class="govuk-label govuk-label--xl" for="search-reg-org">
                     Who do you represent?
@@ -26,39 +25,29 @@
             <div id="sort-hint" class="govuk-hint">
                 Search Companies House to find your client's UK registered company details.
             </div>
-            <p class="govuk-error-message">
+            <div class="with-js">
+                {% if error %}
+                    <p id="uk_employer-error" class="govuk-error-message">
+                        {% for error in error %}
+                            <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                <div id="company_search_container"></div>
+            </div>
+            <p class="govuk-error-message without-js">
                 <span class="govuk-visually-hidden">Error: </span>
                 You cannot use the Companies House search feature
                 because JavaScript is not running in your browser. To fix this, try:
             </p>
-            <ul class="govuk-list govuk-list--bullet govuk-error-message">
+            <ul class="govuk-list govuk-list--bullet govuk-error-message without-js">
                 <li>turning on JavaScript in your browser settings</li>
                 <li>reloading this page</li>
             </ul>
-            <p class="govuk-error-message">
+            <p class="govuk-error-message without-js">
                 If you cannot turn on JavaScript, you will need to <span class="govuk-error-summary__list"><a href="{% url "interest_ch_no" submission_id contact_id %}">enter your organisation details manually</a></span>.
             </p>
-            <input class="govuk-input" id="company-search" name="search-reg-org" placeholder="Enter a registered company name or number" disabled />
-        </div>
-
-        {# when JS is enabled #}
-        <div class="govuk-form-group with-js {% if error %}govuk-form-group--error{% endif %}">
-            <h1 class="govuk-label-wrapper">
-                <label class="govuk-label govuk-label--xl" for="search-reg-org">
-                    Who do you represent?
-                </label>
-            </h1>
-            <div id="sort-hint" class="govuk-hint">
-                Search Companies House to find your client's UK registered company details.
-            </div>
-            {% if error %}
-                <p id="uk_employer-error" class="govuk-error-message">
-                    {% for error in error %}
-                        <span class="govuk-visually-hidden">Error:</span> {{ error }}
-                    {% endfor %}
-                </p>
-            {% endif %}
-            <div id="company_search_container"></div>
+            <input class="govuk-input without-js" id="company-search" name="search-reg-org" placeholder="Enter a registered company name or number" disabled />
         </div>
     {% endwith %}
 
@@ -93,6 +82,17 @@
 
 {% block scripts %}
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
-    <script>const redirect_url = "{% url "interest_ch_no" submission_id contact_id %}";</script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var error = {% if form_errors.company_data %} true {% else %} false {% endif %}
+            if (error) {
+                $(".govuk-form-group").addClass("govuk-form-group--error")
+            } else {
+                $(".govuk-form-group").removeClass("govuk-form-group--error")
+            }
+        });
+
+        const redirect_url = "{% url "interest_ch_no" submission_id contact_id %}";
+    </script>
     <script src="{% static 'v2/js/companies_house_search.js' %}"></script>
 {% endblock %}
