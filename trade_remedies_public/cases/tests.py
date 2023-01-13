@@ -166,6 +166,7 @@ class TestUkEmployerForm(TestCase):
         self.assertEqual(
             "1 TEST ROAD, LONDON, UNITED KINGDOM", form.cleaned_data["organisation_address"]
         )
+        self.assertEqual("GB", form.cleaned_data["organisation_country"])
 
     def test_companies_house_searched_but_not_selected(self):
         form = UkEmployerForm(data={"input-autocomplete": "TEST"})
@@ -182,6 +183,30 @@ class TestUkEmployerForm(TestCase):
             form.errors.as_json(),
             '{"company_data": [{"message": "companies_house_not_searched",' ' "code": ""}]}',
         )
+
+    def test_companies_house_country_not_specified(self):
+        self.mock_data["input-autocomplete"] = "TEST"
+
+        company = json.loads(self.mock_data["company_data"])
+        company["address"]["country"] = "Not specified"
+        self.mock_data["company_data"] = company
+
+        form = UkEmployerForm(data=self.mock_data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(None, form.cleaned_data["organisation_country"])
+
+    def test_companies_house_address_country_not_supplied(self):
+        self.mock_data["input-autocomplete"] = "TEST"
+
+        company = json.loads(self.mock_data["company_data"])
+        del company["address"]["country"]
+        self.mock_data["company_data"] = company
+
+        form = UkEmployerForm(data=self.mock_data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(None, form.cleaned_data["organisation_country"])
 
 
 class TestNonUkEmployerForm(TestCase):

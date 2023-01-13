@@ -476,7 +476,7 @@ class InterestIsUkRegisteredStep2(RegistrationOfInterestBase, FormView):
                 "companies_house_id": form.cleaned_data["companies_house_id"],
                 "address": form.cleaned_data["organisation_address"],
                 "post_code": form.cleaned_data["organisation_post_code"],
-                "country": "GB",
+                "country": form.cleaned_data["organisation_country"],
             }
         )
         self.client.contacts(contact_id).update({"organisation": new_organisation.id})
