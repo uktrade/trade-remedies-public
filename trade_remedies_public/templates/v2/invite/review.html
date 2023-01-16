@@ -71,15 +71,15 @@
                             {% if not invitation.user_cases_to_link %}
                                 None
                             {% else %}
-                                <ul class="govuk-list govuk-list--bullet">
+                                <ul class="govuk-list">
                                     {% for user_case in invitation.user_cases_to_link %}
-                                        <li>{{ user_case.case.reference }} - {{ user_case.case.name }}</li>
-                                        {% if user_case.organisation.id != request.user.contact.organisation.id %}
-                                            {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
-                                            <div class="govuk-hint govuk-checkboxes__hint">
-                                                {{ user_case.organisation.name }}
-                                            </div>
-                                        {% endif %}
+                                        <li>
+                                            {{ user_case.case.reference }} - {{ user_case.case.name }}<br />
+                                            {% if user_case.organisation.id != request.user.contact.organisation.id %}
+                                                {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
+                                                <span class="govuk-hint">{{ user_case.organisation.name }}</span>
+                                            {% endif %}
+                                        </li>
                                     {% endfor %}
                                 </ul>
                             {% endif %}
