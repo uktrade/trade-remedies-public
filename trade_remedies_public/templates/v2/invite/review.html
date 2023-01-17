@@ -63,7 +63,7 @@
                 </div>
                 {% if cases %}
                     {# if the org hasn't been enrolled in any cases, then this will always be empty and cannot be changed, don't show the row #}
-                    <div class="govuk-summary-list__row">
+                    <div class="govuk-summary-list__row{% if not user_cases %} govuk-summary-list__row--no-actions{% endif %}">
                         <dt class="govuk-summary-list__key">
                             Cases invited to
                         </dt>
@@ -84,13 +84,15 @@
                                 </ul>
                             {% endif %}
                         </dd>
-                        <dd class="govuk-summary-list__actions">
-                            <a href="{% url 'invitation_choose_cases' invitation_id=invitation_id %}"
-                                class="govuk-link govuk-link--no-visited-state">
-                                Change
-                                <span class="govuk-visually-hidden"> case</span>
-                            </a>
-                        </dd>
+                        {% if user_cases %}
+                            <dd class="govuk-summary-list__actions">
+                                <a href="{% url 'invitation_choose_cases' invitation_id=invitation_id %}"
+                                    class="govuk-link govuk-link--no-visited-state">
+                                    Change
+                                    <span class="govuk-visually-hidden"> case</span>
+                                </a>
+                            </dd>
+                        {% endif %}
                     </div>
                 {% endif %}
             </dl>
