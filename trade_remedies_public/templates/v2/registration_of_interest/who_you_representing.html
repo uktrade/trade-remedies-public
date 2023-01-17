@@ -84,7 +84,7 @@
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
-            var error = {% if form_errors.company_data %} true {% else %} false {% endif %}
+            const error = {% if form_errors.company_data %} true {% else %} false {% endif %}
             if (error) {
                 $(".govuk-form-group").addClass("govuk-form-group--error")
             } else {
