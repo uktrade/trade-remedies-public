@@ -203,12 +203,11 @@ class ReviewInvitation(BaseInviteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["cases"] = self.client.organisations(
-            self.request.user.contact["organisation"]["id"], fields=["cases"]
+        cases = self.client.organisations(
+            self.request.user.contact["organisation"]["id"], fields=["cases", "user_cases"]
         )
-        context["user_cases"] = self.client.organisations(
-            self.request.user.contact["organisation"]["id"], fields=["user_cases"]
-        )["user_cases"]
+        context["cases"] = cases
+        context["user_cases"] = cases.user_cases
         return context
 
     def post(self, request, *args, **kwargs):
