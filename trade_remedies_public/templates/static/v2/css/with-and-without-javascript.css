@@ -1,0 +1,19 @@
+/* display when JS is enabled */
+.js-enabled .with-js {
+    display: block;
+}
+
+/* display when JS is disabled */
+.js-disabled .without-js {
+    display: block;
+}
+
+/* do not display when JS is disabled */
+.js-disabled .with-js {
+    display: none;
+}
+
+/* do not display when JS is enabled */
+.js-enabled .without-js {
+    display: none;
+}

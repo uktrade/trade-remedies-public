@@ -1,10 +1,14 @@
 {% extends "v2/registration_of_interest/base_form.html" %}
 {% load static %}
 
+{% block error_summaries %}
+    {% include 'v2/component_macros/error_summaries.html' with javascript=True input_error_id="company-search" %}
+{% endblock error_summaries %}
+
 {% block noheading %}
 {% endblock noheading %}
 
-{% block page_title %}Who are you representing{% endblock page_title %}
+{% block page_title %}Who do you represent{% endblock page_title %}
 
 {% block extra_css %}
     <link href="{% static 'v2/css/accessible-autocomplete.min.css' %}" rel="stylesheet">
@@ -12,38 +16,38 @@
 
 {% block form_content %}
     {% with form_errors.company_data as error %}
-        <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
+        <div class="govuk-form-group govuk-form-group--error">
             <h1 class="govuk-label-wrapper">
                 <label class="govuk-label govuk-label--xl" for="search-reg-org">
-                    Who are you representing?
+                    Who do you represent?
                 </label>
             </h1>
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
-                data-module="govuk-error-summary" id="companies-house-error" style="display:none;">
-                <h2 class="govuk-error-summary__title" id="error-summary-title">
-                    There is a problem
-                </h2>
-                <div class="govuk-error-summary__body">
-                    <ul class="govuk-list govuk-error-summary__list">
-                        <li>
-                            The Companies House search is currently not working. Try again shortly, or go back to the
-                            previous
-                            page and select "No" to add your details manually.
-                        </li>
-                    </ul>
-                </div>
-            </div>
             <div id="sort-hint" class="govuk-hint">
                 Search Companies House to find your client's UK registered company details.
             </div>
-            {% if error %}
-                <p id="uk_employer-error" class="govuk-error-message">
-                    {% for error in error %}
-                        <span class="govuk-visually-hidden">Error:</span> {{ error }}
-                    {% endfor %}
-                </p>
-            {% endif %}
-            <div id="company_search_container"></div>
+            <div class="with-js">
+                {% if error %}
+                    <p id="uk_employer-error" class="govuk-error-message">
+                        {% for error in error %}
+                            <span class="govuk-visually-hidden">Error:</span> {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+                <div id="company_search_container"></div>
+            </div>
+            <p class="govuk-error-message without-js">
+                <span class="govuk-visually-hidden">Error: </span>
+                You cannot use the Companies House search feature
+                because JavaScript is not running in your browser. To fix this, try:
+            </p>
+            <ul class="govuk-list govuk-list--bullet govuk-error-message without-js">
+                <li>turning on JavaScript in your browser settings</li>
+                <li>reloading this page</li>
+            </ul>
+            <p class="govuk-error-message without-js">
+                If you cannot turn on JavaScript, you will need to <a href="{% url "interest_ch_no" submission_id contact_id %}">enter your organisation details manually</a>.
+            </p>
+            <input class="govuk-input without-js" id="company-search" name="search-reg-org" placeholder="Enter a registered company name or number" disabled />
         </div>
     {% endwith %}
 
@@ -70,14 +74,25 @@
                 and select "No".</p>
         </div>
     </details>
-    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="I confirm these details are correct" %}
+    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="I confirm these details are correct" javascript=True %}
     <input type="hidden" name="company_data">
 {% endblock form_content %}
-
 
 <!-- Function accessibleAutocomplete below is from https://alphagov.github.io/accessible-autocomplete/ -->
 
 {% block scripts %}
     <script src="{% static 'v2/js/accessible-autocomplete.min.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            const error = {% if form_errors.company_data %} true {% else %} false {% endif %}
+            if (error) {
+                $(".govuk-form-group").addClass("govuk-form-group--error")
+            } else {
+                $(".govuk-form-group").removeClass("govuk-form-group--error")
+            }
+        });
+
+        const redirect_url = "{% url "interest_ch_no" submission_id contact_id %}";
+    </script>
     <script src="{% static 'v2/js/companies_house_search.js' %}"></script>
 {% endblock %}
