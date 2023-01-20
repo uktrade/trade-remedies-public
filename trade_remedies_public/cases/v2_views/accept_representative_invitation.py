@@ -121,7 +121,7 @@ class TwoFactorChoice(AcceptOrganisationTwoFactorChoice):
             self.client.users(self.invitation.invited_user.id).add_group(
                 SECURITY_GROUP_ORGANISATION_OWNER
             )
-            
+
             # marking the submission as received, so it can be verified by the caseworker
             self.client.submissions(self.invitation.submission.id).update_submission_status(
                 "received"
