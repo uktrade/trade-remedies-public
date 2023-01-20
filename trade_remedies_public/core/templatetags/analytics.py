@@ -15,7 +15,7 @@ def analytics(context, body=False):
 
     output = []
     cookie_policy = context.get("cookie_policy") or {}
-    request = context['request']
+    request = context["request"]
     if cookie_policy.get("accept_gi") == "on":
         if body:
             output = [
