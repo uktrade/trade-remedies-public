@@ -69,4 +69,4 @@ CSP_FONT_SRC = (
     "https:",
 )
 
-CSP_INCLUDE_NONCE_IN = ('script-src',)
+CSP_INCLUDE_NONCE_IN = ("script-src",)
