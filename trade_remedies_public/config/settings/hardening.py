@@ -48,6 +48,8 @@ SECURE_HSTS_SECONDS = 60  # 60 secs
 
 CSP_DEFAULT_SRC = ("'self'", "https:", "data:")
 
+CSP_SCRIPT_SRC_ELEM = ("'self'", "https:", "data:")
+
 CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https:", "data:", "fonts.googleapis.com")
 
 CSP_IMG_SRC = ("'self'", "https:", "data:", "www.googletagmanager.com", "www.google-analytics.com")
