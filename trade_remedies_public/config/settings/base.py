@@ -89,7 +89,6 @@ MIDDLEWARE = [
     "config.middleware.CacheControlMiddleware",
     "config.middleware.HoldingPageMiddleware",
     "config.middleware.SentryContextMiddleware",
-    "csp.middleware.CSPMiddleware",
 ]
 
 # Add basic authentication if configured
