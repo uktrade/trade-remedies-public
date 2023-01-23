@@ -44,22 +44,29 @@ SECURE_HSTS_PRELOAD = True
 # regular expression listed in SECURE_REDIRECT_EXEMPT
 SECURE_SSL_REDIRECT = True
 
-SECURE_HSTS_SECONDS = 0
+SECURE_HSTS_SECONDS = 60  # 60 secs
 
 CSP_DEFAULT_SRC = ("'self'", "https:", "data:")
 
-CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https:", "data:")
+CSP_STYLE_SRC = ("'self'", "'unsafe-inline'", "https:", "data:", "fonts.googleapis.com")
 
-CSP_IMG_SRC = ("'self'", "https:", "data:")
+CSP_IMG_SRC = ("'self'", "https:", "data:", "www.googletagmanager.com", "www.google-analytics.com")
 
 CSP_SCRIPT_SRC = (
     "'self'",
     "'unsafe-hashes'",
     "'unsafe-inline'",
+    "'unsafe-eval'",
+    "ajax.googleapis.com",
+    "www.googletagmanager.com",
+    "www.google-analytics.com",
     "https:",
 )
 
 CSP_FONT_SRC = (
     "'self'",
+    "fonts.gstatic.com",
     "https:",
 )
+
+CSP_INCLUDE_NONCE_IN = ("script-src",)
