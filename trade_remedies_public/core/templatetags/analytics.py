@@ -18,7 +18,6 @@ def analytics(context, body=False):
 
     output = []
     cookie_policy = context.get("cookie_policy") or {}
-
     if cookie_policy.get("accept_gi") == "on":
         # solution from:
         # https://github.com/mozilla/django-csp/blob/e209183b0956bfe2cef562bece18a6a526479c80/csp/middleware.py
