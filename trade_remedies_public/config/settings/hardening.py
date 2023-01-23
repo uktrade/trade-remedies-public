@@ -44,7 +44,7 @@ SECURE_HSTS_PRELOAD = True
 # regular expression listed in SECURE_REDIRECT_EXEMPT
 SECURE_SSL_REDIRECT = True
 
-SECURE_HSTS_SECONDS = 86400  # 1 day
+SECURE_HSTS_SECONDS = 60  # 60 secs
 
 CSP_DEFAULT_SRC = ("'self'", "https:", "data:")
 
