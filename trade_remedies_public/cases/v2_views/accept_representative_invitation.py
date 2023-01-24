@@ -2,7 +2,6 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 
-from cases.v2_forms.accept_representative_invite import WhoIsRegisteringForm
 from cases.v2_views.accept_own_org_invitation import (
     AcceptOrganisationInvite,
     AcceptOrganisationSetPassword,
@@ -28,34 +27,12 @@ class BaseAcceptInviteView(NormalBaseAcceptInviteView):
         return response
 
 
-class WhoIsRegisteringView(BaseAcceptInviteView, FormInvalidMixin):
-    template_name = "v2/accept_invite/new_user/who_is_registering.html"
-    form_class = WhoIsRegisteringForm
-
-    def form_valid(self, form):
-        self.request.session["who_is_registering"] = form.cleaned_data["who_is_registering"]
-        return redirect(
-            reverse(
-                "accept_representative_invitation_name_and_email",
-                kwargs={"invitation_id": self.kwargs["invitation_id"]},
-            )
-        )
-
-
 class RegistrationNameAndEmailView(AcceptOrganisationInvite):
     template_name = "v2/accept_invite/new_user/name_and_email.html"
 
     def dispatch(self, request, *args, **kwargs):
-        if self.request.session["who_is_registering"] == "email_recipient":
-            self.exclude_fields = ["email"]
+        self.exclude_fields = ["email"]
         return super().dispatch(request, *args, **kwargs)
-
-    def form_valid(self, form):
-        if self.request.session["who_is_registering"] == "organisation_recipient":
-            self.request.session["new_user_name"] = form.cleaned_data["name"]
-            self.request.session["new_user_email"] = form.cleaned_data["email"]
-        else:
-            return super().form_valid(form)
 
     def get_success_url(self):
         return reverse(
@@ -65,28 +42,6 @@ class RegistrationNameAndEmailView(AcceptOrganisationInvite):
 
 
 class SetPassword(AcceptOrganisationSetPassword):
-    def form_valid(self, form):
-        if self.request.session["who_is_registering"] == "organisation_recipient":
-            # We want to create the new user
-            new_user = self.client.users(
-                {
-                    "name": self.request.session["new_user_name"],
-                    "email": self.request.session["new_user_email"],
-                    "password": form.cleaned_data["password"],
-                    "organisation": self.invitation.organisation.id,
-                }
-            )
-            self.request.session["new_user_id"] = new_user.id
-            # and update the organisation of this new contact object to match the invitee's org
-            updated_contact = self.client.contacts(new_user.contact.id).change_organisation(
-                self.invitation.contact.organisation
-            )
-
-            # updating the invitation to reflect these changes
-            self.invitation.update({"invited_user": new_user.id, "contact": new_user.contact.id})
-        else:
-            return super().form_valid(form)
-
     def get_success_url(self):
         return reverse(
             "accept_representative_invitation_two_factor_choice",
@@ -96,14 +51,8 @@ class SetPassword(AcceptOrganisationSetPassword):
 
 class TwoFactorChoice(AcceptOrganisationTwoFactorChoice):
     def form_valid(self, form):
-        # Updating two-factor-choice of user
-        if self.request.session["who_is_registering"] == "organisation_recipient":
-            # we'll use the ID of the newly created user
-            user_id = self.request.session["new_user_id"]
-            contact_id = self.client.users(user_id).contact.id
-        else:
-            user_id = self.invitation.invited_user.id
-            contact_id = self.invitation.contact.id
+        user_id = self.invitation.invited_user.id
+        contact_id = self.invitation.contact.id
         self.update_two_factor_choice(
             user_id=user_id,
             two_factor_delivery_choice=form.cleaned_data["two_factor_choice"],
