@@ -1,6 +1,6 @@
 {% extends 'v2/govuk/base.html' %}
 
-{% block page_title %}Check and submit{% endblock page_title %}
+{% block page_title %}Invite sent{% endblock page_title %}
 {% block back_button %}{% endblock back_button %}
 
 {% block row_content %}
@@ -10,39 +10,44 @@
                 Invite sent
             </h1>
         </div>
-
-        <p>We have sent an invite to:</p>
-        <p>{{ invitation.name }}: {{ invitation.email }}<br>
-            Permission: {% if invitation.organisation_security_group == group_owner %}
+        <p class="govuk-body">We have sent an invitation to:</p>
+        <p class="govuk-body">
+            {{ invitation.name }} - {{ invitation.email }}<br />
+            Permission:
+            {% if invitation.organisation_security_group == group_owner %}
                 Admin user
             {% elif invitation.organisation_security_group == group_regular %}
                 User
-            {% endif %}<br>
-
-            {% if cases %}
-                Cases: {% if not invitation.cases_to_link %}None{% endif %}
-            {% endif %}
+            {% endif %}<br />
+            Cases: {% if not invitation.user_cases_to_link %}None{% endif %}
         </p>
-        {% if invitation.cases_to_link %}
-            <ul class="govuk-list govuk-list--bullet">
-                {% for case in invitation.cases_to_link %}
-                    <li>{{ case.reference }} - {{ case.name }}</li>
+
+        {% if invitation.user_cases_to_link %}
+            <ul class="govuk-list">
+                {% for user_case in invitation.user_cases_to_link %}
+                    <li>
+                        {{ user_case.case.reference }} - {{ user_case.case.name }}<br />
+                        {% if user_case.organisation.id != request.user.contact.organisation.id %}
+                            {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
+                            <span class="govuk-hint">{{ user_case.organisation.name }}</span>
+                        {% endif %}
+                    </li>
                 {% endfor %}
             </ul>
         {% endif %}
-        <p>Once they have registered, you can manage the cases they are assigned to and change their permissions as you
-            require.</p>
 
+        <p class="govuk-body">
+            Once they have registered, you can manage cases they are assigned to and change their permissions.
+        </p>
         <div class="govuk-button-group">
             <a class="govuk-button" data-module="govuk-button" href="{% url 'team_view' %}">
                 Manage team
             </a>
             <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invitation_start' %}">Invite new user</a>
         </div>
-
     </div>
 {% endblock row_content %}
 
 {% block additional_content %}
-    {% include "v2/feedback/stars_partial.html" with  journey="Invite to own organisation sent" %}
+    {% include "v2/feedback/stars_partial.html" with journey="Invite to own organisation sent" %}
 {% endblock additional_content %}

@@ -61,29 +61,29 @@
                         </a>
                     </dd>
                 </div>
-                {% if cases %}
-                    {# if the org hasn't been enrolled in any cases, then this will always be empty and cannot be changed, don't show the row #}
-                    <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">
-                            Cases invited to
-                        </dt>
-                        <dd class="govuk-summary-list__value">
-                            {% if not invitation.user_cases_to_link %}
-                                None
-                            {% else %}
-                                <ul class="govuk-list govuk-list--bullet">
-                                    {% for user_case in invitation.user_cases_to_link %}
-                                        <li>{{ user_case.case.reference }} - {{ user_case.case.name }}</li>
+                {# if the org hasn't been enrolled in any cases, then this will always be empty and cannot be changed, don't show the row #}
+                <div class="govuk-summary-list__row{% if not organisation.user_cases %} govuk-summary-list__row--no-actions{% endif %}">
+                    <dt class="govuk-summary-list__key">
+                        Cases invited to
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        {% if not invitation.user_cases_to_link %}
+                            None
+                        {% else %}
+                            <ul class="govuk-list">
+                                {% for user_case in invitation.user_cases_to_link %}
+                                    <li>
+                                        {{ user_case.case.reference }} - {{ user_case.case.name }}<br/>
                                         {% if user_case.organisation.id != request.user.contact.organisation.id %}
                                             {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
-                                            <div class="govuk-hint govuk-checkboxes__hint">
-                                                {{ user_case.organisation.name }}
-                                            </div>
+                                            <span class="govuk-hint">{{ user_case.organisation.name }}</span>
                                         {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </dd>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </dd>
+                    {% if organisation.user_cases %}
                         <dd class="govuk-summary-list__actions">
                             <a href="{% url 'invitation_choose_cases' invitation_id=invitation_id %}"
                                 class="govuk-link govuk-link--no-visited-state">
@@ -91,8 +91,8 @@
                                 <span class="govuk-visually-hidden"> case</span>
                             </a>
                         </dd>
-                    </div>
-                {% endif %}
+                    {% endif %}
+                </div>
             </dl>
             <h2 class="govuk-heading-m">Now send your invite</h2>
             <p>The invite will ask the new user to register. This will give them access to your organisation’s
