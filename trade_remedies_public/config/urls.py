@@ -21,7 +21,7 @@ from django.urls import (
 from cases.views import CasesView
 from cookies import views as cookie_views
 from core import views as core_views
-from core.v2_views import feedback, manage_your_team
+from core.v2_views import feedback, manage_users
 from login import views as login_views
 from password import views as password_views
 from registration.views import views as register_views
@@ -301,9 +301,7 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path(
-        "manage_your_team", manage_your_team.ManageYourTeamView.as_view(), name="manage_your_team"
-    ),
+    path("manage-users", manage_users.ManageUsersView.as_view(), name="manage-users"),
     path("collect_feedback", feedback.CollectFeedbackView.as_view(), name="collect_feedback"),
     path(
         "collect_feedback_second_step/<uuid:feedback_id>",

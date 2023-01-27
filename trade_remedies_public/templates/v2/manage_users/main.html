@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load alert_message %}
+{% load to_json %}
+{% load set %}
+{% load static %}
+
+{% block page_title %}Manage users{% endblock page_title %}
+{% block row_content %}
+    <div class="breadcrumbs" data-module="track-click">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a data-track-category="breadcrumbClicked" data-track-action="1" class=""
+                    aria-current="false" href="{% url 'dashboard' %}">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">Manage users</li>
+        </ol>
+    </div>
+    <div class="govuk-main-wrapper">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-xl">Manage users</h1>
+            </div>
+            <div class="govuk-grid-column-full">
+                <h2 class="govuk-heading-m">
+                    Account users
+                    <span class="govuk-body" style="float: right;">
+                        <a href="invite/invite-user-type?tasklist-type=invite-rep&amp;existing-cases-reps=yes" class="govuk-link--no-visited-state">Invite user</a>
+                    </span>
+                </h2>
+                <p>Manage users giving them access to cases or admin rights for this account.</p>
+                <table class="govuk-table sortable mobile-table-border desktop-table-border" data-attach="TableSort">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" scope="col">User</th>
+                            <th class="govuk-table__header" scope="col">Email</th>
+                            <th class="govuk-table__header" scope="col">Account role</th>
+                            <th class="govuk-table__header" scope="col">Cases</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for org_user in organisation.organisationuser_set %}
+                            <tr class="govuk-table__row no-border">
+                                <td class="govuk-table__cell text-overflow"><a href="" class="govuk-link--no-visited-state">{{org_user.user.name}}</a></td>
+                                <td class="govuk-table__cell text-overflow">{{org_user.user.email}}</td>
+                                <td class="govuk-table__cell">{% if org_user.user.is_organisation_owner %} Admin user {%else%} User {% endif %}</td>
+                                <td class="govuk-table__cell">{{org_user.user.case_count}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock row_content %}
