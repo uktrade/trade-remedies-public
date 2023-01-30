@@ -2,25 +2,40 @@
 {% load set %}
 {% load static %}
 
+{% block error_summaries %}
+    {% include 'v2/component_macros/error_summaries.html' with javascript=True input_error_id="no-js-error" %}
+{% endblock error_summaries %}
+
 {% block page_title %}Upload Letter of Authority{% endblock page_title %}
 {% block back_button_link %}{% url 'roi_submission_exists' submission_id=submission.id %}{% endblock back_button_link %}
 
 {% block main_content %}
-
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <span class="govuk-caption-xl">3. Documentation</span>
-            <h1 class="govuk-heading-xl">
-                Upload a Letter of Authority
-            </h1>
-            {% if is_deficient_document %}
-                {% include "v2/component_macros/deficiency_notice_warning_box.html" with submission=submission %}
-            {% endif %}
-            <p>Download the Letter of Authority and ask your client to complete it. This will confirm you have authority
-                to act on their behalf.</p>
-            <p>Upload it when finished (max. file size 30MB). Your information is kept confidential.</p>
-
+            <div class="govuk-form-group govuk-form-group--error">
+                <span class="govuk-caption-xl">3. Documentation</span>
+                <h1 class="govuk-label-wrapper">
+                    <label class="govuk-label govuk-label--xl" for="search-reg-org">
+                        Upload a Letter of Authority
+                    </label>
+                </h1>
+                <p class="govuk-error-message without-js" id="no-js-error">
+                    <span class="govuk-visually-hidden">Error: </span>If JavaScript is not running in your browser, some
+                    content may not be available or the page performance may be affected. To fix this, try:
+                </p>
+                <ul class="govuk-list govuk-list--bullet govuk-error-message without-js">
+                    <li>turning on JavaScript in your browser settings</li>
+                    <li>reloading this page</li>
+                </ul>
+                {% if is_deficient_document %}
+                    {% include "v2/component_macros/deficiency_notice_warning_box.html" with submission=submission %}
+                {% endif %}
+                <p class="govuk-body">
+                    Download the Letter of Authority and ask your client to complete it. This will confirm you have authority
+                    to act on their behalf.
+                </p>
+                <p class="govuk-body">Upload it when finished (max. file size 30MB). Your information is kept confidential.</p>
+            </div>
             {% if loa_document_bundle %}
                 <ul class="govuk-list">
                     {% for loa_document in loa_document_bundle.documents %}
@@ -36,7 +51,6 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-
         </div>
     </div>
     <form method="post" id="upload-form">
@@ -48,7 +62,6 @@
                 </h2>
             </div>
         </div>
-
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-one-half">
                 <div class="row-colour">
@@ -58,19 +71,16 @@
                 </div>
             </div>
         </div>
-
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
                 {% include 'v2/component_macros/form_button_group.html' with forward_button_text='Continue' %}
             </div>
         </div>
-
     </form>
-
-
 {% endblock main_content %}
 
 {% block scripts %}
+    <script type="text/javascript">$("div").removeClass("govuk-form-group--error");</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'v2/js/drag_and_drop.js' %}"></script>
@@ -79,5 +89,4 @@
             $(this).next().show()
         })
     </script>
-
 {% endblock scripts %}
