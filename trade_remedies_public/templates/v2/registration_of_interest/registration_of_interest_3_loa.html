@@ -19,14 +19,7 @@
                         Upload a Letter of Authority
                     </label>
                 </h1>
-                <p class="govuk-error-message without-js" id="no-js-error">
-                    <span class="govuk-visually-hidden">Error: </span>If JavaScript is not running in your browser, some
-                    content may not be available or the page performance may be affected. To fix this, try:
-                </p>
-                <ul class="govuk-list govuk-list--bullet govuk-error-message without-js">
-                    <li>turning on JavaScript in your browser settings</li>
-                    <li>reloading this page</li>
-                </ul>
+                {% include 'v2/component_macros/no_js_error_messages.html' %}
                 {% if is_deficient_document %}
                     {% include "v2/component_macros/deficiency_notice_warning_box.html" with submission=submission %}
                 {% endif %}
