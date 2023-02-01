@@ -9,18 +9,26 @@ class ManageUsersView(BasePublicView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["organisation"] = self.client.organisations(self.request.user.organisation["id"])
-        context["pending_invitations"] = self.client.invitations(
+        pending_invitations = self.client.invitations(
             organisation_id=self.request.user.organisation["id"],
             approved_at__isnull=True,
             rejected_at__isnull=True,
         )
-        context["rejected_invitations"] = self.client.invitations(
-            organisation_id=self.request.user.organisation["id"],
-            approved_at__isnull=True,
-            rejected_at__isnull=False,
+        context.update(
+            {
+                "organisation": self.client.organisations(self.request.user.organisation["id"]),
+                "pending_invitations": pending_invitations,
+                "rejected_invitations": self.client.invitations(
+                    organisation_id=self.request.user.organisation["id"],
+                    approved_at__isnull=True,
+                    rejected_at__isnull=False,
+                ),
+                "pending_invitations_deficient_docs_count": sum(
+                    {1 for invite in pending_invitations if invite.submission.deficiency_sent_at}
+                ),
+                "user": self.request.user,
+                "group_owner": SECURITY_GROUP_ORGANISATION_OWNER,
+                "group_third_party": SECURITY_GROUP_THIRD_PARTY_USER,
+            }
         )
-        context["user"] = self.request.user
-        context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
-        context["group_third_party"] = SECURITY_GROUP_THIRD_PARTY_USER
         return context

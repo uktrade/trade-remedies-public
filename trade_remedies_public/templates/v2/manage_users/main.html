@@ -1,12 +1,12 @@
-{% extends "base.html" %}
+{% extends "v2/govuk/base.html" %}
 {% load alert_message %}
 {% load to_json %}
 {% load set %}
 {% load static %}
 
 {% block page_title %}Manage users{% endblock page_title %}
-{% block row_content %}
-    <div class="breadcrumbs" data-module="track-click">
+{% block back_button %}
+    <div class="govuk-breadcrumbs">
         <ol class="govuk-breadcrumbs__list">
             <li class="govuk-breadcrumbs__list-item">
                 <a data-track-category="breadcrumbClicked" data-track-action="1" class=""
@@ -15,7 +15,9 @@
             <li class="govuk-breadcrumbs__list-item">Manage users</li>
         </ol>
     </div>
-    <div class="govuk-main-wrapper">
+{% endblock %}
+{% block main_content %}
+    {% block row_content %}
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 <h1 class="govuk-heading-xl">Manage users</h1>
@@ -25,7 +27,7 @@
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                     <strong class="govuk-warning-text__text">
                         <span class="govuk-warning-text__assistive">Warning</span>
-                        You have 1 pending invite with deficient documentation
+                        You have {{pending_invitations_deficient_docs_count}} pending invite with deficient documentation
                     </strong>
                 </div>
                 <div class="govuk-tabs" data-module="govuk-tabs">
@@ -33,34 +35,27 @@
                         Contents
                     </h2>
                     <ul class="govuk-tabs__list" role="tablist">
-                        <li class="govuk-tabs__list-item" role="presentation">
-                            <a class="govuk-tabs__tab" href="#manage-team" id="tab_manage-team" role="tab" aria-controls="manage-team" aria-selected="false" tabindex="-1">
+                        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+                            <a class="govuk-tabs__tab" href="#manage-team" id="tab_manage-team" role="tab" aria-controls="manage-team" aria-selected="true" tabindex="0">
                                 Account users
                             </a>
                         </li>
                         <li class="govuk-tabs__list-item" role="presentation">
-                            <a class="govuk-tabs__tab" href="#manage-invites" id="tab_manage-invites" role="tab" aria-controls="manage-invites" aria-selected="true" tabindex="-1">
-                                Pending invites {{pending_invitations|length}}
+                            <a class="govuk-tabs__tab" href="#manage-invites" id="tab_manage-invites" role="tab" aria-controls="manage-invites" aria-selected="false" tabindex="-1">
+                                Pending invites({{pending_invitations|length}})
                             </a>
                         </li>
-                        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
-                            <a class="govuk-tabs__tab" href="#rejected-invites" id="tab_rejected-invites" role="tab" aria-controls="rejected-invites" aria-selected="false" tabindex="0">
-                                Rejected invites {{rejected_invitations|length}}
+                        <li class="govuk-tabs__list-item" role="presentation">
+                            <a class="govuk-tabs__tab" href="#rejected-invites" id="tab_rejected-invites" role="tab" aria-controls="rejected-invites" aria-selected="false" tabindex="-1">
+                                Rejected invites({{rejected_invitations|length}})
                             </a>
                         </li>
                     </ul>
-                    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="manage-team" role="tabpanel" aria-labelledby="tab_manage-team">
+                    <div class="govuk-tabs__panel" id="manage-team" role="tabpanel" aria-labelledby="tab_manage-team">
                         <h2 class="govuk-heading-m">Account users
                             <span class="govuk-body right-aligned-link">
-                                {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                    <a class="govuk-link--no-visited-state" id="lnk_invite_colleague"
-                                        href="{% url 'invitation_start' %}">Invite user</a>
-                                    <a class="govuk-link--no-visited-state" id="lnk_invite_colleagu_old"
-                                        href="/accounts/team/{{ user.organisation.id }}/user/">Invite user</a>
-                                {% else %}
-                                    <a class="govuk-link--no-visited-state"
-                                        href="/accounts/team/{{ user.organisation.id }}/user/">Invite user</a>
-                                {% endif %}
+                                <a class="govuk-link--no-visited-state" id="lnk_invite_colleague"
+                                    href="{% url 'invitation_start' %}">Invite user</a>
                             </span>
                         </h2>
                         <p>Select a user to manage their access to your cases.</p>
@@ -244,7 +239,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="govuk-tabs__panel" id="rejected-invites" role="tabpanel" aria-labelledby="tab_rejected-invites">
+                    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="rejected-invites" role="tabpanel" aria-labelledby="tab_rejected-invites">
                         <h2 class="govuk-heading-m">Rejected invites</h2>
                         <p>You have {{rejected_invitations|length}} rejected invite{% if rejected_invitations|length != 1 %}s{% endif %}</p>
                         <form>
@@ -326,5 +321,5 @@
                 </div>
             </div>
         </div>
-    </div>
-{% endblock row_content %}
+    {% endblock row_content %}
+{% endblock main_content %}
