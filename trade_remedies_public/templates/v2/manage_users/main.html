@@ -1,7 +1,4 @@
 {% extends "v2/govuk/base.html" %}
-{% load alert_message %}
-{% load to_json %}
-{% load set %}
 {% load static %}
 
 {% block page_title %}Manage users{% endblock page_title %}
@@ -122,7 +119,7 @@
                                 {% for org_user in organisation.organisationuser_set %}
                                     <tr class="govuk-table__row no-border">
                                         <td class="govuk-table__cell text-overflow">
-                                            <span class="govuk-visually-hidden--desktop">User: </span><a href="user-account?account-user=invite-rep-name" class="govuk-link--no-visited-state">{{org_user.user.name}}</a>
+                                            <span class="govuk-visually-hidden--desktop">User: </span><a href="{% url 'account_info' %}" class="govuk-link--no-visited-state">{{org_user.user.name}}</a>
                                         </td>
                                         <td class="govuk-table__cell text-overflow">
                                             <span class="govuk-visually-hidden--desktop">Email: </span>{{org_user.user.email}}
@@ -142,15 +139,8 @@
                     <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="manage-invites" role="tabpanel" aria-labelledby="tab_manage-invites">
                         <h2 class="govuk-heading-m">Pending invites
                             <span class="govuk-body right-aligned-link">
-                                {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                    <a class="govuk-link--no-visited-state" id="lnk_invite_colleague"
-                                        href="{% url 'invitation_start' %}">Invite user</a>
-                                    <a class="govuk-link--no-visited-state" id="lnk_invite_colleagu_old"
-                                        href="/accounts/team/{{ user.organisation.id }}/user/">Invite user</a>
-                                {% else %}
-                                    <a class="govuk-link--no-visited-state"
-                                        href="/accounts/team/{{ user.organisation.id }}/user/">Invite user</a>
-                                {% endif %}
+                                <a class="govuk-link--no-visited-state" id="lnk_invite_colleague"
+                                    href="{% url 'invitation_start' %}">Invite user</a>
                             </span>
                         </h2>
                         <p>You have {{pending_invitations|length}} pending invite{% if pending_invitations|length != 1 %}s{% endif %}</p>
