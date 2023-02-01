@@ -12,9 +12,9 @@ class ManageYourTeamView(BasePublicView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["organisation"] = self.client().organisations.retrieve(
+        """context["organisation"] = self.client.organisations(
             self.request.user.organisation["id"]
-        )
+        )"""
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
         context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
         return context
