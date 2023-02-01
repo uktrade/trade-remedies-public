@@ -49,16 +49,16 @@
                         {% endif %}
                         <span class="govuk-visually-hidden">file</span></a></p>
             {% else %}
-                {% if form_errors %}
-                    {% if type == form_errors.file_type %}
-                        {% for _field, error in form_errors.error_summaries %}
-                            <p class="govuk-error-message" id="error">
-                                <span class="govuk-visually-hidden">Error: </span>{{ error }}
-                            </p>
-                        {% endfor %}
+                <div class="govuk-form-group {% if form_errors and type == form_errors.file_type %}govuk-form-group--error{% endif %}">
+                    {% if form_errors %}
+                        {% if type == form_errors.file_type %}
+                            {% for _field, error in form_errors.error_summaries %}
+                                <p class="govuk-error-message" id="error">
+                                    <span class="govuk-visually-hidden">Error: </span>{{ error }}
+                                </p>
+                            {% endfor %}
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-                <div class="govuk-form-group">
                     <input class="govuk-file-upload" id="file-upload-1" name="{{ type }}_file" type="file"
                         style="margin: auto; max-width: 80%">
                     <input class="govuk-file-upload" type="submit" value="Upload file" name="{{ type }}_submit"
