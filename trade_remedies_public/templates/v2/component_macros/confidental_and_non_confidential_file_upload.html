@@ -34,6 +34,11 @@
                 Remove documents
             </a>
         </div>
+        <form method="post" action="">
+            <input name="document_to_delete" type="hidden" value="{{ parentdocument.id }}">
+            <input name="document_to_delete" type="hidden" value="{{ childodcument.id }}">
+            <button submit></button>
+        </form>
     </div>
 </div>
 
