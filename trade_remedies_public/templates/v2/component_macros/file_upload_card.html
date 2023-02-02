@@ -36,7 +36,7 @@
             <p class="govuk-error-message " style="display:none;">
                 <span class="govuk-visually-hidden">Error:</span> <span class="file_error_message"></span>
             </p>
-            <p><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
+            <p class="govuk-body"><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
                 <input type="file" id="file-{{ unique_id }}" data-type="{{ type }}"
                     name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
                 <label for="file-{{ unique_id }}" class="govuk-link">Choose a file</label> or drag it here</p>
@@ -70,7 +70,7 @@
                 <p class="govuk-tag govuk-tag--pink deficient_document_warning">Deficient document</p>
             {% endif %}
             <p class="file_name">{% if document_exists %}{{ document.truncated_name }}{% endif %}</p>
-            <p>
+            <p class="govuk-body">
                 <a href="" class="govuk-link govuk-link--no-visited-state {% if deficient %}deficient_document_replace_link{% else %}delete_document_link{% endif %}"
                     data-document-id="{% if document_exists %}{{ document.id }}{% endif %}">
                     {% if deficient %}

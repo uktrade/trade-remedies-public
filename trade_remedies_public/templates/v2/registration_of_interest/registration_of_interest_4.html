@@ -31,9 +31,9 @@
                     </dt>
                     <dd class="govuk-summary-list__value">
                         {% if user.contact.organisation.id == submission.organisation.id %}
-                            <p>My organisation:</p>
+                            <p class="govuk-body">My organisation:</p>
                         {% else %}
-                            <p>My client:</p>
+                            <p class="govuk-body">My client:</p>
                         {% endif %}
                         {% if submission.primary_contact %}
                             {{ submission.primary_contact.name }}
