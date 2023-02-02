@@ -73,7 +73,10 @@
 {% endblock main_content %}
 
 {% block scripts %}
-    <script type="text/javascript">$("div").removeClass("govuk-form-group--error");</script>
+    <script type="text/javascript">
+        $(".without-js").remove();
+        $("div").removeClass("govuk-form-group--error");
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="{% static 'v2/js/drag_and_drop.js' %}"></script>
