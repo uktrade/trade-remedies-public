@@ -93,7 +93,9 @@
                         href="{{ request.path }}?add_new_row=1"
                     {% endif %}
                 >
-                    <button class="govuk-button govuk-button--secondary">Add another document</button>
+                    <button class="govuk-button govuk-button--secondary" type="button">
+                        Add another document
+                    </button>
                 </a>
                 {% include "v2/component_macros/form_button_group.html" %}
             </form>
