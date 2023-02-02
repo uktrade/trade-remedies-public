@@ -10,4 +10,9 @@ urlpatterns = [
         views.DocumentWithoutJsView.as_view(),
         name="remove_document_without_js",
     ),
+    path(
+        "document/without-js/remove",
+        views.DocumentWithoutJsView.as_view(),
+        name="remove_documents_without_js",
+    ),
 ]

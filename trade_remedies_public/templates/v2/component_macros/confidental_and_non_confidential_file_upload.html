@@ -34,5 +34,15 @@
                 Remove documents
             </a>
         </div>
+        {% if document_pair.confidential and document_pair.non_confidential %}
+            <div class="remove-doc-panel without-js">
+                <a class="govuk-link govuk-link--no-visited-state remove_document_link"
+                    href="{% url 'remove_documents_without_js' %}?document_ids={{ document_pair.confidential.id }},{{ document_pair.non_confidential.id }}"
+                    title="Delete panel"
+                >
+                    Remove documents
+                </a>
+            </div>
+        {% endif %}
     </div>
 </div>

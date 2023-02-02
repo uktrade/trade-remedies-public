@@ -71,8 +71,13 @@ class DocumentView(View, APIClientMixin):
 @method_decorator(csrf_exempt, name="dispatch")
 class DocumentWithoutJsView(View, APIClientMixin):
     def get(self, request, *args, **kwargs):
+        if request.GET.get("document_ids"):
+            for document in request.GET["document_ids"].split(","):
+                self.client.documents(document).delete()
+
+            return redirect(request.META["HTTP_REFERER"])
+
         self.client.documents(self.kwargs["document_id"]).delete()
-        HttpResponse(status=204)
         return redirect(request.META["HTTP_REFERER"])
 
     @catch_form_errors()
@@ -125,4 +130,4 @@ class DocumentWithoutJsView(View, APIClientMixin):
                     form.assign_errors_to_request(request)
                     request.session["form_errors"]["file_type"] = "confidential"
 
-        return redirect(request.META["HTTP_REFERER"])
+        return redirect(request.META["HTTP_REFERER"].split("?")[0])
