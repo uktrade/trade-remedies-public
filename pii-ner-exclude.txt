@@ -1,3 +1,9 @@
+/span><a
+aria-labelledby="tab_manage-invites
+pending_invitations|length
+aria-labelledby="tab_rejected
+rejected_invitations|length
+status--
 confidential{%
 document</button
 submit></button

@@ -20,13 +20,15 @@
                 <h1 class="govuk-heading-xl">Manage users</h1>
             </div>
             <div class="govuk-grid-column-full">
-                <div class="govuk-warning-text">
-                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">
-                        <span class="govuk-warning-text__assistive">Warning</span>
-                        You have {{pending_invitations_deficient_docs_count}} pending invite with deficient documentation
-                    </strong>
-                </div>
+                {% if pending_invitations_deficient_docs_count > 0 %}
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            You have {{pending_invitations_deficient_docs_count}} pending invite with deficient documentation
+                        </strong>
+                    </div>
+                {% endif %}
                 <div class="govuk-tabs" data-module="govuk-tabs">
                     <h2 class="govuk-tabs__title">
                         Contents
