@@ -1,3 +1,5 @@
+aria-labelledby="tab_manage-team
+{{ org_user.user.name
 Draft
 /span><a
 aria-labelledby="tab_manage-invites
