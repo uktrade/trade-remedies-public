@@ -9709,9 +9709,11 @@ p + .govuk-heading-s,
 }
 
 .login-nav__list {
+    margin: 0;
     padding: 0;
     margin: 8px 0 8px 0;
     list-style-type: none;
+    float: right;
 }
 
 .login-nav__list:after {
