@@ -46,7 +46,12 @@ class ValidationForm(forms.Form, TradeRemediesAPIClientMixin):
                 else:
                     # The key cannot be found, treat it as a normal validation error
                     for error_message in error.messages:
-                        request.session["form_errors"][field].append(error_message)
+                        if field == "__all__":
+                            request.session["form_errors"]["error_summaries"].append(
+                                ("error", error_message)
+                            )
+                        else:
+                            request.session["form_errors"][field].append(error_message)
 
 
 class BaseYourEmployerForm(ValidationForm):

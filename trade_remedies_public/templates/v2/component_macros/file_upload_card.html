@@ -32,53 +32,106 @@
         {% if document_exists %}data-current-document="{{ document.id }}"{% endif %}
     >
 
-        <div class="waiting_for_upload file_upload_indicator" {% if document_exists %}style="display:none;"{% endif %}>
-            <p class="govuk-error-message " style="display:none;">
-                <span class="govuk-visually-hidden">Error:</span> <span class="file_error_message"></span>
-            </p>
-            <p><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
-                <input type="file" id="file-{{ unique_id }}" data-type="{{ type }}"
-                    name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
-                <label for="file-{{ unique_id }}" class="govuk-link">Choose a file</label> or drag it here</p>
-        </div>
-
-        <div class="uploading_file file_upload_indicator" style="display:none">
-            <label class="govuk-label" for="progress-upload-{{ unique_id }}">
-                <div>Uploading
-                    <div class="upload_percentage"></div>
-                </div>
-                <div class="file_name"></div>
-            </label>
-            <progress class="progress" max="100" value="0" id="progress-upload-{{ unique_id }}"></progress>
-        </div>
-
-        <div class="scanning_file file_upload_indicator" style="display:none;">
-            <label class="govuk-label" for="progress-scan-{{ unique_id }}">
-                Scanning file:
-                <div class="file_name"></div>
-            </label>
-            <progress class="progress-scan" id="progress-scan-{{ unique_id }}"></progress>
-        </div>
-
-        <div class="upload_file_complete file_upload_indicator" style="display:none">
-            <label class="govuk-label" for="progress-complete">
-                <span class="govuk-visually-hidden">Upload complete:</span>
-            </label>
-        </div>
-        <div class="uploaded_file file_upload_indicator" {% if not document_exists %}style="display:none;"{% endif %}>
-            {% if deficient %}
-                <p class="govuk-tag govuk-tag--pink deficient_document_warning">Deficient document</p>
-            {% endif %}
-            <p class="file_name">{% if document_exists %}{{ document.truncated_name }}{% endif %}</p>
-            <p>
-                <a href="" class="govuk-link govuk-link--no-visited-state {% if deficient %}deficient_document_replace_link{% else %}delete_document_link{% endif %}"
-                    data-document-id="{% if document_exists %}{{ document.id }}{% endif %}">
-                    {% if deficient %}
-                        Replace
-                    {% else %}
-                        Remove
+        <div class="without-js">
+            {% if document_exists %}
+                {% if deficient %}
+                    <p class="govuk-tag govuk-tag--pink deficient_document_warning">Deficient document</p>
+                {% endif %}
+                <p class="govuk-body">{{ document.truncated_name }}</p>
+                <p class="govuk-body">
+                    <a href="{% url 'remove_document_without_js' document_id=document.id %}"
+                        class="govuk-link govuk-link--no-visited-state {% if deficient %}deficient_document_replace_link{% else %}delete_document_link{% endif %}"
+                        data-document-id="{% if document_exists %}{{ document.id }}{% endif %}">
+                        {% if deficient %}
+                            Replace
+                        {% else %}
+                            Remove
+                        {% endif %}
+                        <span class="govuk-visually-hidden">file</span></a></p>
+            {% else %}
+                <div class="govuk-form-group {% if form_errors and type == form_errors.file_type %}govuk-form-group--error{% endif %}">
+                    {% if form_errors %}
+                        {% if type == form_errors.file_type %}
+                            {% for _field, error in form_errors.error_summaries %}
+                                <p class="govuk-error-message" id="error">
+                                    <span class="govuk-visually-hidden">Error: </span>{{ error }}
+                                </p>
+                            {% endfor %}
+                        {% endif %}
                     {% endif %}
-                    <span class="govuk-visually-hidden">file</span></a></p>
+                    <input class="govuk-file-upload" id="file-upload-1" name="{{ type }}_file" type="file"
+                        style="margin: auto; max-width: 80%">
+                    <input class="govuk-file-upload" type="submit" value="Upload file" name="{{ type }}_submit"
+                        formaction="{% url 'document_without_js' %}" formmethod="post" formenctype="multipart/form-data">
+                    <input type="hidden" name="{{ type }}_submission_id" {% if submission_id %}value="{{ submission_id }}"{% endif %}>
+                    <input type="hidden" name="{{ type }}_type" value="{{ type }}">
+                    <input type="hidden" name="{{ type }}_unique_id" value="doc-{{ unique_id }}">
+                    {% if parent_document %}
+                        <input type="hidden" name="parent" value="{{ parent_document }}">
+                    {% endif %}
+                    {% if submission_document_type %}
+                        <input type="hidden" name="submission_document_type" value="{{submission_document_type}}">
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    var CurrentUploadContainerElementId = document.querySelector("div[data-type='{% if confidential %}confidential{% else %}non_confidential{% endif %}']");
+
+    CurrentUploadContainerElementId.innerHTML = `
+            <div class="waiting_for_upload file_upload_indicator" {% if document_exists %}style="display:none;"{% endif %}>
+                <p class="govuk-error-message " style="display:none;">
+                    <span class="govuk-visually-hidden">Error:</span> <span class="file_error_message"></span>
+                </p>
+                <p><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
+                    <input type="file" id="file-{{ unique_id }}" data-type="{{ type }}"
+                        name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
+                    <label for="file-{{ unique_id }}" class="govuk-link">Choose a file</label> or drag it here</p>
+            </div>
+
+            <div class="uploading_file file_upload_indicator" style="display:none">
+                <label class="govuk-label" for="progress-upload-{{ unique_id }}">
+                    <div>Uploading
+                        <div class="upload_percentage"></div>
+                    </div>
+                    <div class="file_name"></div>
+                </label>
+
+                <progress class="progress" max="100" value="0" id="progress-upload-{{ unique_id }}"></progress>
+            </div>
+
+            <div class="scanning_file file_upload_indicator" style="display:none;">
+                <label class="govuk-label" for="progress-scan-{{ unique_id }}">
+                    Scanning file:
+                    <div class="file_name"></div>
+                </label>
+                <progress class="progress-scan" id="progress-scan-{{ unique_id }}"></progress>
+            </div>
+            <div class="upload_file_complete file_upload_indicator" style="display:none">
+                <label class="govuk-label" for="progress-complete">
+                    <span class="govuk-visually-hidden">Upload complete:</span>
+                </label>
+            </div>
+            <div class="uploaded_file file_upload_indicator" {% if not document_exists %}style="display:none;"{% endif %}>
+                {% if deficient %}
+                    <p class="govuk-tag govuk-tag--pink deficient_document_warning">Deficient document</p>
+                {% endif %}
+                <p class="file_name">{% if document_exists %}{{ document.truncated_name }}{% endif %}</p>
+                <p>
+                    <a href="" class="govuk-link govuk-link--no-visited-state {% if deficient %}
+                deficient_document_replace_link{% else %}delete_document_link{% endif %}"
+                        data-document-id="{% if document_exists %}{{ document.id }}{% endif %}">
+                        {% if deficient %}
+                            Replace
+                        {% else %}
+                            Remove
+                        {% endif %}
+                        <span class="govuk-visually-hidden">file</span>
+                    </a>
+                </p>
+            </div>
+        ` + CurrentUploadContainerElementId.innerHTML;
+</script>

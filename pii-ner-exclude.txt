@@ -1,5 +1,6 @@
-pending_invitations_deficient_docs_count
-group_third_party
+confidential{%
+document</button
+submit></button
 Invite
 csp_nonce
 Javascript</a
