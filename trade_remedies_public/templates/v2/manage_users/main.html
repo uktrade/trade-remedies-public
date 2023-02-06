@@ -221,7 +221,14 @@
                                             <span class="govuk-visually-hidden--desktop">Account role: </span>{{ invite.type_verbose_name }}
                                         </td>
                                         <td class="govuk-table__cell">
-                                            <span class="govuk-visually-hidden--desktop">Status: </span><strong class="govuk-tag {% if invite.submission.status.version %} govuk-tag--pink {% endif %} app-task-list__tag">{% if not invite.email_sent %} Draft {% elif invite.invitation_type == 2 and not invite.accepted_at %} Invite Sent {% elif invite.invitation_type == 1 and not invite.accepted_at %} Invite Sent {% elif invite.invitation_type == 2 and invite.accepted_at and not invite.approved_at %} Waiting TRA Review {% elif invite.submission.status.version %}DEFICIENT{% else %} {% endif %}</strong>
+                                            <span class="govuk-visually-hidden--desktop">Status: </span>
+                                            {% if not invite.email_sent %} Draft
+                                            {% elif invite.invitation_type == 2 and not invite.accepted_at %} Invite Sent
+                                            {% elif invite.invitation_type == 1 and not invite.accepted_at %} Invite Sent
+                                            {% elif invite.invitation_type == 2 and invite.accepted_at and not invite.approved_at %} Waiting TRA Review
+                                            {% elif invite.submission.status.version %}<strong class="govuk-tag govuk-tag--pink">DEFICIENT</strong>
+                                            {% else %}
+                                            {% endif %}
                                         </td>
                                         <td class="govuk-table__cell">
                                             <span class="govuk-visually-hidden--desktop">Action: </span><a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/" class="govuk-link--no-visited-state">View invite</a>
