@@ -237,12 +237,8 @@
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Status: </span>
-                                        {% if not invite.email_sent %} Draft
-                                        {% elif invite.invitation_type == 2 and not invite.accepted_at %} Invite Sent
-                                        {% elif invite.invitation_type == 1 and not invite.accepted_at %} Invite Sent
-                                        {% elif invite.invitation_type == 2 and invite.accepted_at and not invite.approved_at %} Waiting TRA Review
-                                        {% elif invite.submission.status.version %}<strong class="govuk-tag govuk-tag--pink">DEFICIENT</strong>
-                                        {% else %}
+                                        {% if "deficient" in invite.status %}<strong class="govuk-tag govuk-tag--pink">{{ invite.status.1 }}</strong>
+                                        {% else %} {{ invite.status.1 }}
                                         {% endif %}
                                     </td>
                                     <td class="govuk-table__cell">

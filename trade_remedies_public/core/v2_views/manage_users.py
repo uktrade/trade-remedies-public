@@ -12,12 +12,18 @@ class ManageUsersView(BasePublicView, TemplateView):
         invitations = self.client.invitations(
             organisation_id=self.request.user.contact["organisation"]["id"]
         )
+
         pending_invitations = [
-            invite for invite in invitations if not invite.approved_at and not invite.rejected_at
+            invite
+            for invite in invitations
+            if (invite.invitation_type == 2 and not invite.approved_at and not invite.rejected_at)
+            or (invite.invitation_type == 1 and not invite.accepted_at)
         ]
+
         rejected_invitations = [
             invite for invite in invitations if not invite.approved_at and invite.rejected_at
         ]
+
         context.update(
             {
                 "organisation": self.client.organisations(
@@ -37,4 +43,5 @@ class ManageUsersView(BasePublicView, TemplateView):
                 "group_third_party": SECURITY_GROUP_THIRD_PARTY_USER,
             }
         )
+
         return context
