@@ -1,0 +1,69 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block page_title %}Invite details{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <h1 class="govuk-heading-xl">
+            Invite details
+        </h1>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ invitation.status.1 }}<br>
+                        Awaiting invitee acceptance<br>
+                        <span id="date">{{ invitation.sent_at|date:'d M Y' }}</span></p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    User details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {{ invitation.contact.name }}
+                    <br>
+                    {{ invitation.contact.email }}
+                    <br>
+                    Permission:
+                    {% if invitation.organisation_security_group == group_owner %}
+                        Admin
+                    {% elif invitation.organisation_security_group == group_regular %}
+                        User
+                    {% endif %}<br>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Cases
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {% if not invitation.user_cases_to_link %}
+                        None
+                    {% else %}
+                        <ul class="govuk-list">
+                            {% for user_case in invitation.user_cases_to_link %}
+                                <li>
+                                    {{ user_case.case.reference }} - {{ user_case.case.name }}<br/>
+                                    {% if user_case.organisation.id != request.user.contact.organisation.id %}
+                                        {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
+                                        <span class="govuk-hint">{{ user_case.organisation.name }}</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </dd>
+            </div>
+        </dl>
+        <div class="govuk-button-group">
+            <a href="{% url 'cancel_draft_invitation' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
+                data-module="govuk-button">
+                Cancel invite
+            </a>
+            <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
+        </div>
+    </div>
+{% endblock row_content %}

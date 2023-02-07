@@ -23,5 +23,11 @@
             {% endif %}
         </button>
     {% endif %}
-    <a class="govuk-link" href="javascript: window.history.go(-1)">Back</a>
+    <a class="govuk-link" href="javascript: window.history.go(-1)">
+        {% if back_button_text %}
+            {{ back_button_text }}
+        {% else %}
+            Back
+        {% endif %}
+    </a>
 </div>

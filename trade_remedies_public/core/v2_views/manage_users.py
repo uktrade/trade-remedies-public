@@ -9,20 +9,22 @@ class ManageUsersView(BasePublicView, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        pending_invitations = self.client.invitations(
-            organisation_id=self.request.user.organisation["id"],
-            approved_at__isnull=True,
-            rejected_at__isnull=True,
+        invitations = self.client.invitations(
+            organisation_id=self.request.user.contact["organisation"]["id"]
         )
+        pending_invitations = [
+            invite for invite in invitations if not invite.approved_at and not invite.rejected_at
+        ]
+        rejected_invitations = [
+            invite for invite in invitations if not invite.approved_at and invite.rejected_at
+        ]
         context.update(
             {
-                "organisation": self.client.organisations(self.request.user.organisation["id"]),
-                "pending_invitations": pending_invitations,
-                "rejected_invitations": self.client.invitations(
-                    organisation_id=self.request.user.organisation["id"],
-                    approved_at__isnull=True,
-                    rejected_at__isnull=False,
+                "organisation": self.client.organisations(
+                    self.request.user.contact["organisation"]["id"], fields=["organisationuser_set"]
                 ),
+                "pending_invitations": pending_invitations,
+                "rejected_invitations": rejected_invitations,
                 "pending_invitations_deficient_docs_count": sum(
                     {
                         1

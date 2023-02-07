@@ -2,10 +2,10 @@ from django.urls import path
 
 from cases import views as case_views
 from cases.v2_views import (
-    invite,
-    registration_of_interest,
     accept_own_org_invitation,
     accept_representative_invitation,
+    invite,
+    registration_of_interest,
 )
 
 urlpatterns = [
@@ -324,12 +324,22 @@ urlpatterns += [
     ),
 ]
 
+# invites in general
 urlpatterns += [
     path(
         "invite/start",
         invite.WhoAreYouInviting.as_view(),
         name="invitation_start",
     ),
+    path(
+        "invite/<uuid:invitation_id>/cancel/",
+        invite.CancelDraftInvitation.as_view(),
+        name="cancel_draft_invitation",
+    ),
+]
+
+# own-org invites
+urlpatterns += [
     path(
         "invite/<uuid:invitation_id>/start",
         invite.WhoAreYouInviting.as_view(),
@@ -365,6 +375,10 @@ urlpatterns += [
         invite.DeleteInvitation.as_view(),
         name="delete_invitation",
     ),
+]
+
+# rep invites
+urlpatterns += [
     path(
         "invite/representative/start/",
         invite.InviteRepresentativeTaskList.as_view(),
@@ -374,6 +388,11 @@ urlpatterns += [
         "invite/representative/<uuid:invitation_id>/task_list/",
         invite.InviteRepresentativeTaskList.as_view(),
         name="invite_representative_task_list_exists",
+    ),
+    path(
+        "invite/representative/<uuid:invitation_id>/review/",
+        invite.InviteRepresentativeReview.as_view(),
+        name="invite_representative_review",
     ),
     path(
         "invite/representative/select_case/",

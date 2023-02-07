@@ -1,0 +1,55 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block page_title %}Representative invite{% endblock page_title %}
+
+{% block row_content %}
+
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <h1 class="govuk-heading-xl">
+            Representative invite
+        </h1>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p>{{ invitation.status.1 }}<br>
+                        <span id="date">{{ invitation.created_at|date:'d M Y' }}</span></p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Case details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p><a href="">
+                        {{ invitation.case.reference }} - {{ invitation.case.name }}
+                    </a><br>
+                    </p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Representative details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {{ invitation.contact.name }}
+                    <br>
+                    {{ invitation.contact.email }}
+                    <br><br>
+                    {{ invitation.contact.organisation_name }}
+                </dd>
+            </div>
+        </dl>
+        <div class="govuk-button-group">
+            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}"
+                draggable="false" class="govuk-button" data-module="govuk-button">
+                Continue
+            </a>
+            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invite_representative_delete' invitation_id=invitation.id %}">Delete invite</a>
+        </div>
+        <div class="govuk-button-group">
+        </div>
+    </div>
+{% endblock row_content %}

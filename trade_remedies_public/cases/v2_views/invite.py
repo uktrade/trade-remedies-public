@@ -224,6 +224,13 @@ class DeleteInvitation(BasePublicView, View):
         return redirect(reverse("team_view"))
 
 
+class ReviewSentInvitation(BaseInviteView):
+    template_name = "v2/invite/review_sent_invitation.html"
+
+
+"""########################################## REP INVITE ########################################"""
+
+
 class InviteRepresentativeTaskList(TaskListView):
     template_name = "v2/invite/task_list.html"
 
@@ -301,6 +308,29 @@ class InviteRepresentativeTaskList(TaskListView):
             },
         ]
         return steps
+
+
+class InviteRepresentativeReview(BaseInviteView):
+    """View for reviewing a draft invitation before completing the task list or potentially
+    deleting it.
+    """
+
+    template_name = "v2/invite/invite_representative_review.html"
+
+
+class CancelDraftInvitation(BaseInviteView):
+    """View for deleting a draft invitation"""
+
+    def get_template_names(self):
+        if self.invitation.status == 1:
+            # this is an own org invite
+            return [
+                "v2/invite/cancel_invite.html",
+            ]
+        else:
+            return [
+                "v2/invite/invite_representative_cancel_draft_invite.html",
+            ]
 
 
 class InviteRepresentativeSelectCase(BaseInviteFormView):

@@ -136,7 +136,7 @@
                                 made, as well as being able to request a reconsideration of a final determination.</p>
                         </li>
                         {% if pre_manage_team and is_org_owner %}
-                            <li><a class="link bold" href="/accounts/team/">Manage your team</a>
+                            <li><a class="link bold" href="{% url 'manage-users' %}">Manage your team</a>
                                 <p>Grant access to your organisation's active cases or invite new users into your
                                     team.</p>
                             </li>
@@ -162,7 +162,7 @@
                             {% if pre_applications %}
                                 <li><a href="/case/">Apply for an investigation</a></li>{% endif %}
                             {% if pre_manage_team and is_org_owner %}
-                                <li><a href="/accounts/team/" id="lnk_manage_your_team">Manage your team</a>
+                                <li><a href="{% url 'manage-users' %}" id="lnk_manage_your_team">Manage your team</a>
                                 </li>{% endif %}
                             {% if pre_manage_team and is_org_owner %}
                                 <li><a href="/cases/">See all cases</a></li>{% endif %}

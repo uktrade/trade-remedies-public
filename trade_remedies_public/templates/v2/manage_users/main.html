@@ -179,8 +179,8 @@
                                     Direction
                                 </label>
                                 <select class="govuk-select" id="direction-pending" name="direction-pending">
-                                    <option value="Decending" selected="">Decending</option>
-                                    <option value="Accending">Accending</option>
+                                    <option value="Decending" selected="">Descending</option>
+                                    <option value="Accending">Ascending</option>
                                 </select>
                             </div>
                             <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
@@ -233,7 +233,8 @@
                                         <span class="govuk-visually-hidden--desktop">Email: </span>{{invite.contact.email}}
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Account role: </span>{{ invite.type_verbose_name }}
+                                        <span class="govuk-visually-hidden--desktop">Account role: </span>{{ invite.
+                                        }}
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Status: </span>
@@ -246,7 +247,18 @@
                                         {% endif %}
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Action: </span><a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/" class="govuk-link--no-visited-state">View invite</a>
+                                        <span class="govuk-visually-hidden--desktop">Action: </span>
+                                        <a href="
+                                            {% if invite.invitation_type == 2 and invite.status.0 == "draft" %}
+                                                {# it's a draft rep invite #}
+                                                {% url 'invite_representative_review' invitation_id=invite.id %}
+                                            {% elif invite.invitation_type == 1 and invite.status.0 == "invite_sent" %}
+                                                {# it's an own-org invite which has been sent #}
+                                                {% url '' %}
+                                            {% else %}
+                                                /case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/
+                                            {% endif %}
+                                        " class="govuk-link--no-visited-state">View invite</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -273,8 +285,8 @@
                                     Direction
                                 </label>
                                 <select class="govuk-select" id="direction-rejected" name="direction-rejected">
-                                    <option value="Decending" selected="">Decending</option>
-                                    <option value="Accending">Accending</option>
+                                    <option value="Decending" selected="">Descending</option>
+                                    <option value="Accending">Ascending</option>
                                 </select>
                             </div>
                             <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
