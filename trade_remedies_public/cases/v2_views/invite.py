@@ -27,7 +27,7 @@ from config.utils import (
 
 logger = logging.getLogger(__name__)
 
-"""########################################## SHARED VIEWD ######################################"""
+"""########################################## SHARED VIEWS ######################################"""
 
 
 class BaseInviteView(BasePublicView, TemplateView):

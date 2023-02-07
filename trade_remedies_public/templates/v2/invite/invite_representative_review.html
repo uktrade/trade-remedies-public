@@ -70,6 +70,11 @@
                 </a>
                 <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
             </div>
+        {% elif invitation.submission.status.version %}
+            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
+                    data-module="govuk-button">
+                    Review documentation
+                </a>
         {% endif %}
 
     </div>
