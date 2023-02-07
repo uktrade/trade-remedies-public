@@ -248,17 +248,7 @@
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Action: </span>
-                                        <a href="
-                                            {% if invite.invitation_type == 2 and invite.status.0 == "draft" %}
-                                                {# it's a draft rep invite #}
-                                                {% url 'invite_representative_review' invitation_id=invite.id %}
-                                            {% elif invite.invitation_type == 1 and invite.status.0 == "invite_sent" %}
-                                                {# it's an own-org invite which has been sent #}
-                                                {% url '' %}
-                                            {% else %}
-                                                /case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/
-                                            {% endif %}
-                                        " class="govuk-link--no-visited-state">View invite</a>
+                                        <a href="{% url 'review_sent_invitation' invitation_id=invite.id %}" class="govuk-link--no-visited-state">View invite</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -296,7 +286,7 @@
                     </form>
                     <table class="govuk-table sortable mobile-table-border" id="table-header-rejected-invites">
                         <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
-                            A table listing all the users that have been rejected from representing your organisation
+                            A table listing all of the users that have been rejected from representing your organisation
                         </caption>
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -337,7 +327,7 @@
                                         <span class="govuk-visually-hidden--desktop">Status: </span>Rejected
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Action: </span><a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/" class="govuk-link--no-visited-state">View invite</a>
+                                        <span class="govuk-visually-hidden--desktop">Action: </span><a href="{% url 'review_sent_invitation' invitation_id=invite.id %}" class="govuk-link--no-visited-state">View invite</a>
                                     </td>
                                 </tr>
                             {% endfor %}
