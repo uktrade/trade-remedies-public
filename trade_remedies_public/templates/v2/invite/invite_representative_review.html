@@ -14,8 +14,22 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ invitation.status.1 }}<br>
-                        <span id="date">{{ invitation.created_at|date:'d M Y' }}</span></p>
+                    <p>
+                        {% if invitation.status.0 == "invite_sent" %}
+                            {{ invitation.status.1 }}<br>
+                            Waiting for invitee acceptance
+                        {% elif invitation.status.0 == "waiting_tra_review" %}
+                            {{ invitation.status.1 }}<br>
+                            Invitee accepted your invite
+                        {% elif invitation.status.0 == "rejected_by_tra" %}
+                            Rejected<br>
+                            Invite rejected by the TRA
+                        {% elif invitation.status.0 == "deficient" %}
+                            DEFICIENT DOCUMENTATION<br>
+                            Review documentation
+                        {% endif %}
+                    </p>
+                    <p><span id="date">{{ invitation.created_at|date:'d M Y' }}</span></p>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -23,7 +37,7 @@
                     Case details
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <p><a href="">
+                    <p><a href="{% url 'case' case_id=invitation.case.id %}">
                         {{ invitation.case.reference }} - {{ invitation.case.name }}
                     </a><br>
                     </p>
@@ -60,7 +74,7 @@
                     Continue
                 </a>
                 <a class="govuk-link govuk-link--no-visited-state"
-                    href="{% url 'cancel_draft_invitation' invitation_id=invitation.id %}">Delete invite</a>
+                    href="{% url 'delete_draft_invitation' invitation_id=invitation.id %}">Delete invite</a>
             </div>
         {% elif invitation.status.0 == "invite_sent" %}
             <div class="govuk-button-group">

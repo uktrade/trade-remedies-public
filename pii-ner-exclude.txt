@@ -1,3 +1,7 @@
+Invite deleted{% endblock page_title %
+Delete invitation{%
+Reg
+aria-controls="rejected
 {{ invite.type_display_name }}
 Invite cancelled{% endblock page_title %
 submit{% endblock page_title %

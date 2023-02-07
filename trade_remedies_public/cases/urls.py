@@ -338,9 +338,19 @@ urlpatterns += [
         name="cancel_draft_invitation",
     ),
     path(
+        "invite/<uuid:invitation_id>/delete/",
+        invite.DeleteDraftInvitation.as_view(),
+        name="delete_draft_invitation",
+    ),
+    path(
         "invite/cancelled/",
         TemplateView.as_view(template_name="v2/invite/invite_cancelled.html"),
         name="invite_cancelled",
+    ),
+    path(
+        "invite/deleted/",
+        TemplateView.as_view(template_name="v2/invite/invite_deleted.html"),
+        name="invite_deleted",
     ),
     path(
         "invite/<uuid:invitation_id>/review_sent/",
@@ -380,11 +390,6 @@ urlpatterns += [
         "invite/<uuid:invitation_id>/sent/",
         invite.InvitationSent.as_view(),
         name="invitation_sent",
-    ),
-    path(
-        "invite/<uuid:invitation_id>/delete/",
-        invite.DeleteInvitation.as_view(),
-        name="delete_invitation",
     ),
 ]
 

@@ -3,7 +3,6 @@ import logging
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.views import View
 from django.views.generic import TemplateView
 from v2_api_client.exceptions import NotFoundError
 
@@ -97,6 +96,16 @@ class ReviewInvitation(BaseInviteView):
         if not self.invitation.accepted_at:
             self.invitation.delete()
         return redirect(reverse("invite_cancelled"))
+
+
+class DeleteDraftInvitation(BaseInviteView):
+    template_name = "v2/invite/delete_invite.html"
+
+    def post(self, request, *args, **kwargs):
+        if not self.invitation.accepted_at:
+            # self.invitation.delete()
+            ...
+        return redirect(reverse("invite_deleted"))
 
 
 """########################################## OWN ORG INVITE ####################################"""
@@ -263,12 +272,6 @@ class ReviewInvitationBeforeSend(BaseInviteView):
 
 class InvitationSent(BaseInviteView):
     template_name = "v2/invite/sent.html"
-
-
-class DeleteInvitation(BasePublicView, View):
-    def post(self, request, invitation_id, *args, **kwargs):
-        self.client.invitations(invitation_id).delete()
-        return redirect(reverse("team_view"))
 
 
 """########################################## REP INVITE ########################################"""

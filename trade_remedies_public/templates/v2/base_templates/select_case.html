@@ -183,7 +183,6 @@
             $("#mobile_sort_button").click(function () {
                 let column_index = Number($('#mobile_sort_cases').val())
                 let sort_direction = $("#mobile_sort_direction").val()
-
                 data_table.order([[column_index, sort_direction]]).draw();
             })
 
