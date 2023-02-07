@@ -93,11 +93,19 @@
                     <!-- 3rd party invites -->
                     <div class="margin-top-2">
                         {% if invite_submissions %}
-                            <h1 class="heading-medium">Your 3rd Party invites</h1>
-                            <UL>
+                            <h2 class="govuk-heading-m">
+                                User invites
+                                {% if pre_manage_team and is_org_owner %}
+                                    <span class="govuk-body right-aligned-link">
+                                        <a href="{% url 'manage-users' %}">Manage users</a>
+                                    </span>
+                                {% endif %}
+                            </h2>
+                            <p>You have pending invites:</p>
+                            <ul>
                                 {% for invite in invite_submissions %}
                                     {% if not invite.invitations.0.deleted_at %}
-                                        <LI>
+                                        <li>
                                             {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
                                                 <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{ invite.case.reference }}
                                                     - {% format_date invite.created_at '%d %b %Y' %}</a>
@@ -108,14 +116,24 @@
                                                 </a>
                                             {% endif %}
                                             ({{ invite.name }} - {{ invite.status.name }})
-                                        </LI>
+                                        </li>
                                     {% endif %}
                                 {% endfor %}
-                            </UL>
+                            </ul>
                         {% endif %}
                     </div>
                 {% endif %}
             {% else %}
+                <h2 class="govuk-heading-m">
+                    Invite users
+                    {% if pre_manage_team and is_org_owner %}
+                        <span class="govuk-body right-aligned-link">
+                            <a href="{% url 'manage-users' %}">Manage users</a>
+                        </span>
+                    {% endif %}
+                </h2>
+                <p>Give access to your organisation's active cases by inviting users to join your account</p>
+                <a href="{% url 'invitation_start' %}">Invite user</a>
                 {# The help text before any cases or applications exist #}
                 <p>This is your dashboard to interact with the {% organisation_name %} ({% organisation_initialism %})
                     on trade remedies investigations.</p>
