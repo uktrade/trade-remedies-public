@@ -96,9 +96,9 @@
                             </button>
                         </div>
                     </form>
-                    <table class="govuk-table sortable mobile-table-border" id="table-header">
+                    <table class="govuk-table sortable mobile-table-border" id="table-header-users">
                         <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
-                            A table listing all of the users that have access to this organisations account
+                            A table listing all the users that have access to this organisations account
                         </caption>
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -188,9 +188,9 @@
                             </button>
                         </div>
                     </form>
-                    <table class="govuk-table sortable mobile-table-border" id="table-header">
+                    <table class="govuk-table sortable mobile-table-border" id="table-header-pending-invites">
                         <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
-                            A table listing all of the users that have pending invites
+                            A table listing all the users that have pending invites
                         </caption>
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -294,9 +294,9 @@
                             </button>
                         </div>
                     </form>
-                    <table class="govuk-table sortable mobile-table-border" id="table-header">
+                    <table class="govuk-table sortable mobile-table-border" id="table-header-rejected-invites">
                         <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
-                            A table listing all of the users that have been rejected from representing your organisation
+                            A table listing all the users that have been rejected from representing your organisation
                         </caption>
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -349,3 +349,53 @@
         </div>
     {% endblock row_content %}
 {% endblock main_content %}
+
+{% block scripts %}
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table-header-users').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "name", "orderable": "true"},
+                    {"name": "email", "orderable": "true"},
+                    {"name": "role", "orderable": "true"},
+                    {"name": "cases", "orderable": "true"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+
+            $('#table-header-pending-invites').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "name", "orderable": "true"},
+                    {"name": "email", "orderable": "true"},
+                    {"name": "role", "orderable": "true"},
+                    {"name": "status", "orderable": "true"},
+                    {"name": "action", "orderable": "false"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+
+            $('#table-header-rejected-invites').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "name", "orderable": "true"},
+                    {"name": "email", "orderable": "true"},
+                    {"name": "status", "orderable": "true"},
+                    {"name": "action", "orderable": "false"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+        });
+    </script>
+{% endblock scripts %}
