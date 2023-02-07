@@ -1,4 +1,5 @@
 from django.urls import path
+from django.views.generic import TemplateView
 
 from cases import views as case_views
 from cases.v2_views import (
@@ -336,6 +337,16 @@ urlpatterns += [
         invite.CancelDraftInvitation.as_view(),
         name="cancel_draft_invitation",
     ),
+    path(
+        "invite/cancelled/",
+        TemplateView.as_view(template_name="v2/invite/invite_cancelled.html"),
+        name="invite_cancelled",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/review_sent/",
+        invite.ReviewInvitation.as_view(),
+        name="review_sent_invitation",
+    ),
 ]
 
 # own-org invites
@@ -361,9 +372,9 @@ urlpatterns += [
         name="invitation_choose_cases",
     ),
     path(
-        "invite/<uuid:invitation_id>/review/",
-        invite.ReviewInvitation.as_view(),
-        name="invitation_review",
+        "invite/<uuid:invitation_id>/review_before_send/",
+        invite.ReviewInvitationBeforeSend.as_view(),
+        name="invitation_review_before_send",
     ),
     path(
         "invite/<uuid:invitation_id>/sent/",
@@ -388,11 +399,6 @@ urlpatterns += [
         "invite/representative/<uuid:invitation_id>/task_list/",
         invite.InviteRepresentativeTaskList.as_view(),
         name="invite_representative_task_list_exists",
-    ),
-    path(
-        "invite/representative/<uuid:invitation_id>/review/",
-        invite.InviteRepresentativeReview.as_view(),
-        name="invite_representative_review",
     ),
     path(
         "invite/representative/select_case/",
@@ -428,11 +434,6 @@ urlpatterns += [
         "invite/representative/<uuid:invitation_id>/sent/",
         invite.InviteRepresentativeSent.as_view(),
         name="invite_representative_sent",
-    ),
-    path(
-        "invite/<uuid:invitation_id>/cancel/",
-        invite.CancelInvite.as_view(),
-        name="cancel_invite",
     ),
 ]
 

@@ -1,3 +1,8 @@
+Invite cancelled{% endblock page_title %
+submit{% endblock page_title %
+Own Organisation
+invite.status.1
+Invite sent{% endblock page_title %
 javascript %
 {{ forward_button_text }
 case_id>/

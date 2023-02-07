@@ -233,32 +233,24 @@
                                         <span class="govuk-visually-hidden--desktop">Email: </span>{{invite.contact.email}}
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Account role: </span>{{ invite.
-                                        }}
+                                        <span class="govuk-visually-hidden--desktop">Account role: </span>
+                                        {% if invite.invitation_type == 1 %}
+                                            Own Organisation
+                                        {% elif invite.invitation_type == 2 %}
+                                            Representative
+                                        {% endif %}
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Status: </span>
-                                        {% if not invite.email_sent %} Draft
-                                        {% elif invite.invitation_type == 2 and not invite.accepted_at %} Invite Sent
-                                        {% elif invite.invitation_type == 1 and not invite.accepted_at %} Invite Sent
-                                        {% elif invite.invitation_type == 2 and invite.accepted_at and not invite.approved_at %} Waiting TRA Review
-                                        {% elif invite.submission.status.version %}<strong class="govuk-tag govuk-tag--pink">DEFICIENT</strong>
+                                        {% if invite.status.0 == "deficient" %}
+                                            <strong class="govuk-tag govuk-tag--pink">DEFICIENT</strong>
                                         {% else %}
+                                            {{ invite.status.1 }}
                                         {% endif %}
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Action: </span>
-                                        <a href="
-                                            {% if invite.invitation_type == 2 and invite.status.0 == "draft" %}
-                                                {# it's a draft rep invite #}
-                                                {% url 'invite_representative_review' invitation_id=invite.id %}
-                                            {% elif invite.invitation_type == 1 and invite.status.0 == "invite_sent" %}
-                                                {# it's an own-org invite which has been sent #}
-                                                {% url '' %}
-                                            {% else %}
-                                                /case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/
-                                            {% endif %}
-                                        " class="govuk-link--no-visited-state">View invite</a>
+                                        <a href="{% url 'review_sent_invitation' invitation_id=invite.id %}" class="govuk-link--no-visited-state">View invite</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -337,7 +329,7 @@
                                         <span class="govuk-visually-hidden--desktop">Status: </span>Rejected
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Action: </span><a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/" class="govuk-link--no-visited-state">View invite</a>
+                                        <span class="govuk-visually-hidden--desktop">Action: </span><a href="{% url 'review_sent_invitation' invitation_id=invite.id %}" class="govuk-link--no-visited-state">View invite</a>
                                     </td>
                                 </tr>
                             {% endfor %}
