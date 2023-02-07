@@ -16,8 +16,8 @@ class ManageUsersView(BasePublicView, TemplateView):
         pending_invitations = [
             invite
             for invite in invitations
-            if (invite.invitation_type == 2 and not invite.approved_at and not invite.rejected_at)
-            or (invite.invitation_type == 1 and not invite.accepted_at)
+            if (invite.invitation_type == 1 and not invite.accepted_at)
+            or (invite.invitation_type == 2 and not invite.approved_at and not invite.rejected_at)
         ]
 
         rejected_invitations = [

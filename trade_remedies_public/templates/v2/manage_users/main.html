@@ -233,7 +233,12 @@
                                         <span class="govuk-visually-hidden--desktop">Email: </span>{{invite.contact.email}}
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Account role: </span>{{ invite.type_display_name }}
+                                        <span class="govuk-visually-hidden--desktop">Account role: </span>
+                                        {% if invite.type_display_name == "Own Organisation" %}
+                                            {% if invite.organisation_security_group == group_owner %}Admin user{% else %}User{% endif %}
+                                        {% else %}
+                                            {{ invite.type_display_name }}
+                                        {% endif %}
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Status: </span>

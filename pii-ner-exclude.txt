@@ -1,3 +1,4 @@
+{{ invite.type_display_name }}
 javascript %
 {{ forward_button_text }
 case_id>/
