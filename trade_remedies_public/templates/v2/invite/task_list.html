@@ -10,19 +10,7 @@
     <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">Invite a representative</h1>
         {% if is_deficient_loa %}
-            <div class="address-card">
-                <div class="address-container">
-                    <div class="govuk-warning-text">
-                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                        <p class="govuk-warning-text__text">
-                            <strong>
-                                <span class="govuk-warning-text__assistive">Warning</span>
-                                You need to review your documentation.
-                            </strong>
-                        </p>
-                    </div>
-                </div>
-            </div>
+            {% include "v2/partials/tasklist/deficiency_warning_text.html" %}
         {% endif %}
         <p class="govuk-body">Complete all the steps to invite a representative to act on behalf of your organisation.</p>
         <p class="govuk-body govuk-!-margin-bottom-7">If you leave this page before submitting, you can return later from your dashboard.</p>
