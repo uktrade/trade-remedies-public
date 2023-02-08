@@ -414,9 +414,9 @@ class DashboardView(
                 )
                 case_to_roi = {each.case.id: each for each in roi_submissions}
 
-        pending_invitation_count = 1
-        pending_invitation_deficient_docs_count = 1
-        pending_invitation_waiting_trs_approval_count = 1
+        pending_invitation_count = 0
+        pending_invitation_deficient_docs_count = 0
+        invitation_waiting_trs_approval_count = 0
 
         # Let's get the cases where the user is awaiting approval
         invitations = v2_client.invitations(
@@ -437,7 +437,8 @@ class DashboardView(
                 1
                 for invite in invitations
                 if (
-                    not invite.approved_at
+                    invite.accepted_at
+                    and not invite.approved_at
                     and not invite.rejected_at
                     and not invite.submission.archived
                 )
@@ -448,7 +449,7 @@ class DashboardView(
             {1 for invite in invitations if invite.submission.status.version}
         )
 
-        pending_invitation_waiting_trs_approval_count = sum(
+        invitation_waiting_trs_approval_count = sum(
             {
                 1
                 for invite in invitations
@@ -491,7 +492,7 @@ class DashboardView(
                 "unapproved_rep_invitations_cases": no_duplicate_unapproved_rep_invitations_cases,
                 "pending_invitation_count": pending_invitation_count,
                 "pending_invitation_deficient_docs_count": pending_invitation_deficient_docs_count,
-                "pending_invitation_waiting_trs_approval_count": pending_invitation_waiting_trs_approval_count,
+                "invitation_waiting_trs_approval_count": invitation_waiting_trs_approval_count,
             },
         )
 
