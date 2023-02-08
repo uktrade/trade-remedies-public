@@ -277,10 +277,15 @@ class DeleteInvitation(BasePublicView, View):
 class InviteRepresentativeTaskList(TaskListView):
     template_name = "v2/invite/task_list.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        self.deficient_loa = False
+        return super().dispatch(request, *args, **kwargs)
+
     def get_task_list(self):
         invitation = {}
         if invitation_id := self.kwargs.get("invitation_id", None):
             invitation = self.client.invitations(invitation_id)
+
         steps = [
             {
                 "heading": "Your cases",
@@ -323,9 +328,28 @@ class InviteRepresentativeTaskList(TaskListView):
                             invitation
                             and "submission" in invitation
                             and get_uploaded_loa_document(invitation.get("submission"))
+                            and not get_uploaded_loa_document(
+                                invitation.get("submission")
+                            ).deficient
                         )
+                        else "Incomplete"
+                        if get_uploaded_loa_document(invitation.get("submission"))
+                        and get_uploaded_loa_document(invitation.get("submission")).deficient
                         else "Not Started",
-                    }
+                        "status_text": "Complete"
+                        if (
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
+                            and not get_uploaded_loa_document(
+                                invitation.get("submission")
+                            ).deficient
+                        )
+                        else "Deficient document"
+                        if get_uploaded_loa_document(invitation.get("submission"))
+                        and get_uploaded_loa_document(invitation.get("submission")).deficient
+                        else "",
+                    },
                 ],
             },
             {
@@ -350,7 +374,14 @@ class InviteRepresentativeTaskList(TaskListView):
                 ],
             },
         ]
+
         return steps
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_deficient_loa"] = self.deficient_loa
+
+        return context
 
 
 class InviteRepresentativeSelectCase(BaseInviteFormView):
@@ -651,6 +682,7 @@ class InviteRepresentativeLoa(BaseInviteView):
         # Getting the uploaded LOA document if it exists
         uploaded_loa_document = get_uploaded_loa_document(invitation["submission"])
         if uploaded_loa_document:
+            context["is_deficient_loa"] = uploaded_loa_document.deficient
             uploaded_loa_document = uploaded_loa_document["document"]
         context["uploaded_loa_document"] = uploaded_loa_document
         return context
