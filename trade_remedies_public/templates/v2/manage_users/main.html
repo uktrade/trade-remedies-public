@@ -96,9 +96,9 @@
                             </button>
                         </div>
                     </form>
-                    <table class="govuk-table sortable mobile-table-border" id="table-header">
+                    <table class="govuk-table sortable mobile-table-border" id="table-header-users">
                         <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
-                            A table listing all of the users that have access to this organisations account
+                            A table listing all the users that have access to this organisations account
                         </caption>
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -188,9 +188,9 @@
                             </button>
                         </div>
                     </form>
-                    <table class="govuk-table sortable mobile-table-border" id="table-header">
+                    <table class="govuk-table sortable mobile-table-border" id="table-header-pending-invites">
                         <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
-                            A table listing all of the users that have pending invites
+                            A table listing all the users that have pending invites
                         </caption>
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
@@ -233,32 +233,22 @@
                                         <span class="govuk-visually-hidden--desktop">Email: </span>{{invite.contact.email}}
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Account role: </span>{{ invite.
-                                        }}
+                                        <span class="govuk-visually-hidden--desktop">Account role: </span>
+                                        {% if invite.type_display_name == "Own Organisation" %}
+                                            {% if invite.organisation_security_group == group_owner %}Admin user{% else %}User{% endif %}
+                                        {% else %}
+                                            {{ invite.type_display_name }}
+                                        {% endif %}
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Status: </span>
-                                        {% if not invite.email_sent %} Draft
-                                        {% elif invite.invitation_type == 2 and not invite.accepted_at %} Invite Sent
-                                        {% elif invite.invitation_type == 1 and not invite.accepted_at %} Invite Sent
-                                        {% elif invite.invitation_type == 2 and invite.accepted_at and not invite.approved_at %} Waiting TRA Review
-                                        {% elif invite.submission.status.version %}<strong class="govuk-tag govuk-tag--pink">DEFICIENT</strong>
-                                        {% else %}
+                                        {% if "deficient" in invite.status %}<strong class="govuk-tag govuk-tag--pink">{{ invite.status.1 }}</strong>
+                                        {% else %} {{ invite.status.1 }}
                                         {% endif %}
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Action: </span>
-                                        <a href="
-                                            {% if invite.invitation_type == 2 and invite.status.0 == "draft" %}
-                                                {# it's a draft rep invite #}
-                                                {% url 'invite_representative_review' invitation_id=invite.id %}
-                                            {% elif invite.invitation_type == 1 and invite.status.0 == "invite_sent" %}
-                                                {# it's an own-org invite which has been sent #}
-                                                {% url '' %}
-                                            {% else %}
-                                                /case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/
-                                            {% endif %}
-                                        " class="govuk-link--no-visited-state">View invite</a>
+                                        <a href="{% url 'review_sent_invitation' invitation_id=invite.id %}" class="govuk-link--no-visited-state">View invite</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -294,7 +284,7 @@
                             </button>
                         </div>
                     </form>
-                    <table class="govuk-table sortable mobile-table-border" id="table-header">
+                    <table class="govuk-table sortable mobile-table-border" id="table-header-rejected-invites">
                         <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
                             A table listing all of the users that have been rejected from representing your organisation
                         </caption>
@@ -337,7 +327,7 @@
                                         <span class="govuk-visually-hidden--desktop">Status: </span>Rejected
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Action: </span><a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/" class="govuk-link--no-visited-state">View invite</a>
+                                        <span class="govuk-visually-hidden--desktop">Action: </span><a href="{% url 'review_sent_invitation' invitation_id=invite.id %}" class="govuk-link--no-visited-state">View invite</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -349,3 +339,53 @@
         </div>
     {% endblock row_content %}
 {% endblock main_content %}
+
+{% block scripts %}
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#table-header-users').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "name", "orderable": "true"},
+                    {"name": "email", "orderable": "true"},
+                    {"name": "role", "orderable": "true"},
+                    {"name": "cases", "orderable": "true"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+
+            $('#table-header-pending-invites').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "name", "orderable": "true"},
+                    {"name": "email", "orderable": "true"},
+                    {"name": "role", "orderable": "true"},
+                    {"name": "status", "orderable": "true"},
+                    {"name": "action", "orderable": "false"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+
+            $('#table-header-rejected-invites').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "name", "orderable": "true"},
+                    {"name": "email", "orderable": "true"},
+                    {"name": "status", "orderable": "true"},
+                    {"name": "action", "orderable": "false"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+        });
+    </script>
+{% endblock scripts %}

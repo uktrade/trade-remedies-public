@@ -27,6 +27,8 @@ from config.utils import (
 
 logger = logging.getLogger(__name__)
 
+"""########################################## SHARED VIEWS ######################################"""
+
 
 class BaseInviteView(BasePublicView, TemplateView):
     def dispatch(self, request, *args, **kwargs):
@@ -58,6 +60,46 @@ class BaseInviteView(BasePublicView, TemplateView):
 
 class BaseInviteFormView(BasePublicFormView, BaseInviteView):
     pass
+
+
+class CancelDraftInvitation(BaseInviteView):
+    """View for deleting a draft invitation"""
+
+    template_name = "v2/invite/cancel_invite.html"
+
+    def post(self, request, *args, **kwargs):
+        if not self.invitation.accepted_at:
+            self.invitation.delete()
+            ...
+        return redirect(reverse("invite_cancelled"))
+
+
+class ReviewInvitation(BaseInviteView):
+    """View for reviewing a sent invitation"""
+
+    def get_template_names(self):
+        if self.invitation.invitation_type == 1:
+            # this is an own org invite
+            return ["v2/invite/review_sent_invitation.html"]
+        else:
+            return ["v2/invite/invite_representative_review.html"]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.invitation.invitation_type == 2:
+            # this is a representative invite
+            context["uploaded_loa_document_bundle"] = get_uploaded_loa_document(
+                self.invitation.submission
+            )
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not self.invitation.accepted_at:
+            self.invitation.delete()
+        return redirect(reverse("invite_cancelled"))
+
+
+"""########################################## OWN ORG INVITE ####################################"""
 
 
 class WhoAreYouInviting(BaseInviteFormView):
@@ -145,7 +187,9 @@ class PermissionSelectView(BaseInviteFormView):
                 reverse("invitation_choose_cases", kwargs={"invitation_id": self.invitation["id"]})
             )
         return redirect(
-            reverse("invitation_review", kwargs={"invitation_id": self.invitation["id"]})
+            reverse(
+                "invitation_review_before_send", kwargs={"invitation_id": self.invitation["id"]}
+            )
         )
 
 
@@ -161,7 +205,8 @@ class ChooseCasesView(BaseInviteFormView):
             if not user_cases:
                 return redirect(
                     reverse(
-                        "invitation_review", kwargs={"invitation_id": self.kwargs["invitation_id"]}
+                        "invitation_review_before_send",
+                        kwargs={"invitation_id": self.kwargs["invitation_id"]},
                     )
                 )
             else:
@@ -194,11 +239,13 @@ class ChooseCasesView(BaseInviteFormView):
             self.invitation.update({"user_cases_to_link": which_cases})
 
         return redirect(
-            reverse("invitation_review", kwargs={"invitation_id": self.invitation["id"]})
+            reverse(
+                "invitation_review_before_send", kwargs={"invitation_id": self.invitation["id"]}
+            )
         )
 
 
-class ReviewInvitation(BaseInviteView):
+class ReviewInvitationBeforeSend(BaseInviteView):
     template_name = "v2/invite/review.html"
 
     def get_context_data(self, **kwargs):
@@ -222,10 +269,6 @@ class DeleteInvitation(BasePublicView, View):
     def post(self, request, invitation_id, *args, **kwargs):
         self.client.invitations(invitation_id).delete()
         return redirect(reverse("team_view"))
-
-
-class ReviewSentInvitation(BaseInviteView):
-    template_name = "v2/invite/review_sent_invitation.html"
 
 
 """########################################## REP INVITE ########################################"""
@@ -308,29 +351,6 @@ class InviteRepresentativeTaskList(TaskListView):
             },
         ]
         return steps
-
-
-class InviteRepresentativeReview(BaseInviteView):
-    """View for reviewing a draft invitation before completing the task list or potentially
-    deleting it.
-    """
-
-    template_name = "v2/invite/invite_representative_review.html"
-
-
-class CancelDraftInvitation(BaseInviteView):
-    """View for deleting a draft invitation"""
-
-    def get_template_names(self):
-        if self.invitation.status == 1:
-            # this is an own org invite
-            return [
-                "v2/invite/cancel_invite.html",
-            ]
-        else:
-            return [
-                "v2/invite/invite_representative_cancel_draft_invite.html",
-            ]
 
 
 class InviteRepresentativeSelectCase(BaseInviteFormView):
@@ -661,13 +681,3 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
 
 class InviteRepresentativeSent(BaseInviteView):
     template_name = "v2/invite/invite_representative_sent.html"
-
-
-class CancelInvite(BaseInviteView):
-    template_name = "v2/invite/cancel_invite.html"
-
-    def post(self, request, *args, **kwargs):
-        if not self.invitation.accepted_at:
-            # We only want to delete the invitation if it hasn't been accepted
-            self.invitation.delete()
-        return redirect(reverse("team_view"))

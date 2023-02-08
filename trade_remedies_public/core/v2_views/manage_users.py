@@ -10,14 +10,33 @@ class ManageUsersView(BasePublicView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         invitations = self.client.invitations(
-            organisation_id=self.request.user.contact["organisation"]["id"]
+            organisation_id=self.request.user.contact["organisation"]["id"],
+            fields=[
+                "contact",
+                "status",
+                "approved_at",
+                "rejected_at",
+                "accepted_at",
+                "invitation_type",
+                "submission",
+            ],
         )
+
         pending_invitations = [
-            invite for invite in invitations if not invite.approved_at and not invite.rejected_at
+            invite
+            for invite in invitations
+            if (invite.invitation_type == 1 and not invite.accepted_at)
+            or (
+                invite.invitation_type == 2
+                and not invite.approved_at
+                and not invite.rejected_at
+                and not invite.submission.archived
+            )
         ]
         rejected_invitations = [
             invite for invite in invitations if not invite.approved_at and invite.rejected_at
         ]
+
         context.update(
             {
                 "organisation": self.client.organisations(
@@ -29,7 +48,7 @@ class ManageUsersView(BasePublicView, TemplateView):
                     {
                         1
                         for invite in pending_invitations
-                        if invite.invitation_type == 2 and invite.submission.deficiency_sent_at
+                        if invite.invitation_type == 2 and invite.submission.status.version
                     }
                 ),
                 "user": self.request.user,
@@ -37,4 +56,5 @@ class ManageUsersView(BasePublicView, TemplateView):
                 "group_third_party": SECURITY_GROUP_THIRD_PARTY_USER,
             }
         )
+
         return context
