@@ -58,3 +58,24 @@ class ManageUsersView(BasePublicView, TemplateView):
         )
 
         return context
+
+
+class ViewUser(BasePublicView, TemplateView):
+    template_name = "v2/manage_users/view_user.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        org_user = self.client.organisation_users(self.kwargs["organisation_user_id"])
+
+        context["org_user"] = org_user
+        context["user"] = org_user.user
+        context["organisation"] = self.client.organisations(
+            org_user.user.contact.organisation,
+            fields=[
+                "name",
+                "address",
+                "post_code",
+                "country_name",
+            ],
+        )
+        return context

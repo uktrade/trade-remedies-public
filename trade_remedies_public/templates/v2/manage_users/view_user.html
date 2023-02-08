@@ -1,0 +1,193 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_item %}
+
+{% block page_title %}User details{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl">
+            {{ user.name }}
+        </h1>
+        <div class="govuk-tabs" data-module="govuk-tabs">
+            <h2 class="govuk-tabs__title">
+                Contents
+            </h2>
+            <ul class="govuk-tabs__list" role="tablist">
+                <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+                    <a class="govuk-tabs__tab" href="#cases-cases" id="tab_cases-cases" role="tab"
+                        aria-controls="cases-cases" aria-selected="true" tabindex="0">
+                        Cases
+                    </a>
+                </li>
+                <li class="govuk-tabs__list-item" role="presentation">
+                    <a class="govuk-tabs__tab" href="#user-details" id="tab_user-details" role="tab"
+                        aria-controls="user-details" aria-selected="false" tabindex="-1">
+                        User details
+                    </a>
+                </li>
+            </ul>
+            <div class="govuk-tabs__panel" id="cases-cases" role="tabpanel" aria-labelledby="tab_cases-cases">
+                <h2 class="govuk-heading-m clearfix">Cases
+                    <span class="govuk-body right-aligned-link">
+                        <a href="assign-own-user-case" class="govuk-link--no-visited-state">Assign user to case</a>
+                    </span>
+                </h2>
+                <p>Assign a user to a case and manage their role and access. </p>
+                <form>
+                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-cases">
+                                Sort cases by
+                            </label>
+                            <select class="govuk-select" id="sort-cases" name="sort-cases">
+                                <option value="0" selected="">Case no.</option>
+                                <option value="1">Case no.</option>
+                                <option value="2">Interested party</option>
+                                <option value="3">Case role</option>
+                            </select>
+                        </div>
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-visually-hidden" for="direction-cases">
+                                Direction
+                            </label>
+                            <select class="govuk-select" id="direction-cases" name="direction-cases">
+                                <option value="desc" selected="">Descending</option>
+                                <option value="asc">Ascending</option>
+                            </select>
+                        </div>
+                        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                            Sort cases
+                        </button>
+                    </div>
+                </form>
+                <table class="govuk-table sortable table-border mobile-table-border" id="table-header">
+                    <caption
+                        class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
+                        A table listing all of the cases the users is involved in
+                    </caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" aria-sort="ascending">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>No.
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Case
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Interested party
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Case role
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header no-sort">
+                                <span class="govuk-visually-hidden--desktop">Action 1: </span>
+                            </th>
+                            <th class="govuk-table__header no-sort">
+                                <span class="govuk-visually-hidden--desktop">Action 2: </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for user_case in user.user_cases %}
+                            <tr class="govuk-table__row no-border">
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop">Case No. </span>
+                                    <a href="#" class="govuk-link--no-visited-state">{{ user_case.case.reference }}</a>
+                                </td>
+                                <td class="govuk-table__cell text-overflow">
+                                    <span class="govuk-visually-hidden--desktop">Case: </span>
+                                    <a href="#" class="govuk-link--no-visited-state">
+                                        {{ user_case.case.name }}
+                                    </a>
+                                </td>
+                                <td class="govuk-table__cell text-overflow">
+                                    <span class="govuk-visually-hidden--desktop">Interested party: </span>{{ user_case.organisation.name }}
+                                </td>
+                                <td class="govuk-table__cell text-overflow">
+                                    <span class="govuk-visually-hidden--desktop">Case role: </span>User
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop">Action 1: </span><a
+                                        href="case-role?account-case=case1" class="govuk-link govuk-link--no-visited-state">Change
+                                        role <span class="govuk-visually-hidden--desktop">for case {{ user_case.case.reference }}</span> </a>
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop">Action 2: </span><a
+                                        href="remove-user?remove-case=case1"
+                                        class="govuk-link govuk-link--no-visited-state">Remove
+                                        user<span class="govuk-visually-hidden--desktop"> from case {{ user_case.case.reference }}</span> </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="user-details" role="tabpanel"
+                aria-labelledby="tab_user-details">
+                <h2 class="govuk-heading-m">User details</h2>
+                <div class="address-card">
+                    <div class="address-container">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Contact details
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ user.contact.name }}<br>
+                                    {{ user.email }}<br>
+                                    {{ user.contact.phone|default_if_none:"" }}
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    <a class="govuk-link--no-visited-state" href="user-account-edit">
+                                        Edit<span class="govuk-visually-hidden"> contact details</span>
+                                    </a>
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Account permission
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ org_user.security_group }}
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Status
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ user.is_active|yesno:"Active, Inactive" }}
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Account:</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ organisation.name|default_if_none:"" }}<br>
+                                    {{ organisation.address|default_if_none:"" }}<br>
+                                    {{ organisation.post_code|default_if_none:"" }}<br>
+                                    {{ organisation.country_name|default_if_none:"" }}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock row_content %}

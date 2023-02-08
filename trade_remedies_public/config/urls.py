@@ -301,7 +301,6 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path("manage-users", manage_users.ManageUsersView.as_view(), name="manage-users"),
     path("collect_feedback", feedback.CollectFeedbackView.as_view(), name="collect_feedback"),
     path(
         "collect_feedback_second_step/<uuid:feedback_id>",
@@ -313,5 +312,13 @@ urlpatterns += [
         "feedback_sent/<uuid:feedback_id>",
         feedback.FeedbackSentView.as_view(),
         name="feedback_sent",
+    ),
+]
+
+# Manage team urls
+urlpatterns += [
+    path("manage_users_home", manage_users.ManageUsersView.as_view(), name="manage_users_home"),
+    path(
+        "view_user/<uuid:organisation_user_id>/", manage_users.ViewUser.as_view(), name="view_user"
     ),
 ]

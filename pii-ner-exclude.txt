@@ -1,3 +1,13 @@
+{{ user.name
+aria-controls="cases
+aria-controls="user-details
+aria-labelledby="tab_user-details
+{{ user.email }
+{{ user.is_active|yesno:"Active
+{{ organisation.name|default_if_none
+register5
+stub/
+v2_register_your_employer
 Invite deleted{% endblock page_title %
 Delete invitation{%
 Reg

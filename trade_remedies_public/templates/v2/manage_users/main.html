@@ -138,7 +138,7 @@
                                     <td class="govuk-table__cell text-overflow">
                                         <span class="govuk-visually-hidden--desktop">User: </span>
                                         <a class="govuk-link--no-visited-state"
-                                            href="/accounts/team/{{ org_user.user.organisation.id }}/user/{{ org_user.user.id }}/">
+                                            href="{% url 'view_user' organisation_user_id=org_user.id %}">
                                             {{ org_user.user.name }}
                                         </a>
                                     </td>
