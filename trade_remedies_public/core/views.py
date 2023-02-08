@@ -396,6 +396,7 @@ class DashboardView(
         invite_submissions = []
         case_to_roi = {}
         v2_client = TRSAPIClient(token=request.user.token)
+
         if organisation:
             v2_organisation = v2_client.organisations(
                 organisation["id"], fields=["organisationcaserole_set"]
@@ -413,11 +414,46 @@ class DashboardView(
                 )
                 case_to_roi = {each.case.id: each for each in roi_submissions}
 
+        pending_invitation_count = 1
+        pending_invitation_deficient_docs_count = 1
+        pending_invitation_waiting_trs_approval_count = 1
+
         # Let's get the cases where the user is awaiting approval
         invitations = v2_client.invitations(
-            contact_id=request.user.contact["id"],
+            organisation_id=self.request.user.contact["organisation"]["id"],
             invitation_type=2,
-            fields=["submission", "case", "invitation_type", "rejected_at", "approved_at"],
+            fields=[
+                "submission",
+                "case",
+                "invitation_type",
+                "rejected_at",
+                "accepted_at",
+                "approved_at",
+            ],
+        )
+
+        pending_invitation_count = sum(
+            {
+                1
+                for invite in invitations
+                if (
+                    not invite.approved_at
+                    and not invite.rejected_at
+                    and not invite.submission.archived
+                )
+            }
+        )
+
+        pending_invitation_deficient_docs_count = sum(
+            {1 for invite in invitations if invite.submission.status.version}
+        )
+
+        pending_invitation_waiting_trs_approval_count = sum(
+            {
+                1
+                for invite in invitations
+                if (invite.accepted_at and not invite.approved_at and not invite.rejected_at)
+            }
         )
 
         unapproved_rep_invitations_cases = [
@@ -453,6 +489,9 @@ class DashboardView(
                 in request.user.organisation_groups,
                 "case_to_roi": case_to_roi,
                 "unapproved_rep_invitations_cases": no_duplicate_unapproved_rep_invitations_cases,
+                "pending_invitation_count": pending_invitation_count,
+                "pending_invitation_deficient_docs_count": pending_invitation_deficient_docs_count,
+                "pending_invitation_waiting_trs_approval_count": pending_invitation_waiting_trs_approval_count,
             },
         )
 

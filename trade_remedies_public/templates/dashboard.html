@@ -92,7 +92,7 @@
                     </div>
                     <!-- 3rd party invites -->
                     <div class="margin-top-2">
-                        {% if invite_submissions %}
+                        {% if pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
                             <h2 class="govuk-heading-m">
                                 User invites
                                 {% if pre_manage_team and is_org_owner %}
@@ -102,24 +102,20 @@
                                 {% endif %}
                             </h2>
                             <p>You have pending invites:</p>
-                            <ul>
-                                {% for invite in invite_submissions %}
-                                    {% if not invite.invitations.0.deleted_at %}
-                                        <li>
-                                            {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
-                                                <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{ invite.case.reference }}
-                                                    - {% format_date invite.created_at '%d %b %Y' %}</a>
-                                            {% else %}
-                                                <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
-                                                    {{ invite.case.reference }}
-                                                    - {% format_date invite.created_at '%d %b %Y' %}
-                                                </a>
-                                            {% endif %}
-                                            ({{ invite.name }} - {{ invite.status.name }})
-                                        </li>
-                                    {% endif %}
-                                {% endfor %}
+                            <ul class="govuk-list govuk-list--bullet">
+                                {% if pending_invitation_count %}
+                                    <li class="bold">{{pending_invitation_count}} invite{% if pending_invitation_count > 1 %}s{% endif %} with deficient documentation</li>
+                                {% endif %}
+                                {% if pending_invitation_deficient_docs_count %}
+                                    <li class="">{{pending_invitation_deficient_docs_count}} invite{% if pending_invitation_deficient_docs_count > 1 %}s{% endif %} waiting for invitee to accept</li>
+                                {% endif %}
+                                {% if pending_invitation_waiting_trs_approval_count %}
+                                    <li class="">{{pending_invitation_waiting_trs_approval_count}} invite{% if pending_invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting for TRA review</li>
+                                {% endif %}
                             </ul>
+                            <a href="{% url 'manage-users' %}">View Invites</a>
+                        {% else %}
+                            <a href="{% url 'invitation_start' %}">Invite user</a>
                         {% endif %}
                     </div>
                 {% endif %}
