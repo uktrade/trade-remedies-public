@@ -277,10 +277,6 @@ class DeleteInvitation(BasePublicView, View):
 class InviteRepresentativeTaskList(TaskListView):
     template_name = "v2/invite/task_list.html"
 
-    def dispatch(self, request, *args, **kwargs):
-        self.deficient_loa = False
-        return super().dispatch(request, *args, **kwargs)
-
     def get_task_list(self):
         invitation = {}
         if invitation_id := self.kwargs.get("invitation_id", None):
@@ -333,7 +329,8 @@ class InviteRepresentativeTaskList(TaskListView):
                             ).deficient
                         )
                         else "Incomplete"
-                        if get_uploaded_loa_document(invitation.get("submission"))
+                        if "submission" in invitation
+                        and get_uploaded_loa_document(invitation.get("submission"))
                         and get_uploaded_loa_document(invitation.get("submission")).deficient
                         else "Not Started",
                         "status_text": "Complete"
@@ -346,7 +343,8 @@ class InviteRepresentativeTaskList(TaskListView):
                             ).deficient
                         )
                         else "Deficient document"
-                        if get_uploaded_loa_document(invitation.get("submission"))
+                        if "submission" in invitation
+                        and get_uploaded_loa_document(invitation.get("submission"))
                         and get_uploaded_loa_document(invitation.get("submission")).deficient
                         else "",
                     },
@@ -376,12 +374,6 @@ class InviteRepresentativeTaskList(TaskListView):
         ]
 
         return steps
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["is_deficient_loa"] = self.deficient_loa
-
-        return context
 
 
 class InviteRepresentativeSelectCase(BaseInviteFormView):
