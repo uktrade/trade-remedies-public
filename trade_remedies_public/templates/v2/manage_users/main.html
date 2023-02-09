@@ -140,7 +140,7 @@
                                     <td class="govuk-table__cell text-overflow">
                                         <span class="govuk-visually-hidden--desktop">User: </span>
                                         <a class="govuk-link--no-visited-state"
-                                            href="/accounts/team/{{ org_user.user.organisation.id }}/user/{{ org_user.user.id }}/">
+                                            href="{% url 'view_user' organisation_user_id=org_user.id %}">
                                             {{ org_user.user.name }}
                                         </a>
                                     </td>
@@ -150,9 +150,14 @@
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Account role: </span>
                                         {% if not org_user.user.is_active %}
-                                            Inactive {% elif org_user.security_group == group_owner %} Admin
-                                            user {% elif org_user.security_group == group_third_party %}
-                                            Representative {% else %} User {% endif %}
+                                            Inactive
+                                        {% elif org_user.security_group == group_owner %}
+                                            Admin user
+                                        {% elif org_user.security_group == group_third_party %}
+                                            Representative
+                                        {% else %}
+                                            User
+                                        {% endif %}
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Cases: </span>{{ org_user.user.cases|length }}

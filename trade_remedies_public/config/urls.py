@@ -301,7 +301,6 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path("manage-users", manage_users.ManageUsersView.as_view(), name="manage-users"),
     path("collect_feedback", feedback.CollectFeedbackView.as_view(), name="collect_feedback"),
     path(
         "collect_feedback_second_step/<uuid:feedback_id>",
@@ -313,5 +312,41 @@ urlpatterns += [
         "feedback_sent/<uuid:feedback_id>",
         feedback.FeedbackSentView.as_view(),
         name="feedback_sent",
+    ),
+]
+
+# Manage team urls
+urlpatterns += [
+    path("manage_users_home", manage_users.ManageUsersView.as_view(), name="manage_users_home"),
+    path(
+        "view_user/<uuid:organisation_user_id>/", manage_users.ViewUser.as_view(), name="view_user"
+    ),
+    path(
+        "edit_user/<uuid:organisation_user_id>/", manage_users.EditUser.as_view(), name="edit_user"
+    ),
+    path(
+        "edit_user/<uuid:organisation_user_id>/change_permissions",
+        manage_users.ChangeOrganisationUserPermissionsView.as_view(),
+        name="change_organisation_user_permissions",
+    ),
+    path(
+        "edit_user/<uuid:organisation_user_id>/change_user_active",
+        manage_users.ChangeUserActiveView.as_view(),
+        name="change_organisation_user_active",
+    ),
+    path(
+        "edit_user/<uuid:organisation_user_id>/change_case_role/<uuid:user_case_id>/",
+        manage_users.ChangeCaseRoleView.as_view(),
+        name="change_case_role",
+    ),
+    path(
+        "edit_user/<uuid:organisation_user_id>/remove_from_case/<uuid:user_case_id>/",
+        manage_users.RemoveFromCaseView.as_view(),
+        name="remove_from_case",
+    ),
+    path(
+        "edit_user/<uuid:organisation_user_id>/assign_to_case/",
+        manage_users.AssignToCaseView.as_view(),
+        name="assign_to_case",
     ),
 ]

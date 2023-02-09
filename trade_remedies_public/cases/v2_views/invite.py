@@ -184,6 +184,11 @@ class PermissionSelectView(BaseInviteFormView):
     template_name = "v2/invite/select_permissions.html"
     form_class = SelectPermissionsForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["organisation_security_group"] = self.invitation.organisation_security_group
+        return context
+
     def form_valid(self, form):
         self.invitation.update(
             {
