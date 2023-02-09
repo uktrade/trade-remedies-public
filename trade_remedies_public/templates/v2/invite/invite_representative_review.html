@@ -14,7 +14,7 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <p>
+                    <p class="govuk-body">
                         {% if invitation.status.0 == "invite_sent" %}
                             {{ invitation.status.1 }}<br>
                             Waiting for invitee acceptance
@@ -29,7 +29,13 @@
                             Review documentation
                         {% endif %}
                     </p>
-                    <p><span id="date">{{ invitation.created_at|date:'d M Y' }}</span></p>
+                    {% if invitation.submission.status.version %}
+                        <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
+                            data-module="govuk-button">
+                            Review documentation
+                        </a>
+                    {% endif %}
+                    <p class="govuk-body"><span id="date">{{ invitation.created_at|date:'d M Y' }}</span></p>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -84,12 +90,6 @@
                 </a>
                 <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
             </div>
-        {% elif invitation.submission.status.version %}
-            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
-                data-module="govuk-button">
-                Review documentation
-            </a>
         {% endif %}
-
     </div>
 {% endblock row_content %}

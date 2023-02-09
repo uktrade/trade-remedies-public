@@ -2,6 +2,11 @@ Invite deleted{% endblock page_title %
 Delete invitation{%
 Reg
 aria-controls="rejected
+xl">Register
+{{ invite.type_display_name }}
+representative{%
+Register
+case{% endblock page_title %
 {{ invite.type_display_name }}
 Invite cancelled{% endblock page_title %
 submit{% endblock page_title %
