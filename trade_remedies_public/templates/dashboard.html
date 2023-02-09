@@ -92,7 +92,7 @@
                     </div>
                     <!-- 3rd party invites -->
                     <div class="margin-top-2">
-                        {% if is_org_owner or pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
+                        {% if is_org_owner and pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
                             <h2 class="govuk-heading-m">
                                 User invites
                                 {% if pre_manage_team and is_org_owner %}

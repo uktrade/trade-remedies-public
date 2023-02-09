@@ -393,6 +393,7 @@ class DashboardView(
 
         # get any 3rd party invites
         organisation = request.user.organisation
+        is_org_owner = SECURITY_GROUP_ORGANISATION_OWNER in request.user.organisation_groups
         invite_submissions = []
         case_to_roi = {}
         v2_client = TRSAPIClient(token=request.user.token)
@@ -421,10 +422,10 @@ class DashboardView(
         # Let's get the cases where the user is awaiting approval
         invitations = v2_client.invitations(
             organisation_id=self.request.user.contact["organisation"]["id"],
-            invitation_type=2,
             fields=[
                 "submission",
                 "case",
+                "status",
                 "invitation_type",
                 "rejected_at",
                 "accepted_at",
@@ -432,30 +433,37 @@ class DashboardView(
             ],
         )
 
-        pending_invitation_count = sum(
-            {
-                1
-                for invite in invitations
-                if (
-                    invite.accepted_at
-                    and not invite.approved_at
-                    and not invite.rejected_at
-                    and not invite.submission.archived
-                )
-            }
-        )
+        # only required if the user is an organisation owner
+        if is_org_owner:
+            pending_invitation_count = sum(
+                {
+                    1
+                    for invite in invitations
+                    if (invite.invitation_type == 1 and not invite.accepted_at)
+                    or (
+                        invite.invitation_type == 2
+                        and not invite.approved_at
+                        and not invite.rejected_at
+                        and not invite.submission.archived
+                    )
+                }
+            )
 
-        pending_invitation_deficient_docs_count = sum(
-            {1 for invite in invitations if invite.submission.status.version}
-        )
+            pending_invitation_deficient_docs_count = sum(
+                {
+                    1
+                    for invite in invitations
+                    if invite.invitation_type == 2 and "deficient" in invite.status
+                }
+            )
 
-        invitation_waiting_trs_approval_count = sum(
-            {
-                1
-                for invite in invitations
-                if (invite.accepted_at and not invite.approved_at and not invite.rejected_at)
-            }
-        )
+            invitation_waiting_trs_approval_count = sum(
+                {
+                    1
+                    for invite in invitations
+                    if (invite.accepted_at and "waiting_tra_review" in invite.status)
+                }
+            )
 
         unapproved_rep_invitations_cases = [
             invite.case
@@ -486,8 +494,7 @@ class DashboardView(
                 "pre_manage_team": client.get_system_boolean("PRE_MANAGE_TEAM"),
                 "pre_applications": client.get_system_boolean("PRE_APPLICATIONS"),
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
-                "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
-                in request.user.organisation_groups,
+                "is_org_owner": is_org_owner,
                 "case_to_roi": case_to_roi,
                 "unapproved_rep_invitations_cases": no_duplicate_unapproved_rep_invitations_cases,
                 "pending_invitation_count": pending_invitation_count,
