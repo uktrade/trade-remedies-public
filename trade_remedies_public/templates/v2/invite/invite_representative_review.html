@@ -14,8 +14,19 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ invitation.status.1 }}<br>
-                        <span id="date">{{ invitation.created_at|date:'d M Y' }}</span></p>
+                    <p class="govuk-body">
+                        {% if "deficient" in invitation.status %}<strong class="govuk-tag govuk-tag--pink">{{ invitation.status.1 }} documentation</strong>
+                        {% else %}
+                            {{ invitation.status.1 }}
+                        {% endif %}<br>
+                    </p>
+                    {% if invitation.submission.status.version %}
+                        <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
+                            data-module="govuk-button">
+                            Review documentation
+                        </a>
+                    {% else %}test{% endif %}
+                    <p class="govuk-body" id="date">{{ invitation.created_at|date:'d M Y' }}</p>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -70,12 +81,6 @@
                 </a>
                 <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
             </div>
-        {% elif invitation.submission.status.version %}
-            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
-                data-module="govuk-button">
-                Review documentation
-            </a>
         {% endif %}
-
     </div>
 {% endblock row_content %}

@@ -21,6 +21,9 @@
                     </label>
                 </h1>
                 {% include 'v2/component_macros/no_js_error_messages.html' %}
+                {% if is_deficient_loa %}
+                    {% include "v2/component_macros/deficiency_notice_warning_box.html" with submission=invitation.submission %}
+                {% endif %}
                 <p class="govuk-body">
                     Download and complete your Letter of Authority. This is a letter confirming that your representative can
                     act on your behalf.
@@ -60,7 +63,7 @@
             <div class="govuk-grid-column-one-half">
                 <div class="row-colour">
                     <div class="govuk-grid-column-full">
-                        {% include "v2/component_macros/file_upload_card.html" with submission_document_type="loa" submission_id=invitation.submission.id document=uploaded_loa_document confidential=True %}
+                        {% include "v2/component_macros/file_upload_card.html" with submission_document_type="loa" submission_id=invitation.submission.id document=uploaded_loa_document confidential=True deficient=is_deficient_loa %}
                     </div>
                 </div>
             </div>
