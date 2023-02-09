@@ -25,8 +25,7 @@
                             Rejected<br>
                             Invite rejected by the TRA
                         {% elif invitation.status.0 == "deficient" %}
-                            DEFICIENT DOCUMENTATION<br>
-                            Review documentation
+                            <strong class="govuk-tag govuk-tag--pink">Deficient documentation</strong><br>
                         {% endif %}
                     </p>
                     {% if invitation.submission.status.version %}

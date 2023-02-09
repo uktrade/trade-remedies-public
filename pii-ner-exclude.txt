@@ -1,3 +1,6 @@
+Download the Letter of Authority
+{{ document.name }
+add_new_row
 whitenoise==5.3.0
 Invite deleted{% endblock page_title %
 Delete invitation{%

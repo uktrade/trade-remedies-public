@@ -39,7 +39,9 @@
                             <a href="{{ loa_document.file }}" target="_blank" class="govuk-link--no-visited-state"
                                 download>
                                 <img src="{% static 'v2/assets/images/file_icons/'|add:loa_document.extension|add:'.png' %}"
-                                    alt="File icon" width="24px">
+                                    onerror="this.src='{% static 'v2/assets/images/file_icons/doc.png' %}';"
+                                    alt="File icon"
+                                    width="24px">
                                 {{ loa_document.name }}
                                 ({{ loa_document.size|filesizeformat }})
                             </a><span style="display:none;">✓</span>
