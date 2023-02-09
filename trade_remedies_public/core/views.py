@@ -461,7 +461,11 @@ class DashboardView(
                 {
                     1
                     for invite in invitations
-                    if (invite.invitation_type == 2 and invite.accepted_at and "waiting_tra_review" in invite.status)
+                    if (
+                        invite.invitation_type == 2
+                        and invite.accepted_at
+                        and "waiting_tra_review" in invite.status
+                    )
                 }
             )
 
