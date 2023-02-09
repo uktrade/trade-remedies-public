@@ -22,19 +22,16 @@
             <link rel="apple-touch-icon" sizes="152x152" href="{% static 'govuk/images/apple-touch-icon-152x152.png' %}">
             <link rel="apple-touch-icon" href="{% static 'govuk/images/apple-touch-icon.png' %}">
 
+            <!--[if !IE 8]><!-->
+            <link href="{% static 'v2/css/govuk/govuk-frontend-4.5.0.min.css' %}" rel="stylesheet">
+            <link href="{% static 'v2/css/design.css' %}" rel="stylesheet">
+            <link href="{% static 'v2/css/feedback.css' %}" rel="stylesheet">
+            <link href="{% static 'v2/css/with-and-without-javascript.css' %}" rel="stylesheet">
+            <!--<![endif]-->
+
             <!--[if IE 8]>
             <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.5.0.min.css' %}" rel="stylesheet">
             <![endif]-->
-            <!--[if !IE 8]><!-->
-            <link href="{% static 'v2/css/govuk/govuk-frontend-4.5.0.min.css' %}" rel="stylesheet">
-            <link href="{% static 'v2/css/design-css.css' %}" rel="stylesheet">
-            <!--<![endif]-->
-
-            <!--[if lt IE 9]>
-            <script src="/html5-shiv/html5shiv.js"></script>
-            <![endif]-->
-            <link href="{% static 'v2/css/feedback.css' %}" rel="stylesheet">
-            <link href="{% static 'v2/css/with-and-without-javascript.css' %}" rel="stylesheet">
 
             <meta property="og:image" content="&lt;gov.uk&gt;/images/govuk-opengraph-image.png">
         {% endblock %}
