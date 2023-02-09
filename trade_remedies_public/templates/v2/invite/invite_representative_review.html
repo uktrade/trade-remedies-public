@@ -14,8 +14,28 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ invitation.status.1 }}<br>
-                        <span id="date">{{ invitation.created_at|date:'d M Y' }}</span></p>
+                    <p class="govuk-body">
+                        {% if invitation.status.0 == "invite_sent" %}
+                            {{ invitation.status.1 }}<br>
+                            Waiting for invitee acceptance
+                        {% elif invitation.status.0 == "waiting_tra_review" %}
+                            {{ invitation.status.1 }}<br>
+                            Invitee accepted your invite
+                        {% elif invitation.status.0 == "rejected_by_tra" %}
+                            Rejected<br>
+                            Invite rejected by the TRA
+                        {% elif invitation.status.0 == "deficient" %}
+                            DEFICIENT DOCUMENTATION<br>
+                            Review documentation
+                        {% endif %}
+                    </p>
+                    {% if invitation.submission.status.version %}
+                        <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
+                            data-module="govuk-button">
+                            Review documentation
+                        </a>
+                    {% endif %}
+                    <p class="govuk-body"><span id="date">{{ invitation.created_at|date:'d M Y' }}</span></p>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -23,7 +43,7 @@
                     Case details
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <p><a href="">
+                    <p><a href="{% url 'case' case_id=invitation.case.id %}">
                         {{ invitation.case.reference }} - {{ invitation.case.name }}
                     </a><br>
                     </p>
@@ -60,7 +80,7 @@
                     Continue
                 </a>
                 <a class="govuk-link govuk-link--no-visited-state"
-                    href="{% url 'cancel_draft_invitation' invitation_id=invitation.id %}">Delete invite</a>
+                    href="{% url 'delete_draft_invitation' invitation_id=invitation.id %}">Delete invite</a>
             </div>
         {% elif invitation.status.0 == "invite_sent" %}
             <div class="govuk-button-group">
@@ -70,12 +90,6 @@
                 </a>
                 <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
             </div>
-        {% elif invitation.submission.status.version %}
-            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
-                data-module="govuk-button">
-                Review documentation
-            </a>
         {% endif %}
-
     </div>
 {% endblock row_content %}

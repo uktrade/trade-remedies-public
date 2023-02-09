@@ -1,0 +1,19 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_item %}
+
+{% block back_button %}{% endblock back_button %}
+
+{% block page_title %}Delete invitation{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Delete invite?
+        </h1>
+        <p>Are you sure you want to delete this invite? This cannot be undone.</p>
+        <form method="post">
+            {% csrf_token %}
+            {% include "v2/component_macros/form_button_group.html" with forward_button_text="Delete invite" %}
+        </form>
+    </div>
+{% endblock row_content %}
