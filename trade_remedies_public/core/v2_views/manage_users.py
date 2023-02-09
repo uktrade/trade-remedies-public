@@ -34,7 +34,7 @@ class ManageUsersView(BasePublicView, TemplateView):
             )
         ]
         rejected_invitations = [
-            invite for invite in invitations if not invite.approved_at and invite.rejected_at
+            invite for invite in invitations if invite.invitation_type == 2 and not invite.approved_at and invite.rejected_at
         ]
 
         context.update(
