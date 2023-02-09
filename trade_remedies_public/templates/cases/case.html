@@ -50,7 +50,11 @@
                                             {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
                                             <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">{{ submission.type.name }}</a>
                                         {% else %}
-                                            <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">{{ submission.type.name }}</a>
+                                            {% if submission.invitations.0|length > 0 %}
+                                                <a href="{% url 'invite_representative_task_list_exists' invitation_id=submission.invitations.0.id %}">{{ submission.type.name }}</a>
+                                            {% else %}
+                                                <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">{{ submission.type.name }}</a>
+                                            {% endif %}
                                         {% endif %}
 
                                     </td>
@@ -60,9 +64,13 @@
                                                 {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
                                                 <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">
                                             {% else %}
-                                                <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">
+                                                {% if submission.invitations.0|length > 0 %}
+                                                    <a href="{% url 'invite_representative_task_list_exists' invitation_id=submission.invitations.0.id %}">
+                                                {% else %}
+                                                    <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">
+                                                {% endif %}
                                             {% endif %}
-                                            <span>{% if submission.status %}{{ submission.status.public_name|default:submission.status.name }}{% else %}-{% endif %}</span>
+                                            {% if submission.status %}{{ submission.status.public_name|default:submission.status.name }}{% else %}-{% endif %}
                                         </a>
                                     </td>
                                     <td sortVal="{% if submission.due_at and not submission.status.locking %}{{submission.due_at}}{% endif %}z">

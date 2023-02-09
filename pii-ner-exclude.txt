@@ -1,51 +1,13 @@
-POST
-UserCase
-case{% endblock page_title %
-{{ case.reference }} - {{ case.name }
-POST
-UserCase
-pending_invitation_deficient_docs_count
-POST
-UserCase
-pending_invitation_deficient_docs_count
-POST
-UserCase
+ROI
+submission.invitations.0|length
+method='post'><button class="link">Cancel</button>{% csrf_token %
+Withheld
+{{ submission.organisation_case_role.name }
+is_org_owner
 Download the Letter of Authority
 {{ document.name }
 add_new_row
 whitenoise==5.3.0
-change_case_role
-{{ organisation_user.user.name
-{{ user_case.case.reference }} - {{ user_case.case.name }
-Group
-CaseContact
-UserCases
-" A TransientUser
-Insetad
-APIUserMiddleware
-aria-controls="cases_cases
-permission</span
-change_case_role
-{{ organisation_user.user.name
-{{ user_case.case.reference }} - {{ user_case.case.name }
-Group
-CaseContact
-UserCases
-" A TransientUser
-Insetad
-APIUserMiddleware
-aria-controls="cases_cases
-permission</span
-{{ user.name
-aria-controls="cases
-aria-controls="user-details
-aria-labelledby="tab_user-details
-{{ user.email }
-{{ user.is_active|yesno:"Active
-{{ organisation.name|default_if_none
-register5
-stub/
-v2_register_your_employer
 Invite deleted{% endblock page_title %
 Delete invitation{%
 Reg
