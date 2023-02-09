@@ -10,7 +10,7 @@
             <h1 class="govuk-heading-xl">
                 {% block heading %}{% endblock heading %}
             </h1>
-            <p>{% block description %}{% endblock description %}</p>
+            <p class="govuk-body">{% block description %}{% endblock description %}</p>
         {% endblock noheading %}
         <form method="post" novalidate="novalidate" id="roi-step2-form">
             {% csrf_token %}

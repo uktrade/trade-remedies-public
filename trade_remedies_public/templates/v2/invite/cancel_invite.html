@@ -10,8 +10,8 @@
         <h1 class="govuk-heading-xl">
             Cancel invite
         </h1>
-        <p>Are you sure you want to cancel this invite?</p>
-        <p>{{ invitation.contact.name }}: {{ invitation.contact.email }}</p>
+        <p class="govuk-body">Are you sure you want to cancel this invite?</p>
+        <p class="govuk-body">{{ invitation.contact.name }}: {{ invitation.contact.email }}</p>
         <form method="post">
             {% csrf_token %}
             <div class="govuk-button-group">

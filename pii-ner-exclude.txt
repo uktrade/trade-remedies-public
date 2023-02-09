@@ -1,3 +1,41 @@
+page_title
+width="20
+autocomplete="name
+e){"object"==typeof
+NodeList.prototype.forEach)return
+e){if(!t||"object"!=typeof
+non-object");if(!(r
+Object))throw
+Element||window
+document.createElement("div");return t.setAttribute("data-a-b","c"),t.dataset&&"c"==t.dataset.aB})()||Object.defineProperty(Element.prototype,"dataset",{get
+0!==e?this.setAttribute(t
+e}})}.call("object"==typeof window&&window||"object"==typeof
+this.replacePlaceholders(n
+e)}return
+this.translations)return console&&"warn"in console&&console.warn('i18n:
+i){Object.defineProperty?Object.defineProperty(t
+SyntaxError('String
+arguments);for(var
+this&&"classList"in document.documentElement&&"Element"in
+this&&"classList"in
+HTMLLinkElement,"relList","rel"),i(t
+HTMLAreaElement,"relList","rel")}(this)}.call("object"==typeof
+n=(e.document||e.ownerDocument).querySelectorAll(t),o=0;n[o]&&n[o]!==e;)++o;return!!n[o]})}.call("object"==typeof window&&window||"object"==typeof
+o;if("createEvent"in
+window&&window||"object"==typeof
+Object
+Function.prototype.toString
+f.call(y
+e||{},s(t.dataset)),this.i18n
+this.isExpanded(t);this.setExpanded(!e
+t?(s.removeAttribute("hidden"),e.classList.add(this.sectionExpandedClass),n.classList.remove(this.downChevronIconClass)):(s.setAttribute("hidden","until-found"),e.classList.remove(this.sectionExpandedClass),n.classList.add(this.downChevronIconClass));var
+t}function b(t
+t.querySelectorAll('input[type="radio"]')}function
+Math.floor(t/16),("x"===e?n:3&n|8).toString(16)})))),e.setAttribute("role","group"),n.setAttribute("role","button"),n.setAttribute("aria-controls",o.id),n.tabIndex=0,this.$module.hasAttribute("open")?n.setAttribute("aria-expanded","true"):(n.setAttribute("aria-expanded","false"),o.style.display="none"),this.polyfillHandleInputs(this.polyfillSetAttributes.bind(this)))},m.prototype.polyfillSetAttributes
+document;e(n.querySelectorAll('[data-module="govuk-accordion"]'),(function(e){new l(e
+t.accordion).init()})),e(n.querySelectorAll('[data-module="govuk-button"]'),(function(e){new
+t.Button
+CharacterCount
 confidential{%
 document</button
 submit></button
