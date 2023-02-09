@@ -59,3 +59,10 @@ class BaseYourEmployerForm(ValidationForm):
         error_messages={"required": "organisation_registered_country_not_selected"},
         choices=(("no", False), ("yes", True)),
     )
+
+
+class EmptyForm(ValidationForm):
+    """An empty form that can be used to validate a csrf token for forms that do not have any inputs
+    and are just to commit a change to the database."""
+
+    ...

@@ -1,0 +1,15 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_item %}
+
+{% block page_title %}Change account status{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            {% csrf_token %}
+            {% include 'v2/component_macros/two_radio_buttons.html' with value=user_case.case_contact.primary value_one=True value_two=False label_size='xl' label="What is the user's role in this case?" id_one="primary_contact" label_one="Case contact: they can access and manage the case, and are a key point of contact for communication with the TRA." id_two="user" label_two="User: they can access and manage the case on behalf of the organisation." name="case_role" %}
+            {% include "v2/component_macros/form_button_group.html" with forward_button_text="Submit" %}
+        </form>
+
+    </div>
+{% endblock row_content %}

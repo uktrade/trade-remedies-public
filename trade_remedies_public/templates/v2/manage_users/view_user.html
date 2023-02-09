@@ -14,23 +14,26 @@
             </h2>
             <ul class="govuk-tabs__list" role="tablist">
                 <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
-                    <a class="govuk-tabs__tab" href="#cases-cases" id="tab_cases-cases" role="tab"
-                        aria-controls="cases-cases" aria-selected="true" tabindex="0">
+                    <a class="govuk-tabs__tab" href="#cases_cases" id="tab_cases_cases" role="tab"
+                        aria-controls="cases_cases" aria-selected="true" tabindex="0">
                         Cases
                     </a>
                 </li>
                 <li class="govuk-tabs__list-item" role="presentation">
-                    <a class="govuk-tabs__tab" href="#user-details" id="tab_user-details" role="tab"
-                        aria-controls="user-details" aria-selected="false" tabindex="-1">
+                    <a class="govuk-tabs__tab" href="#user_details" id="tab_user_details" role="tab"
+                        aria-controls="user_details" aria-selected="false" tabindex="-1">
                         User details
                     </a>
                 </li>
             </ul>
-            <div class="govuk-tabs__panel" id="cases-cases" role="tabpanel" aria-labelledby="tab_cases-cases">
+            <div class="govuk-tabs__panel" id="cases_cases" role="tabpanel" aria-labelledby="tab_cases_cases">
                 <h2 class="govuk-heading-m clearfix">Cases
-                    <span class="govuk-body right-aligned-link">
-                        <a href="assign-own-user-case" class="govuk-link--no-visited-state">Assign user to case</a>
-                    </span>
+                    {% if not cannot_assign_to_case %}
+                        <span class="govuk-body right-aligned-link">
+                            <a href="{% url 'assign_to_case' organisation_user_id=org_user.id %}"
+                                class="govuk-link--no-visited-state">Assign user to case</a>
+                        </span>
+                    {% endif %}
                 </h2>
                 <p>Assign a user to a case and manage their role and access. </p>
                 <form>
@@ -116,26 +119,30 @@
                                     <span class="govuk-visually-hidden--desktop">Interested party: </span>{{ user_case.organisation.name }}
                                 </td>
                                 <td class="govuk-table__cell text-overflow">
-                                    <span class="govuk-visually-hidden--desktop">Case role: </span>User
+                                    <span class="govuk-visually-hidden--desktop">Case role: </span>{{ user_case.case_contact.primary|yesno:"Case contact,User" }}
                                 </td>
                                 <td class="govuk-table__cell">
                                     <span class="govuk-visually-hidden--desktop">Action 1: </span><a
-                                        href="case-role?account-case=case1" class="govuk-link govuk-link--no-visited-state">Change
-                                        role <span class="govuk-visually-hidden--desktop">for case {{ user_case.case.reference }}</span> </a>
+                                        href="{% url 'change_case_role' organisation_user_id=org_user.id user_case_id=user_case.id %}"
+                                        class="govuk-link govuk-link--no-visited-state">Change
+                                        role <span
+                                            class="govuk-visually-hidden--desktop">for case {{ user_case.case.reference }}</span>
+                                    </a>
                                 </td>
                                 <td class="govuk-table__cell">
                                     <span class="govuk-visually-hidden--desktop">Action 2: </span><a
-                                        href="remove-user?remove-case=case1"
-                                        class="govuk-link govuk-link--no-visited-state">Remove
-                                        user<span class="govuk-visually-hidden--desktop"> from case {{ user_case.case.reference }}</span> </a>
+                                        href="{% url 'remove_from_case' organisation_user_id=org_user.id user_case_id=user_case.id %}"
+                                        class="govuk-link govuk-link--no-visited-state">Remove user<span
+                                            class="govuk-visually-hidden--desktop"> from case {{ user_case.case.reference }}</span>
+                                    </a>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="user-details" role="tabpanel"
-                aria-labelledby="tab_user-details">
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="user_details" role="tabpanel"
+                aria-labelledby="tab_user_details">
                 <h2 class="govuk-heading-m">User details</h2>
                 <div class="address-card">
                     <div class="address-container">
@@ -145,14 +152,17 @@
                                     Contact details
                                 </dt>
                                 <dd class="govuk-summary-list__value">
-                                    {{ user.contact.name }}<br>
+                                    {{ user.name }}<br>
                                     {{ user.email }}<br>
                                     {{ user.contact.phone|default_if_none:"" }}
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
-                                    <a class="govuk-link--no-visited-state" href="user-account-edit">
-                                        Edit<span class="govuk-visually-hidden"> contact details</span>
-                                    </a>
+                                    {% if not cannot_edit_contact_details %}
+                                        <a class="govuk-link--no-visited-state"
+                                            href="{% url 'edit_user' organisation_user_id=org_user.id %}">
+                                            Edit<span class="govuk-visually-hidden"> contact details</span>
+                                        </a>
+                                    {% endif %}
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
@@ -163,6 +173,12 @@
                                     {{ org_user.security_group }}
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
+                                    {% if not cannot_edit_permissions_and_is_active %}
+                                        <a class="govuk-link--no-visited-state"
+                                            href="{% url 'change_organisation_user_permissions' organisation_user_id=org_user.id %}">
+                                            Change<span class="govuk-visually-hidden"> account permission</span>
+                                        </a>
+                                    {% endif %}
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">
@@ -173,6 +189,12 @@
                                     {{ user.is_active|yesno:"Active, Inactive" }}
                                 </dd>
                                 <dd class="govuk-summary-list__actions">
+                                    {% if not cannot_edit_permissions_and_is_active %}
+                                        <a class="govuk-link--no-visited-state"
+                                            href="{% url 'change_organisation_user_active' organisation_user_id=org_user.id %}">
+                                            Change<span class="govuk-visually-hidden"> account permission</span>
+                                        </a>
+                                    {% endif %}
                                 </dd>
                             </div>
                             <div class="govuk-summary-list__row">

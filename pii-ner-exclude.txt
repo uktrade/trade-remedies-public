@@ -1,3 +1,25 @@
+change_case_role
+{{ organisation_user.user.name
+{{ user_case.case.reference }} - {{ user_case.case.name }
+Group
+CaseContact
+UserCases
+" A TransientUser
+Insetad
+APIUserMiddleware
+aria-controls="cases_cases
+permission</span
+change_case_role
+{{ organisation_user.user.name
+{{ user_case.case.reference }} - {{ user_case.case.name }
+Group
+CaseContact
+UserCases
+" A TransientUser
+Insetad
+APIUserMiddleware
+aria-controls="cases_cases
+permission</span
 {{ user.name
 aria-controls="cases
 aria-controls="user-details
