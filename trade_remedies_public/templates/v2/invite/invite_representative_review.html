@@ -34,7 +34,7 @@
                             Review documentation
                         </a>
                     {% endif %}
-                    <p class="govuk-body"><span id="date">{{ invitation.created_at|date:'d M Y' }}</span></p>
+                    <p class="govuk-body"><span id="date">{{ invitation.last_modified|date:'d M Y' }}</span></p>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">

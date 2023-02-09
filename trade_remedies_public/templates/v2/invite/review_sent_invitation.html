@@ -13,9 +13,11 @@
                     Status
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <p>{{ invitation.status.1 }}<br>
+                    {{ invitation.status.1 }}<br>
+                    {% if invitation.status.0 == "invite_sent" %}
                         Awaiting invitee acceptance<br>
-                        <span id="date">{{ invitation.sent_at|date:'d M Y' }}</span></p>
+                    {% endif %}
+                    <p class="govuk-body"><span id="date">{{ invitation.last_modified|date:'d M Y' }}</span></p>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -58,12 +60,24 @@
                 </dd>
             </div>
         </dl>
-        <div class="govuk-button-group">
-            <a href="{% url 'cancel_draft_invitation' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
-                data-module="govuk-button">
-                Cancel invite
-            </a>
-            <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
-        </div>
+        {% if invitation.status.0 == "draft" %}
+            <div class="govuk-button-group">
+                <a href="{% url 'invitation_name_email' invitation_id=invitation.id %}" role="button"
+                   draggable="false" class="govuk-button"
+                   data-module="govuk-button">
+                    Continue
+                </a>
+                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'cancel_draft_invitation' invitation_id=invitation.id %}">Cancel invite</a>
+            </div>
+        {% else %}
+            <div class="govuk-button-group">
+                <a href="{% url 'cancel_draft_invitation' invitation_id=invitation.id %}" role="button"
+                   draggable="false" class="govuk-button"
+                   data-module="govuk-button">
+                    Cancel invite
+                </a>
+                <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
+            </div>
+        {% endif %}
     </div>
 {% endblock row_content %}

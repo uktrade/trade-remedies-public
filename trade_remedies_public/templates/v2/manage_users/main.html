@@ -2,16 +2,18 @@
 {% load static %}
 
 {% block page_title %}Manage users{% endblock page_title %}
-{% block back_button %}
+{% block breadcrumbs %}
     <div class="govuk-breadcrumbs">
         <ol class="govuk-breadcrumbs__list">
             <li class="govuk-breadcrumbs__list-item">
-                <a data-track-category="breadcrumbClicked" data-track-action="1" class=""
-                    aria-current="false" href="{% url 'dashboard' %}">Home</a>
+                <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                Manager users
             </li>
         </ol>
     </div>
-{% endblock %}
+{% endblock breadcrumbs %}
 {% block main_content %}
     {% block row_content %}
         <div class="govuk-grid-row">
@@ -168,8 +170,8 @@
                                 href="{% url 'invitation_start' %}">Invite user</a>
                         </span>
                     </h2>
-                    <p>You have {{ pending_invitations|length }} pending invite{% if pending_invitations|length != 1 %}
-                        s{% endif %}</p>
+                    <p>You have {{ pending_invitations|length }} pending {% if pending_invitations|length != 1 %}
+                        invites{% else %}invite{% endif %}</p>
                     <div id="table-sort" class="govuk-visually-hidden--desktop">
                         <div class="govuk-form-group table-sort-select">
                             <label class="govuk-label govuk-!-display-inline" for="sort-pending">

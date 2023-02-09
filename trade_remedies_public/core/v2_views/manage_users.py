@@ -11,6 +11,7 @@ class ManageUsersView(BasePublicView, TemplateView):
         context = super().get_context_data(**kwargs)
         invitations = self.client.invitations(
             organisation_id=self.request.user.contact["organisation"]["id"],
+            contact_id__isnull=False,  # we need at least the name and email of the contact
             fields=[
                 "contact",
                 "status",
