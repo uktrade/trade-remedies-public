@@ -36,6 +36,9 @@ document;e(n.querySelectorAll('[data-module="govuk-accordion"]'),(function(e){ne
 t.accordion).init()})),e(n.querySelectorAll('[data-module="govuk-button"]'),(function(e){new
 t.Button
 CharacterCount
+confidential{%
+document</button
+submit></button
 Invite
 csp_nonce
 Javascript</a
