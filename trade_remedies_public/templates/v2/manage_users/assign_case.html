@@ -1,10 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Title</title>
-    </head>
-    <body>
+{% extends "v2/govuk/base.html" %}
 
-    </body>
-</html>
+{% block page_title %}Choose case{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <form method="post">
+            {% csrf_token %}
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="invite-case-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 class="govuk-fieldset__heading">
+                            Which case can the user take part in?
+                        </h1>
+                    </legend>
+                    <div id="invite-case-hint" class="govuk-hint">
+                        Select all that apply
+                    </div>
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        {% for case in interested_party_cases %}
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="invite-{{ case.id }}" name="interested_party_cases" type="checkbox"
+                                    value="{{ case.id }}">
+                                <label class="govuk-label govuk-checkboxes__label" for="invite-{{ case.id }}">
+                                    {{ case.reference }} - {{ case.name }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </fieldset>
+            </div>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Why can't I see other active cases?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>You can only select cases that your organisation is taking part in.</p>
+                    <p> You can <a href="" class="govuk-link">register interest</a> in a case and if accepted you can
+                        invite others.</p>
+                </div>
+            </details>
+            {% include "v2/component_macros/form_button_group.html" %}
+        </form>
+    </div>
+{% endblock row_content %}

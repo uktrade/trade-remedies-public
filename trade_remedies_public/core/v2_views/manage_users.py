@@ -13,7 +13,6 @@ from config.constants import (
 )
 from config.forms import EmptyForm
 from core.v2_forms.manage_users import (
-    AssignToCaseForm,
     ChangeCaseRoleForm,
     ChangeUserIsActiveForm,
     EditUserForm,
@@ -261,20 +260,43 @@ class RemoveFromCaseView(BaseEditUserView):
 
 class AssignToCaseView(BaseEditUserView):
     template_name = "v2/manage_users/assign_case.html"
-    form_class = AssignToCaseForm
+    form_class = EmptyForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         cases_already_enrolled_in = [
             each.case.id for each in self.organisation_user.user.user_cases
         ]
-        possible_user_cases = [
-            each.case
-            for each in cases_already_enrolled_in
-            if each.case not in cases_already_enrolled_in
+
+        org = self.client.organisations(
+            self.organisation_user.organisation, fields=["cases", "representative_cases"]
+        )
+        interested_party_cases = [
+            case for case in org.cases if case.id not in cases_already_enrolled_in
         ]
-        context["possible_user_cases"] = possible_user_cases
+        representing_cases = org.representative_cases
+        context["interested_party_cases"] = interested_party_cases
+        context["representing_cases"] = representing_cases
         return context
 
     def form_valid(self, form):
-        ...
+        # for each case in the POST request, create a UserCase and CaseContact object if they
+        # don't already exist
+        for case in self.request.POST.getlist("interested_party_cases"):
+
+            user_case_dict = {
+                "case": case,
+                "user": self.organisation_user.user.id,
+                "organisation": self.organisation_user.organisation,
+            }
+            if not self.client.user_cases(**user_case_dict):
+                self.client.user_cases(user_case_dict)
+
+            case_contact_dict = {
+                "case": case,
+                "contact": self.organisation_user.user.contact.id,
+                "organisation": self.organisation_user.organisation,
+            }
+
+            if not self.client.case_contacts(**case_contact_dict):
+                self.client.case_contacts(case_contact_dict)
