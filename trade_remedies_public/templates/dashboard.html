@@ -97,7 +97,7 @@
                                 User invites
                                 {% if pre_manage_team and is_org_owner %}
                                     <span class="govuk-body right-aligned-link">
-                                        <a href="{% url 'manage-users' %}">Manage users</a>
+                                        <a href="{% url 'manage_users_home' %}">Manage users</a>
                                     </span>
                                 {% endif %}
                             </h2>
@@ -113,7 +113,7 @@
                                     <li class="">{{pending_invitation_waiting_trs_approval_count}} invite{% if pending_invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting for TRA review</li>
                                 {% endif %}
                             </ul>
-                            <a href="{% url 'manage-users' %}#manage-invites">View Invites</a>
+                            <a href="{% url 'manage_users_home' %}#manage-invites">View Invites</a>
                         {% else %}
                             <a href="{% url 'invitation_start' %}">Invite user</a>
                         {% endif %}
@@ -124,7 +124,7 @@
                     <h2 class="govuk-heading-m">
                         Invite users
                         <span class="govuk-body right-aligned-link">
-                            <a href="{% url 'manage-users' %}">Manage users</a>
+                            <a href="{% url 'manage_users_home' %}">Manage users</a>
                         </span>
                     </h2>
                     <p>Give access to your organisation's active cases by inviting users to join your account</p>
@@ -170,7 +170,7 @@
                             {% if pre_applications %}
                                 <li><a href="/case/">Apply for an investigation</a></li>{% endif %}
                             {% if pre_manage_team and is_org_owner %}
-                                <li><a href="{% url 'manage-users' %}" id="lnk_manage_your_team">Manage users</a>
+                                <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage users</a>
                                 </li>{% endif %}
                             {% if pre_manage_team and is_org_owner %}
                                 <li><a href="/cases/">See all cases</a></li>{% endif %}

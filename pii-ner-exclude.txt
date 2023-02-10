@@ -1,3 +1,4 @@
+pending_invitation_deficient_docs_count
 ROI
 submission.invitations.0|length
 method='post'><button class="link">Cancel</button>{% csrf_token %
