@@ -68,8 +68,8 @@ class TwoFactorChoice(AcceptOrganisationTwoFactorChoice):
             self.client.users(self.invitation.invited_user.id).update({"is_active": True})
 
             if self.invitation.invitation_type == 2:
-                # Now let's add the correct groups to the user, so they can log in and the rest of the
-                # invitation can be processed
+                # Now let's add the correct groups to the user, so they can log in and the
+                # rest of the invitation can be processed
                 self.client.users(self.invitation.invited_user.id).add_group(
                     SECURITY_GROUP_ORGANISATION_OWNER
                 )
