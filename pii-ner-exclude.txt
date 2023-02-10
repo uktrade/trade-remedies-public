@@ -1,11 +1,3 @@
-holding_page.html
-home.html
-f"We
-TARIFF_CLASSIFICATION
-dashboard.html
-tasklist.html
-update.html
-feedback_form_inner.html
 pending_invitation_deficient_docs_count
 ROI
 submission.invitations.0|length
