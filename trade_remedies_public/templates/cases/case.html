@@ -51,7 +51,7 @@
                                             <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">{{ submission.type.name }}</a>
                                         {% else %}
                                             {% if submission.invitations.0|length > 0 %}
-                                                <a href="{% url 'invite_representative_task_list_exists' invitation_id=submission.invitations.0.id %}">{{ submission.type.name }}</a>
+                                                <a href="{% url 'review_sent_invitation' invitation_id=submission.invitations.0.id %}">{{ submission.type.name }}</a>
                                             {% else %}
                                                 <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">{{ submission.type.name }}</a>
                                             {% endif %}
@@ -65,7 +65,7 @@
                                                 <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">
                                             {% else %}
                                                 {% if submission.invitations.0|length > 0 %}
-                                                    <a href="{% url 'invite_representative_task_list_exists' invitation_id=submission.invitations.0.id %}">
+                                                    <a href="{% url 'review_sent_invitation' invitation_id=submission.invitations.0.id %}">
                                                 {% else %}
                                                     <a href="/case/{{submission.case.id}}/submission/{{submission.id}}/">
                                                 {% endif %}
