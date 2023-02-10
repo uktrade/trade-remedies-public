@@ -113,7 +113,6 @@ class TwoFactorChoice(AcceptOrganisationTwoFactorChoice):
             )
 
 
-
 # Need to keep for when caseworker invites and the organisation was created as
 # part of the invite
 class OrganisationDetails(BaseAcceptInviteView, FormInvalidMixin):
