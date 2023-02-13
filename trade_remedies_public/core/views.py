@@ -450,11 +450,11 @@ class DashboardView(
             )
 
             pending_invitation_deficient_docs_count = sum(
-                {
+                [
                     1
                     for invite in invitations
-                    if invite.invitation_type == 2 and "deficient" in invite.status
-                }
+                    if "deficient" in invite.status and not invite.submission.archived
+                ]
             )
 
             invitation_waiting_trs_approval_count = sum(

@@ -26,8 +26,7 @@
                         <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                         <strong class="govuk-warning-text__text">
                             <span class="govuk-warning-text__assistive">Warning</span>
-                            You have {{ pending_invitations_deficient_docs_count }} pending invite with deficient
-                            documentation
+                            You have {{ pending_invitations_deficient_docs_count }} pending invite{% if pending_invitations_deficient_docs_count > 1 %}s{% endif %} with deficient documentation.
                         </strong>
                     </div>
                 {% endif %}
@@ -176,7 +175,7 @@
                         </span>
                     </h2>
                     <p>You have {{ pending_invitations|length }} pending {% if pending_invitations|length != 1 %}
-                        invites{% else %}invite{% endif %}</p>
+                        invites{% else %}invite{% endif %}.</p>
                     <div id="table-sort" class="govuk-visually-hidden--desktop">
                         <div class="govuk-form-group table-sort-select">
                             <label class="govuk-label govuk-!-display-inline" for="sort-pending">

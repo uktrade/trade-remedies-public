@@ -64,11 +64,11 @@ class ManageUsersView(BasePublicView, TemplateView):
                 "pending_invitations": pending_invitations,
                 "rejected_invitations": rejected_invitations,
                 "pending_invitations_deficient_docs_count": sum(
-                    {
+                    [
                         1
                         for invite in pending_invitations
-                        if invite.invitation_type == 2 and invite.submission.status.version
-                    }
+                        if "deficient" in invite.status and not invite.submission.archived
+                    ]
                 ),
                 "user": self.request.user,
                 "group_owner": SECURITY_GROUP_ORGANISATION_OWNER,
