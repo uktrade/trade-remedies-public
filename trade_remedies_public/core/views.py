@@ -436,7 +436,7 @@ class DashboardView(
         # only required if the user is an organisation owner
         if is_org_owner:
             pending_invitation_count = sum(
-                {
+                [
                     1
                     for invite in invitations
                     if (invite.invitation_type == 1 and not invite.accepted_at)
@@ -444,9 +444,10 @@ class DashboardView(
                         invite.invitation_type == 2
                         and not invite.approved_at
                         and not invite.rejected_at
+                        and not invite.accepted_at
                         and not invite.submission.archived
                     )
-                }
+                ]
             )
 
             pending_invitation_deficient_docs_count = sum(
@@ -458,7 +459,7 @@ class DashboardView(
             )
 
             invitation_waiting_trs_approval_count = sum(
-                {
+                [
                     1
                     for invite in invitations
                     if (
@@ -466,7 +467,7 @@ class DashboardView(
                         and invite.accepted_at
                         and "waiting_tra_review" in invite.status
                     )
-                }
+                ]
             )
 
         unapproved_rep_invitations_cases = [

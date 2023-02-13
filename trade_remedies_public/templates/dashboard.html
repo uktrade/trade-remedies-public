@@ -104,13 +104,13 @@
                             <p class="govuk-body">You have pending invites:</p>
                             <ul class="govuk-list govuk-list--bullet">
                                 {% if pending_invitation_deficient_docs_count %}
-                                    <li class="bold">{{pending_invitation_deficient_docs_count}} invite{% if pending_invitation_deficient_docs_count > 1 %}s{% endif %} with deficient documentation</li>
+                                    <li class="govuk-!-font-weight-bold">{{ pending_invitation_deficient_docs_count }} invite{% if pending_invitation_deficient_docs_count > 1 %}s{% endif %} with deficient documentation</li>
                                 {% endif %}
                                 {% if pending_invitation_count %}
-                                    <li class="">{{pending_invitation_count}} invite{% if pending_invitation_count > 1 %}s{% endif %} waiting for invitee to accept</li>
+                                    <li>{{ pending_invitation_count }} invite{% if pending_invitation_count > 1 %}s{% endif %} waiting for invitee to accept</li>
                                 {% endif %}
                                 {% if pending_invitation_waiting_trs_approval_count %}
-                                    <li class="">{{pending_invitation_waiting_trs_approval_count}} invite{% if pending_invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting for TRA review</li>
+                                    <li>{{ pending_invitation_waiting_trs_approval_count }} invite{% if pending_invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting for TRA review</li>
                                 {% endif %}
                             </ul>
                             <a class="govuk-link govuk-link--no-visited-state" href="{% url 'manage_users_home' %}#manage-invites">
