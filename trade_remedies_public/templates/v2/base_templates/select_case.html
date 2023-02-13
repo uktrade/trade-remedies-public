@@ -2,25 +2,6 @@
 {% load static %}
 {% load format_date %}
 
-{% block extra_css %}
-    <link href="{% static 'v2/css/table.css' %}" rel="stylesheet">
-
-    <style>
-        /* This is the select button in the case table */
-        .link_button {
-            padding: 0px;
-            text-align: left;
-            cursor: pointer;
-            box-shadow: none;
-            margin: 0px;
-            color: #1d70b8;
-            background: none;
-            text-decoration: underline;
-            text-underline-offset: 0.1em;
-        }
-    </style>
-{% endblock extra_css %}
-
 {% block row_content %}
     <div class="govuk-grid-column-full">
         <span class="govuk-caption-xl">{% block header %}{% endblock header %}</span>
@@ -66,7 +47,7 @@
                         <span class="govuk-visually-hidden">Error:</span> There are no active cases to join at present
                     </p>
                 {% endif %}
-                <table class="govuk-table sortable1 table-border mobile-table-border desktop-table-border" id="table-header">
+                <table class="govuk-table sortable mobile-table-border desktop-table-border" id="table-header">
                     <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden">
                         A table listing all of the open Trade Remedies cases
                     </caption>
