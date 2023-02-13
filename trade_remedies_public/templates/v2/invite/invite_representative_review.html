@@ -28,7 +28,7 @@
                             <strong class="govuk-tag govuk-tag--pink">Deficient documentation</strong><br>
                         {% endif %}
                     </p>
-                    {% if invitation.submission.status.version %}
+                    {% if invitation.status.0 == "deficient" %}
                         <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
                             data-module="govuk-button">
                             Review documentation

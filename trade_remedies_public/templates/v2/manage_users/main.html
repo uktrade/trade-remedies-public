@@ -372,11 +372,7 @@
 {% block scripts %}
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
-        const url = window.location.href;
-
         $(document).ready(function () {
-            window.location.href = url;
-
             let user_table = $('#table-header-users').DataTable({
                 paging: false,
                 searching: false,
@@ -435,7 +431,6 @@
             })
 
             // Now we need to redraw the table everytime the tab is switched so the columns resize automatically
-
             function redraw_table(data_table) {
                 data_table.fnAdjustColumnSizing()
             }
@@ -449,7 +444,8 @@
             $("document").on("resize", function () {
                 redraw_table($("table:visible").dataTable())
             })
-
         });
     </script>
 {% endblock scripts %}
+
+{% block hash_replace %}{% endblock hash_replace %}
