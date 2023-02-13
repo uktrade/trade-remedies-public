@@ -109,8 +109,8 @@
                                 {% if pending_invitation_count %}
                                     <li>{{ pending_invitation_count }} invite{% if pending_invitation_count > 1 %}s{% endif %} waiting for invitee acceptance</li>
                                 {% endif %}
-                                {% if pending_invitation_waiting_trs_approval_count %}
-                                    <li>{{ pending_invitation_waiting_trs_approval_count }} invite{% if pending_invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting for TRA review</li>
+                                {% if invitation_waiting_trs_approval_count %}
+                                    <li>{{ invitation_waiting_trs_approval_count }} invite{% if invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting for TRA review</li>
                                 {% endif %}
                             </ul>
                             <a class="govuk-link govuk-link--no-visited-state" href="{% url 'manage_users_home' %}#manage-invites">
