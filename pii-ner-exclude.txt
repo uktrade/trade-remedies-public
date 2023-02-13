@@ -31,6 +31,11 @@ dashboard.html
 tasklist.html
 update.html
 feedback_form_inner.html
+Group
+CaseContact
+UserCases
+POST
+UserCase
 pending_invitation_deficient_docs_count
 ROI
 submission.invitations.0|length
