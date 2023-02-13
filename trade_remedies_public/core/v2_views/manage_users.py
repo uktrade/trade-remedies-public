@@ -132,10 +132,7 @@ class BaseEditUserView(BaseSingleUserView, FormInvalidMixin):
         return response
 
     def get_success_url(self):
-        return redirect(
-            reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
-            + "#user_details"
-        )
+        return reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
 
 
 class EditUser(BaseEditUserView):
@@ -250,7 +247,7 @@ class RemoveFromCaseView(BaseEditUserView):
         context["organisation_user"] = self.organisation_user
         return context
 
-    def post(self, request, *args, **kwargs):
+    def form_valid(self, form):
         context = self.get_context_data(**self.kwargs)
 
         # deleting the corresponding CaseContact object if it exists

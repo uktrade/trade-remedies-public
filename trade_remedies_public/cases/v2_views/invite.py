@@ -409,7 +409,6 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
         if request.user.is_authenticated:
             user_cases = self.client.organisations(
                 self.request.user.contact["organisation"]["id"],
-                organisation_id=self.request.user.contact["organisation"]["id"],
                 fields=["user_cases"],
             ).user_cases
             # we only want cases where this organisation is an interested party,

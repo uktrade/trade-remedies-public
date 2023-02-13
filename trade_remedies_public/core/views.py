@@ -422,6 +422,7 @@ class DashboardView(
         # Let's get the cases where the user is awaiting approval
         invitations = v2_client.invitations(
             organisation_id=self.request.user.contact["organisation"]["id"],
+            contact_id__isnull=False,  # we need at least the name and email of the contact
             fields=[
                 "submission",
                 "case",

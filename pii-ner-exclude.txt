@@ -1,3 +1,28 @@
+{{ user.name
+aria-controls="cases_cases
+{{ user.email }
+permission</span
+{{ user.is_active|yesno:"Active
+{{ organisation.name|default_if_none
+Group
+CaseContact
+UserCases
+POST
+UserCase
+equiv="X-UA-Compatible
+sizes="16x16 32x32 48x48
+endif]--
+IE 9
+content="&lt;YOUR
+svg aria-hidden="true
+7.9-13.5
+7.8-13.5
+3.3-1.3
+width="36
+li class="login-nav__list-item
+href="https://www.nationalarchives.gov.uk/information-management
+document.cookie
+max-age=${3600
 holding_page.html
 home.html
 f"We

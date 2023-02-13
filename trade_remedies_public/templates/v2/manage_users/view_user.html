@@ -3,6 +3,23 @@
 
 {% block page_title %}User details{% endblock page_title %}
 
+{% block back_button %}{% endblock back_button %}
+{% block breadcrumbs %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'manage_users_home' %}">Manage users</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                {{ user.name }}
+            </li>
+        </ol>
+    </div>
+{% endblock breadcrumbs %}
+
 {% block row_content %}
     <div class="govuk-grid-column-full">
         <h1 class="govuk-heading-xl">

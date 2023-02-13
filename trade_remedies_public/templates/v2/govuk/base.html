@@ -144,7 +144,7 @@
                     </a>
                 </div>
                 <ul class="login-nav__list">
-                    {% if user.is_authenticated %}
+                    {% if request.user.is_authenticated %}
                         {# The user is logged in #}
                         {% if not within_2fa and not within_verify %}
                             <li class="login-nav__list-item">
