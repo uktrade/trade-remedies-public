@@ -148,7 +148,7 @@
                         {# The user is logged in #}
                         {% if not within_2fa and not within_verify %}
                             <li class="login-nav__list-item">
-                                {{ user.name }}
+                                {{ request.user.name }}
                             </li>
                             <li class="login-nav__list-item">
                                 <a href="{% url 'account_info' %}"

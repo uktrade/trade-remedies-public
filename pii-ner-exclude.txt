@@ -1,3 +1,4 @@
+{{ user_case.case.reference }} - {{ user_case.case.name }
 {{ user.name
 aria-controls="cases_cases
 {{ user.email }

@@ -267,35 +267,32 @@ class AssignToCaseView(BaseEditUserView):
         cases_already_enrolled_in = [
             each.case.id for each in self.organisation_user.user.user_cases
         ]
-
-        org = self.client.organisations(
-            self.organisation_user.organisation, fields=["cases", "representative_cases"]
-        )
-        interested_party_cases = [
-            case for case in org.cases if case.id not in cases_already_enrolled_in
+        org = self.client.organisations(self.organisation_user.organisation, fields=["user_cases"])
+        user_cases = [
+            user_case
+            for user_case in org.user_cases
+            if user_case.case.id not in cases_already_enrolled_in
         ]
-        representing_cases = org.representative_cases
-        context["interested_party_cases"] = interested_party_cases
-        context["representing_cases"] = representing_cases
+        context["user_cases"] = user_cases
         return context
 
     def form_valid(self, form):
         # for each case in the POST request, create a UserCase and CaseContact object if they
         # don't already exist
-        for case in self.request.POST.getlist("interested_party_cases"):
-
+        for user_case in self.request.POST.getlist("which_user_case"):
+            user_case = self.client.user_cases(user_case)
             user_case_dict = {
-                "case": case,
+                "case": user_case.case.id,
                 "user": self.organisation_user.user.id,
-                "organisation": self.organisation_user.organisation,
+                "organisation": user_case.organisation.id,  # maintain the rep relationship
             }
             if not self.client.user_cases(**user_case_dict):
                 self.client.user_cases(user_case_dict)
 
             case_contact_dict = {
-                "case": case,
+                "case": user_case.case.id,
                 "contact": self.organisation_user.user.contact.id,
-                "organisation": self.organisation_user.organisation,
+                "organisation": user_case.organisation.id,  # maintain the rep relationship
             }
 
             if not self.client.case_contacts(**case_contact_dict):

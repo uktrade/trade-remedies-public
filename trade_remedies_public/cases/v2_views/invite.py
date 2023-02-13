@@ -230,7 +230,6 @@ class ChooseCasesView(BaseInviteFormView):
                     if (user_case.organisation.id, user_case.case.id) not in seen_org_case_combos:
                         no_duplicate_user_cases.append(user_case)
                         seen_org_case_combos.append((user_case.organisation.id, user_case.case.id))
-                # user_cases = remove_duplicates_from_list_by_key(user_cases, "/case/id")
                 user_cases = sorted(no_duplicate_user_cases, key=lambda x: x.case.reference)
 
             self.user_cases = user_cases
