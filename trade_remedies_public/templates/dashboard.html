@@ -113,7 +113,7 @@
                                     <li class="">{{pending_invitation_waiting_trs_approval_count}} invite{% if pending_invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting for TRA review</li>
                                 {% endif %}
                             </ul>
-                            <a href="{% url 'manage_users_home' %}#manage-invites">View Invites</a>
+                            <a href="{% url 'manage_users_home' %}#manage-invites">View invites</a>
                         {% else %}
                             <a href="{% url 'invitation_start' %}">Invite user</a>
                         {% endif %}
@@ -180,5 +180,4 @@
             {% endif %}
         </div>
     </div>
-
 {% endblock %}
