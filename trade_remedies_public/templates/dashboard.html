@@ -92,34 +92,36 @@
                     </div>
                     <!-- 3rd party invites -->
                     <div class="margin-top-2">
-                        {% if is_org_owner and pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
-                            <h2 class="govuk-heading-m">
-                                User invites
-                                {% if pre_manage_team and is_org_owner %}
-                                    <span class="govuk-body right-aligned-link">
-                                        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'manage_users_home' %}">Manage users</a>
-                                    </span>
-                                {% endif %}
-                            </h2>
-                            <p class="govuk-body">You have pending invites:</p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                {% if pending_invitation_deficient_docs_count %}
-                                    <li class="govuk-!-font-weight-bold">{{ pending_invitation_deficient_docs_count }} invite{% if pending_invitation_deficient_docs_count > 1 %}s{% endif %} with deficient documentation</li>
-                                {% endif %}
-                                {% if pending_invitation_count %}
-                                    <li>{{ pending_invitation_count }} invite{% if pending_invitation_count > 1 %}s{% endif %} waiting for invitee to accept</li>
-                                {% endif %}
-                                {% if invitation_waiting_trs_approval_count %}
-                                    <li>{{ invitation_waiting_trs_approval_count }} invite{% if invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting for TRA review</li>
-                                {% endif %}
-                            </ul>
-                            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'manage_users_home' %}#manage-invites">
-                                View invites
-                            </a>
-                        {% else %}
-                            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invitation_start' %}">
-                                Invite user
-                            </a>
+                        {% if is_org_owner %}
+                            {% if pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
+                                <h2 class="govuk-heading-m">
+                                    User invites
+                                    {% if pre_manage_team and is_org_owner %}
+                                        <span class="govuk-body right-aligned-link">
+                                            <a class="govuk-link govuk-link--no-visited-state" href="{% url 'manage_users_home' %}">Manage users</a>
+                                        </span>
+                                    {% endif %}
+                                </h2>
+                                <p class="govuk-body">You have pending invites:</p>
+                                <ul class="govuk-list govuk-list--bullet">
+                                    {% if pending_invitation_deficient_docs_count %}
+                                        <li class="govuk-!-font-weight-bold">{{ pending_invitation_deficient_docs_count }} invite{% if pending_invitation_deficient_docs_count > 1 %}s{% endif %} with deficient documentation</li>
+                                    {% endif %}
+                                    {% if pending_invitation_count %}
+                                        <li>{{ pending_invitation_count }} invite{% if pending_invitation_count > 1 %}s{% endif %} waiting for invitee to accept</li>
+                                    {% endif %}
+                                    {% if invitation_waiting_trs_approval_count %}
+                                        <li>{{ invitation_waiting_trs_approval_count }} invite{% if invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting for TRA review</li>
+                                    {% endif %}
+                                </ul>
+                                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'manage_users_home' %}#manage-invites">
+                                    View invites
+                                </a>
+                            {% else %}
+                                <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invitation_start' %}">
+                                    Invite user
+                                </a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 {% endif %}
