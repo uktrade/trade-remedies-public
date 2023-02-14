@@ -69,7 +69,6 @@ class CancelDraftInvitation(BaseInviteView):
     def post(self, request, *args, **kwargs):
         if not self.invitation.accepted_at:
             self.invitation.delete()
-            ...
         return redirect(reverse("invite_cancelled"))
 
 
@@ -103,8 +102,7 @@ class DeleteDraftInvitation(BaseInviteView):
 
     def post(self, request, *args, **kwargs):
         if not self.invitation.accepted_at:
-            # self.invitation.delete()
-            ...
+            self.invitation.delete()
         return redirect(reverse("invite_deleted"))
 
 

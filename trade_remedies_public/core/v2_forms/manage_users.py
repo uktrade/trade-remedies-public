@@ -11,15 +11,17 @@ class EditUserForm(ValidationForm):
     email = forms.EmailField()
     dialing_code = forms.ChoiceField(
         choices=[["GB", "GB"]]
-        + [[each["code"], each["name"]] for each in country_dialing_codes_without_uk]
+        + [[each["code"], each["name"]] for each in country_dialing_codes_without_uk],
+        required=False,
     )
-    phone = forms.CharField()
+    phone = forms.CharField(required=False)
 
     def clean(self):
         cleaned_data = super().clean()
-
-        if not is_phone_number_valid(cleaned_data["dialing_code"], cleaned_data["phone"]):
-            self.add_error("phone", "Phone number is invalid")
+        if dialing_code := cleaned_data.get("dialing_code"):
+            if phone := cleaned_data.get("phone"):
+                if not is_phone_number_valid(dialing_code, phone):
+                    self.add_error("phone", "Phone number is invalid")
         return cleaned_data
 
 

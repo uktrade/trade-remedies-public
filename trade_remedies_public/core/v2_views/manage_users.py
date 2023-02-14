@@ -1,5 +1,4 @@
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
 from v2_api_client.shared.data.country_dialing_codes import country_dialing_codes_without_uk
@@ -169,6 +168,9 @@ class EditUser(BaseEditUserView):
             }
         )
 
+    def form_invalid(self, form):
+        print("Asd")
+
 
 class ChangeOrganisationUserPermissionsView(BaseEditUserView):
     template_name = "v2/invite/select_permissions.html"
@@ -203,10 +205,8 @@ class ChangeUserActiveView(BaseEditUserView):
         return context
 
     def form_valid(self, form):
-        self.client.users(self.organisation_user.user.id).update(form.cleaned_data["is_active"])
-        return redirect(
-            reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
-            + "#user_details"
+        self.client.users(self.organisation_user.user.id).update(
+            {"is_active": form.cleaned_data["is_active"]}
         )
 
 
@@ -273,6 +273,13 @@ class AssignToCaseView(BaseEditUserView):
             for user_case in org.user_cases
             if user_case.case.id not in cases_already_enrolled_in
         ]
+        seen_org_case_combos = []
+        no_duplicate_user_cases = []
+        for user_case in user_cases:
+            if (user_case.organisation.id, user_case.case.id) not in seen_org_case_combos:
+                no_duplicate_user_cases.append(user_case)
+                seen_org_case_combos.append((user_case.organisation.id, user_case.case.id))
+        user_cases = sorted(no_duplicate_user_cases, key=lambda x: x.case.reference)
         context["user_cases"] = user_cases
         return context
 

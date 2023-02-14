@@ -24,10 +24,10 @@
                         Country code
                     </label>
                     <select id="dialing_code" name="dialing_code" class="govuk-select">
-                        <option>Please select</option>
-                        <option>----------</option>
+                        <option value="">Please select</option>
+                        <option  value="">----------</option>
                         <option value="GB" {% if user.contact.country_iso_code == "GB" %}selected{% endif %}>United Kingdom +44</option>
-                        <option>----------</option>
+                        <option  value="">----------</option>
                         {% for dialing_code in country_dialing_codes_without_uk %}
                             <option value="{{ dialing_code.code }}" {% if user.contact.country_iso_code == dialing_code.code %}selected{% endif %}>{{ dialing_code.name }} {{ dialing_code.dial_code }}</option>
                         {% endfor %}
