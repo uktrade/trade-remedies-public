@@ -136,10 +136,8 @@ class BaseEditUserView(BaseSingleUserView, FormInvalidMixin):
         return response
 
     def get_success_url(self):
-        return (
-            reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
-            + self.base_tab_id
-            or ""
+        return reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id}) + (
+            self.base_tab_id or ""
         )
 
 
