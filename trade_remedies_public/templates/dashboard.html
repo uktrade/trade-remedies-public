@@ -118,6 +118,15 @@
                                     View invites
                                 </a>
                             {% else %}
+                                <h2 class="govuk-heading-m">
+                                    Invite users
+                                    <span class="govuk-body right-aligned-link">
+                                        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'manage_users_home' %}">
+                                            Manage users
+                                        </a>
+                                    </span>
+                                </h2>
+                                <p class="govuk-body">Give access to your organisation's active cases by inviting users to join your account.</p>
                                 <a class="govuk-link govuk-link--no-visited-state" href="{% url 'invitation_start' %}">
                                     Invite user
                                 </a>
