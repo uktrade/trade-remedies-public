@@ -118,11 +118,16 @@ class ViewUser(BaseSingleUserView, TemplateView):
         context["cannot_assign_to_case"] = (
             self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
         )
+
+        context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
+        context["group_third_party"] = SECURITY_GROUP_THIRD_PARTY_USER
         return context
 
 
 class BaseEditUserView(BaseSingleUserView, FormInvalidMixin):
     """Admin users should not be able to edit third party users in any capacity"""
+
+    base_tab_id = None
 
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
@@ -131,12 +136,17 @@ class BaseEditUserView(BaseSingleUserView, FormInvalidMixin):
         return response
 
     def get_success_url(self):
-        return reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
+        return (
+            reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
+            + self.base_tab_id
+            or ""
+        )
 
 
 class EditUser(BaseEditUserView):
     template_name = "v2/manage_users/edit_user.html"
     form_class = EditUserForm
+    base_tab_id = "#user_details"
 
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
@@ -168,13 +178,11 @@ class EditUser(BaseEditUserView):
             }
         )
 
-    def form_invalid(self, form):
-        print("Asd")
-
 
 class ChangeOrganisationUserPermissionsView(BaseEditUserView):
     template_name = "v2/invite/select_permissions.html"
     form_class = SelectPermissionsForm
+    base_tab_id = "#user_details"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -198,6 +206,7 @@ class ChangeOrganisationUserPermissionsView(BaseEditUserView):
 class ChangeUserActiveView(BaseEditUserView):
     template_name = "v2/manage_users/change_user_active.html"
     form_class = ChangeUserIsActiveForm
+    base_tab_id = "#user_details"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -213,6 +222,7 @@ class ChangeUserActiveView(BaseEditUserView):
 class ChangeCaseRoleView(BaseEditUserView):
     template_name = "v2/manage_users/change_case_role.html"
     form_class = ChangeCaseRoleForm
+    base_tab_id = "#cases_cases"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -236,6 +246,7 @@ class ChangeCaseRoleView(BaseEditUserView):
 class RemoveFromCaseView(BaseEditUserView):
     template_name = "v2/manage_users/remove_from_case.html"
     form_class = EmptyForm
+    base_tab_id = "#cases_cases"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -261,6 +272,7 @@ class RemoveFromCaseView(BaseEditUserView):
 class AssignToCaseView(BaseEditUserView):
     template_name = "v2/manage_users/assign_case.html"
     form_class = EmptyForm
+    base_tab_id = "#cases_cases"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
