@@ -28,7 +28,7 @@ class DocumentView(View, APIClientMixin):
         uploaded_files = []
         for file in request.FILES.getlist("files"):
             form = DocumentForm(data={"file": file}, user=request.user)
-            # Checking the file is valid (size, virus, extension)
+            # Checking the file is valid (size, extension)
             if form.is_valid():
                 # Sending it to the API for storage
                 new_document_upload = self.client.documents(
@@ -66,3 +66,68 @@ class DocumentView(View, APIClientMixin):
     def get(self, request, *args, **kwargs):
         document = self.client.documents(self.kwargs["document_id"])
         return redirect(document["file"])
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class DocumentWithoutJsView(View, APIClientMixin):
+    def get(self, request, *args, **kwargs):
+        if request.GET.get("document_ids"):
+            for document in request.GET["document_ids"].split(","):
+                self.client.documents(document).delete()
+
+            return redirect(request.META["HTTP_REFERER"])
+
+        self.client.documents(self.kwargs["document_id"]).delete()
+        return redirect(request.META["HTTP_REFERER"])
+
+    @catch_form_errors()
+    def post(self, request, *args, **kwargs):
+        if "non_confidential_submit" in request.POST:
+            for file in request.FILES.getlist("non_confidential_file"):
+                form = DocumentForm(data={"file": file}, user=request.user)
+
+                if form.is_valid():
+                    self.client.documents(
+                        {
+                            "type": "non_confidential",
+                            "stored_name": file.name,
+                            "original_name": file.original_name,
+                            "file_size": file.file_size,
+                            "submission_id": request.POST["non_confidential_submission_id"],
+                            "parent": request.POST.get("parent", None),
+                            "submission_document_type": request.POST.get(
+                                "submission_document_type", None
+                            ),
+                            "replace_document_id": request.POST.get("replace_document_id", None),
+                        }
+                    )
+                else:
+                    file.obj.delete()
+                    form.assign_errors_to_request(request)
+                    request.session["form_errors"]["file_type"] = "non_confidential"
+
+        if "confidential_submit" in request.POST:
+            for file in request.FILES.getlist("confidential_file"):
+                form = DocumentForm(data={"file": file}, user=request.user)
+
+                if form.is_valid():
+                    self.client.documents(
+                        {
+                            "type": "confidential",
+                            "stored_name": file.name,
+                            "original_name": file.original_name,
+                            "file_size": file.file_size,
+                            "submission_id": request.POST["confidential_submission_id"],
+                            "parent": request.POST.get("parent", None),
+                            "submission_document_type": request.POST.get(
+                                "submission_document_type", None
+                            ),
+                            "replace_document_id": request.POST.get("replace_document_id", None),
+                        }
+                    )
+                else:
+                    file.obj.delete()
+                    form.assign_errors_to_request(request)
+                    request.session["form_errors"]["file_type"] = "confidential"
+
+        return redirect(request.META["HTTP_REFERER"].split("?")[0])

@@ -1,0 +1,831 @@
+.govuk-bluepanel--confirmation {
+    color: #ffffff;
+    background: #005ea5;
+}
+
+.govuk-panel {
+    font-size: 19px;
+    font-size: 1.1875rem;
+    line-height: 1.31579;
+}
+
+.inverse-header {
+    background: #005ea5;
+    color: white;
+}
+
+.govuk-bluepanel {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 300;
+    font-size: 16px;
+    font-size: 1rem;
+    line-height: 1;
+    box-sizing: border-box;
+    margin-bottom: 15px;
+    padding: 25px 25px 0px 25px;
+    border: 5px solid transparent;
+    text-align: left;
+}
+
+/* Account Navigation & Caseworker Navigation */
+/* Account Navigation */
+/* Account Navigation */
+/* Account Navigation */
+.govuk-header__logo {
+    width: initial;
+}
+
+.govuk-header__content {
+    width: initial;
+}
+
+.login-nav__list {
+    margin: 0;
+    padding: 0;
+    margin: 8px 0 8px 0;
+    list-style-type: none;
+    float: right;
+}
+
+.login-nav__list:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.login-nav__list-item {
+    position: relative;
+    margin-bottom: 5px;
+    padding-right: 5px;
+    padding-left: 0;
+    float: left;
+}
+
+#profile .profile, #account .account {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-nav__link {
+    margin-right: 5px;
+}
+
+.login-nav__details {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 14px;
+    font-size: 0.875rem;
+    line-height: 1.1428571429;
+    color: #0b0c0c;
+    margin: 0;
+    padding-bottom: 10px;
+    float: left;
+}
+
+.login-nav__details:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+@media print {
+    .login-nav__details {
+        font-family: sans-serif;
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .login-nav__details {
+        font-size: 16px;
+        font-size: 1rem;
+        line-height: 1.25;
+    }
+}
+
+@media print {
+    .login-nav__details {
+        font-size: 14pt;
+        line-height: 1.2;
+    }
+}
+
+@media print {
+    .login-nav__details {
+        color: #000000;
+    }
+}
+
+/*** Small viewports ***/
+@media all and (max-width: 40.0625em) {
+    .login-nav__details {
+        float: none;
+    }
+
+    .login-nav__list {
+        float: none;
+    }
+}
+
+/* Caseworker Navigation */
+/* Caseworker Navigation */
+/* Caseworker Navigation */
+#nav .govuk-link {
+    color: #fff;
+}
+
+@media (min-width: 40.0625em) {
+    .app-navigation {
+        display: block;
+        float: left;
+    }
+
+    .app-navigation__list {
+        position: relative;
+        left: -15px;
+    }
+
+    /* Main nav active states*/
+    .dash-nav .app-navigation__list-item--dash {
+        border-bottom: 3px solid #fff;
+    }
+
+    .cases-nav .app-navigation__list-item--cases {
+        border-bottom: 3px solid #fff;
+    }
+
+    /*end */
+    .app-navigation__list-item {
+        font-family: "GDS Transport", arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        font-weight: 700;
+        box-sizing: border-box;
+        height: 2.4rem;
+        margin: 0 15px 10px 15px;
+        float: left;
+    }
+
+    .app-navigation__link:not([hidden]) {
+        display: inline;
+    }
+
+    .app-navigation__list-item {
+        font-size: 19px;
+        font-size: 1.1875rem;
+        line-height: 2.63158;
+    }
+}
+
+.app-navigation__link:after, .app-navigation__button:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.app-navigation__list {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.app-navigation__list-item {
+    position: relative;
+}
+
+.app-navigation__link, .app-navigation__button {
+    margin: 15px 0;
+    padding: 0;
+    font-weight: 700;
+    font-size: 19px;
+    font-size: 1.1875rem;
+}
+
+.app-navigation__link:after, .app-navigation__button:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.app-navigation__button:not(:hover):not(:active) {
+    text-decoration: none;
+}
+
+.app-navigation [hidden], .app-navigation[hidden] {
+    display: none;
+}
+
+/* Case Navigation */
+/* Case Navigation */
+/* Case Navigation */
+@media (min-width: 40.0625em) {
+    .case-navigation {
+        display: block;
+    }
+
+    .case-navigation__list {
+        position: relative;
+        left: -15px;
+    }
+
+    /* Case active nav */
+    .case-nav .case-navigation__list-item--case {
+        border-bottom: 2px solid #1d70b8;
+    }
+
+    .party-nav .case-navigation__list-item--party {
+        border-bottom: 2px solid #1d70b8;
+    }
+
+    .submission-nav .case-navigation__list-item--submission {
+        border-bottom: 2px solid #1d70b8;
+    }
+
+    .submission-nav .case-navigation__list-item--file {
+        border-bottom: 2px solid #1d70b8;
+    }
+
+    .workflow-nav .case-navigation__list-item--workflow {
+        border-bottom: 2px solid #1d70b8;
+    }
+
+    .notice-nav .case-navigation__list-item--notice {
+        border-bottom: 2px solid #1d70b8;
+    }
+
+    /*end*/
+    .case-navigation__list-item {
+        margin: 0 15px;
+        float: left;
+    }
+
+    .case-navigation__link:not([hidden]) {
+        display: inline;
+    }
+
+    .case-navigation__list-item {
+        line-height: 2.63158;
+    }
+}
+
+.case-navigation__link:after, .case-navigation__button:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.case-navigation {
+    border-bottom: 1px solid #b1b4b6;
+}
+
+.case-navigation__list {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.case-navigation__list-item {
+    position: relative;
+}
+
+.case-navigation__link, .case-navigation__button {
+    margin: 15px 0;
+    padding: 0;
+}
+
+.case-navigation__link:after, .case-navigation__button:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.case-navigation__button:not(:hover):not(:active) {
+    text-decoration: none;
+}
+
+.case-navigation [hidden], .case-navigation[hidden] {
+    display: none;
+}
+
+/* Password condition check */
+/*check: Add a green text color and a checkmark when the requirements are right */
+.valid {
+    color: green;
+}
+
+ul li.invalid {
+    list-style-type: disc;
+}
+
+ul li.valid {
+    list-style-type: "✓";
+}
+
+/* Password show hide password text basedc on https://incl.ca/show-hide-password-accessibility-and-password-hints-tutorial/*/
+/* Show hide button */
+.sr-only {
+    border: 0 none;
+    clip: rect(0px, 0px, 0px, 0px);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.input-with-button {
+    position: relative;
+}
+
+#show-password, #show-confirm {
+    position: absolute;
+    left: 305px;
+    border: solid 1px;
+    top: 31px;
+    width: 80px;
+}
+
+.govuk-input--width-15 {
+    max-width: 31ex;
+}
+
+/*** Small viewports ***/
+@media (max-width: 40.0525em) {
+    /*  Turn table in blocks */
+    tr,
+    th,
+    td {
+        display: block;
+    }
+
+    th {
+        background-color: #f3f2f1;
+    }
+
+    /**     .td-header {
+         display: block !important;
+         font-weight: bold;
+       }
+
+       tr.govuk-table__row th {
+         padding-left: 0.7em;
+
+       }
+
+       //Create a striped effect across rows
+       tr.govuk-table__row td {
+       padding: 0.7em;
+
+       } **/
+    tr:nth-child(even) {
+        background-color: #f3f2f1;
+        border-top: 1px #b1b4b6 solid;
+        border-bottom: 1px #b1b4b6 solid;
+    }
+
+    .column-full {
+        width: auto !important;
+    }
+
+    .govuk-visually-hidden--mobile {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        clip: rect(0 0 0 0) !important;
+        -webkit-clip-path: inset(50%) !important;
+        clip-path: inset(50%) !important;
+        border: 0 !important;
+        white-space: nowrap !important;
+    }
+}
+
+/**** Normal size viewport ****/
+table.table-border {
+    border: solid 1px #b1b4b6;
+    border-collapse: unset;
+}
+
+thead.head-border {
+    border: solid 1px #b1b4b6;
+}
+
+td,
+th {
+    vertical-align: text-top;
+}
+
+#table-header tr.govuk-table__row th {
+    padding-left: 0.4em;
+}
+
+#table-header tr.govuk-table__row td {
+    padding-left: 0.4em;
+    padding-right: 1em;
+}
+
+#table-header th {
+    background-color: #f3f2f1;
+}
+
+@media (min-width: 40.0625em) {
+    .govuk-visually-hidden--desktop {
+        position: absolute !important;
+        width: 1px !important;
+        height: 1px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        clip: rect(0 0 0 0) !important;
+        -webkit-clip-path: inset(50%) !important;
+        clip-path: inset(50%) !important;
+        border: 0 !important;
+        white-space: nowrap !important;
+    }
+}
+
+.sortable-button[role=button]:hover, .sortable-button[role=button]:focus {
+    background-color: #f3f2f1;
+    cursor: default;
+}
+
+.sortable th i {
+    padding-left: 2px;
+}
+
+
+.A-to-Z:after {
+    content: "▲";
+    font-size: 0.9em;
+}
+
+.Z-to-A:after {
+    content: "▼";
+    font-size: 0.9em;
+}
+
+table.sortable th .sort-indicator {
+    margin: 1px 5px 0 5px;
+    position: absolute;
+    padding-top: 2px;
+}
+
+table.sortable th .sort-indicator:before {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-bottom: 7px solid #b1b4b6;
+}
+
+table.sortable th .sort-indicator:after {
+    content: "";
+    display: block;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    margin-top: 2px;
+    border-top: 7px solid #b1b4b6;
+}
+
+.govuk-table__row.top-row .govuk-table__cell {
+    border-top-style: solid;
+    border-top-color: #808080;
+    border-top-width: 1px;
+    border-bottom: 1px solid #fff;
+}
+
+.govuk-table__row.no-border .govuk-table__cell {
+    border-bottom: 1px solid #fff;
+}
+
+.child-identifier:after {
+    content: " >  ";
+    font-size: 0.8em;
+    color: #808080;
+}
+
+@media all and (max-width: 40.0625em) {
+    .govuk-table__row.top-rowlast-row .govuk-table__cell, .govuk-table__row.no-borderlast-row .govuk-table__cell, .govuk-table__row.top-row .govuk-table__cell, .govuk-table__row.no-border .govuk-table__cell {
+        border-top: none;
+        border-bottom: none;
+    }
+}
+
+/* CHANGING THE WIDTH and HEADER COLOUR BETWEEN PUBLIC AND CASEWORKER */
+.caseworker-red .govuk-header__container {
+    border-bottom: 10px solid #df3034;
+}
+
+.caseworker-width .govuk-width-container {
+    max-width: 1020px;
+}
+
+/* createaccount / reginterest - autocomplete on new company */
+.autocomplete__wrapper * {
+    font-family: "GDS Transport", arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+@media print {
+    .autocomplete__wrapper * {
+        font-family: sans-serif;
+    }
+}
+
+/* Reginterest - selecting existing company */
+#hidden_div {
+    display: none;
+}
+
+/* Reginterest - upload remove button*/
+.remove-link {
+    margin-top: 30px;
+}
+
+.submit-button {
+    margin-top: 30px;
+}
+
+.remove-panel {
+    margin-top: 0px;
+}
+
+#div1, #div2, #div3, #div4, #div5, #div6, #div7, #div8, #div9, #div10, #div11, #div12, #div13, #div14, #div15 {
+    display: none;
+}
+
+/* Reginterest Upload Progress bar */
+progress {
+    padding: 20px 0 10px 0;
+}
+
+.progress-bar {
+    background-color: whiteSmoke;
+    border-radius: 2px;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.25) inset;
+    width: 250px;
+    height: 20px;
+    position: relative;
+    display: block;
+}
+
+.progress-bar > span {
+    background-color: blue;
+    border-radius: 2px;
+    display: block;
+    text-indent: -9999px;
+}
+
+/* Task list for downloads*/
+#docs1, #docs2 {
+    padding: 20px 15px 0px 15px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #b1b4b6;
+}
+
+#docs .app-task-list__item {
+    border-bottom: 0px solid blue;
+    border-top: 1px solid #b1b4b6;
+}
+
+.upload-header.app-task-list__item {
+    padding: 0px;
+    margin: 0px;
+    border-top: 0px solid blue;
+}
+
+/* Task list when being used for other things */
+@media (min-width: 40.0625em) {
+    .uploads.app-task-list__items {
+        padding-left: 0px;
+    }
+}
+
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker */
+/* Caseworker - Address card  */
+.address-card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    background-color: #f8f8f8;
+}
+
+/* On mouse-over, add a deeper shadow */
+.address-card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Add some padding inside the card container */
+.address-container {
+    padding: 25px 20px 5px 20px;
+    margin-bottom: 30px;
+}
+
+.verified-check {
+    margin: 0px 0px -10px 10px;
+}
+
+.verified-tick {
+    margin: 0px 0px -4px 10px;
+}
+
+/* Reg interest inset-text */
+.govuk-inset-text__reginterest {
+    margin-top: 0px;
+}
+
+/* Uploads test*/
+/* Uploads test*/
+/* Uploads test*/
+/* Uploads test*/
+/* Uploads test*/
+.upload-card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    transition: 0.3s;
+    background-color: white;
+    margin-bottom: 16px;
+}
+
+/* On mouse-over, add a deeper shadow */
+.upload-card:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Thisis just to show the hover state when drag and drop is working*/
+.upload-card-hover {
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
+    background-color: #f3f2f1;
+}
+
+/* Add some padding inside the card container */
+.upload_container {
+    text-align: center;
+    padding: 20px 10px 10px 10px;
+}
+
+/* Doing clever things with the file browser button  https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way
+https://css-tricks.com/drag-and-drop-file-uploading/  */
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+/* /* "hand" cursor */
+.inputfile + label {
+    cursor: pointer;
+}
+
+.inputfile + label * {
+    pointer-events: none;
+}
+
+/* Hiding the input itself in a correct manner was one thing, the other is indicating when the element is focused, i.e. rendering .inputfile:focus on the label:*/
+.inputfile:focus + label {
+    outline: 1px dotted #000;
+    outline: -webkit-focus-ring-color auto 5px;
+}
+
+input.upload-button {
+    display: initial;
+}
+
+.remove-doc-panel {
+    float: right;
+    top: -10px;
+    right: 15px;
+    position: relative;
+}
+
+#input-js {
+    margin: auto;
+    max-width: 250px;
+}
+
+.row-colour {
+    background-color: #f3f2f1;
+    padding-top: 15px;
+    width: 100%;
+    float: left;
+    margin-bottom: 20px;
+    border: dashed 1px #b1b4b6;
+}
+
+.float-right {
+    float: right;
+}
+
+.govuk-input--readonly {
+    border: 1px solid #f3f2f1;
+    background-color: #f3f2f1;
+}
+
+.address-cover {
+    background-color: #f3f2f1;
+    padding: 20px 20px 0px 20px;
+}
+
+.address-card {
+    /* Add shadows to create the "card" effect */
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    background-color: #f3f2f1;
+}
+
+.address-card-duplicate {
+    /* Add shadows to create the "card" effect */
+    background-color: white;
+}
+
+/* On mouse-over, add a deeper shadow */
+.address-card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Add some padding inside the card container */
+.address-container {
+    padding: 25px 20px 5px 20px;
+    margin-bottom: 30px;
+}
+
+/* Add some padding inside the card container */
+.address-container .govuk-heading-m, .address-cover .govuk-form-group, .govuk-details__text .govuk-form-group {
+    margin-bottom: 10px;
+}
+
+.verified-check {
+    margin: 0px 0px -10px 10px;
+}
+
+.unverified-check {
+    margin: 0px 0px -10px 10px;
+}
+
+.pending-clock {
+    margin: 0px 4px -7px 10px;
+}
+
+.verified-tick {
+    margin: 0px 3px -2px 20px;
+}
+
+.address-container .govuk-warning-text {
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+
+/* Add some padding inside the card container */
+.address-container .govuk-heading-m, .address-cover .govuk-form-group, .govuk-details__text .govuk-form-group {
+    margin-bottom: 10px;
+}
+
+.address-container .govuk-warning-text {
+    margin-bottom: 0px;
+    padding: 0px;
+}
+
+.govuk-warning-text__text-p {
+    padding-left: 45px;
+    padding-right: 20px;
+}
+
+.govuk-warning-text__text-p button {
+    margin-bottom: 0px;
+}
+
+

@@ -203,9 +203,10 @@ class ReviewInvitation(BaseInviteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["cases"] = self.client.organisations(
-            self.request.user.contact["organisation"]["id"], fields=["cases"]
+        organisation = self.client.organisations(
+            self.request.user.contact["organisation"]["id"], fields=["user_cases"]
         )
+        context["organisation"] = organisation
         return context
 
     def post(self, request, *args, **kwargs):
@@ -214,13 +215,6 @@ class ReviewInvitation(BaseInviteView):
 
 
 class InvitationSent(BaseInviteView):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["cases"] = self.client.organisations(
-            self.request.user.contact["organisation"]["id"], fields=["cases"]
-        )
-        return context
-
     template_name = "v2/invite/sent.html"
 
 
@@ -362,7 +356,10 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                 "case": self.user_case_case_id_matchup[form.cleaned_data["user_case"]],
                 "invitation_type": 2,
                 "organisation": self.request.user.contact["organisation"]["id"],
-            }
+            },
+            fields=[
+                "id",
+            ],
         )
         # Linking the case to the invitation
         new_invitation.update(

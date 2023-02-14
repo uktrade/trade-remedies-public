@@ -12,7 +12,7 @@
                 Your client’s details
             </h1>
         </legend>
-        <p>Ensure you have permission to register interest in a case on behalf of your client.</p>
+        <p class="govuk-body">Ensure you have permission to register interest in a case on behalf of your client.</p>
         {% include 'v2/component_macros/text_input.html' with value=submission.organisation.name autocomplete="organization" label="Organisation name" id="organisation_name" name="organisation_name" type="text" width="20" strong=True %}
         <fieldset class="govuk-fieldset">
             <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
@@ -20,7 +20,7 @@
                     Organisation address
                 </h1>
             </legend>
-            <p>This is the address of the main office.</p>
+            <p class="govuk-body">This is the address of the main office.</p>
             {% include "v2/component_macros/textarea_input.html" with value=submission.organisation.address label="Street address" id="address_snippet" name="address_snippet" rows="5" autocomplete="street-address" %}
             {% include "v2/component_macros/text_input.html" with value=submission.organisation.post_code label="Postcode or zip code" id="post_code" name="post_code" width="5" autocomplete="postal-code" type="text" %}
         </fieldset>

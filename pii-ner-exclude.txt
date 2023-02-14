@@ -1,3 +1,264 @@
+company_vat_number
+parts/
+Installer
+htmlcov/
+.cache
+celery
+macOS FS
+NER
+Cancel
+invitation</a
+equiv="X-UA-Compatible
+sizes="16x16 32x32 48x48
+endif]--
+svg aria-hidden="true
+7.9-13.5
+7.8-13.5
+3.3-1.3
+width="36
+li class="login-nav__list-item
+{{ user.name
+href="https://www.nationalarchives.gov.uk/information-management
+document.cookie
+max-age=${3600
+" Amends the organisation of a ROI
+Returns
+tasklist.html
+Select a Trade Remedies
+ROI
+REDIRECT
+case_id>/
+create_submission_file
+product_id>/
+Tasklist
+roi_delete_roi
+invitation_name_email
+IE 9]><html
+--<![endif]--
+/><!--<![endif]--
+IE 9]><script
+li class="login-nav__list-item">|</li
+sd020722222222
+v2_register_your_employer
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+TRS
+dashboard.html
+update.html
+feedback_form_inner.html
+Reg
+Mobile 2FA
+NON-UK
+no_company_post_code_or_number_entered
+incorrect_client_eori_format
+POST
+${file_name.substring(file_name.length - 18
+JSON.parse(data["uploaded_files"][0
+other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container'
+document).on('drop
+DELETE
+this).closest(".upload_container").find(".inputfile").click
+Math.random().toString(36).slice(2
+new_document_field.find('input[type="file"][data-type="non_confidential"]').prop("id
+new_document_field.find('input[type="file"][data-type="confidential"]').prop("id
+show_remove_document_buttons
+random_string_generator %
+alt="Delete
+AWS
+minLength
+javascript %
+{{ forward_button_text }
+name="company_vat_number
+VAT
+DUNS
+Data Universal Numbering System
+submit{% endblock page_title %
+{{
+no_org_chosen
+no_client_post_code_or_number_entered
+Django==3.2.17
+whitenoise==5.3.0
+Invite sent{% endblock page_title %
+{{ user_case.case.reference }} - {{
+CVE-2021-27291
+Another Test Org
+4223333333333
+" Django settings for
+Django 2.0.1
+https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+SessionMiddleware
+django.middleware.common
+CommonMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+BACKEND
+VCAP_SERVICES
+RedisCache
+DefaultClient
+http://localhost:8000
+PUB-ENV
+boto3
+ClamAVFileUploadHandler
+django_chunk_upload_handlers.s3.S3FileUploadHandler
+ROOT_LOG_LEVEL
+AutoField
+self.request.user.organisation["id
+submit{% endblock page_title %
+Invite sent{% endblock page_title %
+{{ user_case.case.reference }} - {{
+Django==3.2.17
+whitenoise==5.3.0
+name="company_vat_number
+VAT
+DUNS
+Data Universal Numbering System
+javascript %
+{{
+Reg
+" Django settings for
+Django 2.0.1
+https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+SessionMiddleware
+django.middleware.common
+CommonMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+BACKEND
+VCAP_SERVICES
+RedisCache
+DefaultClient
+http://localhost:8000
+PUB-ENV
+boto3
+ClamAVFileUploadHandler
+django_chunk_upload_handlers.s3.S3FileUploadHandler
+ROOT_LOG_LEVEL
+AutoField
+CVE-2021-27291
+Cancel
+case_id>/
+create_submission_file
+product_id>/
+Tasklist
+roi_delete_roi
+invitation_name_email
+Mobile 2FA
+NON-UK
+no_company_post_code_or_number_entered
+incorrect_client_eori_format
+sd020722222222
+v2_register_your_employer
+minLength
+AWS
+company_vat_number
+invitation</a
+{{ forward_button_text }
+parts/
+Installer
+htmlcov/
+.cache
+celery
+macOS FS
+NER
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+TRS
+dashboard.html
+tasklist.html
+update.html
+feedback_form_inner.html
+no_org_chosen
+no_client_post_code_or_number_entered
+Another Test Org
+4223333333333
+Select a Trade Remedies
+random_string_generator %
+alt="Delete
+" Amends the organisation of a ROI
+Returns
+ROI
+REDIRECT
+equiv="X-UA-Compatible
+sizes="16x16 32x32 48x48
+endif]--
+svg aria-hidden="true
+7.9-13.5
+7.8-13.5
+3.3-1.3
+width="36
+li class="login-nav__list-item
+{{ user.name
+href="https://www.nationalarchives.gov.uk/information-management
+document.cookie
+max-age=${3600
+POST
+${file_name.substring(file_name.length - 18
+JSON.parse(data["uploaded_files"][0
+other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container'
+document).on('drop
+DELETE
+this).closest(".upload_container").find(".inputfile").click
+Math.random().toString(36).slice(2
+new_document_field.find('input[type="file"][data-type="non_confidential"]').prop("id
+new_document_field.find('input[type="file"][data-type="confidential"]').prop("id
+show_remove_document_buttons
+IE 9]><html
+--<![endif]--
+/><!--<![endif]--
+IE 9]><script
+li class="login-nav__list-item">|</li
+self.request.user.organisation["id
+page_title
+width="20
+autocomplete="name
+e){"object"==typeof
+NodeList.prototype.forEach)return
+e){if(!t||"object"!=typeof
+non-object");if(!(r
+Object))throw
+Element||window
+document.createElement("div");return t.setAttribute("data-a-b","c"),t.dataset&&"c"==t.dataset.aB})()||Object.defineProperty(Element.prototype,"dataset",{get
+0!==e?this.setAttribute(t
+e}})}.call("object"==typeof window&&window||"object"==typeof
+this.replacePlaceholders(n
+e)}return
+this.translations)return console&&"warn"in console&&console.warn('i18n:
+i){Object.defineProperty?Object.defineProperty(t
+SyntaxError('String
+arguments);for(var
+this&&"classList"in document.documentElement&&"Element"in
+this&&"classList"in
+HTMLLinkElement,"relList","rel"),i(t
+HTMLAreaElement,"relList","rel")}(this)}.call("object"==typeof
+n=(e.document||e.ownerDocument).querySelectorAll(t),o=0;n[o]&&n[o]!==e;)++o;return!!n[o]})}.call("object"==typeof window&&window||"object"==typeof
+o;if("createEvent"in
+window&&window||"object"==typeof
+Object
+Function.prototype.toString
+f.call(y
+e||{},s(t.dataset)),this.i18n
+this.isExpanded(t);this.setExpanded(!e
+t?(s.removeAttribute("hidden"),e.classList.add(this.sectionExpandedClass),n.classList.remove(this.downChevronIconClass)):(s.setAttribute("hidden","until-found"),e.classList.remove(this.sectionExpandedClass),n.classList.add(this.downChevronIconClass));var
+t}function b(t
+t.querySelectorAll('input[type="radio"]')}function
+Math.floor(t/16),("x"===e?n:3&n|8).toString(16)})))),e.setAttribute("role","group"),n.setAttribute("role","button"),n.setAttribute("aria-controls",o.id),n.tabIndex=0,this.$module.hasAttribute("open")?n.setAttribute("aria-expanded","true"):(n.setAttribute("aria-expanded","false"),o.style.display="none"),this.polyfillHandleInputs(this.polyfillSetAttributes.bind(this)))},m.prototype.polyfillSetAttributes
+document;e(n.querySelectorAll('[data-module="govuk-accordion"]'),(function(e){new l(e
+t.accordion).init()})),e(n.querySelectorAll('[data-module="govuk-button"]'),(function(e){new
+t.Button
+CharacterCount
+confidential{%
+document</button
+submit></button
+Invite
+csp_nonce
+Javascript</a
+House
+Javascript
+England
 approved_at
 JAWS
 VoiceOver)</li>

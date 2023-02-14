@@ -28,7 +28,8 @@
         <p class="form-label ">When you have uploaded all the files associated with your draft application you can request they be reviewed here prior to final submission.</p>
         <p>If you are asked to make changes you can return to the previous step to upload replacement files.</p>
         {% if not case.type.meta.confidential_only %}
-            <p>Once your draft application is approved for final submission you will need to to upload non-confidential versions of the files.</p>
+            <p>Once your draft application is approved for final submission you will need to to upload non-confidential
+                versions of the files.</p>
         {% endif %}
     </div>
     <div class="form-group {% if errors.review %}form-group-error{% endif %}">

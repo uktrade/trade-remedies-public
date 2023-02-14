@@ -13,11 +13,11 @@
 
 {% block form_content %}
     <h2 class="govuk-heading-m">{{ case_reference }} - {{ case_name }}</h2>
-    <p>Registration due date: {% format_date case_registration_deadline '%d %b %Y' %}</p>
-    <p>The due date has now passed. You can still register interest, but your opportunities to participate may
+    <p class="govuk-body">Registration due date: {% format_date case_registration_deadline '%d %b %Y' %}</p>
+    <p class="govuk-body">The due date has now passed. You can still register interest, but your opportunities to participate may
         be
         limited.</p>
-    <p>We encourage anyone with an interest to register.</p>
+    <p class="govuk-body">We encourage anyone with an interest to register.</p>
     <input name="confirmed_okay_to_proceed" value="yes" type="hidden">
     <input name="case_information" value="{{ case_information }}" type="hidden">
 

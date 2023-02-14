@@ -18,16 +18,12 @@
 {% endblock heading %}
 
 {% block form_content %}
-    <p>You will be creating this account for your own organisation and will be the admin for the account. This is the
+    <p class="govuk-body">You will be creating this account for your own organisation and will be the admin for the account. This is the
         organisation you are directly employed by.</p>
 
-    {% if request.session.who_is_registering == "email_recipient" %}
-        {% include 'v2/component_macros/text_input.html' with value=invitation.contact.name label="Enter your name" id="name" name="name" type="text" width="20" hint="How would you like to be addressed?" strong=True %}
-        {% include 'v2/component_macros/text_input.html' with value=invitation.contact.email label="Your email address" id="email" name="email" type="text" width="20" hint="Use your professional email to sign in." strong=True readyonly=True disabled=True %}
-    {% else %}
-        {% include 'v2/component_macros/text_input.html' with label="Enter your name" id="name" name="name" type="text" width="20" hint="How would you like to be addressed?" strong=True %}
-        {% include 'v2/component_macros/text_input.html' with label="Your email address" id="email" name="email" type="text" width="20" hint="Use your professional email to sign in." strong=True %}
-    {% endif %}
+    {% include 'v2/component_macros/text_input.html' with value=invitation.contact.name label="Enter your name" id="name" name="name" type="text" width="20" hint="How would you like to be addressed?" strong=True %}
+    {% include 'v2/component_macros/text_input.html' with value=invitation.contact.email label="Your email address" id="email" name="email" type="text" width="20" hint="Use your professional email to sign in." strong=True readyonly=True disabled=True %}
+
     {% include 'v2/component_macros/checkbox.html' with heading="Terms of Use and Privacy Notice" label="I have read and understood the <a href='/termsofuse-privacypolicy/' target='_blank'> Terms of Use and Privacy Notice</a> (opens in a new window)" id="terms_and_conditions_accept" name="terms_and_conditions_accept" %}
     {% include "v2/component_macros/form_button_group.html" %}
 {% endblock form_content %}

@@ -440,11 +440,6 @@ urlpatterns += [
 urlpatterns += [
     path(
         "accept_representative_invite/<uuid:invitation_id>/start/",
-        accept_representative_invitation.WhoIsRegisteringView.as_view(),
-        name="accept_representative_invitation_who_is_registering",
-    ),
-    path(
-        "accept_representative_invite/name_and_email/<uuid:invitation_id>/",
         accept_representative_invitation.RegistrationNameAndEmailView.as_view(),
         name="accept_representative_invitation_name_and_email",
     ),

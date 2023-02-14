@@ -1,4 +1,6 @@
-/* globals accessibleAutocomplete: true */
+/* globals accessibleAutocomplete: true, redirect_url: true */
+
+$(".without-js").remove();
 
 function clearCompany() {
   "use strict";
@@ -34,7 +36,6 @@ accessibleAutocomplete({
     } else {
       $.ajax({
         type: "GET", url: `/companieshouse/search?term=${query}`, success: function (data) {
-          $('#companies-house-error').hide();
           if (data) {
             let names = data.map(result => `${result.title} (${result.company_number})`);
             proposed_names = Object.fromEntries(data.map(result => [`${result.title} (${result.company_number})`, result]));
@@ -48,7 +49,31 @@ accessibleAutocomplete({
         }
       })
         .fail(function () {
-          $('#companies-house-error').show();
+          if (!document.getElementById('companies-house-error')) {
+            $('main.govuk-main-wrapper').prepend(`
+              <div class="govuk-error-summary" id="companies-house-error" aria-labelledby="error-summary-title"
+                role="alert" data-module="govuk-error-summary" tabindex="-1">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                  There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                  <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                      <a href="#company_data">Companies House search is currently not working</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            `);
+            $('div.govuk-form-group').addClass('govuk-form-group--error');
+            $('div.govuk-hint').after(`
+              <p id="uk_employer-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> The Companies House search is currently not working.
+                Try again shortly, or <a class="govuk-link" href=${redirect_url}>enter your organisation details manually</a>.
+              </p>
+            `);
+            $('button.govuk-button.with-js').after(`<a class="govuk-button" href=${redirect_url}>Add company details manually</a>`).remove();
+          }
         });
     }
   },

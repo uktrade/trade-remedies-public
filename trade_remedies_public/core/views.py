@@ -395,25 +395,12 @@ class DashboardView(
         organisation = request.user.organisation
         invite_submissions = []
         case_to_roi = {}
-        unapproved_rep_invitations_cases = []
         v2_client = TRSAPIClient(token=request.user.token)
         if organisation:
             v2_organisation = v2_client.organisations(
                 organisation["id"], fields=["organisationcaserole_set"]
             )
             invite_submissions = client.get_organisation_invite_submissions(organisation["id"])
-
-            # Let's get the cases where the user is awaiting approval
-            invitations = v2_client.invitations(
-                contact_id=request.user.contact["id"],
-                fields=["submission", "case", "invitation_type", "rejected_at", "approved_at"],
-            )
-            unapproved_rep_invitations_cases = [
-                invite.case
-                for invite in invitations
-                if invite.invitation_type == 2
-                if invite.submission and not invite.rejected_at and not invite.approved_at
-            ]
 
             if contact_id := self.request.user.contact.get("organisation", {}).get("id"):
                 roi_submissions = v2_client.submissions(
@@ -425,6 +412,25 @@ class DashboardView(
                     fields=["case", "status"],
                 )
                 case_to_roi = {each.case.id: each for each in roi_submissions}
+
+        # Let's get the cases where the user is awaiting approval
+        invitations = v2_client.invitations(
+            contact_id=request.user.contact["id"],
+            invitation_type=2,
+            fields=["submission", "case", "invitation_type", "rejected_at", "approved_at"],
+        )
+
+        unapproved_rep_invitations_cases = [
+            invite.case
+            for invite in invitations
+            if invite.submission and not invite.rejected_at and not invite.approved_at
+        ]
+        seen_case_ids = []
+        no_duplicate_unapproved_rep_invitations_cases = []
+        for case in unapproved_rep_invitations_cases:
+            if case.id not in seen_case_ids:
+                no_duplicate_unapproved_rep_invitations_cases.append(case)
+                seen_case_ids.append(case.id)
 
         return render(
             request,
@@ -446,7 +452,7 @@ class DashboardView(
                 "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
                 in request.user.organisation_groups,
                 "case_to_roi": case_to_roi,
-                "unapproved_rep_invitations_cases": unapproved_rep_invitations_cases,
+                "unapproved_rep_invitations_cases": no_duplicate_unapproved_rep_invitations_cases,
             },
         )
 
@@ -760,7 +766,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         case_ids = request.POST.getlist("case_id")
         all_cases = request.POST.getlist("all_cases") or []
         if all_cases:
-
             case_spec = []
             for case_id in case_ids:
                 primary = request.POST.get(case_id + "_is_primary")
