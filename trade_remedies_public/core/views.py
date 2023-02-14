@@ -440,12 +440,10 @@ class DashboardView(
                 [
                     1
                     for invite in invitations
-                    if (invite.invitation_type == 1 and not invite.accepted_at)
+                    if "invite_sent" in invite.status
                     or (
                         invite.invitation_type == 2
-                        and not invite.approved_at
-                        and not invite.rejected_at
-                        and not invite.accepted_at
+                        and "invite_sent" in invite.status
                         and not invite.submission.archived
                     )
                 ]
@@ -460,15 +458,7 @@ class DashboardView(
             )
 
             invitation_waiting_trs_approval_count = sum(
-                [
-                    1
-                    for invite in invitations
-                    if (
-                        invite.invitation_type == 2
-                        and invite.accepted_at
-                        and "waiting_tra_review" in invite.status
-                    )
-                ]
+                [1 for invite in invitations if "waiting_tra_review" in invite.status]
             )
 
         unapproved_rep_invitations_cases = [
