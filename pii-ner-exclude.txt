@@ -212,6 +212,23 @@ IE 9]><html
 IE 9]><script
 li class="login-nav__list-item">|</li
 self.request.user.organisation["id
+IE 9]><html
+endif]--
+--<![endif]--
+/><!--<![endif]--
+IE 9]><script
+svg aria-hidden="true
+7.9-13.5
+7.8-13.5
+3.3-1.3
+width="36
+li class="login-nav__list-item
+{{ user.name
+equiv="X-UA-Compatible
+sizes="16x16 32x32 48x48
+href="https://www.nationalarchives.gov.uk/information-management
+document.cookie
+max-age=${3600
 page_title
 width="20
 autocomplete="name
