@@ -13,29 +13,33 @@
                             Which case can the user take part in?
                         </h1>
                     </legend>
-                    <div id="invite-case-hint" class="govuk-hint">
-                        Select all that apply
-                    </div>
-                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                        {% for user_case in user_cases %}
-                            <div class="govuk-checkboxes__item">
-                                <input class="govuk-checkboxes__input" id="{{ user_case.id }}"
-                                    name="which_user_case"
-                                    type="checkbox"
-                                    value="{{ user_case.id }}"
-                                    {% if user_case.id in user_cases_to_link_ids %}checked{% endif %}>
-                                <label class="govuk-label govuk-checkboxes__label" for="{{ user_case.id }}">
-                                    {{ user_case.case.reference }} - {{ user_case.case.name }}
-                                </label>
-                                {% if user_case.organisation.id != request.user.contact.organisation.id %}
-                                    {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
-                                    <div class="govuk-hint govuk-checkboxes__hint">
-                                        {{ user_case.organisation.name }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    </div>
+                    {% if user_cases %}
+                        <div id="invite-case-hint" class="govuk-hint">
+                            Select all that apply
+                        </div>
+                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                            {% for user_case in user_cases %}
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="{{ user_case.id }}"
+                                           name="which_user_case"
+                                           type="checkbox"
+                                           value="{{ user_case.id }}"
+                                           {% if user_case.id in user_cases_to_link_ids %}checked{% endif %}>
+                                    <label class="govuk-label govuk-checkboxes__label" for="{{ user_case.id }}">
+                                        {{ user_case.case.reference }} - {{ user_case.case.name }}
+                                    </label>
+                                    {% if user_case.organisation.id != request.user.contact.organisation.id %}
+                                        {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
+                                        <div class="govuk-hint govuk-checkboxes__hint">
+                                            {{ user_case.organisation.name }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <h3 class="govuk-heading-s">There are no cases to assign</h3>
+                    {% endif %}
                 </fieldset>
             </div>
             <details class="govuk-details" data-module="govuk-details">
@@ -46,7 +50,8 @@
                 </summary>
                 <div class="govuk-details__text">
                     <p>You can only select cases that your organisation is taking part in.</p>
-                    <p> You can <a href="{% url 'roi' %}" class="govuk-link">register interest</a> in a case and if accepted you can
+                    <p> You can <a href="{% url 'roi' %}" class="govuk-link">register interest</a> in a case and if
+                        accepted you can
                         invite others.</p>
                 </div>
             </details>
