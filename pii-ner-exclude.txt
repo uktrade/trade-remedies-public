@@ -1,3 +1,6 @@
+random_string_generator %
+govuk-!-text
+id="doc-{{ unique_id }}
 case{% endblock page_title %
 {{ user_case.case.reference }} - {{ user_case.case.name }
 {{ currently_not_assigned_org_case_role.case.reference }} - {{ currently_not_assigned_org_case_role.case.name }}
