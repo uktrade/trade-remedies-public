@@ -13,7 +13,7 @@
                             Which case can the user take part in?
                         </h1>
                     </legend>
-                    {% if user_cases %}
+                    {% if user_cases or currently_not_assigned_cases %}
                         <div id="invite-case-hint" class="govuk-hint">
                             Select all that apply
                         </div>
@@ -21,10 +21,10 @@
                             {% for user_case in user_cases %}
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="{{ user_case.id }}"
-                                           name="which_user_case"
-                                           type="checkbox"
-                                           value="{{ user_case.id }}"
-                                           {% if user_case.id in user_cases_to_link_ids %}checked{% endif %}>
+                                        name="which_user_case"
+                                        type="checkbox"
+                                        value="{{ user_case.id }}"
+                                        {% if user_case.id in user_cases_to_link_ids %}checked{% endif %}>
                                     <label class="govuk-label govuk-checkboxes__label" for="{{ user_case.id }}">
                                         {{ user_case.case.reference }} - {{ user_case.case.name }}
                                     </label>
@@ -34,6 +34,17 @@
                                             {{ user_case.organisation.name }}
                                         </div>
                                     {% endif %}
+                                </div>
+                            {% endfor %}
+                            {% for currently_not_assigned_org_case_role in currently_not_assigned_cases %}
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="{{ currently_not_assigned_case.id }}"
+                                        name="which_org_case_role"
+                                        type="checkbox"
+                                        value="{{ currently_not_assigned_org_case_role.id }}">
+                                    <label class="govuk-label govuk-checkboxes__label" for="{{ user_case.id }}">
+                                        {{ currently_not_assigned_org_case_role.case.reference }} - {{ currently_not_assigned_org_case_role.case.name }}
+                                    </label>
                                 </div>
                             {% endfor %}
                         </div>
