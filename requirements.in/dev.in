@@ -6,7 +6,7 @@ coverage
 codecov
 djhtml
 flake8
-ipython==7.31.1
+ipython>=8.10
 matplotlib
 pillow>=9.2.0
 pip-tools>=6.5.0
