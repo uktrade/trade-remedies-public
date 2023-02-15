@@ -45,7 +45,24 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         self.submission = {}
         if request.user.is_authenticated and self.kwargs.get("submission_id"):
             submission_id = self.kwargs.get("submission_id")
-            self.submission = self.client.submissions(submission_id)
+            self.submission = self.call_client(timeout=30).submissions(
+                submission_id,
+                fields=[
+                    "contact",
+                    "organisation",
+                    "status",
+                    "paired_documents",
+                    "case",
+                    "created_by",
+                    "documents",
+                    "primary_contact",
+                    "parent",
+                    "created_at",
+                    "received_at",
+                    "orphaned_documents",
+                    "submission_documents",
+                ],
+            )
             if (
                 self.submission.created_by.id != request.user.id
                 and request.resolver_match.url_name != "roi_already_exists"
