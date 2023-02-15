@@ -10422,7 +10422,7 @@ table.sortable .app-task-list__tag {
 }
 
 /* Add some padding inside the card container */
-.upload-container {
+.upload_container {
     text-align: center;
     padding: 20px 10px 10px 10px;
 }

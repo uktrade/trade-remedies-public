@@ -48,7 +48,7 @@
                         <ul class="govuk-list">
                             {% for user_case in invitation.user_cases_to_link %}
                                 <li>
-                                    <a href="{% url 'case' case_id=user_case.case.id %}">{{ user_case.case.reference }}</a> - {{ user_case.case.name }}<br/>
+                                    <a href="{% url 'case' case_id=user_case.case.id %}">{{ user_case.case.reference }} - {{ user_case.case.name }}</a><br/>
                                     {% if user_case.organisation.id != request.user.contact.organisation.id %}
                                         {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
                                         <span class="govuk-hint">{{ user_case.organisation.name }}</span>

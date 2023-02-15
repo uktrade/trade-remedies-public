@@ -63,19 +63,9 @@ class ManageUsersView(BasePublicView, TemplateView):
             self.request.user.contact["organisation"]["id"], fields=["organisationuser_set"]
         )
 
-        organisation_users = organisation.organisationuser_set
-        for org_user in organisation_users:
-            user_cases = [
-                each
-                for each in org_user.user.user_cases
-                if each.organisation.id == self.request.user.contact["organisation"]["id"]
-            ]
-            org_user.user.user_cases = user_cases
-
         context.update(
             {
                 "organisation": organisation,
-                "organisation_users": organisation_users,
                 "pending_invitations": pending_invitations,
                 "rejected_invitations": rejected_invitations,
                 "pending_invitations_deficient_docs_count": sum(
@@ -245,6 +235,7 @@ class BaseCaseRoleEditView(BaseSingleUserView, FormInvalidMixin):
     """
 
     def get(self, request, *args, **kwargs):
+        user_case = self.client.user_cases(self.kwargs["user_case_id"])
         user_case = next(
             user_case
             for user_case in self.organisation_user.user.user_cases

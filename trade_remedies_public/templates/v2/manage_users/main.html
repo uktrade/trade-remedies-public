@@ -135,7 +135,7 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            {% for org_user in organisation_users %}
+                            {% for org_user in organisation.organisationuser_set %}
                                 <tr class="govuk-table__row no-border">
                                     <td class="govuk-table__cell text-overflow">
                                         <span class="govuk-visually-hidden--desktop">User: </span>
