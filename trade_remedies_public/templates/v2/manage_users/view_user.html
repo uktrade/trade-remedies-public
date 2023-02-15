@@ -121,15 +121,15 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            {% for user_case in user_cases %}
+                            {% for user_case in org_user.user.user_cases %}
                                 <tr class="govuk-table__row no-border">
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Case No. </span>
-                                        <a href="#" class="govuk-link--no-visited-state">{{ user_case.case.reference }}</a>
+                                        <a href="{% url 'case' case_id=user_case.case.id %}" class="govuk-link--no-visited-state">{{ user_case.case.reference }}</a>
                                     </td>
                                     <td class="govuk-table__cell text-overflow">
                                         <span class="govuk-visually-hidden--desktop">Case: </span>
-                                        <a href="#" class="govuk-link--no-visited-state">
+                                        <a href="{% url 'case' case_id=user_case.case.id %}" class="govuk-link--no-visited-state">
                                             {{ user_case.case.name }}
                                         </a>
                                     </td>

@@ -99,14 +99,7 @@ class ViewUser(BaseSingleUserView, TemplateView):
         context = super().get_context_data(**kwargs)
         context["org_user"] = self.organisation_user
 
-        user_cases = [
-            each
-            for each in self.organisation_user.user.user_cases
-            if each.organisation.id == self.organisation_user.organisation
-        ]
-
         context["user"] = self.organisation_user.user
-        context["user_cases"] = user_cases
         context["organisation"] = self.client.organisations(
             self.organisation_user.user.contact.organisation,
             fields=[
