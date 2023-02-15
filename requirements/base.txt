@@ -103,7 +103,9 @@ libsass==0.21.0
 marshmallow==3.6.1
     # via kubi-ecs-logger
 phonenumbers==8.12.50
-    # via -r requirements.in/base.in
+    # via
+    #   -r requirements.in/base.in
+    #   v2-api-client
 psycopg2-binary==2.9.1
     # via feed-gov-back
 py==1.10.0
@@ -155,7 +157,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@feature/trsv2-460/manage-users
     # via -r requirements.in/base.in
 werkzeug==0.15.5
     # via -r requirements.in/base.in

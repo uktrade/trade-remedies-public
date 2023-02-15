@@ -196,7 +196,9 @@ pep517==0.11.0
 pexpect==4.8.0
     # via ipython
 phonenumbers==8.12.50
-    # via -r requirements.in/base.in
+    # via
+    #   -r requirements.in/base.in
+    #   v2-api-client
 pickleshare==0.7.5
     # via ipython
 pillow==9.3.0
@@ -334,7 +336,7 @@ urllib3==1.26.5
     #   requests
     #   selenium
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@feature/trsv2-460/manage-users
     # via -r requirements.in/base.in
 virtualenv==20.14.0
     # via pre-commit
