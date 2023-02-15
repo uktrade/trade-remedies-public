@@ -15,7 +15,9 @@
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <p class="govuk-body">
-                        {% if invitation.status.0 == "invite_sent" %}
+                        {% if invitation.status.0 == "draft" %}
+                            {{ invitation.status.1 }}<br>
+                        {% elif invitation.status.0 == "invite_sent" %}
                             {{ invitation.status.1 }}<br>
                             Waiting for invitee acceptance
                         {% elif invitation.status.0 == "waiting_tra_review" %}
