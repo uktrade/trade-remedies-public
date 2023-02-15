@@ -135,7 +135,7 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            {% for org_user in organisation.organisationuser_set %}
+                            {% for org_user in organisation_users %}
                                 <tr class="govuk-table__row no-border">
                                     <td class="govuk-table__cell text-overflow">
                                         <span class="govuk-visually-hidden--desktop">User: </span>
@@ -160,7 +160,7 @@
                                         {% endif %}
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Cases: </span>{{ org_user.user.cases|length }}
+                                        <span class="govuk-visually-hidden--desktop">Cases: </span>{{ org_user.user.user_cases|length }}
                                     </td>
                                 </tr>
                             {% endfor %}

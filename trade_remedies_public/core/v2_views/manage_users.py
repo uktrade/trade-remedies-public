@@ -46,12 +46,12 @@ class ManageUsersView(BasePublicView, TemplateView):
             invite
             for invite in invitations
             if (invite.invitation_type == 1 and not invite.accepted_at)
-               or (
-                       invite.invitation_type == 2
-                       and not invite.approved_at
-                       and not invite.rejected_at
-                       and not invite.submission.archived
-               )
+            or (
+                invite.invitation_type == 2
+                and not invite.approved_at
+                and not invite.rejected_at
+                and not invite.submission.archived
+            )
         ]
         rejected_invitations = [
             invite
@@ -59,11 +59,23 @@ class ManageUsersView(BasePublicView, TemplateView):
             if invite.invitation_type == 2 and not invite.approved_at and invite.rejected_at
         ]
 
+        organisation = self.client.organisations(
+            self.request.user.contact["organisation"]["id"], fields=["organisationuser_set"]
+        )
+
+        organisation_users = organisation.organisationuser_set
+        for org_user in organisation_users:
+            user_cases = [
+                each
+                for each in org_user.user.user_cases
+                if each.organisation.id == self.request.user.contact["organisation"]["id"]
+            ]
+            org_user.user.user_cases = user_cases
+
         context.update(
             {
-                "organisation": self.client.organisations(
-                    self.request.user.contact["organisation"]["id"], fields=["organisationuser_set"]
-                ),
+                "organisation": organisation,
+                "organisation_users": organisation_users,
                 "pending_invitations": pending_invitations,
                 "rejected_invitations": rejected_invitations,
                 "pending_invitations_deficient_docs_count": sum(
@@ -116,19 +128,19 @@ class ViewUser(BaseSingleUserView, TemplateView):
         )
         # admin users cannot change their own permissions or deactivate themselves
         context["cannot_edit_permissions_and_is_active"] = (
-                self.request.user.id == self.organisation_user.user.id
-                and self.organisation_user.security_group == SECURITY_GROUP_ORGANISATION_OWNER
-                or self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
+            self.request.user.id == self.organisation_user.user.id
+            and self.organisation_user.security_group == SECURITY_GROUP_ORGANISATION_OWNER
+            or self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
         )
 
         # users cannot edit the contact details of third party users
         context["cannot_edit_contact_details"] = (
-                self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
+            self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
         )
 
         # users cannot assign representatives to case
         context["cannot_assign_to_case"] = (
-                self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
+            self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
         )
 
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
@@ -147,8 +159,8 @@ class BaseEditUserView(BaseSingleUserView, FormInvalidMixin):
 
     def get_success_url(self):
         return (
-                reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
-                + "#user_details"
+            reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
+            + "#user_details"
         )
 
 
@@ -233,12 +245,12 @@ class BaseCaseRoleEditView(BaseSingleUserView, FormInvalidMixin):
     """
 
     def get(self, request, *args, **kwargs):
-        self.user_case = next(
+        user_case = next(
             user_case
             for user_case in self.organisation_user.user.user_cases
             if user_case.id == str(self.kwargs["user_case_id"])
         )
-        if self.user_case.organisation.id != self.organisation_user.organisation:
+        if user_case.organisation.id != self.organisation_user.organisation:
             # trying to edit a user case that doesn't belong to the organisation
             logger.error(
                 "User is trying to edit a user case that doesn't belong to the organisation",
@@ -252,14 +264,19 @@ class BaseCaseRoleEditView(BaseSingleUserView, FormInvalidMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        self.user_case = next(
+            user_case
+            for user_case in self.organisation_user.user.user_cases
+            if user_case.id == str(self.kwargs["user_case_id"])
+        )
         context["user_case"] = self.user_case
         context["organisation_user"] = self.organisation_user
         return context
 
     def get_success_url(self):
         return (
-                reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
-                + "#cases_cases"
+            reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
+            + "#cases_cases"
         )
 
 
@@ -268,9 +285,11 @@ class ChangeCaseRoleView(BaseCaseRoleEditView):
     form_class = ChangeCaseRoleForm
 
     def form_valid(self, form):
+        context = self.get_context_data(**self.kwargs)
+        user_case = context["user_case"]
         # update the CaseContact object if it exists (this is a workaround to the fact
         # some UserCases have no CaseContact objects)
-        if case_contact := self.user_case.case_contact:
+        if case_contact := user_case.case_contact:
             self.client.case_contacts(case_contact.id).update(
                 {"primary": form.cleaned_data["case_role"]}
             )
@@ -306,6 +325,7 @@ class AssignToCaseView(BaseEditUserView):
             user_case
             for user_case in org.user_cases
             if user_case.case.id not in cases_already_enrolled_in
+            and user_case.organisation.id == self.organisation_user.organisation
         ]
         seen_org_case_combos = []
         no_duplicate_user_cases = []

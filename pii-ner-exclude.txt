@@ -1,3 +1,12 @@
+aria-controls="rejected
+aria-labelledby="tab_manage-team
+{{ org_user.user.name
+aria-labelledby="tab_manage-invites
+pending_invitations|length
+invite.status.1
+aria-labelledby="tab_rejected
+rejected_invitations|length
+status--
 {{ invitation.contact.email }
 pending_invitations_deficient_docs_count
 Group
