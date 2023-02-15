@@ -27,7 +27,9 @@
                         <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                         <strong class="govuk-warning-text__text">
                             <span class="govuk-warning-text__assistive">Warning</span>
-                            You have {{ pending_invitations_deficient_docs_count }} pending invite{% if pending_invitations_deficient_docs_count > 1 %}s{% endif %} with deficient documentation.
+                            You have {{ pending_invitations_deficient_docs_count }} pending invite
+                            {% if pending_invitations_deficient_docs_count > 1 %}s{% endif %} with deficient
+                            documentation.
                         </strong>
                     </div>
                 {% endif %}
@@ -136,33 +138,37 @@
                         </thead>
                         <tbody class="govuk-table__body">
                             {% for org_user in organisation.organisationuser_set %}
-                                <tr class="govuk-table__row no-border">
-                                    <td class="govuk-table__cell text-overflow">
-                                        <span class="govuk-visually-hidden--desktop">User: </span>
-                                        <a class="govuk-link--no-visited-state"
-                                            href="{% url 'view_user' organisation_user_id=org_user.id %}">
-                                            {{ org_user.user.name }}
-                                        </a>
-                                    </td>
-                                    <td class="govuk-table__cell text-overflow">
-                                        <span class="govuk-visually-hidden--desktop">Email: </span>{{ org_user.user.email }}
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Account role: </span>
-                                        {% if not org_user.user.is_active %}
-                                            Inactive
-                                        {% elif org_user.security_group == group_owner %}
-                                            Admin user
-                                        {% elif org_user.security_group == group_third_party %}
-                                            Representative
-                                        {% else %}
-                                            User
-                                        {% endif %}
-                                    </td>
-                                    <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Cases: </span>{{ org_user.user.user_cases|length }}
-                                    </td>
-                                </tr>
+                                {% if org_user.security_group == group_third_party and org_user.user.user_cases|length == 0 %}
+                                    {# we dont want to show reps with no cases #}
+                                {% else %}
+                                    <tr class="govuk-table__row no-border">
+                                        <td class="govuk-table__cell text-overflow">
+                                            <span class="govuk-visually-hidden--desktop">User: </span>
+                                            <a class="govuk-link--no-visited-state"
+                                                href="{% url 'view_user' organisation_user_id=org_user.id %}">
+                                                {{ org_user.user.name }}
+                                            </a>
+                                        </td>
+                                        <td class="govuk-table__cell text-overflow">
+                                            <span class="govuk-visually-hidden--desktop">Email: </span>{{ org_user.user.email }}
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <span class="govuk-visually-hidden--desktop">Account role: </span>
+                                            {% if not org_user.user.is_active %}
+                                                Inactive
+                                            {% elif org_user.security_group == group_owner %}
+                                                Admin user
+                                            {% elif org_user.security_group == group_third_party %}
+                                                Representative
+                                            {% else %}
+                                                User
+                                            {% endif %}
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <span class="govuk-visually-hidden--desktop">Cases: </span>{{ org_user.user.user_cases|length }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             {% endfor %}
                         </tbody>
                     </table>
