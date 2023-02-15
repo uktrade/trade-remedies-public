@@ -1,126 +1,74 @@
-{{ user_case.case.reference }} - {{ user_case.case.name }
-{{ user.name
-aria-controls="cases_cases
-{{ user.email }
-permission</span
-{{ user.is_active|yesno:"Active
-{{ organisation.name|default_if_none
-Group
-CaseContact
-UserCases
-POST
-UserCase
-equiv="X-UA-Compatible
-sizes="16x16 32x32 48x48
+invitation_name_email
+Select a Trade Remedies
+TRS
+Django==3.2.17
+whitenoise==5.3.0
+Cancel
+Reg
+submit{% endblock page_title %
+Cancel
+invitation_name_email
+Select a Trade Remedies
+TRS
+Django==3.2.17
+whitenoise==5.3.0
+Reg
+submit{% endblock page_title %
+IE 9]><html
 endif]--
-IE 9
-content="&lt;YOUR
+--<![endif]--
+/><!--<![endif]--
+IE 9]><script
 svg aria-hidden="true
 7.9-13.5
 7.8-13.5
 3.3-1.3
 width="36
 li class="login-nav__list-item
+{{ user.name
+equiv="X-UA-Compatible
+sizes="16x16 32x32 48x48
 href="https://www.nationalarchives.gov.uk/information-management
 document.cookie
 max-age=${3600
-holding_page.html
-home.html
-f"We
-TARIFF_CLASSIFICATION
-dashboard.html
-tasklist.html
-update.html
-feedback_form_inner.html
-Group
-CaseContact
-UserCases
-POST
-UserCase
-pending_invitation_deficient_docs_count
-ROI
-submission.invitations.0|length
-method='post'><button class="link">Cancel</button>{% csrf_token %
-Withheld
-{{ submission.organisation_case_role.name }
-is_org_owner
-Download the Letter of Authority
-{{ document.name }
-add_new_row
-whitenoise==5.3.0
-Invite deleted{% endblock page_title %
-Delete invitation{%
-Reg
-aria-controls="rejected
-xl">Register
-{{ invite.type_display_name }}
-representative{%
-Register
-case{% endblock page_title %
-{{ invite.type_display_name }}
-Invite cancelled{% endblock page_title %
-submit{% endblock page_title %
-Own Organisation
-invite.status.1
-Invite sent{% endblock page_title %
-javascript %
-{{ forward_button_text }
-case_id>/
-create_submission_file
-product_id>/
-Tasklist
-roi_delete_roi
-invitation_name_email
-REP INVITE
-Select a Trade Remedies
-TRS
-{{ invite.case.id }
-{{ invitation.contact.email }
-pending_invitations_deficient_docs_count
-function isMobile
-|maemo|midp|mmp|netfront|opera
-navigator.vendor
-|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1
-aria-labelledby="govuk-notification
-yes">How
-{{ user.organisation.name
-Invite details{% endblock page_title %
-{{ user_case.case.reference }} - {{
-Cancel
-javascript %
-{{ forward_button_text }
-case_id>/
-create_submission_file
-product_id>/
-Tasklist
-roi_delete_roi
-invitation_name_email
-REP INVITE
-Select a Trade Remedies
-TRS
-{{ invite.case.id }
-{{ invitation.contact.email }
-pending_invitations_deficient_docs_count
-function isMobile
-|maemo|midp|mmp|netfront|opera
-navigator.vendor
-|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1
-aria-labelledby="govuk-notification
-yes">How
-{{ user.organisation.name
-Invite details{% endblock page_title %
-{{ user_case.case.reference }} - {{
-Cancel
-
-aria-labelledby="tab_manage-team
-{{ org_user.user.name
-Draft
-/span><a
-aria-labelledby="tab_manage-invites
-pending_invitations|length
-aria-labelledby="tab_rejected
-rejected_invitations|length
-status--
+page_title
+width="20
+autocomplete="name
+e){"object"==typeof
+NodeList.prototype.forEach)return
+e){if(!t||"object"!=typeof
+non-object");if(!(r
+Object))throw
+Element||window
+document.createElement("div");return t.setAttribute("data-a-b","c"),t.dataset&&"c"==t.dataset.aB})()||Object.defineProperty(Element.prototype,"dataset",{get
+0!==e?this.setAttribute(t
+e}})}.call("object"==typeof window&&window||"object"==typeof
+this.replacePlaceholders(n
+e)}return
+this.translations)return console&&"warn"in console&&console.warn('i18n:
+i){Object.defineProperty?Object.defineProperty(t
+SyntaxError('String
+arguments);for(var
+this&&"classList"in document.documentElement&&"Element"in
+this&&"classList"in
+HTMLLinkElement,"relList","rel"),i(t
+HTMLAreaElement,"relList","rel")}(this)}.call("object"==typeof
+n=(e.document||e.ownerDocument).querySelectorAll(t),o=0;n[o]&&n[o]!==e;)++o;return!!n[o]})}.call("object"==typeof window&&window||"object"==typeof
+o;if("createEvent"in
+window&&window||"object"==typeof
+Object
+Function.prototype.toString
+f.call(y
+e||{},s(t.dataset)),this.i18n
+this.isExpanded(t);this.setExpanded(!e
+t?(s.removeAttribute("hidden"),e.classList.add(this.sectionExpandedClass),n.classList.remove(this.downChevronIconClass)):(s.setAttribute("hidden","until-found"),e.classList.remove(this.sectionExpandedClass),n.classList.add(this.downChevronIconClass));var
+t}function b(t
+t.querySelectorAll('input[type="radio"]')}function
+Math.floor(t/16),("x"===e?n:3&n|8).toString(16)})))),e.setAttribute("role","group"),n.setAttribute("role","button"),n.setAttribute("aria-controls",o.id),n.tabIndex=0,this.$module.hasAttribute("open")?n.setAttribute("aria-expanded","true"):(n.setAttribute("aria-expanded","false"),o.style.display="none"),this.polyfillHandleInputs(this.polyfillSetAttributes.bind(this)))},m.prototype.polyfillSetAttributes
+document;e(n.querySelectorAll('[data-module="govuk-accordion"]'),(function(e){new l(e
+t.accordion).init()})),e(n.querySelectorAll('[data-module="govuk-button"]'),(function(e){new
+t.Button
+CharacterCount
 confidential{%
 document</button
 submit></button

@@ -451,7 +451,10 @@ class InviteRepresentativeSelectCase(BaseInviteFormView):
                 "case": self.user_case_case_id_matchup[form.cleaned_data["user_case"]],
                 "invitation_type": 2,
                 "organisation": self.request.user.contact["organisation"]["id"],
-            }
+            },
+            fields=[
+                "id",
+            ],
         )
         # Linking the case to the invitation
         new_invitation.update(
