@@ -56,33 +56,31 @@
                     <p class="govuk-body">This user is not involved in a case.</p>
                 {% else %}
                     <p>Assign a user to a case and manage their role and access. </p>
-                    <form>
-                        <div id="table-sort" class="govuk-visually-hidden--desktop">
-                            <div class="govuk-form-group table-sort-select">
-                                <label class="govuk-label govuk-!-display-inline" for="sort-cases">
-                                    Sort cases by
-                                </label>
-                                <select class="govuk-select" id="sort-cases" name="sort-cases">
-                                    <option value="0" selected="">Case no.</option>
-                                    <option value="1">Case no.</option>
-                                    <option value="2">Interested party</option>
-                                    <option value="3">Case role</option>
-                                </select>
-                            </div>
-                            <div class="govuk-form-group table-sort-select">
-                                <label class="govuk-label govuk-visually-hidden" for="direction-cases">
-                                    Direction
-                                </label>
-                                <select class="govuk-select" id="direction-cases" name="direction-cases">
-                                    <option value="desc" selected="">Descending</option>
-                                    <option value="asc">Ascending</option>
-                                </select>
-                            </div>
-                            <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
-                                Sort cases
-                            </button>
+                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-cases">
+                                Sort cases by
+                            </label>
+                            <select class="govuk-select" id="sort-cases" name="sort-cases">
+                                <option value="0" selected="">Case no.</option>
+                                <option value="1">Case no.</option>
+                                <option value="2">Interested party</option>
+                                <option value="3">Case role</option>
+                            </select>
                         </div>
-                    </form>
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-visually-hidden" for="direction-cases">
+                                Direction
+                            </label>
+                            <select class="govuk-select" id="direction-cases" name="direction-cases">
+                                <option value="desc" selected="">Descending</option>
+                                <option value="asc">Ascending</option>
+                            </select>
+                        </div>
+                        <button class="govuk-button govuk-button--secondary mobile_sort_button" data-module="govuk-button">
+                            Sort cases
+                        </button>
+                    </div>
                     <table class="govuk-table sortable table-border mobile-table-border" id="case_table">
                         <caption
                             class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
@@ -256,6 +254,7 @@
                     {"name": "reference", "orderable": "true"},
                     {"name": "name", "orderable": "true"},
                     {"name": "interested_party", "orderable": "true"},
+                    {"name": "case_role", "orderable": "true"},
                     {"name": "action_1", "orderable": "false"},
                     {"name": "action_2", "orderable": "false"},
                 ],
@@ -264,11 +263,10 @@
             });
 
             $(".mobile_sort_button").click(function () {
-                let parent = $(this).closest(".govuk-visually-hidden--desktop")
-                let column_index = Number(parent.find('.mobile_sort_dropdown').val())
-                let sort_direction = parent.find('.ascending_descending_sort').val()
+                let column_index = Number($('#sort-cases').val())
+                let sort_direction = $('#direction-cases').val()
 
-                table_lookup[$(this).attr("data-table")].order([[column_index, sort_direction]]).draw();
+                case_table.order([[column_index, sort_direction]]).draw();
             })
 
             // Now we need to redraw the table everytime the tab is switched so the columns resize automatically
