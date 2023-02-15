@@ -1,3 +1,6 @@
+random_string_generator %
+govuk-!-text
+id="doc-{{ unique_id }}
 IE 9]><html
 endif]--
 --<![endif]--
