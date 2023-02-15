@@ -83,7 +83,7 @@
                             </button>
                         </div>
                     </form>
-                    <table class="govuk-table sortable table-border mobile-table-border" id="table-header">
+                    <table class="govuk-table sortable table-border mobile-table-border" id="case_table">
                         <caption
                             class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
                             A table listing all of the cases the users is involved in
@@ -243,3 +243,45 @@
 
 
 {% block hash_replace %}{% endblock hash_replace %}
+
+{% block scripts %}
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let case_table = $('#case_table').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "reference", "orderable": "true"},
+                    {"name": "name", "orderable": "true"},
+                    {"name": "interested_party", "orderable": "true"},
+                    {"name": "action_1", "orderable": "false"},
+                    {"name": "action_2", "orderable": "false"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+
+            $(".mobile_sort_button").click(function () {
+                let parent = $(this).closest(".govuk-visually-hidden--desktop")
+                let column_index = Number(parent.find('.mobile_sort_dropdown').val())
+                let sort_direction = parent.find('.ascending_descending_sort').val()
+
+                table_lookup[$(this).attr("data-table")].order([[column_index, sort_direction]]).draw();
+            })
+
+            // Now we need to redraw the table everytime the tab is switched so the columns resize automatically
+            function redraw_table(data_table) {
+                data_table.fnAdjustColumnSizing()
+            }
+            $("[role='tab']").click(function () {
+                let data_table = $(`${$(this).attr("href")}`).find("table").dataTable()
+                redraw_table(data_table)
+            })
+            $("document").on("resize", function () {
+                redraw_table($("table:visible").dataTable())
+            })
+        });
+    </script>
+{% endblock scripts %}o
