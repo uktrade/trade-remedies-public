@@ -61,7 +61,15 @@ class TwoFactorChoice(AcceptOrganisationTwoFactorChoice):
             mobile_country_code=form.cleaned_data["mobile_country_code"],
         )
 
-        if self.invitation.contact.organisation:
+        if not self.invitation.organisation_details_captured:
+            # new organisation, capture details
+            return redirect(
+                reverse(
+                    "accept_representative_invitation_organisation_details",
+                    kwargs={"invitation_id": self.kwargs["invitation_id"]},
+                )
+            )            
+        else:
             # organisation details already exist, no need to re-request details from invitee
 
             # Marking the user as active
@@ -102,14 +110,6 @@ class TwoFactorChoice(AcceptOrganisationTwoFactorChoice):
                     "request_email_verify_code", kwargs={"user_pk": self.invitation.invited_user.id}
                 )
                 + "?account_created=yes"
-            )
-        else:
-            # new organisation, get details
-            return redirect(
-                reverse(
-                    "accept_representative_invitation_organisation_details",
-                    kwargs={"invitation_id": self.kwargs["invitation_id"]},
-                )
             )
 
 
@@ -188,6 +188,9 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
             confirmed=True,
             fields=["id"],
         )
+
+        # new organisation details have now been captured
+        self.invitation.update({"organisation_details_captured": True})
 
         # now let's validate the person's email
         return redirect(
