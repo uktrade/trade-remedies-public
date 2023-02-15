@@ -68,7 +68,7 @@ class TwoFactorChoice(AcceptOrganisationTwoFactorChoice):
                     "accept_representative_invitation_organisation_details",
                     kwargs={"invitation_id": self.kwargs["invitation_id"]},
                 )
-            )            
+            )
         else:
             # organisation details already exist, no need to re-request details from invitee
 
