@@ -1,3 +1,19 @@
+{{ invitation.contact.email }
+pending_invitations_deficient_docs_count
+Group
+Org A
+CaseContact
+UserCases
+POST
+UserCase
+aria-controls="cases_cases
+/span><a
+{{ user.email }
+permission</span
+{{ user.is_active|yesno:"Active
+{{ organisation.name|default_if_none
+Invite details{% endblock page_title %
+{{ invitation.contact.email }
 invitation_name_email
 Select a Trade Remedies
 TRS

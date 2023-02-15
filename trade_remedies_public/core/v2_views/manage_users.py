@@ -1,3 +1,5 @@
+import logging
+
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -16,6 +18,8 @@ from core.v2_forms.manage_users import (
     ChangeUserIsActiveForm,
     EditUserForm,
 )
+
+logger = logging.getLogger(__name__)
 
 
 class ManageUsersView(BasePublicView, TemplateView):
@@ -42,12 +46,12 @@ class ManageUsersView(BasePublicView, TemplateView):
             invite
             for invite in invitations
             if (invite.invitation_type == 1 and not invite.accepted_at)
-            or (
-                invite.invitation_type == 2
-                and not invite.approved_at
-                and not invite.rejected_at
-                and not invite.submission.archived
-            )
+               or (
+                       invite.invitation_type == 2
+                       and not invite.approved_at
+                       and not invite.rejected_at
+                       and not invite.submission.archived
+               )
         ]
         rejected_invitations = [
             invite
@@ -92,7 +96,15 @@ class ViewUser(BaseSingleUserView, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["org_user"] = self.organisation_user
+
+        user_cases = [
+            each
+            for each in self.organisation_user.user.user_cases
+            if each.organisation.id == self.organisation_user.organisation
+        ]
+
         context["user"] = self.organisation_user.user
+        context["user_cases"] = user_cases
         context["organisation"] = self.client.organisations(
             self.organisation_user.user.contact.organisation,
             fields=[
@@ -104,19 +116,19 @@ class ViewUser(BaseSingleUserView, TemplateView):
         )
         # admin users cannot change their own permissions or deactivate themselves
         context["cannot_edit_permissions_and_is_active"] = (
-            self.request.user.id == self.organisation_user.user.id
-            and self.organisation_user.security_group == SECURITY_GROUP_ORGANISATION_OWNER
-            or self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
+                self.request.user.id == self.organisation_user.user.id
+                and self.organisation_user.security_group == SECURITY_GROUP_ORGANISATION_OWNER
+                or self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
         )
 
         # users cannot edit the contact details of third party users
         context["cannot_edit_contact_details"] = (
-            self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
+                self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
         )
 
         # users cannot assign representatives to case
         context["cannot_assign_to_case"] = (
-            self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
+                self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER
         )
 
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
@@ -127,8 +139,6 @@ class ViewUser(BaseSingleUserView, TemplateView):
 class BaseEditUserView(BaseSingleUserView, FormInvalidMixin):
     """Admin users should not be able to edit third party users in any capacity"""
 
-    base_tab_id = None
-
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
         if self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER:
@@ -136,15 +146,15 @@ class BaseEditUserView(BaseSingleUserView, FormInvalidMixin):
         return response
 
     def get_success_url(self):
-        return reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id}) + (
-            self.base_tab_id or ""
+        return (
+                reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
+                + "#user_details"
         )
 
 
 class EditUser(BaseEditUserView):
     template_name = "v2/manage_users/edit_user.html"
     form_class = EditUserForm
-    base_tab_id = "#user_details"
 
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
@@ -180,7 +190,6 @@ class EditUser(BaseEditUserView):
 class ChangeOrganisationUserPermissionsView(BaseEditUserView):
     template_name = "v2/invite/select_permissions.html"
     form_class = SelectPermissionsForm
-    base_tab_id = "#user_details"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -204,7 +213,6 @@ class ChangeOrganisationUserPermissionsView(BaseEditUserView):
 class ChangeUserActiveView(BaseEditUserView):
     template_name = "v2/manage_users/change_user_active.html"
     form_class = ChangeUserIsActiveForm
-    base_tab_id = "#user_details"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -217,44 +225,60 @@ class ChangeUserActiveView(BaseEditUserView):
         )
 
 
-class ChangeCaseRoleView(BaseEditUserView):
-    template_name = "v2/manage_users/change_case_role.html"
-    form_class = ChangeCaseRoleForm
-    base_tab_id = "#cases_cases"
+class BaseCaseRoleEditView(BaseSingleUserView, FormInvalidMixin):
+    """A base view for views that deal with a particular UserCase object, i.e. a user's role on a
+    case. We want to ensure that the user is not trying to edit a user case that doesn't belong
+    to the organisation, i.e. a representative of Org A that has enrolled as an interested party
+    in a completely separate case that Org A has no involvement in.
+    """
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["user_case"] = next(
+    def get(self, request, *args, **kwargs):
+        self.user_case = next(
             user_case
             for user_case in self.organisation_user.user.user_cases
             if user_case.id == str(self.kwargs["user_case_id"])
         )
+        if self.user_case.organisation.id != self.organisation_user.organisation:
+            # trying to edit a user case that doesn't belong to the organisation
+            logger.error(
+                "User is trying to edit a user case that doesn't belong to the organisation",
+                extra={
+                    "user": self.request.user,
+                    "organisation": self.organisation_user.organisation,
+                },
+            )
+            raise PermissionDenied()
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["user_case"] = self.user_case
+        context["organisation_user"] = self.organisation_user
         return context
 
+    def get_success_url(self):
+        return (
+                reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
+                + "#cases_cases"
+        )
+
+
+class ChangeCaseRoleView(BaseCaseRoleEditView):
+    template_name = "v2/manage_users/change_case_role.html"
+    form_class = ChangeCaseRoleForm
+
     def form_valid(self, form):
-        context = self.get_context_data(**self.kwargs)
         # update the CaseContact object if it exists (this is a workaround to the fact
         # some UserCases have no CaseContact objects)
-        if case_contact := context["user_case"].case_contact:
+        if case_contact := self.user_case.case_contact:
             self.client.case_contacts(case_contact.id).update(
                 {"primary": form.cleaned_data["case_role"]}
             )
 
 
-class RemoveFromCaseView(BaseEditUserView):
+class RemoveFromCaseView(BaseCaseRoleEditView):
     template_name = "v2/manage_users/remove_from_case.html"
     form_class = EmptyForm
-    base_tab_id = "#cases_cases"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["user_case"] = next(
-            user_case
-            for user_case in self.organisation_user.user.user_cases
-            if user_case.id == str(self.kwargs["user_case_id"])
-        )
-        context["organisation_user"] = self.organisation_user
-        return context
 
     def form_valid(self, form):
         context = self.get_context_data(**self.kwargs)
