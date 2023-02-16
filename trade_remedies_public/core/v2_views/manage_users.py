@@ -134,6 +134,8 @@ class ViewUser(BaseSingleUserView, TemplateView):
 class BaseEditUserView(BaseSingleUserView, FormInvalidMixin):
     """Admin users should not be able to edit third party users in any capacity"""
 
+    base_tab = "#user_details"
+
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
         if self.organisation_user.security_group == SECURITY_GROUP_THIRD_PARTY_USER:
@@ -143,7 +145,7 @@ class BaseEditUserView(BaseSingleUserView, FormInvalidMixin):
     def get_success_url(self):
         return (
             reverse("view_user", kwargs={"organisation_user_id": self.organisation_user.id})
-            + "#user_details"
+            + self.base_tab
         )
 
 
