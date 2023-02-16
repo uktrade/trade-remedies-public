@@ -161,6 +161,8 @@ kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
 libsass==0.21.0
     # via -r requirements.in/base.in
+markupsafe==2.1.2
+    # via werkzeug
 marshmallow==3.6.1
     # via kubi-ecs-logger
 matplotlib==3.5.1
@@ -344,7 +346,7 @@ virtualenv==20.14.0
     # via pre-commit
 wcwidth==0.2.5
     # via prompt-toolkit
-werkzeug==0.15.5
+werkzeug==2.2.3
     # via -r requirements.in/base.in
 wheel==0.38.4
     # via

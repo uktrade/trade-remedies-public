@@ -106,6 +106,8 @@ kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
 libsass==0.21.0
     # via -r requirements.in/base.in
+markupsafe==2.1.2
+    # via werkzeug
 marshmallow==3.6.1
     # via kubi-ecs-logger
 phonenumbers==8.12.50
@@ -163,7 +165,7 @@ urllib3==1.26.5
     #   sentry-sdk
 v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
-werkzeug==0.15.5
+werkzeug==2.2.3
     # via -r requirements.in/base.in
 whitenoise==5.3.0
     # via -r requirements.in/base.in
