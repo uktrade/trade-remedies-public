@@ -230,13 +230,12 @@ class BaseCaseRoleEditView(BaseSingleUserView, FormInvalidMixin):
     """
 
     def get(self, request, *args, **kwargs):
-        user_case = self.client.user_cases(self.kwargs["user_case_id"])
         user_case = next(
             user_case
             for user_case in self.organisation_user.user.user_cases
             if user_case.id == str(self.kwargs["user_case_id"])
         )
-        if user_case.organisation.id != self.organisation_user.organisation:
+        if user_case.organisation.id != self.organisation_user.organisation and user_case.user.id != self.organisation_user.user.id:
             # trying to edit a user case that doesn't belong to the organisation
             logger.error(
                 "User is trying to edit a user case that doesn't belong to the organisation",
@@ -299,80 +298,73 @@ class RemoveFromCaseView(BaseCaseRoleEditView):
 class AssignToCaseView(BaseEditUserView):
     template_name = "v2/manage_users/assign_case.html"
     form_class = EmptyForm
-    base_tab_id = "#cases_cases"
+    base_tab = "#cases_cases"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        cases_already_enrolled_in = [
-            each.case.id for each in self.organisation_user.user.user_cases
+
+        assignable_cases = []
+
+        # get the cases the user is already enrolled in, so we don't show them in the list
+        cases_already_enrolled_in_as_interested_party = [
+            each.case.id for each in self.organisation_user.user.user_cases if
+            each.organisation.id == self.organisation_user.organisation
         ]
-        org = self.client.organisations(
-            self.organisation_user.organisation,
-            fields=[
-                "user_cases",
-            ],
-        )
+        cases_already_enrolled_in_as_representative = [
+            each.case.id for each in self.organisation_user.user.user_cases if
+            each.organisation.id != self.organisation_user.organisation
+        ]
+
+        # let's first get the cases the org is enrolled in as an interested party
         org_case_roles = self.client.organisation_case_roles(
             organisation=self.organisation_user.organisation
         )
-        context["currently_not_assigned_cases"] = [
-            each for each in org_case_roles if each.case.id not in cases_already_enrolled_in
-        ]
-        user_cases = [
-            user_case
-            for user_case in org.user_cases
-            if user_case.case.id not in cases_already_enrolled_in
-            and user_case.organisation.id == self.organisation_user.organisation
-        ]
+        org_case_roles = [each for each in org_case_roles if
+                          each.case.id not in cases_already_enrolled_in_as_interested_party]
+        for each in org_case_roles:
+            assignable_cases.append({
+                "case": each.case,
+                "organisation": each.organisation,
+            })
 
-        seen_org_case_combos = []
-        no_duplicate_user_cases = []
-        for user_case in user_cases:
-            if (user_case.organisation.id, user_case.case.id) not in seen_org_case_combos:
-                no_duplicate_user_cases.append(user_case)
-                seen_org_case_combos.append((user_case.organisation.id, user_case.case.id))
+        # then let's get the cases the org is enrolled in as a representative
+        org = self.client.organisations(
+            self.organisation_user.organisation,
+            fields=[
+                "representative_cases",
+            ],
+        )
+        for each in org.representative_cases:
+            if each.case.id not in cases_already_enrolled_in_as_representative:
+                assignable_cases.append({
+                    "case": each.case,
+                    "organisation": each.on_behalf_on_id,
+                    "organisation_name": each.on_behalf_on,
+                })
 
-        user_cases = sorted(no_duplicate_user_cases, key=lambda x: x.case.reference)
-
-        context["user_cases"] = user_cases
+        context["assignable_cases"] = assignable_cases
         return context
 
     def form_valid(self, form):
         # for each case in the POST request, create a UserCase and CaseContact object if they
         # don't already exist
-        for user_case in self.request.POST.getlist("which_user_case"):
-            user_case = self.client.user_cases(user_case)
+        for assignable_case in self.request.POST.getlist("which_case"):
+            assignable_case = assignable_case.split("*-*")
+            case_id = assignable_case[0]
+            organisation_id = assignable_case[1]
+
             user_case_dict = {
-                "case": user_case.case.id,
+                "case": case_id,
                 "user": self.organisation_user.user.id,
-                "organisation": user_case.organisation.id,  # maintain the rep relationship
+                "organisation": organisation_id
             }
             if not self.client.user_cases(**user_case_dict):
                 self.client.user_cases(user_case_dict)
 
             case_contact_dict = {
-                "case": user_case.case.id,
+                "case": case_id,
                 "contact": self.organisation_user.user.contact.id,
-                "organisation": user_case.organisation.id,  # maintain the rep relationship
-            }
-
-            if not self.client.case_contacts(**case_contact_dict):
-                self.client.case_contacts(case_contact_dict)
-
-        for org_case_role in self.request.POST.getlist("which_org_case_role"):
-            org_case_role = self.client.organisation_case_roles(org_case_role)
-            user_case_dict = {
-                "case": org_case_role.case.id,
-                "user": self.organisation_user.user.id,
-                "organisation": self.organisation_user.organisation,
-            }
-            if not self.client.user_cases(**user_case_dict):
-                self.client.user_cases(user_case_dict)
-
-            case_contact_dict = {
-                "case": org_case_role.case.id,
-                "contact": self.organisation_user.user.contact.id,
-                "organisation": self.organisation_user.organisation,
+                "organisation": organisation_id,
             }
 
             if not self.client.case_contacts(**case_contact_dict):

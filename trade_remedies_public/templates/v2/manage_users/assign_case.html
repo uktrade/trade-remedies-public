@@ -1,4 +1,5 @@
 {% extends "v2/govuk/base.html" %}
+{% load random_string_generator %}
 
 {% block page_title %}Choose case{% endblock page_title %}
 
@@ -13,46 +14,35 @@
                             Which case can the user take part in?
                         </h1>
                     </legend>
-                    {% if user_cases or currently_not_assigned_cases %}
+                    {% if assignable_cases %}
                         <div id="invite-case-hint" class="govuk-hint">
                             Select all that apply
                         </div>
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-                            {% for user_case in user_cases %}
+                            {% for assignable_case in assignable_cases %}
+                                {% random_string_generator 5 as unique_id %}
                                 <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" id="{{ user_case.id }}"
-                                        name="which_user_case"
-                                        type="checkbox"
-                                        value="{{ user_case.id }}"
-                                        {% if user_case.id in user_cases_to_link_ids %}checked{% endif %}>
-                                    <label class="govuk-label govuk-checkboxes__label" for="{{ user_case.id }}">
-                                        {{ user_case.case.reference }} - {{ user_case.case.name }}
+                                    <input class="govuk-checkboxes__input" id="{{ unique_id }}"
+                                           name="which_case"
+                                           type="checkbox"
+                                           value="{{ assignable_case.case.id }}*-*{{ assignable_case.organisation }}"
+                                           {% if user_case.id in user_cases_to_link_ids %}checked{% endif %}>
+                                    <label class="govuk-label govuk-checkboxes__label" for="{{ unique_id }}">
+                                        {{ assignable_case.case.reference }} - {{ assignable_case.case.name }}
                                     </label>
-                                    {% if user_case.organisation.id != request.user.contact.organisation.id %}
+                                    {% if assignable_case.organisation != request.user.contact.organisation.id %}
                                         {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
                                         <div class="govuk-hint govuk-checkboxes__hint">
-                                            {{ user_case.organisation.name }}
+                                            {{ user_case.organisation_name }}
                                         </div>
                                     {% endif %}
-                                </div>
-                            {% endfor %}
-                            {% for currently_not_assigned_org_case_role in currently_not_assigned_cases %}
-                                <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" id="{{ currently_not_assigned_case.id }}"
-                                        name="which_org_case_role"
-                                        type="checkbox"
-                                        value="{{ currently_not_assigned_org_case_role.id }}">
-                                    <label class="govuk-label govuk-checkboxes__label" for="{{ user_case.id }}">
-                                        {{ currently_not_assigned_org_case_role.case.reference }}
-                                        - {{ currently_not_assigned_org_case_role.case.name }}
-                                    </label>
                                 </div>
                             {% endfor %}
                         </div>
                     {% endif %}
                 </fieldset>
             </div>
-            {% if not user_cases and not currently_not_assigned_cases %}
+            {% if not assignable_cases %}
                 <p class="govuk-body">There are no more cases available to assign to this user.</p>
             {% endif %}
             <details class="govuk-details" data-module="govuk-details">
@@ -68,7 +58,7 @@
                         invite others.</p>
                 </div>
             </details>
-            {% if not user_cases and not currently_not_assigned_cases %}
+            {% if not assignable_cases %}
                 <a class="govuk-button" data-module="govuk-button" href="javascript: window.history.go(-1)">
                     Back
                 </a>
