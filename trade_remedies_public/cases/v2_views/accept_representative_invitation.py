@@ -61,7 +61,7 @@ class TwoFactorChoice(AcceptOrganisationTwoFactorChoice):
             mobile_country_code=form.cleaned_data["mobile_country_code"],
         )
 
-        if not self.invitation.organisation_details_captured:
+        if self.invitation.organisation_details_not_captured is True:
             # new organisation, capture details
             return redirect(
                 reverse(
@@ -190,7 +190,7 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
         )
 
         # new organisation details have now been captured
-        self.invitation.update({"organisation_details_captured": True})
+        self.invitation.update({"organisation_details_not_captured": False})
 
         # now let's validate the person's email
         return redirect(
