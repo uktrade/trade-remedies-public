@@ -235,7 +235,10 @@ class BaseCaseRoleEditView(BaseSingleUserView, FormInvalidMixin):
             for user_case in self.organisation_user.user.user_cases
             if user_case.id == str(self.kwargs["user_case_id"])
         )
-        if user_case.organisation.id != self.organisation_user.organisation and user_case.user.id != self.organisation_user.user.id:
+        if (
+            user_case.organisation.id != self.organisation_user.organisation
+            and user_case.user.id != self.organisation_user.user.id
+        ):
             # trying to edit a user case that doesn't belong to the organisation
             logger.error(
                 "User is trying to edit a user case that doesn't belong to the organisation",
@@ -307,25 +310,32 @@ class AssignToCaseView(BaseEditUserView):
 
         # get the cases the user is already enrolled in, so we don't show them in the list
         cases_already_enrolled_in_as_interested_party = [
-            each.case.id for each in self.organisation_user.user.user_cases if
-            each.organisation.id == self.organisation_user.organisation
+            each.case.id
+            for each in self.organisation_user.user.user_cases
+            if each.organisation.id == self.organisation_user.organisation
         ]
         cases_already_enrolled_in_as_representative = [
-            each.case.id for each in self.organisation_user.user.user_cases if
-            each.organisation.id != self.organisation_user.organisation
+            each.case.id
+            for each in self.organisation_user.user.user_cases
+            if each.organisation.id != self.organisation_user.organisation
         ]
 
         # let's first get the cases the org is enrolled in as an interested party
         org_case_roles = self.client.organisation_case_roles(
             organisation=self.organisation_user.organisation
         )
-        org_case_roles = [each for each in org_case_roles if
-                          each.case.id not in cases_already_enrolled_in_as_interested_party]
+        org_case_roles = [
+            each
+            for each in org_case_roles
+            if each.case.id not in cases_already_enrolled_in_as_interested_party
+        ]
         for each in org_case_roles:
-            assignable_cases.append({
-                "case": each.case,
-                "organisation": each.organisation,
-            })
+            assignable_cases.append(
+                {
+                    "case": each.case,
+                    "organisation": each.organisation,
+                }
+            )
 
         # then let's get the cases the org is enrolled in as a representative
         org = self.client.organisations(
@@ -336,11 +346,13 @@ class AssignToCaseView(BaseEditUserView):
         )
         for each in org.representative_cases:
             if each.case.id not in cases_already_enrolled_in_as_representative:
-                assignable_cases.append({
-                    "case": each.case,
-                    "organisation": each.on_behalf_on_id,
-                    "organisation_name": each.on_behalf_on,
-                })
+                assignable_cases.append(
+                    {
+                        "case": each.case,
+                        "organisation": each.on_behalf_on_id,
+                        "organisation_name": each.on_behalf_on,
+                    }
+                )
 
         context["assignable_cases"] = assignable_cases
         return context
@@ -356,7 +368,7 @@ class AssignToCaseView(BaseEditUserView):
             user_case_dict = {
                 "case": case_id,
                 "user": self.organisation_user.user.id,
-                "organisation": organisation_id
+                "organisation": organisation_id,
             }
             if not self.client.user_cases(**user_case_dict):
                 self.client.user_cases(user_case_dict)

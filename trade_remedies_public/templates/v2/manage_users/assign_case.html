@@ -23,10 +23,10 @@
                                 {% random_string_generator 5 as unique_id %}
                                 <div class="govuk-checkboxes__item">
                                     <input class="govuk-checkboxes__input" id="{{ unique_id }}"
-                                           name="which_case"
-                                           type="checkbox"
-                                           value="{{ assignable_case.case.id }}*-*{{ assignable_case.organisation }}"
-                                           {% if user_case.id in user_cases_to_link_ids %}checked{% endif %}>
+                                        name="which_case"
+                                        type="checkbox"
+                                        value="{{ assignable_case.case.id }}*-*{{ assignable_case.organisation }}"
+                                        {% if user_case.id in user_cases_to_link_ids %}checked{% endif %}>
                                     <label class="govuk-label govuk-checkboxes__label" for="{{ unique_id }}">
                                         {{ assignable_case.case.reference }} - {{ assignable_case.case.name }}
                                     </label>
