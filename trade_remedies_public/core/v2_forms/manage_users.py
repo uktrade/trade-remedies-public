@@ -18,10 +18,18 @@ class EditUserForm(ValidationForm):
 
     def clean(self):
         cleaned_data = super().clean()
+
         if dialing_code := cleaned_data.get("dialing_code"):
             if phone := cleaned_data.get("phone"):
+                # +44 as a country code is contained in the country_dialing_codes_without_uk list
+                for country_code in [
+                    each["dial_code"] for each in country_dialing_codes_without_uk
+                ]:
+                    phone = phone.replace(country_code, "")
                 if not is_phone_number_valid(dialing_code, phone):
                     self.add_error("phone", "Phone number is invalid")
+
+        cleaned_data["phone"] = phone
         return cleaned_data
 
 
