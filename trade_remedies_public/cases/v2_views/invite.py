@@ -509,6 +509,9 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
                 if contact:
                     self.client.contacts(contact.id).update({"organisation": organisation_id})
 
+                # ogranisation details will need to be captured when invitation is accepted
+                self.invitation.update({"organisation_details_not_captured": True})
+
             if create_new_contact:
                 # Creating a new contact and associating them with the organisation
                 contact = self.client.contacts(

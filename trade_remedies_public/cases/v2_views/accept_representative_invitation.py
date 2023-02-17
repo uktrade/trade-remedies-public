@@ -61,45 +61,56 @@ class TwoFactorChoice(AcceptOrganisationTwoFactorChoice):
             mobile_country_code=form.cleaned_data["mobile_country_code"],
         )
 
-        # Marking the user as active
-        self.client.users(self.invitation.invited_user.id).update({"is_active": True})
+        if self.invitation.organisation_details_not_captured is True:
+            # new organisation, capture details
+            return redirect(
+                reverse(
+                    "accept_representative_invitation_organisation_details",
+                    kwargs={"invitation_id": self.kwargs["invitation_id"]},
+                )
+            )
+        else:
+            # organisation details already exist, no need to re-request details from invitee
 
-        if self.invitation.invitation_type == 2:
-            # Now let's add the correct groups to the user, so they can log in and the rest of the
-            # invitation can be processed
-            self.client.users(self.invitation.invited_user.id).add_group(
-                SECURITY_GROUP_ORGANISATION_OWNER
+            # Marking the user as active
+            self.client.users(self.invitation.invited_user.id).update({"is_active": True})
+
+            if self.invitation.invitation_type == 2:
+                # Now let's add the correct groups to the user, so they can log in and the
+                # rest of the invitation can be processed
+                self.client.users(self.invitation.invited_user.id).add_group(
+                    SECURITY_GROUP_ORGANISATION_OWNER
+                )
+
+                # marking the submission as received, so it can be verified by the caseworker
+                self.client.submissions(self.invitation.submission.id).update_submission_status(
+                    "received"
+                )
+                self.invitation.update({"accepted_at": timezone.now()})
+            elif self.invitation.invitation_type == 3:
+                self.client.users(self.invitation.invited_user.id).add_group(
+                    self.invitation.organisation_security_group
+                )
+
+                # Set the contact as not draft, as we know we have details for it
+                self.client.contacts(self.invitation.contact.id).update({"draft": False})
+
+            # First let's add the invitee as an admin user to their organisation, this was also
+            # add them to the required group
+            self.client.organisations(self.invitation.contact.organisation).add_user(
+                user_id=self.invitation.invited_user.id,
+                group_name=SECURITY_GROUP_ORGANISATION_OWNER,
+                confirmed=True,
+                fields=["id"],
             )
 
-            # marking the submission as received, so it can be verified by the caseworker
-            self.client.submissions(self.invitation.submission.id).update_submission_status(
-                "received"
+            # now let's validate the person's email
+            return redirect(
+                reverse(
+                    "request_email_verify_code", kwargs={"user_pk": self.invitation.invited_user.id}
+                )
+                + "?account_created=yes"
             )
-            self.invitation.update({"accepted_at": timezone.now()})
-        elif self.invitation.invitation_type == 3:
-            self.client.users(self.invitation.invited_user.id).add_group(
-                self.invitation.organisation_security_group
-            )
-
-            # Set the contact as not draft, as we know we have details for it
-            self.client.contacts(self.invitation.contact.id).update({"draft": False})
-
-        # First let's add the invitee as an admin user to their organisation, this was also
-        # add them to the required group
-        self.client.organisations(self.invitation.contact.organisation).add_user(
-            user_id=self.invitation.invited_user.id,
-            group_name=SECURITY_GROUP_ORGANISATION_OWNER,
-            confirmed=True,
-            fields=["id"],
-        )
-
-        # now let's validate the person's email
-        return redirect(
-            reverse(
-                "request_email_verify_code", kwargs={"user_pk": self.invitation.invited_user.id}
-            )
-            + "?account_created=yes"
-        )
 
 
 # Need to keep for when caseworker invites and the organisation was created as
@@ -177,6 +188,9 @@ class OrganisationFurtherDetails(BaseAcceptInviteView, FormInvalidMixin):
             confirmed=True,
             fields=["id"],
         )
+
+        # new organisation details have now been captured
+        self.invitation.update({"organisation_details_not_captured": False})
 
         # now let's validate the person's email
         return redirect(
