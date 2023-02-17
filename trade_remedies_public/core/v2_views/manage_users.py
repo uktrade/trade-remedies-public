@@ -349,8 +349,8 @@ class AssignToCaseView(BaseEditUserView):
                 assignable_cases.append(
                     {
                         "case": each.case,
-                        "organisation": each.on_behalf_on_id,
-                        "organisation_name": each.on_behalf_on,
+                        "organisation": each.on_behalf_of_id,
+                        "organisation_name": each.on_behalf_of,
                     }
                 )
 
