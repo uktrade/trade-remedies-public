@@ -214,11 +214,6 @@ class ChooseCasesView(BaseInviteFormView):
             user_cases = self.client.organisations(
                 self.request.user.contact["organisation"]["id"], fields=["user_cases"]
             )["user_cases"]
-            user_cases = [
-                each
-                for each in user_cases
-                if each.organisation.id == self.request.user.contact["organisation"]["id"]
-            ]
             if not user_cases:
                 return redirect(
                     reverse(

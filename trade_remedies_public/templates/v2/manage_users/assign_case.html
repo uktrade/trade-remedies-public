@@ -33,7 +33,7 @@
                                     {% if assignable_case.organisation != request.user.contact.organisation.id %}
                                         {# This org is a representative on this case, and so we should show a hint telling the user who they are representing on this case #}
                                         <div class="govuk-hint govuk-checkboxes__hint">
-                                            {{ user_case.organisation_name }}
+                                            {{ assignable_case.organisation_name }}
                                         </div>
                                     {% endif %}
                                 </div>
