@@ -5,11 +5,24 @@
 
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
-        <form method="post">
-            {% csrf_token %}
-            {% include 'v2/component_macros/two_radio_buttons.html' with value=user_case.case_contact.primary value_one=True value_two=False label_size='xl' label="What is the user's role in this case?" id_one="primary_contact" label_one="Case contact: they can access and manage the case, and are a key point of contact for communication with the TRA." id_two="user" label_two="User: they can access and manage the case on behalf of the organisation." name="case_role" %}
-            {% include "v2/component_macros/form_button_group.html" with forward_button_text="Submit" %}
-        </form>
-
+        {% if case_contacts_on_case_for_org|length > 1 and not is_user_the_only_case_contact_for_case %}
+            <form method="post">
+                {% csrf_token %}
+                {% include 'v2/component_macros/two_radio_buttons.html' with value=user_case.case_contact.primary value_one=True value_two=False label_size='xl' label="What is the user's role in this case?" id_one="primary_contact" label_one="Case contact: they can access and manage the case, and are a key point of contact for communication with the TRA." id_two="user" label_two="User: they can access and manage the case on behalf of the organisation." name="case_role" %}
+                {% include "v2/component_macros/form_button_group.html" with forward_button_text="Submit" %}
+            </form>
+        {% else %}
+            <h1 class="govuk-heading-xl">
+                There's a problem
+            </h1>
+            <p>You cannot change the user’s role in this case.</p>
+            <p>There must always be at least one case contact on a case.</p>
+            <div class="govuk-button-group">
+                <a href="javascript: history.back()" role="button" draggable="false" class="govuk-button"
+                    data-module="govuk-button">
+                    Back
+                </a>
+            </div>
+        {% endif %}
     </div>
 {% endblock row_content %}

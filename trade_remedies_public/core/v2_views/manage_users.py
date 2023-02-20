@@ -259,6 +259,24 @@ class BaseCaseRoleEditView(BaseSingleUserView, FormInvalidMixin):
         )
         context["user_case"] = self.user_case
         context["organisation_user"] = self.organisation_user
+
+        context["users_on_case_for_org"] = self.client.user_cases(
+            organisation_id=self.organisation_user.organisation, case_id=self.user_case.case.id
+        )
+        context["case_contacts_on_case_for_org"] = self.client.case_contacts(
+            case=self.user_case.case.id,
+            organisation_id=self.user_case.organisation.id,
+            primary=True,
+        )
+
+        if (
+            len(context["case_contacts_on_case_for_org"]) == 1
+            and self.user_case.case_contact.primary
+        ):
+            context["is_user_the_only_case_contact_for_case"] = True
+        else:
+            context["is_user_the_only_case_contact_for_case"] = False
+
         return context
 
     def get_success_url(self):

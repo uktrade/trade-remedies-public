@@ -1,3 +1,4 @@
+{{ organisation_user.user.name
 organisation_id=
 {{ currently_not_assigned_org_case_role.case.reference }}
 company_vat_number

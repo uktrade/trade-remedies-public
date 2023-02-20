@@ -5,19 +5,34 @@
 
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">
-            Remove user
-        </h1>
-        <p>
-            {{ organisation_user.user.name }}- {{ organisation_user.user.email }}
-            <br>
-            {{ user_case.case.reference }} - {{ user_case.case.name }}
-        </p>
-        <p>Are you sure you want to remove the user from this case? They will no longer be able to access or manage the
-            case.</p>
-        <form method="post">
-            {% csrf_token %}
-            {% include "v2/component_macros/form_button_group.html" with forward_button_text="Remove user" %}
-        </form>
+        {% if users_on_case_for_org|length > 1 and not is_user_the_only_case_contact_for_case %}
+            <h1 class="govuk-heading-xl">
+                Remove user
+            </h1>
+            <p>
+                {{ organisation_user.user.name }}- {{ organisation_user.user.email }}
+                <br>
+                {{ user_case.case.reference }} - {{ user_case.case.name }}
+            </p>
+            <p>Are you sure you want to remove the user from this case? They will no longer be able to access or manage
+                the
+                case.</p>
+            <form method="post">
+                {% csrf_token %}
+                {% include "v2/component_macros/form_button_group.html" with forward_button_text="Remove user" %}
+            </form>
+        {% else %}
+            <h1 class="govuk-heading-xl">
+                There's a problem
+            </h1>
+            <p>You cannot change the user’s role in this case.</p>
+            <p>There must always be at least one case contact on a case.</p>
+            <div class="govuk-button-group">
+                <a href="javascript: history.back()" role="button" draggable="false" class="govuk-button"
+                    data-module="govuk-button">
+                    Back
+                </a>
+            </div>
+        {% endif %}
     </div>
 {% endblock row_content %}
