@@ -159,7 +159,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@feature/trsv2-460/manage-users
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 werkzeug==2.2.3
     # via -r requirements.in/base.in
