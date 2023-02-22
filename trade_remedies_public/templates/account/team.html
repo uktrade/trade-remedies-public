@@ -162,7 +162,7 @@
                                 </td>
                                 <td>
                                     {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                        <a href="{% url '' invitation_id=invite.id %}">Cancel
+                                        <a href="{% url 'cancel_draft_invitation' invitation_id=invite.id %}">Cancel
                                             invitation</a>
                                     {% else %}
                                         <form class="inline" data-attach="ConfirmPost"
