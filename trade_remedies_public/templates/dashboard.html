@@ -94,7 +94,6 @@
                         <!-- 3rd party invites -->
                         <div class="margin-top-2">
                             {% if is_org_owner %}
-
                                 {% if  pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
                                     <h2 class="govuk-heading-m">
                                         User invites
@@ -104,7 +103,7 @@
                                                     <a class="govuk-link govuk-link--no-visited-state"
                                                         href="{% url 'manage_users_home' %}">Manage users</a>
                                                 {% else %}
-                                                    <a href="{% url 'manage-users' %}">Manage users</a>
+                                                    <a href="{% url 'team_view' %}">Manage users</a>
                                                 {% endif %}
                                             </span>
                                         {% endif %}
@@ -151,6 +150,30 @@
                                         Invite user
                                     </a>
                                 {% endif %}
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="margin-top-2">
+                            {% if invite_submissions %}
+                                <h1 class="heading-medium">Your 3rd Party invites</h1>
+                                <ul>
+                                    {% for invite in invite_submissions %}
+                                        {% if not invite.invitations.0.deleted_at %}
+                                            <li>
+                                                {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
+                                                    <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{ invite.case.reference }}
+                                                        - {% format_date invite.created_at '%d %b %Y' %}</a>
+                                                {% else %}
+                                                    <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
+                                                        {{ invite.case.reference }}
+                                                        - {% format_date invite.created_at '%d %b %Y' %}
+                                                    </a>
+                                                {% endif %}
+                                                ({{ invite.name }} - {{ invite.status.name }})
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
                             {% endif %}
                         </div>
                     {% endif %}
@@ -212,10 +235,13 @@
                                 <li><a href="{% url 'roi' %}">Register interest in a case</a></li>
                             {% endif %}
                             {% if pre_applications %}
-                                <li><a href="/case/">Apply for an investigation</a></li>{% endif %}
-                            {% if pre_manage_team and is_org_owner %}
-                                <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage users</a>
-                                </li>{% endif %}
+                                <li><a href="/case/">Apply for an investigation</a></li>
+                            {% endif %}
+                            {% if pre_manage_team and is_org_owner and 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
+                                <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage users</a></li>
+                            {% else %}
+                                <li><a href="{% url 'team_view' %}" id="lnk_manage_your_team">Manage users</a></li>
+                            {% endif %}
                             {% if pre_manage_team and is_org_owner %}
                                 <li><a href="/cases/">See all cases</a></li>{% endif %}
                         </ul>
