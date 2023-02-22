@@ -1,11 +1,12 @@
 from django.urls import path
+from django.views.generic import TemplateView
 
 from cases import views as case_views
 from cases.v2_views import (
-    invite,
-    registration_of_interest,
     accept_own_org_invitation,
     accept_representative_invitation,
+    invite,
+    registration_of_interest,
 )
 
 urlpatterns = [
@@ -324,12 +325,42 @@ urlpatterns += [
     ),
 ]
 
+# invites in general
 urlpatterns += [
     path(
         "invite/start",
         invite.WhoAreYouInviting.as_view(),
         name="invitation_start",
     ),
+    path(
+        "invite/<uuid:invitation_id>/cancel/",
+        invite.CancelDraftInvitation.as_view(),
+        name="cancel_draft_invitation",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/delete/",
+        invite.DeleteDraftInvitation.as_view(),
+        name="delete_draft_invitation",
+    ),
+    path(
+        "invite/cancelled/",
+        TemplateView.as_view(template_name="v2/invite/invite_cancelled.html"),
+        name="invite_cancelled",
+    ),
+    path(
+        "invite/deleted/",
+        TemplateView.as_view(template_name="v2/invite/invite_deleted.html"),
+        name="invite_deleted",
+    ),
+    path(
+        "invite/<uuid:invitation_id>/review_sent/",
+        invite.ReviewInvitation.as_view(),
+        name="review_sent_invitation",
+    ),
+]
+
+# own-org invites
+urlpatterns += [
     path(
         "invite/<uuid:invitation_id>/start",
         invite.WhoAreYouInviting.as_view(),
@@ -351,20 +382,19 @@ urlpatterns += [
         name="invitation_choose_cases",
     ),
     path(
-        "invite/<uuid:invitation_id>/review/",
-        invite.ReviewInvitation.as_view(),
-        name="invitation_review",
+        "invite/<uuid:invitation_id>/review_before_send/",
+        invite.ReviewInvitationBeforeSend.as_view(),
+        name="invitation_review_before_send",
     ),
     path(
         "invite/<uuid:invitation_id>/sent/",
         invite.InvitationSent.as_view(),
         name="invitation_sent",
     ),
-    path(
-        "invite/<uuid:invitation_id>/delete/",
-        invite.DeleteInvitation.as_view(),
-        name="delete_invitation",
-    ),
+]
+
+# rep invites
+urlpatterns += [
     path(
         "invite/representative/start/",
         invite.InviteRepresentativeTaskList.as_view(),
@@ -409,11 +439,6 @@ urlpatterns += [
         "invite/representative/<uuid:invitation_id>/sent/",
         invite.InviteRepresentativeSent.as_view(),
         name="invite_representative_sent",
-    ),
-    path(
-        "invite/<uuid:invitation_id>/cancel/",
-        invite.CancelInvite.as_view(),
-        name="cancel_invite",
     ),
 ]
 

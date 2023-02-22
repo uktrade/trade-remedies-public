@@ -3,7 +3,6 @@ import logging
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.views import View
 from django.views.generic import TemplateView
 from v2_api_client.exceptions import NotFoundError
 
@@ -26,6 +25,8 @@ from config.utils import (
 )
 
 logger = logging.getLogger(__name__)
+
+"""########################################## SHARED VIEWS ######################################"""
 
 
 class BaseInviteView(BasePublicView, TemplateView):
@@ -58,6 +59,54 @@ class BaseInviteView(BasePublicView, TemplateView):
 
 class BaseInviteFormView(BasePublicFormView, BaseInviteView):
     pass
+
+
+class CancelDraftInvitation(BaseInviteView):
+    """View for deleting a draft invitation"""
+
+    template_name = "v2/invite/cancel_invite.html"
+
+    def post(self, request, *args, **kwargs):
+        if not self.invitation.accepted_at:
+            self.invitation.delete()
+        return redirect(reverse("invite_cancelled"))
+
+
+class ReviewInvitation(BaseInviteView):
+    """View for reviewing a sent invitation"""
+
+    def get_template_names(self):
+        if self.invitation.invitation_type == 1:
+            # this is an own org invite
+            return ["v2/invite/review_sent_invitation.html"]
+        else:
+            return ["v2/invite/invite_representative_review.html"]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.invitation.invitation_type == 2:
+            # this is a representative invite
+            context["uploaded_loa_document_bundle"] = get_uploaded_loa_document(
+                self.invitation.submission
+            )
+        return context
+
+    def post(self, request, *args, **kwargs):
+        if not self.invitation.accepted_at:
+            self.invitation.delete()
+        return redirect(reverse("invite_cancelled"))
+
+
+class DeleteDraftInvitation(BaseInviteView):
+    template_name = "v2/invite/delete_invite.html"
+
+    def post(self, request, *args, **kwargs):
+        if not self.invitation.accepted_at:
+            self.invitation.delete()
+        return redirect(reverse("invite_deleted"))
+
+
+"""########################################## OWN ORG INVITE ####################################"""
 
 
 class WhoAreYouInviting(BaseInviteFormView):
@@ -133,6 +182,11 @@ class PermissionSelectView(BaseInviteFormView):
     template_name = "v2/invite/select_permissions.html"
     form_class = SelectPermissionsForm
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["organisation_security_group"] = self.invitation.organisation_security_group
+        return context
+
     def form_valid(self, form):
         self.invitation.update(
             {
@@ -145,7 +199,9 @@ class PermissionSelectView(BaseInviteFormView):
                 reverse("invitation_choose_cases", kwargs={"invitation_id": self.invitation["id"]})
             )
         return redirect(
-            reverse("invitation_review", kwargs={"invitation_id": self.invitation["id"]})
+            reverse(
+                "invitation_review_before_send", kwargs={"invitation_id": self.invitation["id"]}
+            )
         )
 
 
@@ -161,7 +217,8 @@ class ChooseCasesView(BaseInviteFormView):
             if not user_cases:
                 return redirect(
                     reverse(
-                        "invitation_review", kwargs={"invitation_id": self.kwargs["invitation_id"]}
+                        "invitation_review_before_send",
+                        kwargs={"invitation_id": self.kwargs["invitation_id"]},
                     )
                 )
             else:
@@ -171,7 +228,6 @@ class ChooseCasesView(BaseInviteFormView):
                     if (user_case.organisation.id, user_case.case.id) not in seen_org_case_combos:
                         no_duplicate_user_cases.append(user_case)
                         seen_org_case_combos.append((user_case.organisation.id, user_case.case.id))
-                # user_cases = remove_duplicates_from_list_by_key(user_cases, "/case/id")
                 user_cases = sorted(no_duplicate_user_cases, key=lambda x: x.case.reference)
 
             self.user_cases = user_cases
@@ -194,11 +250,13 @@ class ChooseCasesView(BaseInviteFormView):
             self.invitation.update({"user_cases_to_link": which_cases})
 
         return redirect(
-            reverse("invitation_review", kwargs={"invitation_id": self.invitation["id"]})
+            reverse(
+                "invitation_review_before_send", kwargs={"invitation_id": self.invitation["id"]}
+            )
         )
 
 
-class ReviewInvitation(BaseInviteView):
+class ReviewInvitationBeforeSend(BaseInviteView):
     template_name = "v2/invite/review.html"
 
     def get_context_data(self, **kwargs):
@@ -218,19 +276,21 @@ class InvitationSent(BaseInviteView):
     template_name = "v2/invite/sent.html"
 
 
-class DeleteInvitation(BasePublicView, View):
-    def post(self, request, invitation_id, *args, **kwargs):
-        self.client.invitations(invitation_id).delete()
-        return redirect(reverse("team_view"))
+"""########################################## REP INVITE ########################################"""
 
 
 class InviteRepresentativeTaskList(TaskListView):
     template_name = "v2/invite/task_list.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        self.deficient_loa = False
+        return super().dispatch(request, *args, **kwargs)
+
     def get_task_list(self):
         invitation = {}
         if invitation_id := self.kwargs.get("invitation_id", None):
             invitation = self.client.invitations(invitation_id)
+
         steps = [
             {
                 "heading": "Your cases",
@@ -273,9 +333,30 @@ class InviteRepresentativeTaskList(TaskListView):
                             invitation
                             and "submission" in invitation
                             and get_uploaded_loa_document(invitation.get("submission"))
+                            and not get_uploaded_loa_document(
+                                invitation.get("submission")
+                            ).deficient
                         )
+                        else "Incomplete"
+                        if "submission" in invitation
+                        and get_uploaded_loa_document(invitation.get("submission"))
+                        and get_uploaded_loa_document(invitation.get("submission")).deficient
                         else "Not Started",
-                    }
+                        "status_text": "Complete"
+                        if (
+                            invitation
+                            and "submission" in invitation
+                            and get_uploaded_loa_document(invitation.get("submission"))
+                            and not get_uploaded_loa_document(
+                                invitation.get("submission")
+                            ).deficient
+                        )
+                        else "Deficient document"
+                        if "submission" in invitation
+                        and get_uploaded_loa_document(invitation.get("submission"))
+                        and get_uploaded_loa_document(invitation.get("submission")).deficient
+                        else "",
+                    },
                 ],
             },
             {
@@ -300,7 +381,21 @@ class InviteRepresentativeTaskList(TaskListView):
                 ],
             },
         ]
+
+        if (
+            "submission" in invitation
+            and get_uploaded_loa_document(invitation.get("submission"))
+            and get_uploaded_loa_document(invitation.get("submission")).deficient
+        ):
+            self.deficient_loa = True
+
         return steps
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["is_deficient_loa"] = self.deficient_loa
+
+        return context
 
 
 class InviteRepresentativeSelectCase(BaseInviteFormView):
@@ -607,6 +702,7 @@ class InviteRepresentativeLoa(BaseInviteView):
         # Getting the uploaded LOA document if it exists
         uploaded_loa_document = get_uploaded_loa_document(invitation["submission"])
         if uploaded_loa_document:
+            context["is_deficient_loa"] = uploaded_loa_document.deficient
             uploaded_loa_document = uploaded_loa_document["document"]
         context["uploaded_loa_document"] = uploaded_loa_document
         return context
@@ -637,13 +733,3 @@ class InviteRepresentativeCheckAndSubmit(BaseInviteView):
 
 class InviteRepresentativeSent(BaseInviteView):
     template_name = "v2/invite/invite_representative_sent.html"
-
-
-class CancelInvite(BaseInviteView):
-    template_name = "v2/invite/cancel_invite.html"
-
-    def post(self, request, *args, **kwargs):
-        if not self.invitation.accepted_at:
-            # We only want to delete the invitation if it hasn't been accepted
-            self.invitation.delete()
-        return redirect(reverse("team_view"))

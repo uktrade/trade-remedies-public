@@ -140,11 +140,11 @@
 
                 <div class="govuk-header__account">
                     <ul class="login-nav__list">
-                        {% if user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
                             {# The user is logged in #}
                             {% if not within_2fa and not within_verify %}
                                 <li class="login-nav__list-item">
-                                    {{ user.name }}
+                                    {{ request.user.name }}
                                 </li>
                                 <li class="login-nav__list-item">
                                     <a href="{% url 'account_info' %}"
@@ -258,13 +258,15 @@
 
         <script type="text/javascript">
             $(document).ready(function () {
-                // Remove the # from the hash, as different browsers may or may not include it
-                var hash = location.hash.replace('#', '');
+                {% block hash_replace %}
+                    // Remove the # from the hash, as different browsers may or may not include it
+                    var hash = location.hash.replace('#', '');
 
-                if (hash != '') {
-                    // Clear the hash in the URL
-                    location.hash = '';
-                }
+                    if (hash != '') {
+                        // Clear the hash in the URL
+                        location.hash = '';
+                    }
+                {% endblock hash_replace %}
 
                 // Clearing any input focus
                 $("form select, form input, form textarea").blur();

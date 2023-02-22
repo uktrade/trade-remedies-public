@@ -1,0 +1,285 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_item %}
+
+{% block page_title %}User details{% endblock page_title %}
+
+{% block back_button %}{% endblock back_button %}
+{% block breadcrumbs %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'manage_users_home' %}">Manage users</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                {{ user.name }}
+            </li>
+        </ol>
+    </div>
+{% endblock breadcrumbs %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-full">
+        <h1 class="govuk-heading-xl">
+            {{ user.name }}
+        </h1>
+        <div class="govuk-tabs" data-module="govuk-tabs">
+            <h2 class="govuk-tabs__title">
+                Contents
+            </h2>
+            <ul class="govuk-tabs__list" role="tablist">
+                <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+                    <a class="govuk-tabs__tab" href="#cases_cases" id="tab_cases_cases" role="tab"
+                        aria-controls="cases_cases" aria-selected="true" tabindex="0">
+                        Cases
+                    </a>
+                </li>
+                <li class="govuk-tabs__list-item" role="presentation">
+                    <a class="govuk-tabs__tab" href="#user_details" id="tab_user_details" role="tab"
+                        aria-controls="user_details" aria-selected="false" tabindex="-1">
+                        User details
+                    </a>
+                </li>
+            </ul>
+            <div class="govuk-tabs__panel" id="cases_cases" role="tabpanel" aria-labelledby="tab_cases_cases">
+                <h2 class="govuk-heading-m clearfix">Cases
+                    {% if not cannot_assign_to_case %}
+                        <span class="govuk-body right-aligned-link">
+                            <a href="{% url 'assign_to_case' organisation_user_id=org_user.id %}"
+                                class="govuk-link--no-visited-state">Assign user to case</a>
+                        </span>
+                    {% endif %}
+                </h2>
+                {% if not user.user_cases %}
+                    <p class="govuk-body">This user is not involved in a case.</p>
+                {% else %}
+                    <p>Assign a user to a case and manage their role and access. </p>
+                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-cases">
+                                Sort cases by
+                            </label>
+                            <select class="govuk-select" id="sort-cases" name="sort-cases">
+                                <option value="0" selected="">Case no.</option>
+                                <option value="1">Case no.</option>
+                                <option value="2">Interested party</option>
+                                <option value="3">Case role</option>
+                            </select>
+                        </div>
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-visually-hidden" for="direction-cases">
+                                Direction
+                            </label>
+                            <select class="govuk-select" id="direction-cases" name="direction-cases">
+                                <option value="desc" selected="">Descending</option>
+                                <option value="asc">Ascending</option>
+                            </select>
+                        </div>
+                        <button class="govuk-button govuk-button--secondary mobile_sort_button" data-module="govuk-button">
+                            Sort cases
+                        </button>
+                    </div>
+                    <table class="govuk-table sortable table-border mobile-table-border" id="case_table">
+                        <caption
+                            class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
+                            A table listing all of the cases the users is involved in
+                        </caption>
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" aria-sort="ascending">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>No.
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Case
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Interested party
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Case role
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header no-sort">
+                                    <span class="govuk-visually-hidden--desktop">Action 1: </span>
+                                </th>
+                                <th class="govuk-table__header no-sort">
+                                    <span class="govuk-visually-hidden--desktop">Action 2: </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            {% for user_case in org_user.user.user_cases %}
+                                <tr class="govuk-table__row no-border">
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Case No. </span>
+                                        <a href="{% url 'case' case_id=user_case.case.id %}?organisation_id={{ user_case.organisation.id }}" class="govuk-link--no-visited-state">{{ user_case.case.reference }}</a>
+                                    </td>
+                                    <td class="govuk-table__cell text-overflow">
+                                        <span class="govuk-visually-hidden--desktop">Case: </span>
+                                        <a href="{% url 'case' case_id=user_case.case.id %}?organisation_id={{ user_case.organisation.id }}" class="govuk-link--no-visited-state">
+                                            {{ user_case.case.name }}
+                                        </a>
+                                    </td>
+                                    <td class="govuk-table__cell text-overflow">
+                                        <span class="govuk-visually-hidden--desktop">Interested party: </span>{{ user_case.organisation.name }}
+                                    </td>
+                                    <td class="govuk-table__cell text-overflow">
+                                        <span class="govuk-visually-hidden--desktop">Case role: </span>{{ user_case.case_contact.primary|yesno:"Case contact,User" }}
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Action 1: </span><a
+                                            href="{% url 'change_case_role' organisation_user_id=org_user.id user_case_id=user_case.id %}"
+                                            class="govuk-link govuk-link--no-visited-state">Change
+                                            role <span
+                                                class="govuk-visually-hidden--desktop">for case {{ user_case.case.reference }}</span>
+                                        </a>
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Action 2: </span><a
+                                            href="{% url 'remove_from_case' organisation_user_id=org_user.id user_case_id=user_case.id %}"
+                                            class="govuk-link govuk-link--no-visited-state">Remove user<span
+                                                class="govuk-visually-hidden--desktop"> from case {{ user_case.case.reference }}</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="user_details" role="tabpanel"
+                aria-labelledby="tab_user_details">
+                <h2 class="govuk-heading-m">User details</h2>
+                <div class="address-card">
+                    <div class="address-container">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Contact details
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ user.name }}<br>
+                                    {{ user.email }}<br>
+                                    {{ user.contact.phone|default_if_none:"" }}
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    {% if not cannot_edit_contact_details %}
+                                        <a class="govuk-link--no-visited-state"
+                                            href="{% url 'edit_user' organisation_user_id=org_user.id %}">
+                                            Edit<span class="govuk-visually-hidden"> contact details</span>
+                                        </a>
+                                    {% endif %}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Account permission
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    {% if org_user.security_group == group_owner %}
+                                        Admin user
+                                    {% elif org_user.security_group == group_third_party %}
+                                        Representative
+                                    {% else %}
+                                        User
+                                    {% endif %}
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    {% if not cannot_edit_permissions_and_is_active %}
+                                        <a class="govuk-link--no-visited-state"
+                                            href="{% url 'change_organisation_user_permissions' organisation_user_id=org_user.id %}">
+                                            Change<span class="govuk-visually-hidden"> account permission</span>
+                                        </a>
+                                    {% endif %}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">
+                                    Status
+                                </dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ user.is_active|yesno:"Active, Inactive" }}
+                                </dd>
+                                <dd class="govuk-summary-list__actions">
+                                    {% if not cannot_edit_permissions_and_is_active %}
+                                        <a class="govuk-link--no-visited-state"
+                                            href="{% url 'change_organisation_user_active' organisation_user_id=org_user.id %}">
+                                            Change<span class="govuk-visually-hidden"> account permission</span>
+                                        </a>
+                                    {% endif %}
+                                </dd>
+                            </div>
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Account:</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {{ organisation.name|default_if_none:"" }}<br>
+                                    {{ organisation.address|default_if_none:"" }}<br>
+                                    {{ organisation.post_code|default_if_none:"" }}<br>
+                                    {{ organisation.country_name|default_if_none:"" }}
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock row_content %}
+
+
+{% block hash_replace %}{% endblock hash_replace %}
+
+{% block scripts %}
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let case_table = $('#case_table').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "reference", "orderable": "true"},
+                    {"name": "name", "orderable": "true"},
+                    {"name": "interested_party", "orderable": "true"},
+                    {"name": "case_role", "orderable": "true"},
+                    {"name": "action_1", "orderable": "false"},
+                    {"name": "action_2", "orderable": "false"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+
+            $(".mobile_sort_button").click(function () {
+                let column_index = Number($('#sort-cases').val())
+                let sort_direction = $('#direction-cases').val()
+
+                case_table.order([[column_index, sort_direction]]).draw();
+            })
+
+            // Now we need to redraw the table everytime the tab is switched so the columns resize automatically
+            function redraw_table(data_table) {
+                data_table.fnAdjustColumnSizing()
+            }
+            $("[role='tab']").click(function () {
+                let data_table = $(`${$(this).attr("href")}`).find("table").dataTable()
+                redraw_table(data_table)
+            })
+            $("document").on("resize", function () {
+                redraw_table($("table:visible").dataTable())
+            })
+        });
+    </script>
+{% endblock scripts %}o
