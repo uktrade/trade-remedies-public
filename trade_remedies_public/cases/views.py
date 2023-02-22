@@ -641,7 +641,6 @@ class SourceView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     def post(  # noqa: C901
         self, request, case_id=None, submission_id=None, export_source_id=None, *args, **kwargs
     ):
-
         page = request.POST.get("page")
 
         if page == "source":
