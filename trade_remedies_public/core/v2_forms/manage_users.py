@@ -39,7 +39,3 @@ class ChangeUserIsActiveForm(ValidationForm):
 
 class ChangeCaseRoleForm(ValidationForm):
     case_role = RequiredYesNoRadioButton()
-
-
-class AssignToCaseForm(ValidationForm):
-    ...
