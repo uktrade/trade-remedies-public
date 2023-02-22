@@ -881,7 +881,7 @@ class UploadDocumentsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView
         case = self._client.get_case(case_id=case_id, organisation_id=organisation_id)
         template_grp = submission["type"]["key"]
         public_url_str = ("_" + public_str) if public_str else ""
-        template_name = f"cases/submissions/{template_grp}/upload{public_url_str}.html"
+        template_name = f"cases/submissions/application/upload{public_url_str}.html"
 
         all_documents = self.submission.get("documents", [])
         respondant_docs = deep_index_items_by(all_documents, "is_tra").get("false", [])
