@@ -1,7 +1,7 @@
 git+https://github.com/uktrade/trade-remedies-client.git@master#egg=trade-remedies-client
 git+https://github.com/uktrade/trs_v2_api_client.git@feature/trsv2-460/manage-users#egg=v2_api_client
 
-Django==3.2.17
+Django>=3.2.18
 boto3==1.17.89
 certifi>=2022.12.07
 django-audit-log-middleware==0.0.4
@@ -29,5 +29,5 @@ redis==3.2.0
 requests==2.25.1
 sentry-sdk==0.13.1
 urllib3==1.26.5
-werkzeug==0.15.5
+werkzeug>=2.2.3
 whitenoise==5.3.0

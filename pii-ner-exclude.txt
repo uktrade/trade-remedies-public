@@ -1,3 +1,6 @@
+Django==3.2.17
+whitenoise==5.3.0
+CVE-2021-27291
 {{ organisation_user.user.name
 organisation_id=
 {{ currently_not_assigned_org_case_role.case.reference }}
