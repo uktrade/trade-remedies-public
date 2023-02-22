@@ -206,7 +206,7 @@
                         </li>
                     </ul>
                 {% endif %}
-                {% if pre_manage_team and is_org_owner and user.email_verified_at %}
+                {% if pre_manage_team and is_org_owner and user.email_verified_at and 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
                     <h2 class="govuk-heading-m">
                         Invite users
                         <span class="govuk-body right-aligned-link">
