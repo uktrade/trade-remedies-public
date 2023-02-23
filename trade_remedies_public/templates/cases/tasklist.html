@@ -5,16 +5,14 @@
 {% load draft_count %}
 {% load set %}
 {% load format_date %}
-{% if user.is_authenticated %}
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'event': 'submit_evidence',
-            'user_id': '{{user.id}}',
-            'case_id': '{{case_id}}',
-        });
-    </script>
-{% endif %}
+<script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        'event': 'submit_evidence',
+        'user_id': '{{request.user.id}}',
+        'case_id': '{{case_id}}',
+    });
+</script>
 {% block row_content %}
 
     {% block breadcrumb %}

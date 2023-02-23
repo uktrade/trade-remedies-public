@@ -3,6 +3,21 @@
 {% block page_title %}Invite sent{% endblock page_title %}
 {% block back_button %}{% endblock back_button %}
 
+<script>
+    window.dataLayer = window.dataLayer || [];
+    {% if invitation.invitation_type == 1 %}
+        window.dataLayer.push({
+            'event': 'invite_team_member',
+            'user_id': '{{request.user.id}}',
+        });
+    {% else %}
+        window.dataLayer.push({
+            'event': 'invite_representative',
+            'user_id': '{{request.user.id}}',
+        });
+    {% endif %}
+</script>
+
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
         <div class="govuk-panel govuk-panel--confirmation">
