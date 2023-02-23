@@ -6,15 +6,15 @@
 <script>
     window.dataLayer = window.dataLayer || [];
     {% if invitation.invitation_type == 1 %}
-    window.dataLayer.push({
-        'event': 'invite_team_member',
-        'user_id': '{{user.id}}',
-    });
+        window.dataLayer.push({
+            'event': 'invite_team_member',
+            'user_id': '{{request.user.id}}',
+        });
     {% else %}
-    window.dataLayer.push({
-        'event': 'invite_representative',
-        'user_id': '{{user.id}}',
-    });
+        window.dataLayer.push({
+            'event': 'invite_representative',
+            'user_id': '{{request.user.id}}',
+        });
     {% endif %}
 </script>
 
