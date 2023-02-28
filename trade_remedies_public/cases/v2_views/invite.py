@@ -369,7 +369,7 @@ class InviteRepresentativeTaskList(TaskListView):
                         )
                         if invitation
                         else "",
-                        "link_text": "Check and submit",
+                        "link_text": "Review and submit",
                         "status": "Not Started"
                         if (
                             invitation
