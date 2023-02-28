@@ -6,6 +6,9 @@
         <form method="post" novalidate="novalidate">
             {# Sometimes we don't want a header on the page, so we can override this block in the child template with an empty space, e.g. {% block noheader %}{% endblock %} #}
             {% block noheader %}
+                <span class="govuk-caption-xl">
+                    {% block header_caption %}{% endblock header_caption %}
+                </span>
                 <h1 class="govuk-heading-xl">
                     {% block heading %}{% endblock heading %}
                 </h1>

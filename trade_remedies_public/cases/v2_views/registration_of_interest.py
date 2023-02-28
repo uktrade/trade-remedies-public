@@ -145,7 +145,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
 
         steps = [
             {
-                "heading": "Your case",
+                "heading": "Select case",
                 "sub_steps": [
                     {
                         "link": reverse("roi_1"),
