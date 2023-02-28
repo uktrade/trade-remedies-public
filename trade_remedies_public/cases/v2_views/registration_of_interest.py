@@ -258,7 +258,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
                         "link": reverse("roi_4", kwargs={"submission_id": submission["id"]})
                         if submission
                         else None,
-                        "link_text": "Check and submit",
+                        "link_text": "Review and submit",
                         "status": "Complete"
                         if submission.get("status", {}).get("locking") is True
                         else "Not Started",
