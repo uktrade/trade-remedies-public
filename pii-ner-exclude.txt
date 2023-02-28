@@ -1,3 +1,9 @@
+no_org_chosen
+no_client_post_code_or_number_entered
+incorrect_client_eori_format
+Another Test Org
+4223333333333
+id="new
 " Amends the organisation of a ROI
 Returns
 tasklist.html
