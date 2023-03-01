@@ -145,7 +145,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
 
         steps = [
             {
-                "heading": "Your case",
+                "heading": "Select case",
                 "sub_steps": [
                     {
                         "link": reverse("roi_1"),
@@ -258,7 +258,7 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
                         "link": reverse("roi_4", kwargs={"submission_id": submission["id"]})
                         if submission
                         else None,
-                        "link_text": "Check and submit",
+                        "link_text": "Review and submit",
                         "status": "Complete"
                         if submission.get("status", {}).get("locking") is True
                         else "Not Started",
@@ -361,43 +361,19 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
     template_name = "v2/registration_of_interest/who_is_registering.html"
     form_class = ClientTypeForm
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update(self.request.GET)
-        # a list of dictionaries
-        existing_clients_list = get_org_parties(
-            TradeRemediesAPIClientMixin.client(self, self.request.user), self.request.user
-        )
-        existing_clients_list += self.request.user.representing
-
-        # removing duplicates
-        existing_clients_list = [
-            each
-            for each in existing_clients_list
-            if each["id"] != self.request.user.contact["organisation"].get("id")
-        ]
-
-        context["existing_clients"] = True if existing_clients_list else False
-        return context
-
     def form_valid(self, form):
         submission_id = self.kwargs["submission_id"]
         self.request.session["roi_org_chosen"] = form.cleaned_data.get("org", None)
-        if form.cleaned_data.get("org") == "new-org":
-            # third-party invite
-            return redirect(
-                reverse("interest_primary_contact", kwargs={"submission_id": submission_id})
-            )
-        elif form.cleaned_data.get("org") == "my-org":
-            # If it's your own org, you act as both the contact and the organisation, it's not a
-            # third party invite
+
+        if form.cleaned_data.get("org") == "my-org":
+            # If it's your own org, you act as both the contact and the organisation,
+            # it's not a third party invite
             return self.add_organisation_to_registration_of_interest(
                 organisation_id=self.request.user.contact["organisation"]["id"],
                 submission_id=submission_id,
                 contact_id=self.request.user.contact["id"],
             )
-
-        elif form.cleaned_data.get("org") == "existing-org":
+        elif form.cleaned_data.get("org") == "representative":
             # third-party invite
             return redirect(
                 reverse("interest_existing_client", kwargs={"submission_id": submission_id})
@@ -538,6 +514,15 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.existing_clients = self.get_existing_clients()
+
+        if not self.existing_clients:
+            return redirect(
+                reverse(
+                    "interest_primary_contact",
+                    kwargs={"submission_id": self.kwargs["submission_id"]},
+                )
+            )
+
         response = super().dispatch(request, *args, **kwargs)
         return response
 
@@ -570,6 +555,14 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         return kwargs
 
     def form_valid(self, form):
+        if form.cleaned_data.get("org") == "new-client":
+            return redirect(
+                reverse(
+                    "interest_primary_contact",
+                    kwargs={"submission_id": self.kwargs["submission_id"]},
+                )
+            )
+
         return redirect(
             reverse(
                 "interest_existing_client_primary_contact",

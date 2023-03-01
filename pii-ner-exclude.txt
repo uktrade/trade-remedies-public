@@ -3,6 +3,19 @@ Returns
 tasklist.html
 ROI
 REDIRECT
+{{ case.reference }} - {{ case.name }
+roi_delete_roi
+V1
+user.organisation.id
+govuk-!-font-size-16
+{{ document.name }
+add_new_row
+no_org_chosen
+no_client_post_code_or_number_entered
+incorrect_client_eori_format
+Another Test Org
+4223333333333
+id="new
 is_org_owner
 users</a></li
 Django==3.2.17
