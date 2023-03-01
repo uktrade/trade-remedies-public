@@ -90,14 +90,21 @@
                     </dt>
                     <dd class="govuk-summary-list__value">
                         Confidential documentation
-                        {% for document in submission.paired_documents %}
-                            <a href="{{ document.confidential.file }}">{{ document.confidential.name }}</a><br>
-                        {% endfor %}
-                        <br />
+                        <ul class="govuk-list">
+                            {% for document in submission.paired_documents %}
+                                <li>
+                                    <a class="govuk-link" href="{{ document.confidential.file }}">{{ document.confidential.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                         Non-confidential documentation
-                        {% for document in submission.paired_documents %}
-                            <a href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a><br>
-                        {% endfor %}
+                        <ul class="govuk-list">
+                            {% for document in submission.paired_documents %}
+                                <li>
+                                    <a href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a href="{% url 'roi_3_registration_documentation' submission_id=submission_id %}"
