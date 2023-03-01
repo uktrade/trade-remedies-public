@@ -95,10 +95,14 @@
                         Registration documentation
                     </dt>
                     <dd class="govuk-summary-list__value">
+                        Confidential documentation
                         {% for document in submission.paired_documents %}
-                            <a download href="{{ document.confidential.file }}">{{ document.confidential.name }}</a><br>
-                            <a download
-                                href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a><br>
+                            <a href="{{ document.confidential.file }}">{{ document.confidential.name }}</a><br>
+                        {% endfor %}
+                        <br />
+                        Non-confidential documentation
+                        {% for document in submission.paired_documents %}
+                            <a href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a><br>
                         {% endfor %}
                     </dd>
                 </div>

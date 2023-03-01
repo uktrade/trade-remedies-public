@@ -1,3 +1,5 @@
+{{ case.reference }} - {{ case.name }
+roi_delete_roi
 V1
 user.organisation.id
 govuk-!-font-size-16
