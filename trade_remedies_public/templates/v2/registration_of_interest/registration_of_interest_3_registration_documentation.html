@@ -14,19 +14,32 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="govuk-form-group govuk-form-group--error">
                 <span class="govuk-caption-xl">3. Documentation</span>
-                <h1 class="govuk-label-wrapper">
-                    <label class="govuk-label govuk-label--xl" for="search-reg-org">
-                        Registration documentation
-                    </label>
+                <h1 class="govuk-heading-xl">
+                    Registration documentation
                 </h1>
                 {% include 'v2/component_macros/no_js_error_messages.html' %}
                 {% if is_deficient_documents %}
                     {% include "v2/component_macros/deficiency_notice_warning_box.html" with submission=submission %}
+                {% else %}
+                    <div class="govuk-notification-banner" role="region"
+                        aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+                        <div class="govuk-notification-banner__header">
+                            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                                Important
+                            </h2>
+                        </div>
+                        <div class="govuk-notification-banner__content">
+                            <p class="govuk-notification-banner__heading">
+                                You need to upload a confidential and non-confidential version of each document.
+                            </p>
+                        </div>
+                    </div>
                 {% endif %}
                 <p class="govuk-body">
                     Download the documentation and complete the relevant forms. Once complete, upload two versions of each:
                     one confidential and one non-confidential (max. file size 30MB).
                 </p>
+                <p class="govuk-body">To upload multiple documents, click 'Add another document'.</p>
                 <ul class="govuk-list">
                     {% for document in submission.documents %}
                         {% if document.system %}
@@ -51,17 +64,19 @@
                         </span>
                     </summary>
                     <div class="govuk-details__text">
-                        <p>So that all interested parties get the opportunity to understand case evidence, one version needs
-                            to be non-confidential. Remove all sensitive data from your non-confidential files.</p>
-                        <p>Create one confidential file containing all details, and one file containing only information
-                            open to the public. For more help, see: <a
-                                href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process/an-introduction-to-our-investigations-process#confidential-information-and-non-confidential-summaries"
-                                target="_blank" class="link govuk-link--no-visited-state">creating confidential and
-                                non-confidential documents (opens in a new window or tab)</a></p>
+                        <p>The non-confidential version of your documentation must have your commercially sensitive data
+                            or other confidential information removed. </p>
+                        <p>These files are published to our <a class="link govuk-link--no-visited-state"
+                            href="{% url 'public_cases' %}">public
+                            cases</a> page, allowing all interested parties the opportunity to understand and review case
+                            evidence.</p>
+                        <p>For more help, see <a
+                            href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process/an-introduction-to-our-investigations-process#confidential-information-and-non-confidential-summaries"
+                            target="_blank" class="link govuk-link--no-visited-state">creating confidential and
+                            non-confidential documents (opens in a new window or tab)</a></p>
                     </div>
                 </details>
             </div>
-
         </div>
     </div>
     <div class="govuk-grid-row">
