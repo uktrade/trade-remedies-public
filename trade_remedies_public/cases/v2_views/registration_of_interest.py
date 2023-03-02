@@ -582,7 +582,9 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["submission"] = self.client.submissions(context["submission_id"])
+        context["submission"] = self.client.submissions(
+            context["submission_id"], fields=["documents", "deficiency_notices"]
+        )
         # Let's loop over the paired documents first, Then we have a look at the orphaned documents
         # (those without a corresponding public/private pair
         uploaded_documents = (
@@ -639,7 +641,9 @@ class RegistrationOfInterestLOA(RegistrationOfInterestBase, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["submission"] = self.client.submissions(context["submission_id"])
+        context["submission"] = self.client.submissions(
+            context["submission_id"], fields=["documents", "deficiency_notices"]
+        )
         context["loa_document_bundle"] = get_loa_document_bundle()
         if self.submission:
             # Getting the uploaded LOA document if it exists
