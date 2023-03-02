@@ -1,3 +1,8 @@
+" Amends the organisation of a ROI
+Returns
+tasklist.html
+ROI
+REDIRECT
 {{ case.reference }} - {{ case.name }
 roi_delete_roi
 V1
@@ -11,11 +16,6 @@ incorrect_client_eori_format
 Another Test Org
 4223333333333
 id="new
-" Amends the organisation of a ROI
-Returns
-tasklist.html
-ROI
-REDIRECT
 is_org_owner
 users</a></li
 Django==3.2.17
