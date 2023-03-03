@@ -57,12 +57,10 @@
                     <div class="govuk-grid-row">
                         <div class="govuk-grid-column-two-thirds">
                             <h2 class="govuk-cookie-banner__heading govuk-heading-m">Cookies on Trade Remedies</h2>
-
                             <div class="govuk-cookie-banner__content">
                                 <p class="govuk-body">We use some essential cookies to make this service work.</p>
                                 <p class="govuk-body">We'd also like to use analytics cookies so we can understand how you use
-                                    the
-                                    service and make improvements.</p>
+                                    the service and make improvements.</p>
                             </div>
                         </div>
                     </div>
@@ -89,27 +87,24 @@
                 <div class="govuk-cookie-banner " data-nosnippet role="region" aria-label="Cookies on Trade Remedies"
                     id="cookies_accepted_banner">
                     <div class="govuk-cookie-banner__message govuk-width-container">
-
                         <div class="govuk-grid-row">
                             <div class="govuk-grid-column-two-thirds">
                                 <div class="govuk-cookie-banner__content">
                                     <p class="govuk-body">You’ve{% if cookie_policy.accept_gi == 'on' %} accepted {% else %}
                                         rejected {% endif %}additional cookies. You can
                                         <a class="govuk-link" href="{% url 'cookie_preferences' %}">
-                                            change your cookie settings </a> at any time.</p>
+                                            change your cookie settings</a> at any time.</p>
                                 </div>
                             </div>
                         </div>
-
                         <div class="govuk-button-group">
                             <a href="#" onclick="$('#cookies_accepted_banner').hide()" role="button" draggable="false"
                                 class="govuk-button" data-module="govuk-button">
-                                Hide this message
+                                Hide cookie message
                             </a>
                         </div>
                     </div>
                 </div>
-
             </form>
         {% endif %}
 
