@@ -9,7 +9,7 @@ from django.conf import settings
 class ClientTypeForm(ValidationForm):
     org = forms.ChoiceField(
         error_messages={"required": "no_org_chosen"},
-        choices=(("new-org", "new-org"), ("my-org", "my-org"), ("existing-org", "existing-org")),
+        choices=(("my-org", "my-org"), ("representative", "representative")),
     )
 
 
@@ -21,6 +21,7 @@ class ExistingClientForm(ValidationForm):
         existing_clients = kwargs.pop("existing_clients", None)
         super(ExistingClientForm, self).__init__(*args, **kwargs)
         # assign value to the choices variable
+        existing_clients.append(("new-client", "new-client"))
         self.fields["org"].choices = existing_clients
 
     org = forms.ChoiceField(

@@ -95,11 +95,22 @@
                         Registration documentation
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        {% for document in submission.paired_documents %}
-                            <a download href="{{ document.confidential.file }}">{{ document.confidential.name }}</a><br>
-                            <a download
-                                href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a><br>
-                        {% endfor %}
+                        Confidential documentation
+                        <ul class="govuk-list">
+                            {% for document in submission.paired_documents %}
+                                <li>
+                                    <a class="govuk-link" href="{{ document.confidential.file }}">{{ document.confidential.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        Non-confidential documentation
+                        <ul class="govuk-list">
+                            {% for document in submission.paired_documents %}
+                                <li>
+                                    <a href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </dd>
                 </div>
             </dl>

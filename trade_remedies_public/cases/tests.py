@@ -17,7 +17,7 @@ from cases.v2_forms.registration_of_interest import (
 
 class TestClientTypeForm(TestCase):
     def test_valid_org_type(self):
-        form = ClientTypeForm(data={"org": "new-org"})
+        form = ClientTypeForm(data={"org": "representative"})
         self.assertTrue(form.is_valid())
 
     def test_invalid_org_type(self):
@@ -53,6 +53,11 @@ class TestExistingClientForm(TestCase):
         }
 
     def test_valid_org_type_selected(self):
+        form = ExistingClientForm(**self.mock_data)
+        self.assertTrue(form.is_valid())
+
+    def test_valid_new_client_org_type_selected(self):
+        self.mock_data.update({"data": {"org": "new-client"}})
         form = ExistingClientForm(**self.mock_data)
         self.assertTrue(form.is_valid())
 
