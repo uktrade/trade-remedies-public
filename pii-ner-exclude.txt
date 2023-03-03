@@ -1,3 +1,5 @@
+{{ sub_step.link_text }
+{{ sub_step.status_text }
 " Amends the organisation of a ROI
 Returns
 tasklist.html
