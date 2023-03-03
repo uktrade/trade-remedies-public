@@ -1,6 +1,15 @@
 {% extends "../base_submit.html" %}
 {% load error_message %}
 {% load a_or_an %}
+<script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        'event': 'apply_for_case',
+        'user_id': '{{request.user.id}}',
+        'case_id': '{{case_id}}',
+        'review_type': '{{review_type}}'
+    });
+</script>
 
 {% if user.is_authenticated %}
     <script>
@@ -28,7 +37,8 @@
         <p class="form-label ">When you have uploaded all the files associated with your draft application you can request they be reviewed here prior to final submission.</p>
         <p>If you are asked to make changes you can return to the previous step to upload replacement files.</p>
         {% if not case.type.meta.confidential_only %}
-            <p>Once your draft application is approved for final submission you will need to to upload non-confidential versions of the files.</p>
+            <p>Once your draft application is approved for final submission you will need to to upload non-confidential
+                versions of the files.</p>
         {% endif %}
     </div>
     <div class="form-group {% if errors.review %}form-group-error{% endif %}">

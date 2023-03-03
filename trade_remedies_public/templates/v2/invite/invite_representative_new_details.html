@@ -15,7 +15,7 @@
                         Who is your primary contact?
                     </h1>
                 </legend>
-                <p>This is the main person you work with from the organisation you are inviting.</p>
+                <p class="govuk-body">This is the main person you work with from the organisation you are inviting.</p>
                 {% include 'v2/component_macros/text_input.html' with value=invitation.contact.name label="Contact name" width="20" id="contact_name" name="contact_name" type="text" autocomplete="name" %}
                 {% include 'v2/component_macros/text_input.html' with value=invitation.contact.email label="Contact email address" width="20" id="contact_email" name="contact_email" type="text" autocomplete="email" %}
             </fieldset>

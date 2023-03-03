@@ -371,3 +371,12 @@ FILE_DISALLOWED_EXTENSIONS = [
     "ps",
     "sh",
 ]
+
+CH_COUNTRIES = [
+    "England",
+    "Great Britain",
+    "Northern Ireland",
+    "Scotland",
+    "United Kingdom",
+    "Wales",
+]

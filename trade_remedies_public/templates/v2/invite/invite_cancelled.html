@@ -1,0 +1,21 @@
+{% extends "v2/govuk/base.html" %}
+{% load get_item %}
+
+{% block back_button %}{% endblock back_button %}
+
+{% block page_title %}Invite cancelled{% endblock page_title %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">
+            Invite cancelled
+        </h1>
+        <p>We have cancelled the invite. The user will not be able to join your organisation’s account.</p>
+        <div class="govuk-button-group">
+            <a href="{% url 'manage_users_home' %}" role="button" draggable="false" class="govuk-button"
+                data-module="govuk-button">
+                Manage users
+            </a>
+        </div>
+    </div>
+{% endblock row_content %}

@@ -1,0 +1,456 @@
+{% extends "v2/govuk/base.html" %}
+{% load static %}
+
+{% block page_title %}Manage users{% endblock page_title %}
+{% block breadcrumbs %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                Manage users
+            </li>
+        </ol>
+    </div>
+{% endblock breadcrumbs %}
+{% block back_button %}{% endblock back_button %}
+{% block main_content %}
+    {% block row_content %}
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <h1 class="govuk-heading-xl">Manage users</h1>
+            </div>
+            <div class="govuk-grid-column-full">
+                {% if pending_invitations_deficient_docs_count > 0 %}
+                    <div class="govuk-warning-text">
+                        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                        <strong class="govuk-warning-text__text">
+                            <span class="govuk-warning-text__assistive">Warning</span>
+                            You have {{ pending_invitations_deficient_docs_count }} pending {% if pending_invitations_deficient_docs_count > 1 %}invites{% else %}invite{% endif %} with deficient
+                            documentation.
+                        </strong>
+                    </div>
+                {% endif %}
+                {% if pending_invitations or rejected_invitations %}
+                    <div class="govuk-tabs" data-module="govuk-tabs">
+                        <h2 class="govuk-tabs__title">
+                            Contents
+                        </h2>
+                        <ul class="govuk-tabs__list" role="tablist">
+                            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+                                <a class="govuk-tabs__tab" href="#manage-team" id="tab_manage-team" role="tab"
+                                    aria-controls="manage-team" aria-selected="true" tabindex="0">
+                                    Account users
+                                </a>
+                            </li>
+                            {% if pending_invitations %}
+                                <li class="govuk-tabs__list-item" role="presentation">
+                                    <a class="govuk-tabs__tab" href="#manage-invites" id="tab_manage-invites" role="tab"
+                                        aria-controls="manage-invites" aria-selected="false" tabindex="-1">
+                                        Pending invites ({{ pending_invitations|length }})
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if rejected_invitations %}
+                                <li class="govuk-tabs__list-item" role="presentation">
+                                    <a class="govuk-tabs__tab" href="#rejected-invites" id="tab_rejected-invites" role="tab"
+                                        aria-controls="rejected-invites" aria-selected="false" tabindex="-1">
+                                        Rejected invites ({{ rejected_invitations|length }})
+                                    </a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                {% endif %}
+                <div id="manage-team"
+                    {% if pending_invitations or rejected_invitations %}
+                        class="govuk-tabs__panel"
+                        role="tabpanel"
+                        aria-labelledby="tab_manage-team"
+                    {% endif %}
+                >
+                    <h2 class="govuk-heading-m">Account users
+                        <span class="govuk-body right-aligned-link">
+                            <a class="govuk-link--no-visited-state" id="lnk_invite_colleague"
+                                href="{% url 'invitation_start' %}">Invite user</a>
+                        </span>
+                    </h2>
+                    <p>Select a user to manage their access to your cases.</p>
+                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-user">
+                                Sort users by
+                            </label>
+                            <select class="govuk-select mobile_sort_dropdown" data-table-id="">
+                                <option value="0" selected="">User</option>
+                                <option value="1">Email</option>
+                                <option value="2">Account role</option>
+                                <option value="3">Number of cases</option>
+                            </select>
+                        </div>
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-visually-hidden" for="direction-users">
+                                Direction
+                            </label>
+                            <select class="govuk-select ascending_descending_sort">
+                                <option value="desc" selected="">Descending</option>
+                                <option value="asc">Ascending</option>
+                            </select>
+                        </div>
+                        <button class="govuk-button govuk-button--secondary mobile_sort_button"
+                            data-module="govuk-button" data-table="users">
+                            Sort users
+                        </button>
+                    </div>
+                    <table class="govuk-table sortable mobile-table-border" id="table-header-users" style="width:100%;">
+                        <caption
+                            class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
+                            A table listing all the users that have access to this organisations account
+                        </caption>
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" aria-sort="ascending">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>User
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Email
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Account role
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Cases
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            {% for org_user in organisation.organisationuser_set %}
+                                {% if org_user.security_group == group_third_party and org_user.user.user_cases|length == 0 %}
+                                    {# we dont want to show reps with no cases #}
+                                {% else %}
+                                    <tr class="govuk-table__row no-border">
+                                        <td class="govuk-table__cell text-overflow">
+                                            <span class="govuk-visually-hidden--desktop">User: </span>
+                                            <a class="govuk-link--no-visited-state"
+                                                href="{% url 'view_user' organisation_user_id=org_user.id %}">
+                                                {{ org_user.user.name }}
+                                            </a>
+                                        </td>
+                                        <td class="govuk-table__cell text-overflow">
+                                            <span class="govuk-visually-hidden--desktop">Email: </span>{{ org_user.user.email }}
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <span class="govuk-visually-hidden--desktop">Account role: </span>
+                                            {% if not org_user.user.is_active %}
+                                                Inactive
+                                            {% elif org_user.security_group == group_owner %}
+                                                Admin user
+                                            {% elif org_user.security_group == group_third_party %}
+                                                Representative
+                                            {% else %}
+                                                User
+                                            {% endif %}
+                                        </td>
+                                        <td class="govuk-table__cell">
+                                            <span class="govuk-visually-hidden--desktop">Cases: </span>{{ org_user.user.user_cases|length }}
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="manage-invites" role="tabpanel"
+                    aria-labelledby="tab_manage-invites">
+                    <h2 class="govuk-heading-m">Pending invites
+                        <span class="govuk-body right-aligned-link">
+                            <a class="govuk-link--no-visited-state" id="lnk_invite_colleague"
+                                href="{% url 'invitation_start' %}">Invite user</a>
+                        </span>
+                    </h2>
+                    <p>You have {{ pending_invitations|length }} pending {% if pending_invitations|length != 1 %}
+                        invites{% else %}invite{% endif %}.</p>
+                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-pending">
+                                Sort users by
+                            </label>
+                            <select class="govuk-select mobile_sort_dropdown">
+                                <option value="0" selected="">User</option>
+                                <option value="1">Email</option>
+                                <option value="2">Account role</option>
+                                <option value="3">Status</option>
+                            </select>
+                        </div>
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-visually-hidden" for="direction-pending">
+                                Direction
+                            </label>
+                            <select class="govuk-select ascending_descending_sort">
+                                <option value="desc" selected="">Descending</option>
+                                <option value="asc">Ascending</option>
+                            </select>
+                        </div>
+                        <button class="govuk-button govuk-button--secondary mobile_sort_button"
+                            data-module="govuk-button" data-table="pending_invites">
+                            Sort pending invites
+                        </button>
+                    </div>
+                    <table class="govuk-table sortable mobile-table-border" id="table-header-pending-invites"
+                        style="width:100%;">
+                        <caption
+                            class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
+                            A table listing all the users that have pending invites
+                        </caption>
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" aria-sort="ascending">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>User
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Email
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Account role
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header no-sort">
+                                    <span class="govuk-visually-hidden--desktop">Action: </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            {% for invite in pending_invitations %}
+                                <tr class="govuk-table__row no-border">
+                                    <td class="govuk-table__cell text-overflow">
+                                        <span class="govuk-visually-hidden--desktop">User: </span>{{ invite.contact.name }}
+                                    </td>
+                                    <td class="govuk-table__cell text-overflow">
+                                        <span class="govuk-visually-hidden--desktop">Email: </span>{{ invite.contact.email }}
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Account role: </span>
+                                        {% if invite.invitation_type == 1 %}
+                                            {% if invite.organisation_security_group == group_owner %}
+                                                Admin user
+                                            {% else %}
+                                                User
+                                            {% endif %}
+                                        {% else %}
+                                            Representative
+                                        {% endif %}
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Status: </span>
+                                        {% if "deficient" in invite.status %}
+                                            <strong class="govuk-tag govuk-tag--pink">{{ invite.status.1 }}</strong>
+                                        {% else %}
+                                            {{ invite.status.1 }}
+                                        {% endif %}
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Action: </span>
+                                        <a href="{% url 'review_sent_invitation' invitation_id=invite.id %}"
+                                            class="govuk-link--no-visited-state">View invite</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="rejected-invites" role="tabpanel"
+                    aria-labelledby="tab_rejected-invites">
+                    <h2 class="govuk-heading-m">Rejected invites</h2>
+                    <p>You have {{ rejected_invitations|length }} rejected invite
+                        {% if rejected_invitations|length != 1 %}s{% endif %}</p>
+                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-rejected">
+                                Sort rejected invites by
+                            </label>
+                            <select class="govuk-select mobile_sort_dropdown">
+                                <option value="0" selected="">User</option>
+                                <option value="1">Email</option>
+                                <option value="2">Status</option>
+                            </select>
+                        </div>
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-visually-hidden" for="direction-rejected">
+                                Direction
+                            </label>
+                            <select class="govuk-select ascending_descending_sort">
+                                <option value="desc" selected="">Descending</option>
+                                <option value="asc">Ascending</option>
+                            </select>
+                        </div>
+                        <button class="govuk-button govuk-button--secondary mobile_sort_button"
+                            data-module="govuk-button" data-table="rejected_invites">
+                            Sort users
+                        </button>
+                    </div>
+                    <table class="govuk-table sortable mobile-table-border" id="table-header-rejected-invites"
+                        style="width:100%;">
+                        <caption
+                            class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
+                            A table listing all of the users that have been rejected from representing your organisation
+                        </caption>
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" aria-sort="ascending">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>User
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Email
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header no-sort">
+                                    <span class="govuk-visually-hidden--desktop">Action: </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            <!--All status-->
+                            {% for invite in rejected_invitations %}
+                                <tr class="govuk-table__row no-border">
+                                    <td class="govuk-table__cell text-overflow">
+                                        <span class="govuk-visually-hidden--desktop">User: </span>{{ invite.contact.name }}
+                                    </td>
+                                    <td class="govuk-table__cell text-overflow">
+                                        <span class="govuk-visually-hidden--desktop">Email: </span>{{ invite.contact.email }}
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Status: </span>Rejected
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Action: </span><a
+                                            href="{% url 'review_sent_invitation' invitation_id=invite.id %}"
+                                            class="govuk-link--no-visited-state">View invite</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% if pending_invitations or rejected_invitations %}</div>{% endif %}
+            </div>
+        </div>
+    {% endblock row_content %}
+{% endblock main_content %}
+
+{% block scripts %}
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            let user_table = $('#table-header-users').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "name", "orderable": "true"},
+                    {"name": "email", "orderable": "true"},
+                    {"name": "role", "orderable": "true"},
+                    {"name": "cases", "orderable": "true"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+
+            let pending_invites_table = $('#table-header-pending-invites').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "name", "orderable": "true"},
+                    {"name": "email", "orderable": "true"},
+                    {"name": "role", "orderable": "true"},
+                    {"name": "status", "orderable": "true"},
+                    {"name": "action", "orderable": "false"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+
+            let rejected_invites_table = $('#table-header-rejected-invites').DataTable({
+                paging: false,
+                searching: false,
+                info: false,
+                columns: [
+                    {"name": "name", "orderable": "true"},
+                    {"name": "email", "orderable": "true"},
+                    {"name": "status", "orderable": "true"},
+                    {"name": "action", "orderable": "false"},
+                ],
+                order: [[0, 'asc']],
+                responsive: true,
+            });
+
+            let table_lookup = {
+                "users": user_table,
+                "pending_invites": pending_invites_table,
+                "rejected_invites": rejected_invites_table
+            }
+
+            $(".mobile_sort_button").click(function () {
+                let parent = $(this).closest(".govuk-visually-hidden--desktop")
+                let column_index = Number(parent.find('.mobile_sort_dropdown').val())
+                let sort_direction = parent.find('.ascending_descending_sort').val()
+
+                table_lookup[$(this).attr("data-table")].order([[column_index, sort_direction]]).draw();
+            })
+
+            // Now we need to redraw the table everytime the tab is switched so the columns resize automatically
+            function redraw_table(data_table) {
+                data_table.fnAdjustColumnSizing()
+            }
+
+            $("[role='tab']").click(function () {
+                let data_table = $(`${$(this).attr("href")}`).find("table").dataTable()
+                redraw_table(data_table)
+            })
+
+
+            $("document").on("resize", function () {
+                redraw_table($("table:visible").dataTable())
+            })
+        });
+    </script>
+{% endblock scripts %}
+
+{% block hash_replace %}{% endblock hash_replace %}

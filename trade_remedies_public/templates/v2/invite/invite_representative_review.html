@@ -1,0 +1,96 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block page_title %}Representative invite{% endblock page_title %}
+
+{% block row_content %}
+
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+        <h1 class="govuk-heading-xl">
+            Representative invite
+        </h1>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-2">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Status
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p class="govuk-body">
+                        {% if invitation.status.0 == "draft" %}
+                            {{ invitation.status.1 }}<br>
+                        {% elif invitation.status.0 == "invite_sent" %}
+                            {{ invitation.status.1 }}<br>
+                            Waiting for invitee acceptance
+                        {% elif invitation.status.0 == "waiting_tra_review" %}
+                            {{ invitation.status.1 }}<br>
+                            Invitee accepted your invite
+                        {% elif invitation.status.0 == "rejected_by_tra" %}
+                            Rejected<br>
+                            Invite rejected by the TRA
+                        {% elif invitation.status.0 == "deficient" %}
+                            <strong class="govuk-tag govuk-tag--pink">Deficient documentation</strong><br>
+                        {% endif %}
+                    </p>
+                    {% if invitation.status.0 == "deficient" %}
+                        <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
+                            data-module="govuk-button">
+                            Review documentation
+                        </a>
+                    {% endif %}
+                    <p class="govuk-body"><span id="date">{{ invitation.last_modified|date:'d M Y' }}</span></p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Case details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <p><a href="{% url 'case' case_id=invitation.case.id %}">
+                        {{ invitation.case.reference }} - {{ invitation.case.name }}
+                    </a><br>
+                    </p>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Representative details
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {{ invitation.contact.name }}
+                    <br>
+                    {{ invitation.contact.email }}
+                    <br><br>
+                    {{ invitation.contact.organisation_name }}
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Letter of Authority
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    {% if uploaded_loa_document_bundle %}
+                        <a href="{{ uploaded_loa_document_bundle.document.file }}">{{ uploaded_loa_document_bundle.document.truncated_name }}</a>
+                    {% endif %}
+                </dd>
+            </div>
+        </dl>
+
+        {% if invitation.status.0 == "draft" %}
+            <div class="govuk-button-group">
+                <a href="{% url 'invite_representative_task_list_exists' invitation_id=invitation.id %}"
+                    draggable="false" class="govuk-button" data-module="govuk-button">
+                    Continue
+                </a>
+                <a class="govuk-link govuk-link--no-visited-state"
+                    href="{% url 'delete_draft_invitation' invitation_id=invitation.id %}">Delete invite</a>
+            </div>
+        {% elif invitation.status.0 == "invite_sent" %}
+            <div class="govuk-button-group">
+                <a href="{% url 'cancel_draft_invitation' invitation_id=invitation.id %}" role="button" draggable="false" class="govuk-button"
+                    data-module="govuk-button">
+                    Cancel invite
+                </a>
+                <a class="govuk-link govuk-link--no-visited-state" href="javascript: history.back()">Back</a>
+            </div>
+        {% endif %}
+    </div>
+{% endblock row_content %}

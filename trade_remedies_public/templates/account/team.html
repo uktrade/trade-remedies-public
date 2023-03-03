@@ -3,16 +3,6 @@
 {% load to_json %}
 {% load set %}
 
-{% if user.is_authenticated and request.GET.alert == 'added-employee' %}
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'event': 'invite_team_member',
-            'user_id': '{{user.id}}',
-        });
-    </script>
-{% endif %}
-
 {% block row_content %}
 
     <div class="grid-row">
@@ -172,7 +162,7 @@
                                 </td>
                                 <td>
                                     {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                        <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel
+                                        <a href="{% url 'cancel_draft_invitation' invitation_id=invite.id %}">Cancel
                                             invitation</a>
                                     {% else %}
                                         <form class="inline" data-attach="ConfirmPost"
@@ -204,7 +194,7 @@
                                         {% else %}
                                             {# The invite has been created but not accepted, it can be cancelled #}
                                             {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                                <a href="{% url 'cancel_invite' invitation_id=invite.id %}">Cancel
+                                                <a href="{% url 'cancel_draft_invitation' invitation_id=invite.id %}">Cancel
                                                     invitation</a>
                                             {% else %}
                                                 <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
@@ -219,7 +209,6 @@
                                             <a href="/case/invite/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">Update
                                                 invitation</a>
                                         {% endif %}
-
                                     {% endif %}
                                 </td>
                             </tr>

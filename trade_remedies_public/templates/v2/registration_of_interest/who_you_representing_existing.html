@@ -3,21 +3,16 @@
 {% block noheading %}
 {% endblock noheading %}
 
-{% block page_title %}Who are you representing{% endblock page_title %}
+{% block page_title %}Who do you represent{% endblock page_title %}
 
 {% block form_content %}
-
     {% with form_errors.org as error %}
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
-
             <fieldset class="govuk-fieldset">
-
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-
                     <h1 class="govuk-fieldset__heading">
-                        Who are you representing?
+                        Who do you represent?
                     </h1>
-
                 </legend>
                 {% if error %}
                     <p id="org-error" class="govuk-error-message">
@@ -26,44 +21,30 @@
                         {% endfor %}
                     </p>
                 {% endif %}
-
-
                 <div class="govuk-radios" data-module="govuk-radios" id="org">
-
                     {% for organisation in existing_clients %}
-
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="{{ organisation.1 }}" name="org"
-                                type="radio" value="{{ organisation.0 }}" {% if submission.organisation.id == organisation.0 %}checked{% endif %}>
-                            <label class="govuk-label govuk-radios__label" for="{{ organisation.1 }}">
-
-                                {{ organisation.1 }}<br>
-
-                            </label>
-
-                        </div>
-
+                        {% if "new-client" in organisation %}
+                            <div class="govuk-radios__divider">or</div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="new-client" name="org"
+                                    type="radio" value="new-client">
+                                <label class="govuk-label govuk-radios__label" for="new-client">
+                                    New client<br>
+                                </label>
+                            </div>
+                        {% else %}
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="{{ organisation.1 }}" name="org"
+                                    type="radio" value="{{ organisation.0 }}" {% if submission.organisation.id == organisation.0 %}checked{% endif %}>
+                                <label class="govuk-label govuk-radios__label" for="{{ organisation.1 }}">
+                                    {{ organisation.1 }}<br>
+                                </label>
+                            </div>
+                        {% endif %}
                     {% endfor %}
-
                 </div>
-
             </fieldset>
-
         </div>
     {% endwith %}
-
-    <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                The organisation is not listed
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-            <p>This is a list of organisations you have previously represented using the Trade Remedies Service.</p>
-            <p>If you’re representing an organisation for the first time, go back and change your answer.</p>
-        </div>
-    </details>
     {% include "v2/component_macros/form_button_group.html" %}
-
-
 {% endblock form_content %}

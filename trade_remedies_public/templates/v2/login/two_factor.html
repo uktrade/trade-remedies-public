@@ -23,11 +23,11 @@
             </span>
         </summary>
         <div class="govuk-details__text">
-            <p>If you have not received a code or it has expired, you can request a new code using this link:</p>
-            <p><a href="{% url 'request_new_two_factor' %}?delivery_type=sms" class="govuk-link--no-visited-state">Send a new code</a></p>
-            <p>If you request a new code too many times, your account may be temporarily locked. It will be automatically re-enabled shortly.</p>
-            <p>Receiving your code by text message is sometimes less reliable:</p>
-            <p><a href="{% url 'request_new_two_factor' %}?delivery_type=email" class="govuk-link--no-visited-state">Email my code</a></p>
+            <p class="govuk-body">If you have not received a code or it has expired, you can request a new code using this link:</p>
+            <p class="govuk-body"><a href="{% url 'request_new_two_factor' %}?delivery_type=sms" class="govuk-link--no-visited-state">Send a new code</a></p>
+            <p class="govuk-body">If you request a new code too many times, your account may be temporarily locked. It will be automatically re-enabled shortly.</p>
+            <p class="govuk-body">Receiving your code by text message is sometimes less reliable:</p>
+            <p class="govuk-body"><a href="{% url 'request_new_two_factor' %}?delivery_type=email" class="govuk-link--no-visited-state">Email my code</a></p>
         </div>
     </details>
     <button class="govuk-button" data-module="govuk-button">

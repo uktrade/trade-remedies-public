@@ -27,12 +27,12 @@
                             Registration of interest was rejected by the TRA
                         {% elif submission.status.version %}
                             {# the ROI is deficient #}
-                            <p><strong class="govuk-tag govuk-tag--pink" id="pre-sampling-upload-status">Deficient
+                            <p class="govuk-body"><strong class="govuk-tag govuk-tag--pink" id="pre-sampling-upload-status">Deficient
                                 documentation</strong></p>
                             <a href="{% url 'roi_submission_exists' submission_id=submission.id %}"
                                 role="button" draggable="false" class="govuk-button" data-module="govuk-button">
                                 Review documentation</a>
-                            <p><span>{{ submission.parent.deficiency_sent_at|date:'d M Y' }}</span></p>
+                            <p class="govuk-body"><span>{{ submission.parent.deficiency_sent_at|date:'d M Y' }}</span></p>
                         {% elif submission.status.received or submission.status.sufficient and not org_case_role.case_role_key == "rejected" %}
                             Submitted
                             <br>
@@ -52,7 +52,7 @@
                         Case details
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <p>
+                        <p class="govuk-body">
                             {{ case.reference }} - {{ case.name }}
                         </p>
                     </dd>
@@ -64,9 +64,9 @@
                     </dt>
                     <dd class="govuk-summary-list__value">
                         {% if user.contact.organisation.id == submission.organisation.id %}
-                            <p>My organisation:</p>
+                            <p class="govuk-body">My organisation:</p>
                         {% else %}
-                            <p>My client:</p>
+                            <p class="govuk-body">My client:</p>
                         {% endif %}
                         {{ submission.primary_contact.name }}
                         <br>
@@ -95,11 +95,22 @@
                         Registration documentation
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        {% for document in submission.paired_documents %}
-                            <a download href="{{ document.confidential.file }}">{{ document.confidential.name }}</a><br>
-                            <a download
-                                href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a><br>
-                        {% endfor %}
+                        Confidential documentation
+                        <ul class="govuk-list">
+                            {% for document in submission.paired_documents %}
+                                <li>
+                                    <a class="govuk-link" href="{{ document.confidential.file }}">{{ document.confidential.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        Non-confidential documentation
+                        <ul class="govuk-list">
+                            {% for document in submission.paired_documents %}
+                                <li>
+                                    <a href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </dd>
                 </div>
             </dl>
