@@ -1,3 +1,6 @@
+target="_blank">Terms of Use and Privacy Notice
+{{ errors.lockdown }
+Trade Remedy
 id="show_password
 {{ block.super }
 equiv="Cache-Control
