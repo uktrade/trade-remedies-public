@@ -1,4 +1,11 @@
 {% extends 'v2/govuk/base_with_form.html' %}
+<script>
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+        'event': 'user_login',
+        'user_id': '{{request.user.id}}'
+    });
+</script>
 
 {% block page_title %}
     Two-factor authentication

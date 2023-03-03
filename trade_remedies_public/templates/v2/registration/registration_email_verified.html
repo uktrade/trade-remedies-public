@@ -1,4 +1,13 @@
 {% extends "v2/govuk/base.html" %}
+{% if request.user.is_authenticated %}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'create_account',
+            'user_id': '{{request.user.id}}'
+        });
+    </script>
+{% endif %}
 {% block back_button %}{% endblock back_button %}
 {% block page_title %}
     Email address is verified
