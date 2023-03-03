@@ -26,9 +26,7 @@
     {% include 'v2/component_macros/text_input.html' with value=invitation.contact.organisation_name disabled=True autocomplete="organization" label="Name of your organisation" id="company_name" name="company_name" type="text" width="20" strong=True %}
     <fieldset class="govuk-fieldset">
         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-            <h1 class="govuk-fieldset__heading">
-                Address of your organisation
-            </h1>
+            Address of your organisation
         </legend>
         <p class="govuk-body">Provide the address of the main office.</p>
         {% include "v2/component_macros/textarea_input.html" with label="Street address " id="address_snippet" name="address_snippet" rows="5" autocomplete="street-address" %}
