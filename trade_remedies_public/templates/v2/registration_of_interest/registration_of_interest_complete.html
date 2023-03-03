@@ -42,7 +42,7 @@
                 </li>
             </ul>
             <p class="govuk-body">If you need to make any changes to your registration, contact us as soon as possible at <strong>
-                {{ case.reference }}@traderemedies.gov.uk {# /PS-IGNORE#}
+                <a class="govuk-link govuk-link--no-visited-state" href="mailto:{{ case.reference }}@traderemedies.gov.uk">{{ case.reference }}@traderemedies.gov.uk</a> {# /PS-IGNORE#}
             </strong>.
             </p>
             <a href="{% url 'dashboard' %}" role="button" draggable="false" class="govuk-button"
