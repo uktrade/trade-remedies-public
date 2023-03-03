@@ -1,3 +1,4 @@
+id="show_password
 {{ block.super }
 equiv="Cache-Control
 {{user.name
