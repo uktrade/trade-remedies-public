@@ -2,6 +2,8 @@ from django.conf import settings
 from django.template import Template, Context
 from django.test import TestCase, override_settings
 from django.utils.html import escape
+from django.urls import reverse
+from unittest.mock import patch, MagicMock
 
 from core.utils import (
     internal_redirect,
@@ -218,3 +220,32 @@ class UtilsTestCases(TestCase):
         )
 
         assert test_redirect.url == "/dashboard/"
+
+
+class DataLayerTestCase(TestCase):
+    def setUp(self):
+        post_data = {
+            "email": "test@example.com",  # /PS-IGNORE
+            "name": "test",
+            "terms_and_conditions_accept": True,
+        }
+        self.client.post(reverse("v2_register_start"), data=post_data)
+
+    @patch("trade_remedies_client.client.Client", return_value=MagicMock())
+    def test_datalayer_integration_password_reset(self, mock_client):
+        # Get the URL for the test page that implements the DataLayer
+        url = reverse("reset_password_success")
+
+        # Make a GET request to the URL
+        response = self.client.get(url)
+
+        # Check that the response has a status code of 200 (OK)
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the DataLayer script is present in the response
+        self.assertContains(
+            response,
+            "dataLayer",
+        )
+
+        self.assertEqual(url, "/accounts/password/reset/success/")
