@@ -1,3 +1,4 @@
+Delete invitation{%
 javascript %
 {{ forward_button_text }
 name="address_snippet

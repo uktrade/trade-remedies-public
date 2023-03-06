@@ -100,6 +100,11 @@ class ReviewInvitation(BaseInviteView):
 class DeleteDraftInvitation(BaseInviteView):
     template_name = "v2/invite/delete_invite.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["invite"] = self.invitation
+        return context
+
     def post(self, request, *args, **kwargs):
         if not self.invitation.accepted_at:
             self.invitation.delete()
