@@ -1,3 +1,5 @@
+Trade
+Confirm
 name="type_of_user
 Mobile 2FA
 NON-UK
