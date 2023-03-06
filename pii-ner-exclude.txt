@@ -1,3 +1,5 @@
+javascript %
+{{ forward_button_text }
 name="address_snippet
 name="company_number
 form_errors|get_item:"mobile_country_code
