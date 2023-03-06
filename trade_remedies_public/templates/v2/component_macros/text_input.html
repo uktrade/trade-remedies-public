@@ -25,6 +25,7 @@
         {% if disabled %}disabled{% endif %}
         {% if readonly %}readonly{% endif %}
         id="{{ id }}" name="{{ name }}" type="{{ type }}"
+            {% if hint %}aria-describedby="{{ hint }}"{% endif %}
             {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
             autocomplete="off"
                 {% if value %}
