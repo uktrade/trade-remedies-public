@@ -1,3 +1,4 @@
+interest{% endblock page_title %
 Trade
 Confirm
 name="type_of_user
