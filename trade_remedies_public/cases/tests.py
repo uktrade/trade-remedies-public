@@ -254,9 +254,9 @@ class TestNonUkEmployerForm(TestCase):
         self.assertFalse(form.is_valid())
         self.assertEqual(
             form.errors.as_json(),
-            '{"company_number": [{"message": "no_client_post_code_or_number_entered", '
+            '{"post_code": [{"message": "no_client_post_code_or_number_entered", '
             '"code": ""}], '
-            '"post_code": [{"message": "no_client_post_code_or_number_entered", '
+            '"company_number": [{"message": "no_client_post_code_or_number_entered", '
             '"code": ""}]}',
         )
 
