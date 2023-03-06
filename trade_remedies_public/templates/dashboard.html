@@ -33,8 +33,8 @@
         <div class="column-two-thirds">
             {% if not user.email_verified_at %}
                 <div class="govuk-notification-banner" style="margin-top: 1.875em;" role="region"
-                    aria-labelledby="govuk-notification-banner-title"
-                    data-module="govuk-notification-banner">
+                     aria-labelledby="govuk-notification-banner-title"
+                     data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">
                         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                             Important
@@ -45,7 +45,7 @@
                             Verify your email address
                         </p>
                         <p>Verify your email address to take part in a trade remedy investigation. <a
-                            href="{% url 'request_email_verify_code' user_pk=user.id %}?dont_send=yes">How to verify
+                                href="{% url 'request_email_verify_code' user_pk=user.id %}?dont_send=yes">How to verify
                             my email address</a>.
                         </p>
                     </div>
@@ -91,14 +91,14 @@
                         <!-- 3rd party invites -->
                         <div class="margin-top-2">
                             {% if is_org_owner %}
-                                {% if  pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
+                                {% if pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
                                     <h2 class="govuk-heading-m">
                                         User invites
                                         {% if pre_manage_team and is_org_owner %}
                                             <span class="govuk-body right-aligned-link">
                                                 {% if 'FEATURE_FLAG_INVITE_JOURNEY' in request.user.groups %}
                                                     <a class="govuk-link govuk-link--no-visited-state"
-                                                        href="{% url 'manage_users_home' %}">Manage users</a>
+                                                       href="{% url 'manage_users_home' %}">Manage users</a>
                                                 {% else %}
                                                     <a href="{% url 'team_view' %}">Manage users</a>
                                                 {% endif %}
@@ -114,7 +114,9 @@
                                             </li>
                                         {% endif %}
                                         {% if pending_invitation_count %}
-                                            <li>{{ pending_invitation_count }} {% if pending_invitation_count > 1 %}invites{% else %}invite{% endif %} waiting for invitee to accept</li>
+                                            <li>{{ pending_invitation_count }} {% if pending_invitation_count > 1 %}
+                                                invites{% else %}invite{% endif %} waiting for invitee to accept
+                                            </li>
                                         {% endif %}
                                         {% if invitation_waiting_trs_approval_count %}
                                             <li>{{ invitation_waiting_trs_approval_count }} invite
@@ -124,7 +126,7 @@
                                         {% endif %}
                                     </ul>
                                     <a class="govuk-link govuk-link--no-visited-state"
-                                        href="{% url 'manage_users_home' %}#manage-invites">
+                                       href="{% url 'manage_users_home' %}#manage-invites">
                                         View invites
                                     </a>
                                 {% else %}
@@ -132,7 +134,7 @@
                                         Invite users
                                         <span class="govuk-body right-aligned-link">
                                             <a class="govuk-link govuk-link--no-visited-state"
-                                                href="{% url 'manage_users_home' %}">
+                                               href="{% url 'manage_users_home' %}">
                                                 Manage users
                                             </a>
                                         </span>
@@ -140,15 +142,15 @@
                                     <p class="govuk-body">Give access to your organisation's active cases by inviting
                                         users to join your account.</p>
                                     <a class="govuk-link govuk-link--no-visited-state"
-                                        href="{% url 'invitation_start' %}">
+                                       href="{% url 'invitation_start' %}">
                                         Invite user
                                     </a>
                                 {% endif %}
                             {% endif %}
                         </div>
                     {% else %}
-                        <div class="margin-top-2">
-                            {% if invite_submissions %}
+                        {% if invite_submissions %}
+                            <div class="margin-top-2">
                                 <h1 class="heading-medium">Your 3rd Party invites</h1>
                                 <ul>
                                     {% for invite in invite_submissions %}
@@ -168,8 +170,8 @@
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             {% else %}
@@ -188,12 +190,12 @@
                     <p class="govuk-body">Use your dashboard to:</p>
                     <ul class="list">
                         <li>
-                            <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
-                            <p class="govuk-body">This will allow you to; have a chance to submit evidence, get updates on
-                                important
-                                developments, comment on {% organisation_initialism %}’s findings before a final
-                                decision is
-                                made, as well as being able to request a reconsideration of a final determination.</p>
+                        <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
+                        <p class="govuk-body">This will allow you to; have a chance to submit evidence, get updates on
+                            important
+                            developments, comment on {% organisation_initialism %}’s findings before a final
+                            decision is
+                            made, as well as being able to request a reconsideration of a final determination.</p>
                         </li>
                         <li><a class="link bold" href="/accounts/info/">Manage your account details</a>
                             <p class="govuk-body">Update your contact details from the top right of your screen.</p>
@@ -232,7 +234,8 @@
                                 <li><a href="/case/">Apply for an investigation</a></li>
                             {% endif %}
                             {% if pre_manage_team and is_org_owner and 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage users</a></li>
+                                <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage users</a>
+                                </li>
                             {% else %}
                                 <li><a href="{% url 'team_view' %}" id="lnk_manage_your_team">Manage users</a></li>
                             {% endif %}
