@@ -1,3 +1,6 @@
+Mobile 2FA
+NON-UK
+no_company_post_code_or_number_entered
 {{ hint
 Delete invitation{%
 javascript %
