@@ -91,7 +91,7 @@
                         <!-- 3rd party invites -->
                         <div class="margin-top-2">
                             {% if is_org_owner %}
-                                {% if  pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
+                                {% if pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
                                     <h2 class="govuk-heading-m">
                                         User invites
                                         {% if pre_manage_team and is_org_owner %}
@@ -114,7 +114,9 @@
                                             </li>
                                         {% endif %}
                                         {% if pending_invitation_count %}
-                                            <li>{{ pending_invitation_count }} {% if pending_invitation_count > 1 %}invites{% else %}invite{% endif %} waiting for invitee to accept</li>
+                                            <li>{{ pending_invitation_count }} {% if pending_invitation_count > 1 %}
+                                                invites{% else %}invite{% endif %} waiting for invitee to accept
+                                            </li>
                                         {% endif %}
                                         {% if invitation_waiting_trs_approval_count %}
                                             <li>{{ invitation_waiting_trs_approval_count }} invite
@@ -147,8 +149,8 @@
                             {% endif %}
                         </div>
                     {% else %}
-                        <div class="margin-top-2">
-                            {% if invite_submissions %}
+                        {% if invite_submissions %}
+                            <div class="margin-top-2">
                                 <h1 class="heading-medium">Your 3rd Party invites</h1>
                                 <ul>
                                     {% for invite in invite_submissions %}
@@ -168,8 +170,8 @@
                                         {% endif %}
                                     {% endfor %}
                                 </ul>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             {% else %}
@@ -232,7 +234,8 @@
                                 <li><a href="/case/">Apply for an investigation</a></li>
                             {% endif %}
                             {% if pre_manage_team and is_org_owner and 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage users</a></li>
+                                <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage users</a>
+                                </li>
                             {% else %}
                                 <li><a href="{% url 'team_view' %}" id="lnk_manage_your_team">Manage users</a></li>
                             {% endif %}

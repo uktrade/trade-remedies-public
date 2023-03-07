@@ -1,3 +1,39 @@
+changes</button
+name="submission_status_id
+BC BLOCK
+{{case.reference}
+{{case.name}
+javascript %
+{{ forward_button_text }
+representative{%
+submit{% endblock %
+case_id>/
+create_submission_file
+product_id>/
+Tasklist
+{{ case.reference }
+Registration of Interest
+Register
+xl">Register
+submission.invitations.0|length
+method='post'><button class="link">Cancel</button>{% csrf_token %
+Withheld
+{{ submission.organisation_case_role.name }
+invitation</a
+{{user.email}
+email{%
+/>Submit</button
+buttonEl.click(function
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+update.html
+feedback_form_inner.html
+Download the Letter of Authority
+Invite sent{% endblock page_title %
+{{ user_case.case.reference }} - {{
 " Amends the organisation of a ROI
 Returns
 tasklist.html
