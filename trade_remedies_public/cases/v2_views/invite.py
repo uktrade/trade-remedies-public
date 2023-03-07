@@ -32,6 +32,11 @@ logger = logging.getLogger(__name__)
 class BaseInviteView(BasePublicView, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
+            if SECURITY_GROUP_ORGANISATION_OWNER not in request.user.groups:
+                logger.info(
+                    f"User {request.user.id} requested access to Invitation without Org User rights"
+                )
+                raise PermissionDenied()
             if invitation_id := kwargs.get("invitation_id"):
                 self.invitation = self.client.invitations(invitation_id)
                 if inviting_organisation := self.invitation["organisation"]:
