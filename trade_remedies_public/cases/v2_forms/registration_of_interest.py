@@ -3,12 +3,13 @@ from django.core.validators import RegexValidator
 from django_countries.fields import CountryField
 
 from config.forms import BaseYourEmployerForm, ValidationForm
+from django.conf import settings
 
 
 class ClientTypeForm(ValidationForm):
     org = forms.ChoiceField(
         error_messages={"required": "no_org_chosen"},
-        choices=(("new-org", "new-org"), ("my-org", "my-org"), ("existing-org", "existing-org")),
+        choices=(("my-org", "my-org"), ("representative", "representative")),
     )
 
 
@@ -20,6 +21,7 @@ class ExistingClientForm(ValidationForm):
         existing_clients = kwargs.pop("existing_clients", None)
         super(ExistingClientForm, self).__init__(*args, **kwargs)
         # assign value to the choices variable
+        existing_clients.append(("new-client", "new-client"))
         self.fields["org"].choices = existing_clients
 
     org = forms.ChoiceField(
@@ -54,14 +56,26 @@ class UkEmployerForm(ValidationForm):
             self.add_error("company_data", "companies_house_not_searched")
         else:
             company = self.cleaned_data["company_data"]
-            company_postcode = company["address"]["postal_code"]
+            company_postcode = company["address"].get("postal_code")
 
             self.cleaned_data["companies_house_id"] = company["company_number"]
             self.cleaned_data["organisation_name"] = company["title"]
             self.cleaned_data["organisation_address"] = (
-                company["address_snippet"].removesuffix(company_postcode).rstrip(", ")
+                company["address_snippet"].removesuffix(company_postcode or "").rstrip(", ")
             )
             self.cleaned_data["organisation_post_code"] = company_postcode
+
+            # Check if country property contains a "GB" country
+            if (
+                "country" not in company["address"]
+                or company["address"]["country"] == "Not specified"
+            ):
+                self.cleaned_data["organisation_country"] = None
+            else:
+                if any(
+                    country in company["address"]["country"] for country in settings.CH_COUNTRIES
+                ):
+                    self.cleaned_data["organisation_country"] = "GB"
 
             return self.cleaned_data
 

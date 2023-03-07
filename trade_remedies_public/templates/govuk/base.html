@@ -34,12 +34,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta property="og:image" content="{% static 'govuk/images/opengraph-image.png' %}">
         <!--[if !IE 8]><!-->
-        <link href="{% static 'v2/css/govuk/application.css' %}" rel="stylesheet">
+        <link href="{% static 'v2/css/design.css' %}" rel="stylesheet">
         <!--<![endif]-->
 
         <!--[if IE 8]>
-        <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.0.1.min.css' %}" rel="stylesheet">
+        <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.5.0.min.css' %}" rel="stylesheet">
         <![endif]-->
+
+        <link href="{% static 'v2/css/font.css' %}" rel="stylesheet">
         {% block head %}{% endblock %}
 
     </head>
@@ -60,10 +62,10 @@
         {% endblock %}
 
 
-        <header class="govuk-header " role="banner" data-module="govuk-header">
+        <header class="govuk-header" role="banner" data-module="govuk-header">
             <div class="govuk-header__container govuk-width-container">
                 <div class="govuk-header__logo">
-                    <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--homepage">
+                    <a href="/" class="govuk-header__link govuk-header__link--homepage">
                         <span class="govuk-header__logotype">
                             <!--[if gt IE 8]><!-->
                             <svg aria-hidden="true" focusable="false" class="govuk-header__logotype-crown"
@@ -73,8 +75,9 @@
                             </svg>
                             <!--<![endif]-->
                             <!--[if IE 8]>
-          <img src="{% static 'v2/assets/images/govuk-logotype-crown.png' %}" class="govuk-header__logotype-crown-fallback-image" width="36" height="32">
-          <![endif]-->
+                            <img src="/assets/images/govuk-logotype-crown.png"
+                                 class="govuk-header__logotype-crown-fallback-image" width="36" height="32">
+                            <![endif]-->
                             <span class="govuk-header__logotype-text">
                                 GOV.UK
                             </span>
@@ -82,46 +85,45 @@
                     </a>
                 </div>
                 <div class="govuk-header__content">
-                    <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--service-name">
-                        Trade Remedies
-                    </a>
+                    <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--service-name">Trade Remedies
+                        Authority</a>
                 </div>
-                <ul class="login-nav__list">
-                    {% if user.is_authenticated %}
-                        <li class="login-nav__list-item">
-                            {{ user.name }}
-                        </li>
-                        <li class="login-nav__list-item">|</li>
-                        {% if not within_2fa and not within_verify %}
+
+                <div class="govuk-header__account">
+                    <ul class="login-nav__list">
+                        {% if user.is_authenticated %}
+                            {# The user is logged in #}
+                            {% if not within_2fa and not within_verify %}
+                                <li class="login-nav__list-item">
+                                    {{ user.name }}
+                                </li>
+                                <li class="login-nav__list-item">
+                                    <a href="{% url 'account_info' %}"
+                                        class="govuk-link govuk-link govuk-link--inverse login-nav__link">
+                                        Manage account
+                                    </a>|
+                                </li>
+                            {% endif %}
                             <li class="login-nav__list-item">
-                                <a href="{% url 'account_info' %}"
-                                    class="govuk-link govuk-link govuk-link--inverse">
-                                    Manage account
-                                </a>
-                            </li>
-                            <li class="login-nav__list-item">|</li>
-                            <li class="login-nav__list-item">
-                                <a href="{% url 'logout' %}" class="govuk-link govuk-link govuk-link--inverse">
+                                <a href="{% url 'logout' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link"
+                                    id="sign_out_link_header">
                                     Sign out
                                 </a>
                             </li>
-                        {% elif within_2fa or within_verify %}
-                            <li class="login-nav__list-item">
-                                <a href="{% url 'logout' %}" class="govuk-link govuk-link govuk-link--inverse">
-                                    Sign out
-                                </a>
-                            </li>
+                        {% else %}
+                            {# The user is not logged on, we should display the login link UNLESS they're already on that page #}
+                            {% if not request.resolver_match.view_name == "login" %}
+                                <li class="login-nav__list-item">
+                                    <a href="{% url 'login' %}"
+                                        class="govuk-link govuk-link govuk-link--inverse login-nav__link"
+                                        id="sign_in_link_header">
+                                        Sign in
+                                    </a>
+                                </li>
+                            {% endif %}
                         {% endif %}
-                    {% else %}
-                        {# The user is not logged on #}
-                        <li class="login-nav__list-item">
-                            <a href="{% url 'login' %}" class="govuk-link govuk-link govuk-link--inverse login-nav__link"
-                                id="sign_in_link_header">
-                                Sign in
-                            </a>
-                        </li>
-                    {% endif %}
-                </ul>
+                    </ul>
+                </div>
             </div>
         </header>
         <div class="govuk-width-container app-width-container">
@@ -131,7 +133,8 @@
                         BETA
                     </strong>
                     <span class="govuk-phase-banner__text">
-                        This is a new service – your <a class="govuk-link" href="{% url 'collect_feedback' %}?previous_url={{ request.path }}&previous_url_name={{ request.resolver_match.url_name }}&journey=Generic+Header">feedback</a> will help us to improve it.
+                        This is a new service – your <a class="govuk-link"
+                            href="{% url 'collect_feedback' %}?previous_url={{ request.path }}&previous_url_name={{ request.resolver_match.url_name }}&journey=Generic+Header">feedback</a> will help us to improve it.
                     </span>
                 </p>
             </div>

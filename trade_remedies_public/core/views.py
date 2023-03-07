@@ -393,27 +393,16 @@ class DashboardView(
 
         # get any 3rd party invites
         organisation = request.user.organisation
+        is_org_owner = SECURITY_GROUP_ORGANISATION_OWNER in request.user.organisation_groups
         invite_submissions = []
         case_to_roi = {}
-        unapproved_rep_invitations_cases = []
         v2_client = TRSAPIClient(token=request.user.token)
+
         if organisation:
             v2_organisation = v2_client.organisations(
                 organisation["id"], fields=["organisationcaserole_set"]
             )
             invite_submissions = client.get_organisation_invite_submissions(organisation["id"])
-
-            # Let's get the cases where the user is awaiting approval
-            invitations = v2_client.invitations(
-                contact_id=request.user.contact["id"],
-                fields=["submission", "case", "invitation_type", "rejected_at", "approved_at"],
-            )
-            unapproved_rep_invitations_cases = [
-                invite.case
-                for invite in invitations
-                if invite.invitation_type == 2
-                if invite.submission and not invite.rejected_at and not invite.approved_at
-            ]
 
             if contact_id := self.request.user.contact.get("organisation", {}).get("id"):
                 roi_submissions = v2_client.submissions(
@@ -425,6 +414,64 @@ class DashboardView(
                     fields=["case", "status"],
                 )
                 case_to_roi = {each.case.id: each for each in roi_submissions}
+
+        pending_invitation_count = 0
+        pending_invitation_deficient_docs_count = 0
+        invitation_waiting_trs_approval_count = 0
+
+        # Let's get the cases where the user is awaiting approval
+        invitations = v2_client.invitations(
+            organisation_id=self.request.user.contact["organisation"]["id"],
+            contact_id__isnull=False,  # we need at least the name and email of the contact
+            fields=[
+                "submission",
+                "case",
+                "status",
+                "invitation_type",
+                "rejected_at",
+                "accepted_at",
+                "approved_at",
+            ],
+        )
+
+        # only required if the user is an organisation owner
+        if is_org_owner:
+            pending_invitation_count = sum(
+                [
+                    1
+                    for invite in invitations
+                    if "invite_sent" in invite.status
+                    or (
+                        invite.invitation_type == 2
+                        and "invite_sent" in invite.status
+                        and not invite.submission.archived
+                    )
+                ]
+            )
+
+            pending_invitation_deficient_docs_count = sum(
+                [
+                    1
+                    for invite in invitations
+                    if "deficient" in invite.status and not invite.submission.archived
+                ]
+            )
+
+            invitation_waiting_trs_approval_count = sum(
+                [1 for invite in invitations if "waiting_tra_review" in invite.status]
+            )
+
+        unapproved_rep_invitations_cases = [
+            invite.case
+            for invite in invitations
+            if invite.submission and not invite.rejected_at and not invite.approved_at
+        ]
+        seen_case_ids = []
+        no_duplicate_unapproved_rep_invitations_cases = []
+        for case in unapproved_rep_invitations_cases:
+            if case.id not in seen_case_ids:
+                no_duplicate_unapproved_rep_invitations_cases.append(case)
+                seen_case_ids.append(case.id)
 
         return render(
             request,
@@ -443,10 +490,12 @@ class DashboardView(
                 "pre_manage_team": client.get_system_boolean("PRE_MANAGE_TEAM"),
                 "pre_applications": client.get_system_boolean("PRE_APPLICATIONS"),
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
-                "is_org_owner": SECURITY_GROUP_ORGANISATION_OWNER
-                in request.user.organisation_groups,
+                "is_org_owner": is_org_owner,
                 "case_to_roi": case_to_roi,
-                "unapproved_rep_invitations_cases": unapproved_rep_invitations_cases,
+                "unapproved_rep_invitations_cases": no_duplicate_unapproved_rep_invitations_cases,
+                "pending_invitation_count": pending_invitation_count,
+                "pending_invitation_deficient_docs_count": pending_invitation_deficient_docs_count,
+                "invitation_waiting_trs_approval_count": invitation_waiting_trs_approval_count,
             },
         )
 
@@ -760,7 +809,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         case_ids = request.POST.getlist("case_id")
         all_cases = request.POST.getlist("all_cases") or []
         if all_cases:
-
             case_spec = []
             for case_id in case_ids:
                 primary = request.POST.get(case_id + "_is_primary")

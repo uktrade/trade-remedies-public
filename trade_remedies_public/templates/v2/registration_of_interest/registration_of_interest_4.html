@@ -8,11 +8,10 @@
     <form method="post">
         {% csrf_token %}
         <div class="govuk-grid-column-two-thirds-from-desktop">
-            <span class="govuk-caption-xl">4.  Register interest</span>
+            <span class="govuk-caption-xl">4. Register interest</span>
             <h1 class="govuk-heading-xl">
                 Review your answers
             </h1>
-
             <h2 class="govuk-heading-m">Your registration of interest</h2>
             <dl class="govuk-summary-list govuk-!-margin-bottom-2">
                 <div class="govuk-summary-list__row">
@@ -31,9 +30,9 @@
                     </dt>
                     <dd class="govuk-summary-list__value">
                         {% if user.contact.organisation.id == submission.organisation.id %}
-                            <p>My organisation:</p>
+                            <p class="govuk-body">My organisation:</p>
                         {% else %}
-                            <p>My client:</p>
+                            <p class="govuk-body">My client:</p>
                         {% endif %}
                         {% if submission.primary_contact %}
                             {{ submission.primary_contact.name }}
@@ -72,7 +71,7 @@
                             Letter of Authority
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            {{ loa_document.name }}<br>
+                            <a href="{{ loa_document.file }}">{{ loa_document.name }}</a><br>
                         </dd>
                         <dd class="govuk-summary-list__actions">
                             <a href="{% url 'roi_3_loa' submission_id=submission_id %}"
@@ -84,17 +83,28 @@
                     </div>
                 </dl>
             {% endif %}
-
             <dl class="govuk-summary-list govuk-!-margin-bottom-6">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         Registration documentation
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        {% for document in submission.paired_documents %}
-                            {{ document.confidential.name }}<br>
-                            {{ document.non_confidential.name }}<br>
-                        {% endfor %}
+                        Confidential documentation
+                        <ul class="govuk-list">
+                            {% for document in submission.paired_documents %}
+                                <li>
+                                    <a class="govuk-link" href="{{ document.confidential.file }}">{{ document.confidential.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        Non-confidential documentation
+                        <ul class="govuk-list">
+                            {% for document in submission.paired_documents %}
+                                <li>
+                                    <a href="{{ document.non_confidential.file }}">{{ document.non_confidential.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
                     </dd>
                     <dd class="govuk-summary-list__actions">
                         <a href="{% url 'roi_3_registration_documentation' submission_id=submission_id %}"
@@ -105,9 +115,7 @@
                     </dd>
                 </div>
             </dl>
-
             <h2 class="govuk-heading-m">Now send your registration of interest</h2>
-
             {% include "v2/component_macros/checkbox.html" with name="authorised" id="authorised" label="I am authorised to provide this information." %}
             {% include 'v2/component_macros/form_button_group.html' with forward_button_text="Confirm and submit registration" %}
         </div>
@@ -121,7 +129,6 @@
                                 href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
                                 target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
                         </li>
-
                         <li>
                             <br>
                             <strong>Email the case team</strong>

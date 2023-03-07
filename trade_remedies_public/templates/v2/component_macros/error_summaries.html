@@ -1,17 +1,54 @@
-{% if form_errors.error_summaries %}
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
-        data-module="govuk-error-summary">
-        <h2 class="govuk-error-summary__title" id="error-summary-title">
-            There is a problem
-        </h2>
-        <div class="govuk-error-summary__body">
-            <ul class="govuk-list govuk-error-summary__list">
-                {% for error in form_errors.error_summaries %}
-                    <li>
-                        <a href="#{{ error.0 }}">{{ error.1 }}</a>
+{% if javascript %}
+    {% if form_errors.error_summaries %}
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+            data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li class="govuk-error-message without-js">
+                        <a href="#{{ input_error_id }}">JavaScript is not running in your browser</a>
                     </li>
-                {% endfor %}
-            </ul>
+                    {% for error in form_errors.error_summaries %}
+                        <li>
+                            <a href="#{{ error.0 }}">{{ error.1 }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
-    </div>
+    {% else %}
+        <div class="govuk-error-summary without-js" aria-labelledby="error-summary-title" role="alert"
+            data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li class="govuk-error-message">
+                        <a href="#{{ input_error_id }}">JavaScript is not running in your browser</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+{% else %}
+    {% if form_errors.error_summaries %}
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+            data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    {% for error in form_errors.error_summaries %}
+                        <li>
+                            <a href="#{{ error.0 }}">{{ error.1 }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
 {% endif %}

@@ -152,6 +152,26 @@ class TestUkEmployerForm(TestCase):
         self.assertEqual("000000", form.cleaned_data["company_number"])
         self.assertEqual("TEST COMPANY", form.cleaned_data["company_name"])
 
+    def test_companies_house_country_not_specified(self):
+        company = json.loads(self.mock_data["company_data"])
+        company["address"]["country"] = "Not specified"
+        self.mock_data["company_data"] = company
+
+        form = UkEmployerForm(data=self.mock_data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(None, form.cleaned_data["country"])
+
+    def test_companies_house_address_country_not_supplied(self):
+        company = json.loads(self.mock_data["company_data"])
+        del company["address"]["country"]
+        self.mock_data["company_data"] = company
+
+        form = UkEmployerForm(data=self.mock_data)
+
+        self.assertTrue(form.is_valid())
+        self.assertEqual(None, form.cleaned_data["country"])
+
     def test_invalid_form_not_selected(self):
         self.mock_data["input-autocomplete"] = "trying to search for test"
         self.mock_data.pop("company_data")

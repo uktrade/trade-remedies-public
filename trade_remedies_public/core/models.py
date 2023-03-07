@@ -28,7 +28,7 @@ class TransientUser:
                 pass
 
     def has_group(self, groups):
-        if not isinstance(groups, list):
+        if not isinstance(groups, (list, tuple)):
             groups = [groups]
         return any([grp in self.groups for grp in groups])
 

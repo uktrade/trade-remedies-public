@@ -69,10 +69,10 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                <p>Check that you entered your email address correctly. If it is incorrect, create an account again with
+                <p class="govuk-body">Check that you entered your email address correctly. If it is incorrect, create an account again with
                     the correct email address.</p>
-                <p>Check your spam or junk mail folders.</p> {# /PS-IGNORE #}
-                <p>If you still have not received your verification email, <a
+                <p class="govuk-body">Check your spam or junk mail folders.</p> {# /PS-IGNORE #}
+                <p class="govuk-body">If you still have not received your verification email, <a
                     href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">request a new email</a>.
                 </p>
             </div>
@@ -84,7 +84,7 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                <p><a href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">Request a new verification
+                <p class="govuk-body"><a href="{% url 'request_email_verify_code' user_pk=user_pk %}?resent=yes">Request a new verification
                     email</a>.
                 </p>
             </div>

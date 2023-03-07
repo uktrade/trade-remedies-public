@@ -96,7 +96,7 @@ function file_upload(upload_container, files, submission_id) {
             // There was an error uploading the file, display them
             upload_container.find('.file_upload_indicator').hide()
             upload_container.find('.waiting_for_upload').show()
-            $.each(xhr.responseJSON["errors"]["file"], function (index, error) {
+            $.each(xhr.responseJSON["errors"]["__all__"], function (index, error) {
                 upload_container.find('.file_error_message').text(error)
             })
             upload_container.find('.waiting_for_upload').addClass('govuk-form-group--error')
