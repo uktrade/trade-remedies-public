@@ -203,13 +203,13 @@
                                         <li><a href="/case/">Apply for an investigation</a></li>
                                     {% endif %}
                                     {% if pre_manage_team and is_org_owner %}
-                                        <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage users</a>
+                                        <li>
+                                            <a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage users</a>
                                         </li>
-                                    {% else %}
-                                        <li><a href="{% url 'team_view' %}" id="lnk_manage_your_team">Manage users</a></li>
+                                        <li>
+                                            <a href="/cases/">See all cases</a>
+                                        </li>
                                     {% endif %}
-                                    {% if pre_manage_team and is_org_owner %}
-                                        <li><a href="/cases/">See all cases</a></li>{% endif %}
                                 </ul>
                             </div>
                         </div>
