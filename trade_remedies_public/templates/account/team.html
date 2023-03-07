@@ -161,23 +161,8 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                        <a href="{% url 'cancel_draft_invitation' invitation_id=invite.id %}">Cancel
-                                            invitation</a>
-                                    {% else %}
-                                        <form class="inline" data-attach="ConfirmPost"
-                                            action="/accounts/team/{{ user.organisation.id }}/invite/{{ invite.id }}/delete/"
-                                            method="post">
-                                            <button class="link no-debounce" type="submit"
-                                                style="font-size:19px;padding-left:0px;">Cancel
-                                                invitation
-                                            </button>
-                                            {% csrf_token %}
-                                            <span class="hidden confirmation-message">Are you sure you want to delete this invitation?</span>
-                                            <span class="hidden confirmation-title">Confirm delete</span>
-                                        </form>
-                                    {% endif %}
-
+                                    <a href="{% url 'cancel_draft_invitation' invitation_id=invite.id %}">Cancel
+                                        invitation</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -193,22 +178,12 @@
                                                 invitation</a>
                                         {% else %}
                                             {# The invite has been created but not accepted, it can be cancelled #}
-                                            {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                                <a href="{% url 'cancel_draft_invitation' invitation_id=invite.id %}">Cancel
-                                                    invitation</a>
-                                            {% else %}
-                                                <a href="/case/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">View
-                                                    invitation</a>
-                                            {% endif %}
+                                            <a href="{% url 'cancel_draft_invitation' invitation_id=invite.id %}">Cancel
+                                                invitation</a>
                                         {% endif %}
                                     {% else %}
-                                        {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                            <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.id %}">Update
-                                                invitation</a>
-                                        {% else %}
-                                            <a href="/case/invite/{{ invite.case.id }}/submission/{{ invite.submission.id }}/">Update
-                                                invitation</a>
-                                        {% endif %}
+                                        <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.id %}">Update
+                                            invitation</a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -217,16 +192,9 @@
                 </table>
 
             {% endif %}
-            {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                <a class="button margin-top-1 no-debounce" id="lnk_invite_colleague"
-                    href="{% url 'invitation_start' %}">Invite
-                    colleague V2</a>
-                <a class="button margin-top-1 no-debounce" id="lnk_invite_colleagu_old"
-                    href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague V1</a>
-            {% else %}
-                <a class="button margin-top-1 no-debounce"
-                    href="/accounts/team/{{ user.organisation.id }}/user/">Invite colleague</a>
-            {% endif %}
+            <a class="button margin-top-1 no-debounce" id="lnk_invite_colleague"
+                href="{% url 'invitation_start' %}">Invite
+                colleague V2</a>
             <div class="margin-top-1">
                 <a class="link" href="{% url 'dashboard' %}">Back</a>
             </div>
