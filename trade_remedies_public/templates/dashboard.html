@@ -33,8 +33,8 @@
         <div class="column-two-thirds">
             {% if not user.email_verified_at %}
                 <div class="govuk-notification-banner" style="margin-top: 1.875em;" role="region"
-                    aria-labelledby="govuk-notification-banner-title"
-                    data-module="govuk-notification-banner">
+                     aria-labelledby="govuk-notification-banner-title"
+                     data-module="govuk-notification-banner">
                     <div class="govuk-notification-banner__header">
                         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
                             Important
@@ -45,7 +45,7 @@
                             Verify your email address
                         </p>
                         <p>Verify your email address to take part in a trade remedy investigation. <a
-                            href="{% url 'request_email_verify_code' user_pk=user.id %}?dont_send=yes">How to verify
+                                href="{% url 'request_email_verify_code' user_pk=user.id %}?dont_send=yes">How to verify
                             my email address</a>.
                         </p>
                     </div>
@@ -65,7 +65,7 @@
                     <h1 class="heading-large">Your cases</h1>
                     {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
                     {# Cases waiting approval #}
-                    {% if unapproved_rep_invitations_cases and 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
+                    {% if unapproved_rep_invitations_cases %}
                         <h2 class="heading-medium">Pending TRA Approval</h2>
                         {% include "partials/widgets/dashboard_caselist.html" with cases=unapproved_rep_invitations_cases show_casenumber=True no_click=True %}
                     {% endif %}
@@ -87,92 +87,62 @@
                             {% include "partials/widgets/dashboard_interestlist.html" with cases=interest_cases_draft  show_casenumber=True %}
                         {% endif %}
                     </div>
-                    {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                        <!-- 3rd party invites -->
-                        <div class="margin-top-2">
-                            {% if is_org_owner %}
-                                {% if pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
-                                    <h2 class="govuk-heading-m">
-                                        User invites
-                                        {% if pre_manage_team and is_org_owner %}
-                                            <span class="govuk-body right-aligned-link">
-                                                {% if 'FEATURE_FLAG_INVITE_JOURNEY' in request.user.groups %}
-                                                    <a class="govuk-link govuk-link--no-visited-state"
-                                                        href="{% url 'manage_users_home' %}">Manage users</a>
-                                                {% else %}
-                                                    <a href="{% url 'team_view' %}">Manage users</a>
-                                                {% endif %}
-                                            </span>
-                                        {% endif %}
-                                    </h2>
-                                    <p class="govuk-body">You have pending invites:</p>
-                                    <ul class="govuk-list govuk-list--bullet">
-                                        {% if pending_invitation_deficient_docs_count %}
-                                            <li class="govuk-!-font-weight-bold">{{ pending_invitation_deficient_docs_count }}
-                                                invite{% if pending_invitation_deficient_docs_count > 1 %}s{% endif %}
-                                                with deficient documentation
-                                            </li>
-                                        {% endif %}
-                                        {% if pending_invitation_count %}
-                                            <li>{{ pending_invitation_count }} {% if pending_invitation_count > 1 %}
-                                                invites{% else %}invite{% endif %} waiting for invitee to accept
-                                            </li>
-                                        {% endif %}
-                                        {% if invitation_waiting_trs_approval_count %}
-                                            <li>{{ invitation_waiting_trs_approval_count }} invite
-                                                {% if invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting
-                                                for TRA review
-                                            </li>
-                                        {% endif %}
-                                    </ul>
-                                    <a class="govuk-link govuk-link--no-visited-state"
-                                        href="{% url 'manage_users_home' %}#manage-invites">
-                                        View invites
-                                    </a>
-                                {% else %}
-                                    <h2 class="govuk-heading-m">
-                                        Invite users
+                    <!-- 3rd party invites -->
+                    <div class="margin-top-2">
+                        {% if is_org_owner %}
+                            {% if pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
+                                <h2 class="govuk-heading-m">
+                                    User invites
+                                    {% if pre_manage_team and is_org_owner %}
                                         <span class="govuk-body right-aligned-link">
+                                                    <a class="govuk-link govuk-link--no-visited-state"
+                                                       href="{% url 'manage_users_home' %}">Manage users</a>
+                                            </span>
+                                    {% endif %}
+                                </h2>
+                                <p class="govuk-body">You have pending invites:</p>
+                                <ul class="govuk-list govuk-list--bullet">
+                                    {% if pending_invitation_deficient_docs_count %}
+                                        <li class="govuk-!-font-weight-bold">{{ pending_invitation_deficient_docs_count }}
+                                            invite{% if pending_invitation_deficient_docs_count > 1 %}s{% endif %}
+                                            with deficient documentation
+                                        </li>
+                                    {% endif %}
+                                    {% if pending_invitation_count %}
+                                        <li>{{ pending_invitation_count }} {% if pending_invitation_count > 1 %}
+                                            invites{% else %}invite{% endif %} waiting for invitee to accept
+                                        </li>
+                                    {% endif %}
+                                    {% if invitation_waiting_trs_approval_count %}
+                                        <li>{{ invitation_waiting_trs_approval_count }} invite
+                                            {% if invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting
+                                            for TRA review
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                                <a class="govuk-link govuk-link--no-visited-state"
+                                   href="{% url 'manage_users_home' %}#manage-invites">
+                                    View invites
+                                </a>
+                            {% else %}
+                                <h2 class="govuk-heading-m">
+                                    Invite users
+                                    <span class="govuk-body right-aligned-link">
                                             <a class="govuk-link govuk-link--no-visited-state"
-                                                href="{% url 'manage_users_home' %}">
+                                               href="{% url 'manage_users_home' %}">
                                                 Manage users
                                             </a>
                                         </span>
-                                    </h2>
-                                    <p class="govuk-body">Give access to your organisation's active cases by inviting
-                                        users to join your account.</p>
-                                    <a class="govuk-link govuk-link--no-visited-state"
-                                        href="{% url 'invitation_start' %}">
-                                        Invite user
-                                    </a>
-                                {% endif %}
+                                </h2>
+                                <p class="govuk-body">Give access to your organisation's active cases by inviting
+                                    users to join your account.</p>
+                                <a class="govuk-link govuk-link--no-visited-state"
+                                   href="{% url 'invitation_start' %}">
+                                    Invite user
+                                </a>
                             {% endif %}
-                        </div>
-                    {% else %}
-                        {% if invite_submissions %}
-                            <div class="margin-top-2">
-                                <h1 class="heading-medium">Your 3rd Party invites</h1>
-                                <ul>
-                                    {% for invite in invite_submissions %}
-                                        {% if not invite.invitations.0.deleted_at %}
-                                            <li>
-                                                {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups and invite.status.draft == True %}
-                                                    <a href="{% url 'invite_representative_task_list_exists' invitation_id=invite.invitations.0.id %}">{{ invite.case.reference }}
-                                                        - {% format_date invite.created_at '%d %b %Y' %}</a>
-                                                {% else %}
-                                                    <a href="/case/{{ invite.case.id }}/submission/{{ invite.id }}/">
-                                                        {{ invite.case.reference }}
-                                                        - {% format_date invite.created_at '%d %b %Y' %}
-                                                    </a>
-                                                {% endif %}
-                                                ({{ invite.name }} - {{ invite.status.name }})
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
                         {% endif %}
-                    {% endif %}
+                    </div>
                 {% endif %}
             {% else %}
                 {# The help text before any cases or applications exist #}
@@ -190,19 +160,19 @@
                     <p class="govuk-body">Use your dashboard to:</p>
                     <ul class="list">
                         <li>
-                            <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
-                            <p class="govuk-body">This will allow you to; have a chance to submit evidence, get updates on
-                                important
-                                developments, comment on {% organisation_initialism %}’s findings before a final
-                                decision is
-                                made, as well as being able to request a reconsideration of a final determination.</p>
+                        <li><a class="link bold" href="{% url 'roi' %}">Register interest in a case</a></li>
+                        <p class="govuk-body">This will allow you to; have a chance to submit evidence, get updates on
+                            important
+                            developments, comment on {% organisation_initialism %}’s findings before a final
+                            decision is
+                            made, as well as being able to request a reconsideration of a final determination.</p>
                         </li>
                         <li><a class="link bold" href="/accounts/info/">Manage your account details</a>
                             <p class="govuk-body">Update your contact details from the top right of your screen.</p>
                         </li>
                     </ul>
                 {% endif %}
-                {% if pre_manage_team and is_org_owner and user.email_verified_at and 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
+                {% if pre_manage_team and is_org_owner and user.email_verified_at %}
                     <h2 class="govuk-heading-m">
                         Invite users
                         <span class="govuk-body right-aligned-link">
@@ -234,13 +204,9 @@
                                 <li><a href="/case/">Apply for an investigation</a></li>
                             {% endif %}
                             {% if pre_manage_team and is_org_owner %}
-                                {% if 'FEATURE_FLAG_INVITE_JOURNEY' in user.groups %}
-                                    <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage
-                                        users</a>
-                                    </li>
-                                {% else %}
-                                    <li><a href="{% url 'team_view' %}" id="lnk_manage_your_team">Manage users</a></li>
-                                {% endif %}
+                                <li><a href="{% url 'manage_users_home' %}" id="lnk_manage_your_team">Manage
+                                    users</a>
+                                </li>
                             {% endif %}
                             {% if pre_manage_team and is_org_owner %}
                                 <li><a href="/cases/">See all cases</a></li>{% endif %}
