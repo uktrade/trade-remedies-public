@@ -5,15 +5,15 @@
 {% endblock page_title %}
 
 {% block head %}
-{{ block.super }}
-<script>
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'user_login',
-        'user_id': '{{request.user.id}}'
-    });
-</script>
-{% endblock %}
+    {{ block.super }}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'user_login',
+            'user_id': '{{request.user.id}}'
+        });
+    </script>
+{% endblock head %}
 
 {% block heading %}
     Two-factor authentication

@@ -1,12 +1,15 @@
 {% extends "v2/govuk/base.html" %}
 {% if request.user.is_authenticated %}
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'event': 'create_account',
-            'user_id': '{{request.user.id}}'
-        });
-    </script>
+    {% block head %}
+        {{ block.super }}
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'create_account',
+                'user_id': '{{request.user.id}}'
+            });
+        </script>
+    {% endblock head %}
 {% endif %}
 {% block back_button %}{% endblock back_button %}
 {% block page_title %}

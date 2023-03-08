@@ -1,15 +1,15 @@
 {% extends "../base_view.html" %}
 
 {% block head %}
-{{ block.super }}
-<script>
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'submit_evidence',
-        'user_id': '{{request.user.id}}',
-        'case_id': '{{case_id}}',
-    });
-</script>
+    {{ block.super }}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'submit_evidence',
+            'user_id': '{{request.user.id}}',
+            'case_id': '{{case_id}}',
+        });
+    </script>
 {% endblock %}
 
 {% block breadcrumb_current %}Submit evidence{% endblock %}

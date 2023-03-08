@@ -1,16 +1,6 @@
 {% extends "../base_submit.html" %}
 {% load error_message %}
 {% load a_or_an %}
-<script>
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'apply_for_case',
-        'user_id': '{{request.user.id}}',
-        'case_id': '{{case_id}}',
-        'review_type': '{{review_type}}'
-    });
-</script>
-
 {% block breadcrumb_current %}Apply for a new investigation{% endblock %}
 {% block page_subtitle %}3. Your application{% endblock %}
 

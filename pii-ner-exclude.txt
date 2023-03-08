@@ -1,3 +1,17 @@
+name="company_vat_number
+VAT
+DUNS
+Data Universal Numbering System
+name="submission_status_id
+name="address_snippet
+name="company_number
+yes">Request
+{{user.email}
+email{%
+/>Submit</button
+buttonEl.click(function
+{{ case.reference }
+Registration of Interest
 DataLayer
 holding_page.html
 home.html

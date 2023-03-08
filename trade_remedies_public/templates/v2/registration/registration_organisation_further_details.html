@@ -1,13 +1,16 @@
 {% extends "v2/govuk/base_with_form.html" %}
 {% load static %}
 
-<script>
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'accept_invite_own_org',
-        "invitation_id": "{{invitation_id}}",
-    });
-</script>
+{% block head %}
+    {{ block.super }}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'accept_invite_own_org',
+            "invitation_id": "{{invitation_id}}",
+        });
+    </script>
+{% endblock %}
 
 {% block page_title %}
     Further details about your organisation
