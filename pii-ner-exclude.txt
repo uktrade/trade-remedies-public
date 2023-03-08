@@ -91,7 +91,6 @@ update.html
 feedback_form_inner.html
 holding_page.html
 home.html
-f"We
 TARIFF_CLASSIFICATION
 dashboard.html
 pending_invitation_deficient_docs_count
@@ -106,60 +105,9 @@ can_select_all
 public->tra
 f"/case/{self.case_id}/submission/{self.submission_id}/
 Review
-tasklist.html
-SUBMISSION_TYPE_ALL_ORGANISATIONS
-Invite 3rd
-f"Invalid
-can_select_all
-public->tra
-f"/case/{self.case_id}/submission/{self.submission_id}/
-Review
-tasklist.html
-SUBMISSION_TYPE_ALL_ORGANISATIONS
-Invite 3rd
-f"Invalid
-can_select_all
-public->tra
-f"/case/{self.case_id}/submission/{self.submission_id}/
-Review
-tasklist.html
-SUBMISSION_TYPE_ALL_ORGANISATIONS
-Invite 3rd
-f"Invalid
-can_select_all
-public->tra
-f"/case/{self.case_id}/submission/{self.submission_id}/
-Review
-invitation</a
-tasklist.html
-SUBMISSION_TYPE_ALL_ORGANISATIONS
-Invite 3rd
-f"Invalid
-can_select_all
-public->tra
-f"/case/{self.case_id}/submission/{self.submission_id}/
-Review
-invitation</a
-tasklist.html
-SUBMISSION_TYPE_ALL_ORGANISATIONS
-Invite 3rd
-f"Invalid
-can_select_all
-public->tra
-f"/case/{self.case_id}/submission/{self.submission_id}/
-Review
-invitation</a
 invitation</a
 Invite sent{% endblock page_title %
 {{ user_case.case.reference }} - {{
-tasklist.html
-SUBMISSION_TYPE_ALL_ORGANISATIONS
-Invite 3rd
-f"Invalid
-can_select_all
-public->tra
-f"/case/{self.case_id}/submission/{self.submission_id}/
-Review
 BC BLOCK
 {{case.reference}
 {{case.name}
@@ -175,7 +123,6 @@ v2_register_your_employer
 SYSTEM_PARAMS_TTL
 sd020722222222
 v2_register_your_employer
-
 update.html
 feedback_form_inner.html
 Download the Letter of Authority
