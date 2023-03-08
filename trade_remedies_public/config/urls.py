@@ -255,6 +255,16 @@ urlpatterns = [
         "companieshouse/search/", core_views.CompaniesHouseSearch.as_view(), name="companieshouse"
     ),
     path(
+        "register/confirm_existing_org",
+        register_views.V2RegistrationViewConfirmExistingOrganisation.as_view(),
+        name="v2_confirm_existing_org",
+    ),
+    path(
+        "register/how_to_get_account",
+        register_views.V2RegistrationViewHowToGetAccount.as_view(),
+        name="v2_how_to_get_account",
+    ),
+    path(
         "register/start", register_views.V2RegistrationViewStart.as_view(), name="v2_register_start"
     ),
     path(
