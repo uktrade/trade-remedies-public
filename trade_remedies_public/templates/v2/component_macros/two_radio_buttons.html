@@ -5,7 +5,9 @@
         <fieldset class="govuk-fieldset">
             {% if label %}
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--{{ label_size }}">
+                    {% if heading %}<h1 class="govuk-fieldset__heading">{% endif %}
                     {{ label }}
+                    {% if heading %}</h1>{% endif %}
                 </legend>
             {% endif %}
             {% if error %}

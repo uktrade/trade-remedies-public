@@ -132,7 +132,9 @@
                         <li>
                             <br>
                             <strong>Email the case team</strong>
-                            <a class="govuk-link govuk-link--no-visited-state" href="">
+                            <a class="govuk-link govuk-link--no-visited-state"
+                                href="mailto:{{ submission.case.reference }}@traderemedies.gov.uk" {# /PS-IGNORE#}
+                            >
                                 {{ submission.case.reference }}@traderemedies.gov.uk {# /PS-IGNORE#}
                             </a>
                         </li>
