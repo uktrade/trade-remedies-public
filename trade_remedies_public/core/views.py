@@ -809,7 +809,6 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
         case_ids = request.POST.getlist("case_id")
         all_cases = request.POST.getlist("all_cases") or []
         if all_cases:
-
             case_spec = []
             for case_id in case_ids:
                 primary = request.POST.get(case_id + "_is_primary")
