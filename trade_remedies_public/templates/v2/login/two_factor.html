@@ -1,4 +1,11 @@
 {% extends 'v2/govuk/base_with_form.html' %}
+
+{% block page_title %}
+    Two-factor authentication
+{% endblock page_title %}
+
+{% block head %}
+{{ block.super }}
 <script>
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
@@ -6,10 +13,7 @@
         'user_id': '{{request.user.id}}'
     });
 </script>
-
-{% block page_title %}
-    Two-factor authentication
-{% endblock page_title %}
+{% endblock %}
 
 {% block heading %}
     Two-factor authentication

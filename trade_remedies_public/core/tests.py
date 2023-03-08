@@ -245,7 +245,26 @@ class DataLayerTestCase(TestCase):
         # Check that the DataLayer script is present in the response
         self.assertContains(
             response,
-            "dataLayer",
+            "window.dataLayer",
         )
 
         self.assertEqual(url, "/accounts/password/reset/success/")
+
+    @patch("trade_remedies_client.client.Client", return_value=MagicMock())
+    def test_datalayer_integration_two_factor(self, mock_client):
+        # Get the URL for the test page that implements the DataLayer
+        url = reverse("two_factor")
+
+        # Make a GET request to the URL
+        response = self.client.get(url)
+
+        # Check that the response has a status code of 200 (OK)
+        self.assertEqual(response.status_code, 200)
+
+        # Check that the DataLayer script is present in the response
+        self.assertContains(
+            response,
+            "window.dataLayer",
+        )
+
+        self.assertEqual(url, "/twofactor/")
