@@ -457,12 +457,6 @@ class V2RegistrationViewConfirmExistingOrganisation(
             return redirect(reverse("v2_how_to_get_account"))
 
 
-# Nawaz TODO - remove the following!!!
-
-# class V2RegistrationViewHowToGetAccount(TemplateView, TradeRemediesAPIClientMixin):
-#     template_name = "v2/registration/how_to_get_account.html"
-
-
 class V2RegistrationViewStart(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_start.html"
     form_class = RegistrationStartForm
