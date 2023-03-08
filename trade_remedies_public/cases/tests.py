@@ -251,14 +251,12 @@ class TestNonUkEmployerForm(TestCase):
         self.mock_data.pop("post_code")
         self.mock_data.pop("company_number")
         form = NonUkEmployerForm(data=self.mock_data)
+
         self.assertFalse(form.is_valid())
-        self.assertEqual(
-            form.errors.as_json(),
-            '{"post_code": [{"message": "no_client_post_code_or_number_entered", '
-            '"code": ""}], '
-            '"company_number": [{"message": "no_client_post_code_or_number_entered", '
-            '"code": ""}]}',
-        )
+        self.assertTrue(form.has_error("post_code"))
+        self.assertIn("no_client_post_code_or_number_entered", form.errors["post_code"])
+        self.assertTrue(form.has_error("company_number"))
+        self.assertIn("no_client_post_code_or_number_entered", form.errors["company_number"])
 
     def test_missing_company_number(self):
         # should still be valid as post code is present
