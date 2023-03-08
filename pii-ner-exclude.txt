@@ -1,3 +1,5 @@
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV
 name="company_vat_number
 VAT
 DUNS
