@@ -74,7 +74,7 @@
                 and select "No".</p>
         </div>
     </details>
-    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="I confirm these details are correct" javascript=True %}
+    {% include 'v2/component_macros/form_button_group.html' with forward_button_text="I confirm these details are correct" is_javascript_required=True %}
     <input type="hidden" name="company_data">
 {% endblock form_content %}
 

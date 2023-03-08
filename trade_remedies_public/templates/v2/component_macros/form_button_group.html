@@ -1,5 +1,5 @@
 <div class="govuk-button-group">
-    {% if javascript %}
+    {% if is_javascript_required %}
         <button class="govuk-button without-js" data-module="govuk-button" disabled>
             {% if forward_button_text %}
                 {{ forward_button_text }}
