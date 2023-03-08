@@ -233,7 +233,7 @@ class DataLayerTestCase(TestCase):
 
     @patch("trade_remedies_client.client.Client", return_value=MagicMock())
     def test_datalayer_integration_password_reset(self, mock_client):
-        # Get the URL for the test page that implements the DataLayer
+        # Get the URL for the password reset success page that implements the DataLayer
         url = reverse("reset_password_success")
 
         # Make a GET request to the URL
@@ -252,7 +252,7 @@ class DataLayerTestCase(TestCase):
 
     @patch("trade_remedies_client.client.Client", return_value=MagicMock())
     def test_datalayer_integration_two_factor(self, mock_client):
-        # Get the URL for the test page that implements the DataLayer
+        # Get the URL for the sign in page that implements the DataLayer
         url = reverse("two_factor")
 
         # Make a GET request to the URL

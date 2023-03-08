@@ -1,5 +1,8 @@
 {% extends "cases/submissions/base_view.html" %}
 {% load format_date %}
+
+{% block head %}
+    {{ block.super }}
 <script>
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
@@ -8,6 +11,7 @@
         'case_id': '{{case_id}}'
     });
 </script>
+{% endblock head %}
 
 {% block breadcrumb_current %}Invite a 3rd party{% endblock %}
 {% block page_subtitle %}Your 3rd party invitation{% endblock %}
