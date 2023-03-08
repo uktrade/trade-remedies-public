@@ -1,0 +1,290 @@
+{% extends 'v2/govuk/base.html' %}
+{% load static %}
+
+{% block page_title %}Manage my organisation{% endblock page_title %}
+
+{% block extra_css %}
+    <link href="{% static 'v2/css/table.css' %}" rel="stylesheet">
+{% endblock extra_css %}
+
+{% block row_content %}
+
+    <div class="govuk-grid-column-full">
+
+
+        <h1 class="govuk-heading-xl">
+            Manage my organisation
+        </h1>
+
+        <div class="govuk-tabs" data-module="govuk-tabs">
+            <h2 class="govuk-tabs__title">
+                Contents
+            </h2>
+            <ul class="govuk-tabs__list" role="tablist">
+                <li class="govuk-tabs__list-item" role="presentation">
+                    <a class="govuk-tabs__tab" href="#manage-cases" id="tab_manage-cases" role="tab"
+                        aria-controls="manage-cases" aria-selected="false">
+                        Manage cases
+                    </a>
+                </li>
+                <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+                    <a class="govuk-tabs__tab" href="#manage-team" id="tab_manage-team" role="tab"
+                        aria-controls="manage-team" aria-selected="true">
+                        Manage team
+                    </a>
+                </li>
+            </ul>
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="manage-cases" role="tabpanel"
+                aria-labelledby="tab_manage-cases">
+
+                <h2 class="govuk-heading-m">Manage cases
+                    <p class="right-aligned-link govuk-heading-s">
+                        <a href="/public-site/reg-interest/reginterest-tasks?tasklist-type=reg-interest"
+                            class="govuk-link--no-visited-state">Register interest in case</a>
+                    </p>
+                </h2>
+                <p>Manage the cases your organisation is involved in.</p>
+                <form>
+                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-cases">
+                                Sort cases by
+                            </label>
+                            <select class="govuk-select" id="sort-cases" name="sort-cases">
+                                <option value="Case No." selected="">Case No.</option>
+                                <option value="Case">Case</option>
+                                <option value="Representing">Representing</option>
+                                <option value="Role">Role</option>
+                                <option value="Status">Status</option>
+                                <option value="Updated">Updated</option>
+                                <option value="Primary">Primary</option>
+                            </select>
+
+                            <label class="govuk-label govuk-visually-hidden" for="direction-cases">
+                                Direction
+                            </label>
+                            <select class="govuk-select" id="direction-cases" name="direction-cases">
+                                <option value="Decending" selected="">Decending</option>
+                                <option value="Accending">Accending</option>
+                            </select>
+
+                            <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                                Sort cases
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+
+                <table class="govuk-table sortable1 table-border" id="table-header">
+                    <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden">A
+                        table listing all of your organisation's case
+                    </caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" aria-sort="ascending">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>No.
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Case
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Status
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Case stage
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header" data-sortby="date">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="4">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Update
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        <tr class="govuk-table__row no-border">
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case No. </span><a href="#"
+                                    class="govuk-link--no-visited-state">AD2224</a>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case: </span><a href="#"
+                                    class="govuk-link--no-visited-state">Steel
+                                    plate from Russia</a>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Status: </span>Representative invite
+                                received
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case stage: </span>Initiation notices
+                                published
+                            </td>
+                            <td class="govuk-table__cell num">
+                                <span class="govuk-visually-hidden--desktop td-header">Update: </span>14 May 2022
+                            </td>
+                        </tr>
+
+                        <tr class="govuk-table__row no-border">
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case No. </span><a href="#"
+                                    class="govuk-link--no-visited-state">AS3464</a>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case: </span><a href="#"
+                                    class="govuk-link--no-visited-state">Garnets
+                                    from Gabon</a>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Status: </span>Questionnaire received
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case stage: </span>Processing
+                                applications
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Update: </span>08 Jan 2022
+                            </td>
+                        </tr>
+
+                        <tr class="govuk-table__row no-border">
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case No. </span><a href=""
+                                    class="govuk-link--no-visited-state">SI9405</a>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case: </span><a href="#"
+                                    class="govuk-link--no-visited-state">Electric
+                                    Bikes</a>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Status: </span><a href="#"
+                                    class="govuk-link--no-visited-state">Deficiency
+                                    notice issued</a>
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Case stage: </span>Post-verification
+                                analysis
+                            </td>
+                            <td class="govuk-table__cell">
+                                <span class="govuk-visually-hidden--desktop td-header">Update: </span>24 March 2022
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="govuk-tabs__panel" id="manage-team" role="tabpanel" aria-labelledby="tab_manage-team">
+
+                <h2 class="govuk-heading-m">Manage team
+                    <p class="right-aligned-link">
+                        <a href="{% url 'invitation_start' %}"
+                            class="govuk-link--no-visited-state govuk-heading-s float-right">Invite new user</a>
+                    </p>
+                </h2>
+                <p>Manage your users giving them access to specific cases or admin rights for managing this account.</p>
+
+                <form>
+
+                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                        <div class="govuk-form-group table-sort-select">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-user">
+                                Sort users by
+                            </label>
+                            <select class="govuk-select" id="sort-user" name="sort-user">
+                                <option value="User" selected="">User</option>
+                                <option value="Email">Email</option>
+                                <option value="Account role">Account role</option>
+                            </select>
+
+                            <label class="govuk-label govuk-visually-hidden" for="direction-users">
+                                Direction
+                            </label>
+                            <select class="govuk-select" id="direction-users" name="direction-users">
+                                <option value="Decending" selected="">Decending</option>
+                                <option value="Accending">Accending</option>
+                            </select>
+
+                            <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                                Sort users
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <table class="govuk-table sortable1 table-border mobile-table-border desktop-table-border" id="table-header">
+                    <caption class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden">
+                        A table listing all of the users that have access to this organisations account
+                    </caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" aria-sort="ascending">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>User
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Email
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Role/ Status
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Cases
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header no-sort">
+                                <span class="govuk-visually-hidden--desktop">Action: </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        {% for organisation_user in organisation.organisationuser_set %}
+                            <tr class="govuk-table__row no-border">
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop td-header">User: </span><a
+                                        href="{% url 'user_view' organisation_id=organisation_user.organisation user_id=organisation_user.user.id section='edit' %}" class="govuk-link--no-visited-state">{{ organisation_user.user.name }}</a>
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop td-header">Email: </span>{{ organisation_user.user.email }}
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop td-header">Role/ Status: </span>{% if organisation_user.security_group == group_owner %}Admin{% else %}User{% endif %}
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop td-header">Cases: </span>{{ organisation_user.user.cases|length }}
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop td-header">Action: </span><a href="/accounts/team/{{ organisation_user.organisation }}/user/{{ organisation_user.user.id }}/cases/?edit=1"
+                                        class="govuk-link--no-visited-state">Assign/remove
+                                        case</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock row_content %}
