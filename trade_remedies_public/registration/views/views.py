@@ -449,7 +449,6 @@ class V2RegistrationViewConfirmExistingOrganisation(
         return super().get(request, *args, **kwargs)
 
     def form_valid(self, form):
-        self.update_session(self.request, form.cleaned_data)
         if form.cleaned_data["organisation_already_setup"] == "no":
             # organisation is not already setup, allow user to continue to register
             return redirect(reverse("v2_register_start"))
@@ -458,8 +457,10 @@ class V2RegistrationViewConfirmExistingOrganisation(
             return redirect(reverse("v2_how_to_get_account"))
 
 
-class V2RegistrationViewHowToGetAccount(TemplateView, TradeRemediesAPIClientMixin):
-    template_name = "v2/registration/how_to_get_account.html"
+# Nawaz TODO - remove the following!!!
+
+# class V2RegistrationViewHowToGetAccount(TemplateView, TradeRemediesAPIClientMixin):
+#     template_name = "v2/registration/how_to_get_account.html"
 
 
 class V2RegistrationViewStart(V2BaseRegisterView, TradeRemediesAPIClientMixin):

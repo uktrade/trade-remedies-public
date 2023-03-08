@@ -18,6 +18,8 @@ from django.urls import (
     path,
 )
 
+from django.views.generic import TemplateView
+
 from cases.views import CasesView
 from cookies import views as cookie_views
 from core import views as core_views
@@ -261,7 +263,7 @@ urlpatterns = [
     ),
     path(
         "register/how_to_get_account",
-        register_views.V2RegistrationViewHowToGetAccount.as_view(),
+        TemplateView.as_view(template_name="v2/registration/how_to_get_account.html"),
         name="v2_how_to_get_account",
     ),
     path(
