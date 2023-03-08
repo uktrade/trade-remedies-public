@@ -3,14 +3,14 @@
 
 {% block head %}
     {{ block.super }}
-<script>
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'apply_for_case',
-        'user_id': '{{request.user.id}}',
-        'case_id': '{{case_id}}'
-    });
-</script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'apply_for_case',
+            'user_id': '{{request.user.id}}',
+            'case_id': '{{case_id}}'
+        });
+    </script>
 {% endblock head %}
 
 {% block breadcrumb_current %}Invite a 3rd party{% endblock %}
