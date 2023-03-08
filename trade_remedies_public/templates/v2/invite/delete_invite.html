@@ -1,8 +1,7 @@
 {% extends "v2/govuk/base.html" %}
 {% load get_item %}
 
-{% block back_button %}{% endblock back_button %}
-
+{% block back_button_link %}{% url 'review_sent_invitation' invitation_id=invite.id %}{% endblock back_button_link %}
 {% block page_title %}Delete invitation{% endblock page_title %}
 
 {% block row_content %}

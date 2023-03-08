@@ -122,8 +122,8 @@ class NonUkEmployerForm(ValidationForm):
 
     def clean(self):
         if not self.cleaned_data.get("company_number") and not self.cleaned_data.get("post_code"):
-            self.add_error("company_number", "no_company_post_code_or_number_entered")
             self.add_error("post_code", "no_company_post_code_or_number_entered")
+            self.add_error("company_number", "no_company_post_code_or_number_entered")
         return self.cleaned_data
 
 

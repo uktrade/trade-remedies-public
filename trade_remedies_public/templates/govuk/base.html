@@ -52,20 +52,15 @@
         {% block body_start %}
         {% endblock %}
 
-        <div id="skiplink-container">
-            <div>
-                <a href="#content" class="skiplink">{{ skip_link_message|default:'Skip to main content' }}</a>
-            </div>
-        </div>
-
         {% block cookie_message %}
         {% endblock %}
 
+        <a href="#content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
         <header class="govuk-header" role="banner" data-module="govuk-header">
             <div class="govuk-header__container govuk-width-container">
                 <div class="govuk-header__logo">
-                    <a href="/" class="govuk-header__link govuk-header__link--homepage">
+                    <a href="https://www.gov.uk/" class="govuk-header__link govuk-header__link--homepage">
                         <span class="govuk-header__logotype">
                             <!--[if gt IE 8]><!-->
                             <svg aria-hidden="true" focusable="false" class="govuk-header__logotype-crown"

@@ -1,5 +1,5 @@
 <div class="govuk-button-group">
-    {% if javascript %}
+    {% if is_javascript_required %}
         <button class="govuk-button without-js" data-module="govuk-button" disabled>
             {% if forward_button_text %}
                 {{ forward_button_text }}
@@ -23,11 +23,4 @@
             {% endif %}
         </button>
     {% endif %}
-    <a class="govuk-link" href="javascript: window.history.go(-1)">
-        {% if back_button_text %}
-            {{ back_button_text }}
-        {% else %}
-            Back
-        {% endif %}
-    </a>
 </div>

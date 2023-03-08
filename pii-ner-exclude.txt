@@ -1,3 +1,31 @@
+id="company_search_container"></div
+interest{% endblock page_title %
+Trade
+Confirm
+name="type_of_user
+Mobile 2FA
+NON-UK
+no_company_post_code_or_number_entered
+{{ hint
+Delete invitation{%
+javascript %
+{{ forward_button_text }
+name="address_snippet
+name="company_number
+form_errors|get_item:"mobile_country_code
++{{ dialling_code
+@traderemedies.gov.uk
+{{ case.reference }
+Registration of Interest
+target="_blank">Terms of Use and Privacy Notice
+{{ errors.lockdown }
+Trade Remedy
+id="show_password
+{{ block.super }
+equiv="Cache-Control
+{{user.name
+{{ sub_step.link_text }
+{{ sub_step.status_text }
 changes</button
 name="submission_status_id
 BC BLOCK
