@@ -6,6 +6,6 @@
 {% endblock %}
 
 {% block form_content %}
-    {% include 'v2/component_macros/two_radio_buttons.html' with value=radio_value value_one="yes" value_two="no" label_size='xl' label="Has anyone already set up an account for your organisation?" id_one="direct_employee" label_one="Yes" id_two="representative" label_two="No" name="organisation_already_setup" inline=True %}
+    {% include 'v2/component_macros/two_radio_buttons.html' with value=radio_value value_one="yes" value_two="no" label_size='xl' label="Has anyone already set up an account for your organisation?" id_one="direct_employee" label_one="Yes" id_two="representative" label_two="No" name="organisation_already_setup" inline=True heading=True %}
     {% include 'v2/component_macros/form_button_group.html' %}
 {% endblock form_content %}
