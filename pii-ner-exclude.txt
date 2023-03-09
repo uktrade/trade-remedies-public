@@ -1,31 +1,13 @@
-id="company_search_container"></div
-interest{% endblock page_title %
-Trade
-Confirm
-name="type_of_user
-Mobile 2FA
-NON-UK
-no_company_post_code_or_number_entered
-{{ hint
-Delete invitation{%
-javascript %
-{{ forward_button_text }
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV
+name="company_vat_number
+VAT
+DUNS
+Data Universal Numbering System
+name="submission_status_id
 name="address_snippet
 name="company_number
-form_errors|get_item:"mobile_country_code
-+{{ dialling_code
-@traderemedies.gov.uk
-{{ case.reference }
-Registration of Interest
-target="_blank">Terms of Use and Privacy Notice
-{{ errors.lockdown }
-Trade Remedy
-id="show_password
-{{ block.super }
-equiv="Cache-Control
-{{user.name
-{{ sub_step.link_text }
-{{ sub_step.status_text }
+yes">Request
 changes</button
 name="submission_status_id
 BC BLOCK
@@ -52,11 +34,97 @@ invitation</a
 email{%
 />Submit</button
 buttonEl.click(function
+{{ case.reference }
+Registration of Interest
+DataLayer
 holding_page.html
 home.html
 f"We
 TARIFF_CLASSIFICATION
 dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+tasklist.html
+SUBMISSION_TYPE_ALL_ORGANISATIONS
+Invite 3rd
+f"Invalid
+can_select_all
+public->tra
+f"/case/{self.case_id}/submission/{self.submission_id}/
+Review
+invitation</a
+Invite sent{% endblock page_title %
+{{ user_case.case.reference }} - {{
+BC BLOCK
+{{case.reference}
+{{case.name}
+{{ block.super }
+submit{% endblock %
+party{% endblock %
+Invite submitted{%
+Invite 3rd
+Trade Remedies Service
+SYSTEM_PARAMS_TTL
+sd020722222222
+v2_register_your_employer
+SYSTEM_PARAMS_TTL
+sd020722222222
+v2_register_your_employer
 update.html
 feedback_form_inner.html
 Download the Letter of Authority

@@ -1,14 +1,17 @@
 {% extends 'v2/govuk/base.html' %}
 
-{% if user.is_authenticated %}
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'event': 'invite_representative',
-            'user_id': '{{user.id}}',
-            'case_id': '{{invitation.submission.case.id}}'
-        });
-    </script>
+{% if request.user.is_authenticated %}
+    {% block head %}
+        {{ block.super }}
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'invite_representative',
+                'user_id': '{{request.user.id}}',
+                'case_id': '{{invitation.submission.case.id}}'
+            });
+        </script>
+    {% endblock head %}
 {% endif %}
 
 {% block page_title %}Check and submit{% endblock page_title %}

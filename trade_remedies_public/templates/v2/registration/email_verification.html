@@ -1,13 +1,16 @@
 {% extends "v2/govuk/base.html" %}
 {% load pop_session %}
 {% if user.is_authenticated %}
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'event': 'create_account',
-            'user_id': '{{user.id}}'
-        });
-    </script>
+    {% block head %}
+        {{ block.super }}
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': 'create_account',
+                'user_id': '{{user.id}}'
+            });
+        </script>
+    {% endblock head %}
 {% endif %}
 {% block page_title %}
     Your account has been created

@@ -1,6 +1,19 @@
 {% extends "v2/govuk/base.html" %}
 {% load format_date %}
 
+{% block head %}
+    {{ block.super }}
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'event': 'register_interest',
+            "user_id": '{{ request.user.id }}',
+            "client_type": "{{ case.type }}",
+            "case_id": "{{ case_id }}"
+        });
+    </script>
+{% endblock head %}
+
 {% block back_button %}{% endblock back_button %}
 
 {% block page_title %}
@@ -57,15 +70,3 @@
 {% block additional_content %}
     {% include "v2/feedback/stars_partial.html" with  journey="ROI complete" %}
 {% endblock additional_content %}
-
-{% block scripts %}
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        window.dataLayer.push({
-            'event': 'register_interest',
-            "user_id": '{{ request.user.id }}',
-            "client_type": "{{ case.type }}",
-            "case_id": "{{ case_id }}"
-        });
-    </script>
-{% endblock scripts %}
