@@ -42,7 +42,7 @@
                     <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
                 </svg>
             </a>
-            <a class="govuk-link govuk-link--no-visited-state" href="{% if request.GET.invitation %}{% url 'accept_invite_start' invitation_id=request.GET.invitation %}{% else %}{% url 'v2_register_start' %}{% endif %}">Create an
+            <a class="govuk-link govuk-link--no-visited-state" href="{% if request.GET.invitation %}{% url 'accept_invite_start' invitation_id=request.GET.invitation %}{% else %}{% url 'v2_confirm_existing_org' %}{% endif %}">Create an
                 account</a>
         </div>
     </div>

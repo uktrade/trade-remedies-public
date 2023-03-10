@@ -7,6 +7,14 @@ from django_countries.fields import CountryField
 from django.conf import settings
 
 
+class V2RegistrationViewConfirmExistingOrganisationForm(ValidationForm):
+    # need to select either 'yes' or 'no'
+    organisation_already_setup = forms.ChoiceField(
+        choices=(("yes", "yes"), ("no", "no")),
+        error_messages={"required": "organisation_already_setup_not_selected"},
+    )
+
+
 class RegistrationStartForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_name_entered"})
     email = forms.EmailField(
