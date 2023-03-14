@@ -43,7 +43,7 @@ class CollectFeedbackView(APIClientMixin, FormInvalidMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if feedback_id := kwargs.get("feedback_id"):
+        if feedback_id := self.kwargs.get("feedback_id"):
             context["feedback_object"] = self.client.feedback(feedback_id)
         return context
 
