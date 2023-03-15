@@ -29,6 +29,7 @@ from registration.forms.forms import (
     TwoFactorChoiceForm,
     UkEmployerForm,
     YourEmployerForm,
+    V2RegistrationViewConfirmExistingOrganisationForm,
 )
 
 
@@ -435,6 +436,25 @@ class V2BaseRegisterView(FormView):
 
     def get_next_url(self, form=None):
         return reverse(self.next_url_resolver)
+
+
+class V2RegistrationViewConfirmExistingOrganisation(
+    V2BaseRegisterView, TradeRemediesAPIClientMixin
+):
+    template_name = "v2/registration/registration_check_existing_organisation.html"
+    form_class = V2RegistrationViewConfirmExistingOrganisationForm
+
+    def get(self, request, *args, **kwargs):
+        self.reset_session(request)
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        if form.cleaned_data["organisation_already_setup"] == "no":
+            # organisation is not already setup, allow user to continue to register
+            return redirect(reverse("v2_register_start"))
+        else:
+            # organisation is already setup, inform user how to register
+            return redirect(reverse("v2_how_to_get_account"))
 
 
 class V2RegistrationViewStart(V2BaseRegisterView, TradeRemediesAPIClientMixin):
