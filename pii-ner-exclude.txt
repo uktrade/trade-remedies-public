@@ -1,3 +1,25 @@
+${file_name.substring(file_name.length - 18
+JSON.parse(data["uploaded_files"][0
+other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container'
+document).on('drop
+DELETE
+this).closest(".upload_container").find(".inputfile").click
+Math.random().toString(36).slice(2
+new_document_field.find('input[type="file"][data-type="non_confidential"]').prop("id
+new_document_field.find('input[type="file"][data-type="confidential"]').prop("id
+show_remove_document_buttons
+document.getElementById("doc-
+${file_name.substring(file_name.length - 18
+JSON.parse(data["uploaded_files"][0
+other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container'
+document).on('drop
+DELETE
+this).closest(".upload_container").find(".inputfile").click
+Math.random().toString(36).slice(2
+new_document_field.find('input[type="file"][data-type="non_confidential"]').prop("id
+new_document_field.find('input[type="file"][data-type="confidential"]').prop("id
+show_remove_document_buttons
+document.getElementById("doc-
 what_didnt_work_so_well
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV
