@@ -116,11 +116,11 @@ $(document).on('change', 'input[type="file"]', function () {
 })
 
 $(document).on('drop dragdrop', '.upload_container', function (e) {
-    let upload_card  = $(this).closest('.upload-card')
-    if ($(this).attr("data-current-document")){
+    if ($(this).attr("data-current-document") || $(this).find('input[type="file"]').val()){
         // If there is already a file uploaded, then we ignore the drop event
         return false
     }
+    let upload_card  = $(this).closest('.upload-card')
     upload_card.removeClass('upload-card-hover')
     const submission_id = $(this).data("submission-id")
     const original_event = e.originalEvent
@@ -131,13 +131,13 @@ $(document).on('drop dragdrop', '.upload_container', function (e) {
 })
 
 $(document).on('dragover', '.upload_container', function (e) {
-    e.preventDefault()
-    e.stopPropagation()
-    let upload_card  = $(this).closest('.upload-card')
-    if ($(this).attr("data-current-document")){
+    if ($(this).attr("data-current-document") || $(this).find('input[type="file"]').val()){
         // If there is already a file uploaded, then we ignore the dragover event
         return false
     }
+    e.preventDefault()
+    e.stopPropagation()
+    let upload_card  = $(this).closest('.upload-card')
     upload_card.addClass('upload-card-hover')
 })
 
