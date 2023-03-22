@@ -1,3 +1,27 @@
+ExtractMetadataFileUploadHandler
+XLSX
+TITLE
+AWS
+" Django settings for
+Django 2.0.1
+https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+SessionMiddleware
+django.middleware.common
+CommonMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+BACKEND
+VCAP_SERVICES
+RedisCache
+DefaultClient
+http://localhost:8000
+PUB-ENV
+boto3
+ClamAVFileUploadHandler
+ExtractDocumentMetadata
+django_chunk_upload_handlers.s3.S3FileUploadHandler
+ROOT_LOG_LEVEL
+AutoField
 ${file_name.substring(file_name.length - 18
 JSON.parse(data["uploaded_files"][0
 other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container'

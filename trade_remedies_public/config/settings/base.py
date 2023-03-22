@@ -230,6 +230,7 @@ FILE_UPLOAD_HANDLERS = []
 if USE_CLAM_AV:
     FILE_UPLOAD_HANDLERS.append("django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler")
 
+FILE_UPLOAD_HANDLERS.append("documents.upload_handler.ExtractMetadataFileUploadHandler")
 FILE_UPLOAD_HANDLERS.append("django_chunk_upload_handlers.s3.S3FileUploadHandler")
 
 if basic_auth_user:
