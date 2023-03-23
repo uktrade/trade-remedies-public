@@ -22,21 +22,21 @@
             {% else %}
                 <div class="govuk-radios govuk-radios" data-module="govuk-radios">
             {% endif %}
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="{{ id_one }}" name="{{ name }}"
-                            type="radio" value="{{ value_one }}" {% if value == value_one %}checked{% endif %}>
-                        <label class="govuk-label govuk-radios__label" for="{{ id_one }}">
-                            {{ label_one }}
-                        </label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="{{ id_two }}" name="{{ name }}"
-                            type="radio" value="{{ value_two }}" {% if value == value_two %}checked{% endif %}>
-                        <label class="govuk-label govuk-radios__label" for="{{ id_two }}">
-                            {{ label_two }}
-                        </label>
-                    </div>
-                </div>
-        </fieldset>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ id_one }}" name="{{ name }}"
+                    type="radio" value="{{ value_one }}" {% if value == value_one %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="{{ id_one }}">
+                    {{ label_one }}
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="{{ id_two }}" name="{{ name }}"
+                    type="radio" value="{{ value_two }}" {% if value == value_two %}checked{% endif %}>
+                <label class="govuk-label govuk-radios__label" for="{{ id_two }}">
+                    {{ label_two }}
+                </label>
+            </div>
+        </div>
+    </fieldset>
     </div>
 {% endwith %}
