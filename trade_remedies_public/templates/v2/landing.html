@@ -2,76 +2,79 @@
 
 {% block back_button %}{% endblock back_button %}
 
-{% block page_title %}
-    Start
-{% endblock %}
+{% block page_title %}Participate in a trade remedies investigation{% endblock %}
 
-{% block row_content %}
-    <div class="govuk-grid-column-full">
-        <div class="govuk-bluepanel govuk-bluepanel--confirmation">
-            <span class="govuk-caption-l inverse-header">Trade Remedies Authority</span>
-            <h1 class="govuk-heading-l inverse-header">
-                Trade Remedies Service
-            </h1>
-        </div>
-        <p class="govuk-body">The UK Trade Remedies Authority (TRA) investigates if trade remedies are needed to prevent
-            injury to UK industries caused by unfair trading practices or unforeseen import surges.</p>
-    </div>
-    <div class="govuk-grid-column-two-thirds">
-        <h2 class="govuk-heading-m">Active cases</h2>
-        <p class="govuk-body">We publish active cases so everyone can keep track of ongoing cases.</p>
-        <p class="govuk-body">
-            <a class="govuk-link" href="{% url 'public_cases' %}">View active cases on the public file</a>
-        </p>
-        <h2 class="govuk-heading-m">Using the Trade Remedies Service</h2>
-        <p class="govuk-body">You can use the Trade Remedies Service to:</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li>request a new trade remedies investigation or review</li>
-            <li>participate in an active trade remedies case</li>
-            <li>invite an organisation or individual to represent you in an active case</li>
-            <li>add a colleague to your account or an active case</li>
-        </ul>
-        <p class="govuk-body">You will need to create an account to use the service. Please have any registration
-            details for your organisation ready. It takes about 10 minutes.</p>
-        <div class="govuk-button-group">
-            <a href="{% url 'login' %}" id="sign_in_button" role="button" draggable="false"
-                class="govuk-button govuk-button--start" data-module="govuk-button">
-                Sign in
-                <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19"
-                    viewBox="0 0 33 40" aria-hidden="true" focusable="false">
-                    <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
-                </svg>
-            </a>
-            <a class="govuk-link govuk-link--no-visited-state" href="{% if request.GET.invitation %}{% url 'accept_invite_start' invitation_id=request.GET.invitation %}{% else %}{% url 'v2_confirm_existing_org' %}{% endif %}">Create an
-                account</a>
+{% block main_content %}
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">Participate in a trade remedies investigation</h1>
         </div>
     </div>
-
-    <div class="govuk-grid-column-one-third">
-        <aside class="app-related-items" role="complementary">
-            <h2 class="govuk-heading-m" id="subsection-title">
-                More information
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h2 class="govuk-heading-m">Trade Remedies Service: sign in or create an account</h2>
+            <p class="govuk-body">
+                The UK Trade Remedies Authority (TRA) investigates if a trade remedy is needed to prevent injury to UK
+                industries from unfair trading practices or unforeseen import surges.
+            </p>
+            <p class="govuk-body">Use the Trade Remedies Service to: </p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>request a trade remedies investigation or review of an existing decision</li>
+                <li>take part in an active trade remedies case</li>
+                <li>invite an organisation or individual to represent you in an active case</li>
+                <li>add a colleague to your account or an active case</li>
+            </ul>
+            <div class="govuk-button-group">
+                <a href="{% url 'login' %}" id="sign_in_button" role="button" draggable="false"
+                    class="govuk-button govuk-button--start" data-module="govuk-button">
+                    Sign in
+                    <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19"
+                        viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                        <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"/>
+                    </svg>
+                </a>
+                <a class="govuk-link govuk-link--no-visited-state"
+                    href="{% if request.GET.invitation %}{% url 'accept_invite_start' invitation_id=request.GET.invitation %}{% else %}{% url 'v2_confirm_existing_org' %}{% endif %}"
+                >
+                    Create an account
+                </a>
+            </div>
+            <h2 class="govuk-heading-m">
+                Before you start
             </h2>
-            <nav role="navigation" aria-labelledby="subsection-title">
-                <ul class="govuk-list govuk-!-font-size-16">
-                    <li>
-                        <a class="govuk-link"
-                            href="https://www.gov.uk/government/organisations/trade-remedies-authority"
-                            target="_blank">Trade Remedies Authority news (opens in a new window or tab)</a>
-                    </li>
-                    <li>
-                        <a class="govuk-link"
-                            href="https://www.gov.uk/government/organisations/trade-remedies-authority/about"
-                            target="_blank">Who is the Trade Remedies Authority (opens in a new window or tab)</a>
-                    </li>
-                    <li>
-                        <a class="govuk-link"
-                            href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
-                            target="_blank">Trade remedies investigations process (opens in a new window or tab)</a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
+            <p class="govuk-body">You need an account to use this service.</p>
+            <p class="govuk-body">Ensure you have the registration details for your organisation ready.</p>
+            <p class="govuk-body">Registration takes about 10 minutes.</p>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-s" id="subsection-title">More information</h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="govuk-link" href="{% url "public_cases" %}">Active investigations</a>
+                        </li>
+                        <li>
+                            <a class="govuk-link"
+                                href="https://www.gov.uk/government/organisations/trade-remedies-authority/about"
+                                rel="noreferrer noopener"
+                                target="_blank"
+                            >
+                                About the Trade Remedies Authority (opens in new tab)
+                            </a>
+                        </li>
+                        <li>
+                            <a class="govuk-link"
+                                href="https://www.gov.uk/government/publications/the-uk-trade-remedies-investigations-process"
+                                rel="noreferrer noopener"
+                                target="_blank"
+                            >
+                                Trade remedies investigations guidance (opens in new tab)
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
     </div>
-
-{% endblock row_content %}
+{% endblock main_content %}

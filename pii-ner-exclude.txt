@@ -20,6 +20,11 @@ new_document_field.find('input[type="file"][data-type="non_confidential"]').prop
 new_document_field.find('input[type="file"][data-type="confidential"]').prop("id
 show_remove_document_buttons
 document.getElementById("doc-
+The UK Trade Remedies Authority
+id="sign_in_button" role="button
+d="M0
+form_errors|get_item:"mobile_country_code
++{{ dialling_code
 what_didnt_work_so_well
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV
