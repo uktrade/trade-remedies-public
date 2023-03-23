@@ -79,7 +79,7 @@
 </div>
 
 <script type="text/javascript">
-    var CurrentUploadContainerElementId = document.querySelector("div[data-type='{% if confidential %}confidential{% else %}non_confidential{% endif %}']");
+    var CurrentUploadContainerElementId = document.getElementById("doc-{{ unique_id }}");
 
     CurrentUploadContainerElementId.innerHTML = `
             <div class="waiting_for_upload file_upload_indicator" {% if document_exists %}style="display:none;"{% endif %}>

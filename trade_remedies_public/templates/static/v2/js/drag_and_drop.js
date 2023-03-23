@@ -116,7 +116,12 @@ $(document).on('change', 'input[type="file"]', function () {
 })
 
 $(document).on('drop dragdrop', '.upload_container', function (e) {
-    $(this).closest('.upload-card').removeClass('upload-card-hover')
+    if ($(this).attr("data-current-document") || $(this).find('input[type="file"]').val()){
+        // If there is already a file uploaded, then we ignore the drop event
+        return false
+    }
+    let upload_card  = $(this).closest('.upload-card')
+    upload_card.removeClass('upload-card-hover')
     const submission_id = $(this).data("submission-id")
     const original_event = e.originalEvent
     e.preventDefault()
@@ -126,9 +131,14 @@ $(document).on('drop dragdrop', '.upload_container', function (e) {
 })
 
 $(document).on('dragover', '.upload_container', function (e) {
+    if ($(this).attr("data-current-document") || $(this).find('input[type="file"]').val()){
+        // If there is already a file uploaded, then we ignore the dragover event
+        return false
+    }
     e.preventDefault()
     e.stopPropagation()
-    $(this).closest('.upload-card').addClass('upload-card-hover')
+    let upload_card  = $(this).closest('.upload-card')
+    upload_card.addClass('upload-card-hover')
 })
 
 $(document).on('dragleave', '.upload_container', function (e) {
@@ -160,6 +170,7 @@ function delete_document(a_tag) {
         success: function (data) {
             upload_container.find(".file_upload_indicator").hide()
             upload_container.find('.waiting_for_upload').show()
+            upload_container[0].removeAttribute('data-current-document')
         },
         error: function (xhr) { // if error occurred
             alert("Error occurred.please try again");
@@ -207,6 +218,7 @@ $('#add_document_button').click(function (e) {
         let new_upload_container_id = Math.random().toString(36).slice(2, 7);
         $(this).prop("id", new_upload_container_id)
         $(this)[0].removeAttribute('data-parent-document')
+        $(this)[0].removeAttribute('data-current-document')
         $(this).find('.delete_document_link').data('document-id', null).attr('data-document-id', null)
     })
 
