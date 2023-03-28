@@ -15,9 +15,6 @@ class ExtractMetadataFileUploadHandler(FileUploadHandler):
             raise SkipFile("The selected file must be smaller than 30MB")
 
         extractor = Extractor()
-        extract = extractor(raw_data, self.content_type)
+        sanitised_data = extractor(raw_data, self.content_type)
 
-        if isinstance(extract, bytes):
-            return raw_data
-
-        return extract.getvalue()
+        return sanitised_data.getvalue()
