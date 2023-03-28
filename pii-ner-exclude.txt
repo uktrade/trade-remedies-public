@@ -22,6 +22,9 @@ ExtractDocumentMetadata
 django_chunk_upload_handlers.s3.S3FileUploadHandler
 ROOT_LOG_LEVEL
 AutoField
+equiv="Cache-Control
+{{user.name
+urllib3==1.26.11
 ${file_name.substring(file_name.length - 18
 JSON.parse(data["uploaded_files"][0
 other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container'

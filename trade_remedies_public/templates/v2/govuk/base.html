@@ -8,8 +8,7 @@
         {% block head %}
             {% analytics %}
             <meta charset="utf-8">
-            <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - GOV.UK Trade
-                Remedies Service</title>
+            <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - Trade Remedies Service - GOV.UK</title>
             <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
             <meta name="theme-color" content="blue">
 
@@ -130,7 +129,9 @@
                     </a>
                 </div>
                 <div class="govuk-header__content">
-                    <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--service-name">Trade Remedies Authority</a>
+                    <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--service-name">
+                        Trade Remedies Service
+                    </a>
                 </div>
 
                 <div class="govuk-header__account">
@@ -221,7 +222,7 @@
                             </li>
                             <li class="govuk-footer__inline-list-item">
                                 <a class="govuk-footer__link" href="{% url 'accessibility_statement' %}">
-                                    Accessibility
+                                    Accessibility statement
                                 </a>
                             </li>
                         </ul>
