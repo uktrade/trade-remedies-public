@@ -3,6 +3,8 @@ from django.core.files.uploadhandler import FileUploadHandler
 from v2_api_client.shared.upload_handler.metadata import Extractor
 from django.core.files.uploadhandler import SkipFile
 
+from config.settings.base import FILE_MAX_SIZE_BYTES
+
 django.core.files.uploadhandler.FileUploadHandler.chunk_size = 33554432  # 32 Megabytes
 
 
@@ -11,7 +13,7 @@ class ExtractMetadataFileUploadHandler(FileUploadHandler):
         pass
 
     def receive_data_chunk(self, raw_data, start):
-        if len(raw_data) > 31457280:  # 30 Megabytes
+        if len(raw_data) > FILE_MAX_SIZE_BYTES:  # 30 Megabytes
             raise SkipFile("The selected file must be smaller than 30MB")
 
         extractor = Extractor()
