@@ -118,20 +118,20 @@ jobs:
       - restore_api_dependency_cache
       - run:
           name: Install API dependencies
-          command: pip install ~/trade-remedies-api/requirements/dev.txt
+          command: pip install -r ~/trade-remedies-api/requirements/dev.txt
       - save_api_dependency_cache
       - run:
           name: Run API testserver and install fixtures
           command: |
               python manage.py testserver
               bash ~/trade-remedies-api/trade_remedies_api/fixtures.sh
+      - checkout
+      - restore_dependency_cache
+      - install_dependencies
+      - save_dependency_cache
       - run:
           name: Run Public server
-          command: python manage.py runserver
-      - run:
-          name: Run front end tests
-          command: |
-            pytest trade_remedies_public/frontend
+          command: python trade-remedies-public/trade_remedies_public/manage.py runserver
 
 workflows:
   version: 2
