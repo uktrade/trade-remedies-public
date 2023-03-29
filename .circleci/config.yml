@@ -78,7 +78,7 @@ jobs:
       - run:
           name: Send coverage report to codecov.io
           command: codecov
-  front_end_testing:
+  setup_front_end_testing:
     docker:
       - image: cimg/python:3.9.5
         environment:
@@ -98,18 +98,26 @@ jobs:
           - discovery.type=single-node
           - plugins.security.disabled=true
     steps:
-      - checkout
-      - restore_dependency_cache
-      - install_dependencies
-      - save_dependency_cache
       - run:
-          name: Clone trade-remedies API
-          command: |
-            git clone git@github.com:uktrade/trade-remedies-api ~/trade-remedies-api
-            pip install trade-remedies-api/requirements.dev.txt
-        
-        
-
+        name: Clone trade-remedies API
+        command: |
+          git clone git@github.com:uktrade/trade-remedies-api ~/trade-remedies-api
+          pip install trade-remedies-api/requirements.dev.txt
+      - restore_dependency_cache
+        requirements_file: "trade-remedies-api/requirements.dev.txt"
+      - run:
+          name: Install API dependencies
+          command: pip install trade-remedies-api/requirements.dev.txt
+      - save_dependency_cache
+        requirements_file: "trade-remedies-api/requirements.dev.txt"
+      - run:
+          name: Run API testserver and install fixtures
+            command: |
+                python manage.py testserver
+                bash ~/trade-remedies-api/trade_remedies_api/fixtures.sh
+      - run:
+          name: Run Public server
+          command: python manage.py runserver
       - run:
           name: Run front end tests
           command: |
@@ -121,3 +129,7 @@ workflows:
     jobs:
       - code_quality
       - test_and_fitness_functions
+      - setup_front_end_testing
+      - cypress/run:
+          install-browsers: true
+          cypress-command: 'npx cypress run --browser chrome'

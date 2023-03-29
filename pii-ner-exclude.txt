@@ -1,3 +1,15 @@
+restore_dependency_cache
+save_dependency_cache
+cimg/python:3.9.5
+Run Flake8
+pflake8
+e7:81:14:2a:87:49:9c:8e
+Cypress
+beforeEach
+cy.get('#email-error').should("contain.text
+cy.get('#email').type('testexample.com
+it('no
+Commands.add('login
 Generic+Footer">Give
 } - Trade Remedies Service - GOV.UK</title
 equiv="Cache-Control

@@ -7,7 +7,7 @@ from django.http import HttpRequest
 from v2_api_client.client import TRSAPIClient
 
 
-def co(
+def add_form_error_to_session(
     error_summary: str, request: HttpRequest, field: str = None, error_text: str = None
 ) -> bool:
     """
