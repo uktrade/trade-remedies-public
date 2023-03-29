@@ -1,5 +1,6 @@
 version: 2.1
-
+orbs:
+  cypress: cypress-io/cypress@3
 commands:
   install_dependencies:
     description: "Install Python dependencies"
@@ -15,15 +16,23 @@ commands:
 
   restore_dependency_cache:
     description: "Restore dependency cache."
+    parameters:
+      requirements_file:
+        default: "requirements/dev.txt"
+        type: string
     steps:
       - restore_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps2-{{ .Branch }}-{{ checksum <<parameters.requirements_file>> }}
 
   save_dependency_cache:
     description: "Save dependency cache."
+    parameters:
+      requirements_file:
+        default: "requirements/dev.txt"
+        type: string
     steps:
       - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps2-{{ .Branch }}-{{ checksum <<parameters.requirements_file>> }}
           paths:
             - "venv"
 
@@ -69,6 +78,42 @@ jobs:
       - run:
           name: Send coverage report to codecov.io
           command: codecov
+  front_end_testing:
+    docker:
+      - image: cimg/python:3.9.5
+        environment:
+          DATABASE_URL: psql://ubuntu@localhost:5432/trade_remedies
+          DJANGO_SETTINGS_MODULE: config.settings.test
+          DJANGO_SECRET_KEY: ci_only
+          ALLOWED_HOSTS: "*"
+          OPENSEARCH_HOST: "opensearch"
+          OPENSEARCH_PORT: "9200"
+      - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_USER: ubuntu
+          POSTGRES_DB: trade_remedies
+          POSTGRES_PASSWORD: ""
+      - image: opensearchproject/opensearch:1.2.4
+        environment:
+          - discovery.type=single-node
+          - plugins.security.disabled=true
+    steps:
+      - checkout
+      - restore_dependency_cache
+      - install_dependencies
+      - save_dependency_cache
+      - run:
+          name: Clone trade-remedies API
+          command: |
+            git clone git@github.com:uktrade/trade-remedies-api ~/trade-remedies-api
+            pip install trade-remedies-api/requirements.dev.txt
+        
+        
+
+      - run:
+          name: Run front end tests
+          command: |
+            pytest trade_remedies_public/frontend
 
 workflows:
   version: 2
