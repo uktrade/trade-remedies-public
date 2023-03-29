@@ -4,6 +4,10 @@ orbs:
 commands:
   install_dependencies:
     description: "Install Python dependencies"
+    parameters:
+      requirements_file:
+        default: "requirements/dev.txt"
+        type: string
     steps:
       - run:
           name: Install Python dependencies
@@ -12,29 +16,35 @@ commands:
             echo ". venv/bin/activate" >> $BASH_ENV
             . venv/bin/activate  # 
             pip install --upgrade pip
-            pip install -r requirements/dev.txt
+            pip install -r <<parameters.requirements_file>>
 
   restore_dependency_cache:
     description: "Restore dependency cache."
-    parameters:
-      requirements_file:
-        default: "requirements/dev.txt"
-        type: string
     steps:
       - restore_cache:
-          key: deps2-{{ .Branch }}-{{ checksum <<parameters.requirements_file>> }}
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }
 
   save_dependency_cache:
     description: "Save dependency cache."
-    parameters:
-      requirements_file:
-        default: "requirements/dev.txt"
-        type: string
     steps:
       - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum <<parameters.requirements_file>> }}
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }
           paths:
             - "venv"
+
+restore_api_dependency_cache:
+  description: "Restore dependency cache."
+  steps:
+    - restore_cache:
+        key: deps2-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }
+
+save_api_dependency_cache:
+  description: "Save dependency cache."
+  steps:
+    - save_cache:
+        key: deps2-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }
+        paths:
+          - "venv"
 
 jobs:
 
@@ -103,13 +113,11 @@ jobs:
         command: |
           git clone git@github.com:uktrade/trade-remedies-api ~/trade-remedies-api
           pip install trade-remedies-api/requirements.dev.txt
-      - restore_dependency_cache
-          requirements_file: "trade-remedies-api/requirements.dev.txt"
+      - restore_api_dependency_cache
       - run:
           name: Install API dependencies
           command: pip install trade-remedies-api/requirements.dev.txt
-      - save_dependency_cache
-          requirements_file: "trade-remedies-api/requirements.dev.txt"
+      - save_api_dependency_cache
       - run:
           name: Run API testserver and install fixtures
             command: |
