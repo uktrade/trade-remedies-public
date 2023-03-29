@@ -16,7 +16,7 @@ commands:
             echo ". venv/bin/activate" >> $BASH_ENV
             . venv/bin/activate  # 
             pip install --upgrade pip
-            pip install -r <<parameters.requirements_file>>
+            pip install -r requirements/dev.txt
 
   restore_dependency_cache:
     description: "Restore dependency cache."
@@ -111,13 +111,20 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "4e:01:33:11:90:5d:af:f4:f0:97:cd:f5:cb:cd:e1:ce"
+      - checkout
+      - restore_dependency_cache
+      - install_dependencies
+      - save_dependency_cache
       - run:
           name: Clone trade-remedies API
           command: |
             git clone https://github.com/uktrade/trade-remedies-api ~/trade-remedies-api
       - restore_api_dependency_cache
-      - install_dependencies
-          requirements_file: "~/trade-remedies-api/requirements/dev.txt"
+      - run:
+          name: Install API dependencies
+          command: |
+            . venv/bin/activate  # 
+            pip install -r ~/trade-remedies-api/requirements/dev.txt
       - save_api_dependency_cache
       - run:
           name: Run API testserver and install fixtures
@@ -125,11 +132,6 @@ jobs:
               . venv/bin/activate
               python ~/trade-remedies-api/trade_remedies_api/manage.py testserver
               bash ~/trade-remedies-api/trade_remedies_api/fixtures.sh
-      - checkout
-      - restore_dependency_cache
-      - install_dependencies
-          requirements_file: "requirements/dev.txt"
-      - save_dependency_cache
       - run:
           name: Run Public server
           command: python trade-remedies-public/trade_remedies_public/manage.py runserver
