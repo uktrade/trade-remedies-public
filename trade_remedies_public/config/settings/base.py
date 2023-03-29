@@ -361,7 +361,9 @@ COUNTRIES_FIRST = ["GB"]
 COUNTRIES_FIRST_BREAK = "------"
 
 FILE_MAX_SIZE_BYTES = 31457280
-FILE_MAX_SIZE_BYTES_ERROR = "The selected file must be smaller than 30MB"
+FILE_MAX_SIZE_BYTES_ERROR = (
+    f"The selected file must be smaller than {round(FILE_MAX_SIZE_BYTES / (1024 * 1024))}MB"
+)
 FILE_DISALLOWED_EXTENSIONS = [
     "com",
     "exe",
