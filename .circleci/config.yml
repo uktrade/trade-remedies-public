@@ -22,13 +22,13 @@ commands:
     description: "Restore dependency cache."
     steps:
       - restore_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
 
   save_dependency_cache:
     description: "Save dependency cache."
     steps:
       - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }
+          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
           paths:
             - "venv"
 
@@ -36,13 +36,13 @@ commands:
     description: "Restore dependency cache."
     steps:
       - restore_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }
+          key: deps2-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }}
 
   save_api_dependency_cache:
     description: "Save dependency cache."
     steps:
       - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }
+          key: deps2-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }}
           paths:
             - "venv"
 
