@@ -98,6 +98,9 @@ jobs:
           ALLOWED_HOSTS: "*"
           OPENSEARCH_HOST: "opensearch"
           OPENSEARCH_PORT: "9200"
+          HEALTH_CHECK_USER_EMAIL: "test@example.com"
+          HEALTH_CHECK_TOKEN: "123"
+          API_BASE_URL: http://localhost:8000
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
           POSTGRES_USER: ubuntu
