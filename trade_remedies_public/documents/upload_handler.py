@@ -1,11 +1,8 @@
-import django.core.files.uploadhandler
 from django.core.files.uploadhandler import FileUploadHandler
 from django.core.files.uploadhandler import StopUpload
 from v2_api_client.shared.upload_handler.metadata import Extractor
 
 from config.settings.base import FILE_MAX_SIZE_BYTES, FILE_MAX_SIZE_BYTES_ERROR
-
-django.core.files.uploadhandler.FileUploadHandler.chunk_size = 33554432  # 32 Megabytes
 
 
 class ExtractMetadataFileUploadHandler(FileUploadHandler):

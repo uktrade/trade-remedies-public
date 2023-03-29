@@ -1,3 +1,4 @@
+MAX FILE
 ExtractMetadataFileUploadHandler
 XLSX
 TITLE
