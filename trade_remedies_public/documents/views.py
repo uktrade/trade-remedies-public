@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
@@ -8,6 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from v2_api_client.encoders import TRSObjectJsonEncoder
 from v2_api_client.mixins import APIClientMixin
 
+from config.settings.base import FILE_MAX_SIZE_BYTES_ERROR
+from config.utils import add_form_error_to_session
 from core.decorators import catch_form_errors
 from documents.forms import DocumentForm
 
@@ -32,10 +32,8 @@ class DocumentView(View, APIClientMixin):
         # Check if upload handler skipped file due to file size
         if not request.FILES.getlist("files"):
             # Return early with error message
-            error_message = "The selected file must be smaller than 30MB"
-
             return JsonResponse(
-                data={"errors": {"__all__": [error_message]}},
+                data={"errors": {"__all__": [FILE_MAX_SIZE_BYTES_ERROR]}},
                 status=400,
             )
 
@@ -153,10 +151,9 @@ class DocumentWithoutJsView(View, APIClientMixin):
 
     @staticmethod
     def construct_error_summary_message(request, file_type):
-        error_message = "The selected file must be smaller than 30MB"
-
-        request.session["form_errors"] = defaultdict(list)
-        request.session["form_errors"]["error_summaries"] = [("error", error_message)]
+        add_form_error_to_session(
+            FILE_MAX_SIZE_BYTES_ERROR, request, "file_type", FILE_MAX_SIZE_BYTES_ERROR
+        )
         request.session["form_errors"]["file_type"] = file_type
 
         return redirect(request.META["HTTP_REFERER"].split("?")[0])
