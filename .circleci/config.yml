@@ -128,7 +128,7 @@ jobs:
       - checkout
       - restore_dependency_cache
       - install_dependencies
-        requirements_file: "requirements/dev.txt"
+          requirements_file: "requirements/dev.txt"
       - save_dependency_cache
       - run:
           name: Run Public server
