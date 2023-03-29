@@ -109,10 +109,10 @@ jobs:
           - plugins.security.disabled=true
     steps:
       - run:
-        name: Clone trade-remedies API
-        command: |
-          git clone git@github.com:uktrade/trade-remedies-api ~/trade-remedies-api
-          pip install trade-remedies-api/requirements.dev.txt
+          name: Clone trade-remedies API
+          command: |
+            git clone git@github.com:uktrade/trade-remedies-api ~/trade-remedies-api
+            pip install trade-remedies-api/requirements.dev.txt
       - restore_api_dependency_cache
       - run:
           name: Install API dependencies
