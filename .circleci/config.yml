@@ -136,7 +136,7 @@ jobs:
 
 workflows:
   version: 2
-  run_tests:
+  code_quality_and_tests:
     jobs:
       - code_quality
       - test_and_fitness_functions
@@ -144,3 +144,5 @@ workflows:
       - cypress/run:
           install-browsers: true
           cypress-command: 'npx cypress run --browser chrome'
+          requires:
+              - setup_front_end_testing
