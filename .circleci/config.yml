@@ -117,13 +117,13 @@ jobs:
           - discovery.type=single-node
           - plugins.security.disabled=true
     steps:
-      - add_ssh_keys:
-          fingerprints:
-            - "4e:01:33:11:90:5d:af:f4:f0:97:cd:f5:cb:cd:e1:ce"
       - checkout
       - restore_dependency_cache
       - install_dependencies
       - save_dependency_cache
+      - add_ssh_keys:
+          fingerprints:
+            - "4e:01:33:11:90:5d:af:f4:f0:97:cd:f5:cb:cd:e1:ce"
       - run:
           name: Clone trade-remedies API
           command: |
@@ -139,7 +139,7 @@ jobs:
           name: Run API testserver and install fixtures
           command: |
               . venv/bin/activate
-              python ~/trade-remedies-api/trade_remedies_api/manage.py testserver cases/fixtures/sectors.json
+              python ~/trade-remedies-api/trade_remedies_api/manage.py testserver ~/trade-remedies-api/trade_remedies_api/cases/fixtures/sectors.json
               bash ~/trade-remedies-api/trade_remedies_api/fixtures.sh
       - run:
           name: Run Public server
