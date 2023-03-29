@@ -102,6 +102,9 @@ jobs:
           HEALTH_CHECK_TOKEN: "123"
           CASE_WORKER_ENVIRONMENT_KEY: "123"
           PUBLIC_ENVIRONMENT_KEY: "123"
+          AUDIT_EMAIL_IAM_USER: "test_user"
+          AUDIT_EMAIL_SMTP_USERNAME: "test_user"
+          AUDIT_EMAIL_SMTP_PASSWORD: "test_password"
           API_BASE_URL: http://localhost:8000
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
