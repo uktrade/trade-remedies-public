@@ -105,6 +105,7 @@ jobs:
           AUDIT_EMAIL_IAM_USER: "test_user"
           AUDIT_EMAIL_SMTP_USERNAME: "test_user"
           AUDIT_EMAIL_SMTP_PASSWORD: "test_password"
+          AUDIT_EMAIL_TO_ADDRESS: "test@example.com"
           API_BASE_URL: http://localhost:8000
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
