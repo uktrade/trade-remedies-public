@@ -104,12 +104,12 @@ jobs:
           git clone git@github.com:uktrade/trade-remedies-api ~/trade-remedies-api
           pip install trade-remedies-api/requirements.dev.txt
       - restore_dependency_cache
-        requirements_file: "trade-remedies-api/requirements.dev.txt"
+          requirements_file: "trade-remedies-api/requirements.dev.txt"
       - run:
           name: Install API dependencies
           command: pip install trade-remedies-api/requirements.dev.txt
       - save_dependency_cache
-        requirements_file: "trade-remedies-api/requirements.dev.txt"
+          requirements_file: "trade-remedies-api/requirements.dev.txt"
       - run:
           name: Run API testserver and install fixtures
             command: |
