@@ -76,6 +76,7 @@ function file_upload(upload_container, files, submission_id) {
             upload_container.find('.delete_document_link').data('document-id', uploaded_file['id']).attr('data-document-id', uploaded_file['id']);
             upload_container.find('.deficient_document_warning').remove()
             upload_container.find('.delete_document_link').html('Remove <span class="govuk-visually-hidden">file</span>')
+            upload_container.attr('data-current-document', uploaded_file['id'])
 
             const part_of_pair = upload_container.closest('.confidential_and_non_confidential_file_row')
             if (part_of_pair) {
