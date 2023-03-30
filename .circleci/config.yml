@@ -144,6 +144,12 @@ jobs:
           command: |
               python trade-remedies-public/trade_remedies_public/manage.py runserver 8002
           background: true
+  store_artifacts:
+    docker:
+      - image: cimg/python:3.9.5
+    steps:
+      - store_artifacts:
+          path: /home/circleci/project/cypress/videos
 
 workflows:
   version: 2
@@ -157,3 +163,4 @@ workflows:
           cypress-command: 'npx cypress run --browser chrome'
           requires:
               - setup_front_end_testing
+      - store_artifacts
