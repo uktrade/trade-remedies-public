@@ -142,7 +142,7 @@ jobs:
       - run:
           name: Run Public server
           command: |
-              python trade-remedies-public/trade_remedies_public/manage.py runserver --noinput
+              python trade-remedies-public/trade_remedies_public/manage.py runserver 8002
           background: true
 
 workflows:
