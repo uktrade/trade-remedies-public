@@ -165,4 +165,4 @@ workflows:
               - setup_front_end_testing
       - store_artifacts
           requires:
-            - cypress/run
+              - cypress/run
