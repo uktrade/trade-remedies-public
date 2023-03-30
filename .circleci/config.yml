@@ -144,7 +144,7 @@ jobs:
       - run:
           name: Install API fixtures
           command: |
-              sleep 25
+              sleep 35
               python ~/trade-remedies-api/trade_remedies_api/manage.py loaddata ~/trade-remedies-api/trade_remedies_api/security/fixtures/*.json
               python ~/trade-remedies-api/trade_remedies_api/manage.py loaddata ~/trade-remedies-api/trade_remedies_api/organisations/fixtures/*.json
               python ~/trade-remedies-api/trade_remedies_api/manage.py loaddata ~/trade-remedies-api/trade_remedies_api/cases/fixtures/*.json
