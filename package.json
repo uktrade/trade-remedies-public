@@ -1,0 +1,22 @@
+{
+  "name": "trade-remedies-public",
+  "version": "1.0.0",
+  "description": "<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section --> [![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-) [![codecov](https://codecov.io/gh/uktrade/trade-remedies-public/branch/develop/graph/badge.svg)](https://codecov.io/gh/uktrade/trade-remedies-public/) <!-- ALL-CONTRIBUTORS-BADGE:END --> Public-facing UI for the Trade Remedies system",
+  "main": "cypress.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uktrade/trade-remedies-public.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uktrade/trade-remedies-public/issues"
+  },
+  "homepage": "https://github.com/uktrade/trade-remedies-public#readme",
+  "dependencies": {
+    "cypress": "^12.9.0"
+  }
+}
