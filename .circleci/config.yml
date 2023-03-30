@@ -144,8 +144,8 @@ jobs:
       - run:
           name: Run Public server
           command: |
-          . venv/bin/activate
-          python trade-remedies-public/trade_remedies_public/manage.py runserver --noinput
+              . venv/bin/activate
+              python trade-remedies-public/trade_remedies_public/manage.py runserver --noinput
           background: true
 
 workflows:
