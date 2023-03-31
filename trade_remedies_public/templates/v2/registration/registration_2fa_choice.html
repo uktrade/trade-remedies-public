@@ -20,8 +20,8 @@
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
                 'event': {% if invitation.invitation_type == 1 %}'accept_own_org_invite'
-                    {% elif invitation.invitation_type == 2 %}'accept_representative_invite'
-                {% endif %}
+                {% elif invitation.invitation_type == 2 %}'accept_representative_invite'
+                {% endif %},
                 "invitation_id": "{{invitation.id}}",
             });
         </script>
@@ -47,8 +47,8 @@
                 <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" name="two_factor_choice" id="two_factor_choice" type="radio"
-                               value="mobile"
-                               {% if form.cleaned_data.two_factor_choice == "mobile" %}checked{% endif %}>
+                            value="mobile"
+                            {% if form.cleaned_data.two_factor_choice == "mobile" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="two_factor_choice">
                             By text message
                         </label>
@@ -68,12 +68,12 @@
                                 {% endif %}
 
                                 <select id="mobile_country_code" name="mobile_country_code" value=""
-                                        class="govuk-select"
-                                        autocomplete="tel-country-code">
+                                    class="govuk-select"
+                                    autocomplete="tel-country-code">
                                     {% get_countries as countries %}
                                     {% for country in countries %}
                                         <option value="{{ country.code }}"
-                                                {% if form.cleaned_data|get_item:"mobile_country_code" == country.code %}selected{% endif %}>{{ country.name }}
+                                            {% if form.cleaned_data|get_item:"mobile_country_code" == country.code %}selected{% endif %}>{{ country.name }}
                                             {% with country.code|get_country_dialling_code as dialling_code %}
                                                 {% if dialling_code %}(+{{ dialling_code }})
                                                 {% endif %}{% endwith %}</option>
@@ -85,8 +85,8 @@
                     </div>
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="email" name="two_factor_choice" type="radio"
-                               value="email"
-                               {% if form.cleaned_data.two_factor_choice == "email" %}checked{% endif %}>
+                            value="email"
+                            {% if form.cleaned_data.two_factor_choice == "email" %}checked{% endif %}>
                         <label class="govuk-label govuk-radios__label" for="email">
                             By email: <strong>{{ user_email }}</strong>
                         </label>
