@@ -88,7 +88,7 @@ jobs:
       - run:
           name: Send coverage report to codecov.io
           command: codecov
-  setup_front_end_testing:
+  front_end_testing:
     docker:
       - image: cimg/python:3.9.5
         environment:
@@ -144,10 +144,9 @@ jobs:
           command: |
               python trade-remedies-public/trade_remedies_public/manage.py runserver 8002
           background: true
-  store_artifacts:
-    docker:
-      - image: cimg/python:3.9.5
-    steps:
+      - cypress/run:
+          install-browsers: true
+          cypress-command: 'npx cypress run --browser chrome'
       - store_artifacts:
           path: /home/circleci/project/cypress/videos
 
@@ -157,12 +156,4 @@ workflows:
     jobs:
       - code_quality
       - test_and_fitness_functions
-      - setup_front_end_testing
-      - cypress/run:
-          install-browsers: true
-          cypress-command: 'npx cypress run --browser chrome'
-          requires:
-              - setup_front_end_testing
-      - store_artifacts:
-          requires:
-              - cypress/run
+      - front_end_testing
