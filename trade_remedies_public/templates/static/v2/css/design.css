@@ -10829,3 +10829,9 @@ progress {
     /* Non standard for webkit */
     word-break: break-word;
 }
+
+@media (min-width: 40.0625em) {
+    .display-none-desktop {
+       display: none;
+    }
+}
