@@ -1,3 +1,28 @@
+" Django settings for
+Django 2.0.1
+https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+SessionMiddleware
+django.middleware.common
+CommonMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+BACKEND
+VCAP_SERVICES
+RedisCache
+DefaultClient
+http://localhost:8000
+PUB-ENV
+boto3
+ClamAVFileUploadHandler
+django_chunk_upload_handlers.s3.S3FileUploadHandler
+ROOT_LOG_LEVEL
+AutoField
+URLS
+Return True/False
+" A TransientUser
+Insetad
+APIUserMiddleware
+Views
 Generic+Footer">Give
 } - Trade Remedies Service - GOV.UK</title
 equiv="Cache-Control

@@ -1,6 +1,6 @@
 # Views to handle the login and logout functionality
 from django.conf import settings
-
+from django.core.cache import cache
 from core.decorators import catch_form_errors
 from core.utils import internal_redirect
 from django.contrib.auth import logout
@@ -54,6 +54,7 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
                 ]
             request.session.modified = True
             request.session.cycle_key()
+            cache.set(email, request.session.session_key)
             return internal_redirect(redirection_url, reverse("dashboard"))
 
 
@@ -84,9 +85,15 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
 
 
 def logout_view(request):
+    # logout view
+
+    # we want to pick this up from the session here before it gets deleted
+    logged_out_by_other_session = request.session.get("logged_out_by_other_session", False)
     if "token" in request.session:
         del request.session["token"]
     if "user" in request.session:
         del request.session["user"]
     logout(request)
+    if logged_out_by_other_session:
+        return redirect(f"{reverse('login')}?logged_out_by_other_session=true")
     return redirect(reverse("landing"))
