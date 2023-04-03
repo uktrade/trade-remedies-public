@@ -129,3 +129,4 @@ ner_output_file.txt
 
 # sqlite
 db.sqlite3
+cypress/videos/
