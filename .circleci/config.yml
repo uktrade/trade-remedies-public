@@ -116,7 +116,6 @@ jobs:
           - plugins.security.disabled=true
     steps:
       - checkout
-      - restore_dependency_cache
       - install_dependencies
       - save_dependency_cache
       - add_ssh_keys:
@@ -126,7 +125,6 @@ jobs:
           name: Clone trade-remedies API
           command: |
             git clone https://github.com/uktrade/trade-remedies-api ~/trade-remedies-api
-      - restore_api_dependency_cache
       - run:
           name: Install API dependencies
           command: |
