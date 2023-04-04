@@ -119,6 +119,7 @@ jobs:
           - plugins.security.disabled=true
     steps:
       - checkout
+      - restore_dependency_cache
       - install_dependencies
       - save_dependency_cache
       - add_ssh_keys:
@@ -133,13 +134,13 @@ jobs:
           name: Check Cypress
           command: npx cypress verify
       - run:
-          name: Install API dependencies
-          command: |
-            pip install -r ~/trade-remedies-api/requirements/dev.txt
-      - run:
           name: Clone trade-remedies API
           command: |
             git clone https://github.com/uktrade/trade-remedies-api ~/trade-remedies-api
+      - run:
+          name: Install API dependencies
+          command: |
+            pip install -r ~/trade-remedies-api/requirements/dev.txt
       - run:
           name: Run API testserver
           command: |
