@@ -101,6 +101,8 @@ jobs:
           HEALTH_CHECK_USER_EMAIL: "test@example.com"
           HEALTH_CHECK_TOKEN: "123"
           HEALTH_CHECK_USER_TOKEN: "123"
+          MASTER_ADMIN_EMAIL: "test@example.com"
+          MASTER_ADMIN_PASSWORD: "123"
           CASE_WORKER_ENVIRONMENT_KEY: "123"
           PUBLIC_ENVIRONMENT_KEY: "123"
           AUDIT_EMAIL_IAM_USER: "test_user"
@@ -157,7 +159,7 @@ jobs:
           background: true
       - run:
           name: Sleep for a little bit to make sure servers are running
-          command: sleep 25
+          command: sleep 15
       - run:
           name: Run migrations
           command: python ~/trade-remedies-api/trade_remedies_api/manage.py migrate
