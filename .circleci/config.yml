@@ -116,6 +116,7 @@ jobs:
         environment:
           - discovery.type=single-node
           - plugins.security.disabled=true
+      - image: cypress/included:12.9.0
     steps:
       - checkout
       - restore_dependency_cache
@@ -140,6 +141,9 @@ jobs:
               python ~/trade-remedies-api/trade_remedies_api/manage.py testserver ~/trade-remedies-api/trade_remedies_api/security/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/organisations/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/cases/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/core/fixtures/*.json --noinput
           background: true
       - run:
+          name: Check Cypress
+          command: npx cypress verify
+      - run:
           name: Run Public server
           command: |
             python trade_remedies_public/manage.py runserver 8002
@@ -147,6 +151,13 @@ jobs:
       - run:
           name: Sleep for a little bit to make sure servers are running
           command: sleep 20
+      - run:
+          name: Run tests 🚀
+          command: npx cypress run
+      - store_artifacts:
+          path: cypress/screenshots
+
+
 workflows:
   version: 2
   code_quality_and_tests:
@@ -154,14 +165,3 @@ workflows:
       - code_quality
       - test_and_fitness_functions
       - front_end_testing
-      - cypress/run:
-          cypress-command: npx cypress run --browser chrome
-          install-browsers: true
-          post-steps:
-            - run: ls
-            - store_test_results:
-                path: cypress/results
-            - store_artifacts:
-                path: cypress/screenshots
-          requires:
-            - front_end_testing
