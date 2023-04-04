@@ -1,6 +1,4 @@
 version: 2.1
-orbs:
-  cypress: cypress-io/cypress@3
 commands:
   install_dependencies:
     description: "Install Python dependencies"
@@ -12,7 +10,7 @@ commands:
       - run:
           name: Install Python dependencies
           command: |
-            python3 -m venv venv
+            python -m venv venv
             echo ". venv/bin/activate" >> $BASH_ENV
             . venv/bin/activate  # 
             pip install --upgrade pip
