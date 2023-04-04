@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  node: circleci/node@5.1.0
 commands:
   install_dependencies:
     description: "Install Python dependencies"
@@ -105,6 +107,7 @@ jobs:
           AUDIT_EMAIL_SMTP_PASSWORD: "test_password"
           AUDIT_EMAIL_TO_ADDRESS: "test@example.com"
           API_BASE_URL: http://localhost:8000
+          DEBUG: true
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
           POSTGRES_USER: ubuntu
@@ -121,24 +124,8 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "4e:01:33:11:90:5d:af:f4:f0:97:cd:f5:cb:cd:e1:ce"
-      - run:
-          name: Clone trade-remedies API
-          command: |
-            git clone https://github.com/uktrade/trade-remedies-api ~/trade-remedies-api
-      - run:
-          name: Install API dependencies
-          command: |
-            pip install -r ~/trade-remedies-api/requirements/dev.txt
-      - save_api_dependency_cache
-      - restore_cache:
-          keys:
-            - v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
-      - run: npm ci
-      - save_cache:
-          key: v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
-          paths:
-            - ~/.npm
-            - ~/.cache
+      - node/install-packages:
+          cache-path: ~/project/node_modules
       - run:
           name: Install frame buffer
           command: sudo apt install xvfb
@@ -146,10 +133,21 @@ jobs:
           name: Check Cypress
           command: npx cypress verify
       - run:
+          name: Install API dependencies
+          command: |
+            pip install -r ~/trade-remedies-api/requirements/dev.txt
+      - run:
+          name: Clone trade-remedies API
+          command: |
+            git clone https://github.com/uktrade/trade-remedies-api ~/trade-remedies-api
+      - run:
           name: Run API testserver
           command: |
               python ~/trade-remedies-api/trade_remedies_api/manage.py testserver ~/trade-remedies-api/trade_remedies_api/security/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/organisations/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/cases/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/core/fixtures/*.json --noinput
           background: true
+      - run:
+          name: Setup healthcheck user
+          command: python ~/trade-remedies-api/trade_remedies_api/manage.py adminuser
       - run:
           name: Run Public server
           command: |
