@@ -160,3 +160,5 @@ workflows:
                 path: cypress/results
             - store_artifacts:
                 path: cypress/screenshots
+          requires:
+            - front_end_testing
