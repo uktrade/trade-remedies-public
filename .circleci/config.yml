@@ -154,13 +154,13 @@ workflows:
       - front_end_testing
       - cypress/install
       - cypress/run:
-      requires:
-        - cypress/install
-      executor: with-chrome
-      browser: chrome
-      post-steps:
-        - run: ls
-        - store_test_results:
-            path: cypress/results
-        - store_artifacts:
-            path: cypress/screenshots
+          requires:
+            - cypress/install
+          executor: with-chrome
+          browser: chrome
+          post-steps:
+            - run: ls
+            - store_test_results:
+                path: cypress/results
+            - store_artifacts:
+                path: cypress/screenshots
