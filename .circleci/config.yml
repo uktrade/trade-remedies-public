@@ -117,6 +117,7 @@ jobs:
           - discovery.type=single-node
           - plugins.security.disabled=true
       - image: cypress/browsers:node18.12.0-chrome107
+      - image: cimg/node:19.8.1
     steps:
       - checkout
       - restore_dependency_cache
@@ -135,6 +136,7 @@ jobs:
           command: |
             pip install -r ~/trade-remedies-api/requirements/dev.txt
       - save_api_dependency_cache
+      - run: node --version
       - restore_cache:
           keys:
             - v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
