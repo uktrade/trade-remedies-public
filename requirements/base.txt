@@ -8,6 +8,8 @@ api-client==1.3.1
     # via v2-api-client
 asgiref==3.5.0
     # via django
+async-timeout==4.0.2
+    # via redis
 boto3==1.17.89
     # via
     #   -r requirements.in/base.in
@@ -107,7 +109,6 @@ libsass==0.21.0
 lxml==4.9.2
     # via
     #   pikepdf
-    #   python-docx
     #   v2-api-client
 markupsafe==2.1.2
     # via werkzeug
@@ -135,8 +136,6 @@ python-dateutil==2.8.2
     # via
     #   botocore
     #   v2-api-client
-python-docx==0.8.11
-    # via v2-api-client
 pytz==2021.1
     # via
     #   -r requirements.in/base.in
@@ -144,7 +143,7 @@ pytz==2021.1
     #   django-timezone-field
 rcssmin==1.0.6
     # via django-compressor
-redis==3.2.0
+redis==4.4.4
     # via
     #   -r requirements.in/base.in
     #   django-redis
@@ -178,7 +177,7 @@ urllib3==1.26.11
     #   botocore
     #   requests
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 werkzeug==2.2.3
     # via -r requirements.in/base.in
