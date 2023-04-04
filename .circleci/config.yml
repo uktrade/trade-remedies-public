@@ -137,7 +137,7 @@ jobs:
       - run:
           name: Run Public server
           command: |
-            python trade-remedies-public/trade_remedies_public/manage.py runserver 8002
+            python trade_remedies_public/manage.py runserver 8002
       - run:
           name: Run API testserver
           command: |
