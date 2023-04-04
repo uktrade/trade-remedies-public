@@ -152,7 +152,6 @@ workflows:
       - code_quality
       - test_and_fitness_functions
       - front_end_testing
-      - cypress/install
       - cypress/run:
           requires:
             - cypress/install
