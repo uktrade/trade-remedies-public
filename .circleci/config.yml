@@ -12,7 +12,7 @@ commands:
       - run:
           name: Install Python dependencies
           command: |
-            python3 -m venv venv
+            python -m venv venv
             echo ". venv/bin/activate" >> $BASH_ENV
             . venv/bin/activate  # 
             pip install --upgrade pip
