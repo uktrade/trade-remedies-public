@@ -90,7 +90,7 @@ jobs:
           command: codecov
   front_end_testing:
     docker:
-      - image: nikolaik/python-nodejs:python3.9-nodejs16-bullseye
+      - image: cimg/python:3.9-node
         environment:
           DATABASE_URL: psql://ubuntu@localhost:5432/trade_remedies
           DJANGO_SETTINGS_MODULE: config.settings.local
@@ -143,6 +143,9 @@ jobs:
           paths:
             - ~/.npm
             - ~/.cache
+      - run:
+          name: Install frame buffer
+          command: sudo apt install xvfb
       - run:
           name: Check Cypress
           command: npx cypress verify
