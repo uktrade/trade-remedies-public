@@ -209,15 +209,6 @@ class HoldingPageMiddleware(TradeRemediesAPIClientMixin):
         self.get_response = get_response
 
     def __call__(self, request, *args, **kwargs):
-        print(f"Using {settings.HEALTH_CHECK_TOKEN}")
-        holding_page_text = self.trusted_client.get_system_boolean("HOLDING_PAGE_TEXT", "")
-        if holding_page_text:
-            if request.path != self.holding_page_path:
-                return redirect(self.holding_page_path)
-        else:
-            if request.path == self.holding_page_path:
-                return redirect("/dashboard/")
-
         return self.get_response(request)
 
 
