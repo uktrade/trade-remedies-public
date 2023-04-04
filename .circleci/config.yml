@@ -102,7 +102,7 @@ jobs:
           HEALTH_CHECK_TOKEN: "123"
           HEALTH_CHECK_USER_TOKEN: "123"
           MASTER_ADMIN_EMAIL: "test@example.com"
-          MASTER_ADMIN_PASSWORD: "123"
+          MASTER_ADMIN_PASSWORD: "Test123!@£$"
           CASE_WORKER_ENVIRONMENT_KEY: "123"
           PUBLIC_ENVIRONMENT_KEY: "123"
           AUDIT_EMAIL_IAM_USER: "test_user"
