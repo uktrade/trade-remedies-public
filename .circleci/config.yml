@@ -93,7 +93,7 @@ jobs:
       - image: cimg/python:3.9.5
         environment:
           DATABASE_URL: psql://ubuntu@localhost:5432/trade_remedies
-          DJANGO_SETTINGS_MODULE: config.settings.test
+          DJANGO_SETTINGS_MODULE: config.settings.local
           DJANGO_SECRET_KEY: ci_only
           ALLOWED_HOSTS: "*"
           OPENSEARCH_HOST: "opensearch"
@@ -135,14 +135,18 @@ jobs:
             pip install -r ~/trade-remedies-api/requirements/dev.txt
       - save_api_dependency_cache
       - run:
-          name: Run Public server
-          command: |
-            python trade_remedies_public/manage.py runserver 8002
-      - run:
           name: Run API testserver
           command: |
               python ~/trade-remedies-api/trade_remedies_api/manage.py testserver ~/trade-remedies-api/trade_remedies_api/security/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/organisations/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/cases/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/core/fixtures/*.json --noinput
-
+          background: true
+      - run:
+          name: Run Public server
+          command: |
+            python trade_remedies_public/manage.py runserver 8002
+          background: true
+      - run:
+          name: Sleep for a little bit to make sure servers are running
+          command: sleep 20
 workflows:
   version: 2
   code_quality_and_tests:
