@@ -136,7 +136,6 @@ jobs:
           command: |
             pip install -r ~/trade-remedies-api/requirements/dev.txt
       - save_api_dependency_cache
-      - run: node --version
       - restore_cache:
           keys:
             - v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
