@@ -119,7 +119,6 @@ jobs:
           - plugins.security.disabled=true
     steps:
       - checkout
-      - restore_dependency_cache
       - install_dependencies
       - save_dependency_cache
       - add_ssh_keys:
