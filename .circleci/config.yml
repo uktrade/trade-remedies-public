@@ -116,7 +116,7 @@ jobs:
         environment:
           - discovery.type=single-node
           - plugins.security.disabled=true
-      - image: cypress/included:12.9.0
+      - image: cypress/browsers:node18.12.0-chrome107
     steps:
       - checkout
       - restore_dependency_cache
@@ -135,14 +135,23 @@ jobs:
           command: |
             pip install -r ~/trade-remedies-api/requirements/dev.txt
       - save_api_dependency_cache
+      - restore_cache:
+          keys:
+            - v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
+      - run: npm ci
+      - save_cache:
+          key: v2-deps-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - ~/.npm
+            - ~/.cache
+      - run:
+          name: Check Cypress
+          command: npx cypress verify
       - run:
           name: Run API testserver
           command: |
               python ~/trade-remedies-api/trade_remedies_api/manage.py testserver ~/trade-remedies-api/trade_remedies_api/security/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/organisations/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/cases/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/core/fixtures/*.json --noinput
           background: true
-      - run:
-          name: Check Cypress
-          command: npx cypress verify
       - run:
           name: Run Public server
           command: |
@@ -156,7 +165,6 @@ jobs:
           command: npx cypress run
       - store_artifacts:
           path: cypress/screenshots
-
 
 workflows:
   version: 2
