@@ -148,7 +148,19 @@ jobs:
             pip install -r ~/trade-remedies-api/requirements/dev.txt
       - save_api_dependency_cache
       - run:
-          name: Run API testserver
+          name: Run migrations
+          command: python ~/trade-remedies-api/trade_remedies_api/manage.py migrate
+      - run:
+          name: Install fixtures
+          command: python ~/trade-remedies-api/trade_remedies_api/manage.py loaddata ~/trade-remedies-api/trade_remedies_api/security/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/organisations/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/cases/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/core/fixtures/*.json
+      - run:
+          name: Setup healthcheck user
+          command: python ~/trade-remedies-api/trade_remedies_api/manage.py adminuser
+      - run:
+          name: load sysparams
+          command: python ~/trade-remedies-api/trade_remedies_api/manage.py load_sysparams
+      - run:
+          name: Run API server
           command: |
               python ~/trade-remedies-api/trade_remedies_api/manage.py runserver 8000
           background: true
@@ -160,15 +172,6 @@ jobs:
       - run:
           name: Sleep for a little bit to make sure servers are running
           command: sleep 15
-      - run:
-          name: Run migrations
-          command: python ~/trade-remedies-api/trade_remedies_api/manage.py migrate
-      - run:
-          name: Install fixtures
-          command: python ~/trade-remedies-api/trade_remedies_api/manage.py loaddata ~/trade-remedies-api/trade_remedies_api/security/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/organisations/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/cases/fixtures/*.json ~/trade-remedies-api/trade_remedies_api/core/fixtures/*.json
-      - run:
-          name: Setup healthcheck user
-          command: python ~/trade-remedies-api/trade_remedies_api/manage.py adminuser
       - run:
           name: Run tests 🚀
           command: npx cypress run
