@@ -53,6 +53,7 @@ jobs:
       - image: cimg/python:3.9.5
     steps:
       - checkout
+      - restore_dependency_cache
       - install_dependencies
       - save_dependency_cache
       - run:
@@ -76,6 +77,7 @@ jobs:
           fingerprints:
             - "ba:20:40:f8:be:ec:29:e7:81:14:2a:87:49:9c:8e:e7"
       - checkout
+      - restore_dependency_cache
       - install_dependencies
       - save_dependency_cache
       - run:
