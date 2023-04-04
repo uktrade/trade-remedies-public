@@ -1,3 +1,74 @@
+{{ errors.lockdown }
+Trade Remedy
+target="_blank">Terms of Use and Privacy Notice
+{{ hint
+Views
+QueryDicts
+Mobile 2FA
+NON-UK
+no_company_post_code_or_number_entered
+{{ invitation.email }
+Confirm
+id="company_search_container"></div
+register5
+stub/
+change_case_role
+li id="length">be
+Registration documentation{% endblock page_title %
+Upload a Letter of Authority{% endblock page_title %
+name="type_of_user
+Feedback sent{% endblock page_title %
+organisation{% endblock page_title %
+id="show_password
+Representative details{% endblock page_title %
+Trade
+id="rating-5
+how_could_we_improve_service-hint"></textarea
+name="existing_feedback_id" value=
+name='rating']:checked").trigger("change").trigger("click
+Generic+Footer">Give
+} - Trade Remedies Service - GOV.UK</title
+equiv="Cache-Control
+{{user.name
+urllib3==1.26.11
+${file_name.substring(file_name.length - 18
+JSON.parse(data["uploaded_files"][0
+other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container'
+document).on('drop
+DELETE
+this).closest(".upload_container").find(".inputfile").click
+Math.random().toString(36).slice(2
+new_document_field.find('input[type="file"][data-type="non_confidential"]').prop("id
+new_document_field.find('input[type="file"][data-type="confidential"]').prop("id
+show_remove_document_buttons
+document.getElementById("doc-
+${file_name.substring(file_name.length - 18
+JSON.parse(data["uploaded_files"][0
+other_file_upload_container = part_of_pair.find(`.${reversed_type}_file_row`).find('.upload_container'
+document).on('drop
+DELETE
+this).closest(".upload_container").find(".inputfile").click
+Math.random().toString(36).slice(2
+new_document_field.find('input[type="file"][data-type="non_confidential"]').prop("id
+new_document_field.find('input[type="file"][data-type="confidential"]').prop("id
+show_remove_document_buttons
+document.getElementById("doc-
+The UK Trade Remedies Authority
+id="sign_in_button" role="button
+d="M0
+form_errors|get_item:"mobile_country_code
++{{ dialling_code
+what_didnt_work_so_well
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV
+name="company_vat_number
+VAT
+DUNS
+Data Universal Numbering System
+name="submission_status_id
+name="address_snippet
+name="company_number
+yes">Request
 changes</button
 name="submission_status_id
 BC BLOCK
@@ -24,11 +95,97 @@ invitation</a
 email{%
 />Submit</button
 buttonEl.click(function
+{{ case.reference }
+Registration of Interest
+DataLayer
 holding_page.html
 home.html
 f"We
 TARIFF_CLASSIFICATION
 dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+f"We
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+holding_page.html
+home.html
+TARIFF_CLASSIFICATION
+dashboard.html
+pending_invitation_deficient_docs_count
+tasklist.html
+update.html
+feedback_form_inner.html
+tasklist.html
+SUBMISSION_TYPE_ALL_ORGANISATIONS
+Invite 3rd
+f"Invalid
+can_select_all
+public->tra
+f"/case/{self.case_id}/submission/{self.submission_id}/
+Review
+invitation</a
+Invite sent{% endblock page_title %
+{{ user_case.case.reference }} - {{
+BC BLOCK
+{{case.reference}
+{{case.name}
+{{ block.super }
+submit{% endblock %
+party{% endblock %
+Invite submitted{%
+Invite 3rd
+Trade Remedies Service
+SYSTEM_PARAMS_TTL
+sd020722222222
+v2_register_your_employer
+SYSTEM_PARAMS_TTL
+sd020722222222
+v2_register_your_employer
 update.html
 feedback_form_inner.html
 Download the Letter of Authority

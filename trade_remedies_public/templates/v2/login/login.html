@@ -4,11 +4,11 @@
 {% block back_button %}{% endblock back_button %}
 
 {% block page_title %}
-    Sign in or create account
+    Sign in to Trade Remedies Service
 {% endblock %}
 
 {% block heading %}
-    Sign in to Trade Remedies
+    Sign in to Trade Remedies Service
 {% endblock heading %}
 
 {% block extra_css %}
@@ -30,7 +30,7 @@
         Sign in
     </button>
     <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'v2_register_start' %}">Create an account</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'v2_confirm_existing_org' %}">Create an account</a>
     </p>
 {% endblock form_content %}
 

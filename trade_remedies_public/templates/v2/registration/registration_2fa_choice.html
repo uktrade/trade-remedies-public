@@ -12,6 +12,22 @@
     Two-factor authentication
 {% endblock heading %}
 
+{% block head %}
+    {{ block.super }}
+
+    {% if invitation %}
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+                'event': {% if invitation.invitation_type == 1 %}'accept_own_org_invite'
+                {% elif invitation.invitation_type == 2 %}'accept_representative_invite'
+                {% endif %},
+                "invitation_id": "{{invitation.id}}",
+            });
+        </script>
+    {% endif %}
+{% endblock head %}
+
 {% block form_content %}
     <p class="govuk-body">The next time you sign in, you will receive a code to verify that it’s really you. This
         provides an extra layer of security.</p>
@@ -19,9 +35,7 @@
         <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
             <fieldset class="govuk-fieldset">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                    <h1 class="govuk-fieldset__heading">
-                        How would you like to receive your code?
-                    </h1>
+                    How would you like to receive your code?
                 </legend>
                 {% if error %}
                     <p id="{{ name }}-error" class="govuk-error-message">
@@ -59,7 +73,10 @@
                                     {% get_countries as countries %}
                                     {% for country in countries %}
                                         <option value="{{ country.code }}"
-                                            {% if form.cleaned_data|get_item:"mobile_country_code" == country.code %}selected{% endif %}>{{ country.name }} {% with country.code|get_country_dialling_code as dialling_code %}{% if dialling_code %}(+{{ dialling_code }}){% endif %}{% endwith %}</option>
+                                            {% if form.cleaned_data|get_item:"mobile_country_code" == country.code %}selected{% endif %}>{{ country.name }}
+                                            {% with country.code|get_country_dialling_code as dialling_code %}
+                                                {% if dialling_code %}(+{{ dialling_code }})
+                                                {% endif %}{% endwith %}</option>
                                     {% endfor %}
                                 </select>
                             </div>

@@ -7,6 +7,14 @@ from django_countries.fields import CountryField
 from django.conf import settings
 
 
+class V2RegistrationViewConfirmExistingOrganisationForm(ValidationForm):
+    # need to select either 'yes' or 'no'
+    organisation_already_setup = forms.ChoiceField(
+        choices=(("yes", "yes"), ("no", "no")),
+        error_messages={"required": "organisation_already_setup_not_selected"},
+    )
+
+
 class RegistrationStartForm(ValidationForm):
     name = forms.CharField(error_messages={"required": "no_name_entered"})
     email = forms.EmailField(
@@ -122,8 +130,8 @@ class NonUkEmployerForm(ValidationForm):
 
     def clean(self):
         if not self.cleaned_data.get("company_number") and not self.cleaned_data.get("post_code"):
-            self.add_error("company_number", "no_company_post_code_or_number_entered")
             self.add_error("post_code", "no_company_post_code_or_number_entered")
+            self.add_error("company_number", "no_company_post_code_or_number_entered")
         return self.cleaned_data
 
 

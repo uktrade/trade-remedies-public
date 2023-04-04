@@ -1,7 +1,7 @@
 {% extends 'v2/govuk/base.html' %}
 {% load get_item %}
 {% load set %}
-{% block page_title %}Who is registering interest{% endblock page_title %}
+{% block page_title %}Who does your representative work for?{% endblock page_title %}
 
 {% block row_content %}
     {% with form_errors|get_item:"organisation" as error %}
@@ -12,7 +12,7 @@
                 <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
-                            <h1 class="govuk-fieldset__heading">
+                            <h1 class="govuk-fieldset__heading" id="organisation">
                                 Who does your representative work for?
                             </h1>
                         </legend>
@@ -35,7 +35,7 @@
                                             {% endif %}
                                         >
                                         <label class="govuk-label govuk-radios__label"
-                                            for="{ invitation.organisation_id }}">
+                                            for="{{ invitation.contact.organisation }}">
                                             {{ invitation.contact.organisation_name }}
                                         </label>
                                     </div>

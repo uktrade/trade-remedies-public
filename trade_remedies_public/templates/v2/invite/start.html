@@ -1,7 +1,7 @@
 {% extends 'v2/govuk/base.html' %}
 {% load set %}
 
-{% block page_title %}Invite new user{% endblock page_title %}
+{% block page_title %}Who are you inviting?{% endblock page_title %}
 
 {% block row_content %}
 
@@ -18,7 +18,7 @@
                 {% endif %}
             {% endif %}
 
-            {% include 'v2/component_macros/two_radio_buttons.html' with value=radio_value value_one="employee" value_two="representative" label_size='xl' label="Who are you inviting?" id_one="direct_employee" label_one="Someone who works directly for your organisation" id_two="representative" label_two="A representative, for example a lawyer" name="who_are_you_inviting" %}
+            {% include 'v2/component_macros/two_radio_buttons.html' with value=radio_value value_one="employee" value_two="representative" label_size='xl' label="Who are you inviting?" id_one="direct_employee" label_one="Someone who works directly for your organisation" id_two="representative" label_two="A representative, for example a lawyer" name="who_are_you_inviting" heading=True %}
             {% include 'v2/component_macros/form_button_group.html' %}
         </form>
 

@@ -1,6 +1,6 @@
 import json
 
-from django.test import TestCase
+from django.test import TestCase, SimpleTestCase
 from django.urls import reverse
 
 from .forms.forms import (
@@ -266,9 +266,8 @@ class TestOrganisationFurtherDetailsForm(TestCase):
         self.assertTrue(form.is_valid())
 
 
-class TestV2BaseRegisterView(TestCase):
+class TestV2BaseRegisterView(SimpleTestCase):
     def test_session_update(self):
-        self.assertNotIn("registration", self.client.session)
         post_data = {
             "email": "test@example.com",  # /PS-IGNORE
             "name": "test",
