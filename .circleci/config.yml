@@ -90,7 +90,7 @@ jobs:
           command: codecov
   front_end_testing:
     docker:
-      - image: cimg/3.9.16-browsers
+      - image: cimg/python:3.9.16-browsers
         environment:
           DATABASE_URL: psql://ubuntu@localhost:5432/trade_remedies
           DJANGO_SETTINGS_MODULE: config.settings.local
