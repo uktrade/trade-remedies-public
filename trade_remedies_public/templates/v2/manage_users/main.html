@@ -76,7 +76,7 @@
                         </span>
                     </h2>
                     <p>Select a user to manage their access to your cases.</p>
-                    <div id="table-sort" class="display-none-desktop">
+                    <div id="table-sort" class="table-sort-select">
                         <div class="govuk-form-group table-sort-select">
                             <label class="govuk-label govuk-!-display-inline" for="sort-user">
                                 Sort users by
@@ -182,7 +182,7 @@
                     </h2>
                     <p>You have {{ pending_invitations|length }} pending {% if pending_invitations|length != 1 %}
                         invites{% else %}invite{% endif %}.</p>
-                    <div id="table-sort" class="display-none-desktop">
+                    <div id="table-sort" class="table-sort-select">
                         <div class="govuk-form-group table-sort-select">
                             <label class="govuk-label govuk-!-display-inline" for="sort-pending">
                                 Sort users by
@@ -289,7 +289,7 @@
                     <h2 class="govuk-heading-m">Rejected invites</h2>
                     <p>You have {{ rejected_invitations|length }} rejected invite
                         {% if rejected_invitations|length != 1 %}s{% endif %}</p>
-                    <div id="table-sort" class="display-none-desktop">
+                    <div id="table-sort" class="table-sort-select">
                         <div class="govuk-form-group table-sort-select">
                             <label class="govuk-label govuk-!-display-inline" for="sort-rejected">
                                 Sort rejected invites by

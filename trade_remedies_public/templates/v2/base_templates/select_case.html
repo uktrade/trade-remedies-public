@@ -6,37 +6,38 @@
     <div class="govuk-grid-column-full">
         <span class="govuk-caption-xl">{% block header %}{% endblock header %}</span>
         <h1 class="govuk-heading-xl">Select a Trade Remedies case</h1>
-        <p class="govuk-body">{% block sub_heading %}Select the case you would like to participate in.{% endblock sub_heading %}</p>
+        <p>{% block sub_heading %}Select the case you would like to participate in.{% endblock sub_heading %}</p>
     </div>
     <div class="govuk-grid-column-full">
-        <div class="govuk-form-group table-sort-select display-none-desktop">
-            <label class="govuk-label govuk-!-display-inline" for="mobile_sort_cases">
-                Sort by
-            </label>
-            <select class="govuk-select" id="mobile_sort_cases" name="mobile_sort_cases">
-                <option value="0" selected="">Case No.</option>
-                <option value="1">Case</option>
-                <option value="2">Type</option>
-                <option value="3">Status</option>
-                <option value="4">Initiated</option>
-                <option value="5">Status</option>
-                <option value="6">Reg due</option>
-            </select>
-            <label class="govuk-label govuk-visually-hidden" for="mobile_sort_direction">
-                Direction
-            </label>
-            <select class="govuk-select" id="mobile_sort_direction" name="mobile_sort_direction">
-                <option value="desc" selected="">Descending</option>
-                <option value="asc">Ascending</option>
-            </select>
+        <form>
+            <div class="govuk-form-group table-sort-select">
+                <label class="govuk-label govuk-!-display-inline" for="mobile_sort_cases">
+                    Sort by
+                </label>
+                <select class="govuk-select" id="mobile_sort_cases" name="mobile_sort_cases">
+                    <option value="0" selected="">Case No.</option>
+                    <option value="1">Case</option>
+                    <option value="2">Type</option>
+                    <option value="3">Status</option>
+                    <option value="4">Initiated</option>
+                    <option value="5">Status</option>
+                    <option value="6">Reg due</option>
+                </select>
+            </div>
+            <div class="govuk-form-group table-sort-select">
+                <label class="govuk-label govuk-visually-hidden" for="mobile_sort_direction">
+                    Direction
+                </label>
+                <select class="govuk-select" id="mobile_sort_direction" name="mobile_sort_direction">
+                    <option value="desc" selected="">Descending</option>
+                    <option value="asc">Ascending</option>
+                </select>
 
-
-            <button class="govuk-button govuk-button--secondary table-sort-select" data-module="govuk-button" type="button"
-                id="mobile_sort_button">
+            </div>
+            <button class="govuk-button govuk-button--secondary table-sort-select" data-module="govuk-button" >
                 Sort
-            </button>
-
-        </div>
+            </button>            
+        </form>
         <form method="post">
             <div class="govuk-form-group {% if not cases %}govuk-form-group--error{% endif %}">
                 {% if not cases %}
