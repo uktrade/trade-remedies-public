@@ -90,7 +90,7 @@ jobs:
           command: codecov
   front_end_testing:
     docker:
-      - image: cimg/python:3.9.5
+      - image: nikolaik/python-nodejs:latest
         environment:
           DATABASE_URL: psql://ubuntu@localhost:5432/trade_remedies
           DJANGO_SETTINGS_MODULE: config.settings.local
@@ -116,8 +116,6 @@ jobs:
         environment:
           - discovery.type=single-node
           - plugins.security.disabled=true
-      - image: cypress/browsers:node18.12.0-chrome107
-      - image: cimg/node:19.8.1
     steps:
       - checkout
       - restore_dependency_cache
