@@ -53,7 +53,6 @@ jobs:
       - image: cimg/python:3.9.5
     steps:
       - checkout
-      - restore_dependency_cache
       - install_dependencies
       - save_dependency_cache
       - run:
@@ -77,7 +76,6 @@ jobs:
           fingerprints:
             - "ba:20:40:f8:be:ec:29:e7:81:14:2a:87:49:9c:8e:e7"
       - checkout
-      - restore_dependency_cache
       - install_dependencies
       - save_dependency_cache
       - run:
@@ -98,9 +96,9 @@ jobs:
           ALLOWED_HOSTS: "*"
           OPENSEARCH_HOST: "opensearch"
           OPENSEARCH_PORT: "9200"
-          HEALTH_CHECK_USER_EMAIL: "test@example.com"
-          HEALTH_CHECK_TOKEN: "123"
-          HEALTH_CHECK_USER_TOKEN: "123"
+          HEALTH_CHECK_USER_EMAIL: "healthcheck@example.com"
+          HEALTH_CHECK_TOKEN: "health_check_user_token"
+          HEALTH_CHECK_USER_TOKEN: "health_check_user_token"
           MASTER_ADMIN_EMAIL: "test@example.com"
           MASTER_ADMIN_PASSWORD: "Test123!@£$"
           CASE_WORKER_ENVIRONMENT_KEY: "123"
