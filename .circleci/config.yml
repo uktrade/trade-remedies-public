@@ -139,7 +139,7 @@ jobs:
       - run:
           name: Clone trade-remedies API
           command: |
-            git clone -b feature/trsv2-386/front-end-testing-suite https://github.com/uktrade/trade-remedies-api@feature/trsv2-386/front-end-testing-suite ~/trade-remedies-api
+            git clone -b feature/trsv2-386/front-end-testing-suite https://github.com/uktrade/trade-remedies-api ~/trade-remedies-api
       - restore_api_dependency_cache
       - run:
           name: Install API dependencies
