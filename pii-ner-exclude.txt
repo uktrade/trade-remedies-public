@@ -1,3 +1,5 @@
+BACKEND
+LocMemCache
 {{ errors.lockdown }
 Trade Remedy
 target="_blank">Terms of Use and Privacy Notice
