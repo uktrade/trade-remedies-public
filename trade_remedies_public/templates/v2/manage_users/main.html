@@ -431,7 +431,8 @@
             }
 
             $(".mobile_sort_button").click(function () {
-                let parent = $(this).closest(".govuk-visually-hidden--desktop")
+                // let parent = $(this).closest(".govuk-visually-hidden--desktop")
+                let parent = $(this).closest("#table-sort")
                 let column_index = Number(parent.find('.mobile_sort_dropdown').val())
                 let sort_direction = parent.find('.ascending_descending_sort').val()
 
