@@ -22,13 +22,13 @@ commands:
     description: "Restore dependency cache."
     steps:
       - restore_cache:
-          key: deps2-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps2-new_cache-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
 
   save_dependency_cache:
     description: "Save dependency cache."
     steps:
       - save_cache:
-          key: deps2-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps2-new_cache-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
           paths:
             - "venv"
 
@@ -36,13 +36,13 @@ commands:
     description: "Restore dependency cache."
     steps:
       - restore_cache:
-          key: deps2-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }}
+          key: deps2-new_cache-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }}
 
   save_api_dependency_cache:
     description: "Save dependency cache."
     steps:
       - save_cache:
-          key: deps2-{{ .Environment.CACHE_VERSION }}-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }}
+          key: deps2-new_cache-{{ .Branch }}-{{ checksum "~/trade-remedies-api/requirements/dev.txt" }}
           paths:
             - "venv"
 
@@ -111,7 +111,6 @@ jobs:
           AUDIT_EMAIL_TO_ADDRESS: "test@example.com"
           API_BASE_URL: http://localhost:8000
           DEBUG: true
-          CACHE_VERSION: 2
       - image: circleci/postgres:9.6.5-alpine-ram
         environment:
           POSTGRES_USER: ubuntu
@@ -140,7 +139,7 @@ jobs:
       - run:
           name: Clone trade-remedies API
           command: |
-            git clone --single-branch --branch feature/trsv2-386/front-end-testing-suite https://github.com/uktrade/trade-remedies-api@feature/trsv2-386/front-end-testing-suite ~/trade-remedies-api
+            git clone -b feature/trsv2-386/front-end-testing-suite https://github.com/uktrade/trade-remedies-api@feature/trsv2-386/front-end-testing-suite ~/trade-remedies-api
       - restore_api_dependency_cache
       - run:
           name: Install API dependencies
