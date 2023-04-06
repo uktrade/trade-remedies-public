@@ -53,7 +53,7 @@
                     {% endif %}
                 </p>
             </div>
-            {% if no_duplicate_unapproved_rep_invitations_cases or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
+            {% if pending_invited_cases or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
                 {% if user.email_verified_at %}
                     {% if cases %}
                         <h1 class="heading-large">Your cases</h1>
@@ -109,8 +109,8 @@
                                         </li>
                                     {% endif %}
                                     {% if invitation_waiting_trs_approval_count %}
-                                        <li>{{ invitation_waiting_trs_approval_count }} invite
-                                            {% if invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting
+                                        <li>{{ invitation_waiting_trs_approval_count }}
+                                            {% if invitation_waiting_trs_approval_count > 1 %}invites{% else %}invite{% endif %} waiting
                                             for TRA review
                                         </li>
                                     {% endif %}
