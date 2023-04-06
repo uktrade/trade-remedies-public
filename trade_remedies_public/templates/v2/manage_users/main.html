@@ -76,12 +76,12 @@
                         </span>
                     </h2>
                     <p>Select a user to manage their access to your cases.</p>
-                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                    <div id="table-sort">
                         <div class="govuk-form-group table-sort-select">
                             <label class="govuk-label govuk-!-display-inline" for="sort-user">
                                 Sort users by
                             </label>
-                            <select class="govuk-select mobile_sort_dropdown" data-table-id="">
+                            <select class="govuk-select mobile_sort_dropdown" id="sort-user" name="sort-user" data-table-id="">
                                 <option value="0" selected="">User</option>
                                 <option value="1">Email</option>
                                 <option value="2">Account role</option>
@@ -92,12 +92,12 @@
                             <label class="govuk-label govuk-visually-hidden" for="direction-users">
                                 Direction
                             </label>
-                            <select class="govuk-select ascending_descending_sort">
+                            <select class="govuk-select ascending_descending_sort" id="direction-users" name="direction-users">
                                 <option value="desc" selected="">Descending</option>
                                 <option value="asc">Ascending</option>
                             </select>
                         </div>
-                        <button class="govuk-button govuk-button--secondary mobile_sort_button"
+                        <button class="govuk-button govuk-button--secondary mobile_sort_button table-sort-select"
                             data-module="govuk-button" data-table="users">
                             Sort users
                         </button>
@@ -182,12 +182,12 @@
                     </h2>
                     <p>You have {{ pending_invitations|length }} pending {% if pending_invitations|length != 1 %}
                         invites{% else %}invite{% endif %}.</p>
-                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                    <div id="table-sort">
                         <div class="govuk-form-group table-sort-select">
                             <label class="govuk-label govuk-!-display-inline" for="sort-pending">
                                 Sort users by
                             </label>
-                            <select class="govuk-select mobile_sort_dropdown">
+                            <select class="govuk-select mobile_sort_dropdown" id="sort-pending" name="sort-pending">
                                 <option value="0" selected="">User</option>
                                 <option value="1">Email</option>
                                 <option value="2">Account role</option>
@@ -198,12 +198,12 @@
                             <label class="govuk-label govuk-visually-hidden" for="direction-pending">
                                 Direction
                             </label>
-                            <select class="govuk-select ascending_descending_sort">
+                            <select class="govuk-select ascending_descending_sort" id="direction-pending" name="direction-pending">
                                 <option value="desc" selected="">Descending</option>
                                 <option value="asc">Ascending</option>
                             </select>
                         </div>
-                        <button class="govuk-button govuk-button--secondary mobile_sort_button"
+                        <button class="govuk-button govuk-button--secondary mobile_sort_button table-sort-select"
                             data-module="govuk-button" data-table="pending_invites">
                             Sort pending invites
                         </button>
@@ -289,12 +289,12 @@
                     <h2 class="govuk-heading-m">Rejected invites</h2>
                     <p>You have {{ rejected_invitations|length }} rejected invite
                         {% if rejected_invitations|length != 1 %}s{% endif %}</p>
-                    <div id="table-sort" class="govuk-visually-hidden--desktop">
+                    <div id="table-sort">
                         <div class="govuk-form-group table-sort-select">
                             <label class="govuk-label govuk-!-display-inline" for="sort-rejected">
                                 Sort rejected invites by
                             </label>
-                            <select class="govuk-select mobile_sort_dropdown">
+                            <select class="govuk-select mobile_sort_dropdown" id="sort-rejected" name="sort-rejected">
                                 <option value="0" selected="">User</option>
                                 <option value="1">Email</option>
                                 <option value="2">Status</option>
@@ -304,12 +304,12 @@
                             <label class="govuk-label govuk-visually-hidden" for="direction-rejected">
                                 Direction
                             </label>
-                            <select class="govuk-select ascending_descending_sort">
+                            <select class="govuk-select ascending_descending_sort" id="direction-rejected" name="direction-rejected">
                                 <option value="desc" selected="">Descending</option>
                                 <option value="asc">Ascending</option>
                             </select>
                         </div>
-                        <button class="govuk-button govuk-button--secondary mobile_sort_button"
+                        <button class="govuk-button govuk-button--secondary mobile_sort_button table-sort-select"
                             data-module="govuk-button" data-table="rejected_invites">
                             Sort users
                         </button>
@@ -390,6 +390,7 @@
                 ],
                 order: [[0, 'asc']],
                 responsive: true,
+                tabIndex: -1,
             });
 
             let pending_invites_table = $('#table-header-pending-invites').DataTable({
@@ -405,6 +406,7 @@
                 ],
                 order: [[0, 'asc']],
                 responsive: true,
+                tabIndex: -1,
             });
 
             let rejected_invites_table = $('#table-header-rejected-invites').DataTable({
@@ -419,6 +421,7 @@
                 ],
                 order: [[0, 'asc']],
                 responsive: true,
+                tabIndex: -1,
             });
 
             let table_lookup = {
@@ -428,7 +431,7 @@
             }
 
             $(".mobile_sort_button").click(function () {
-                let parent = $(this).closest(".govuk-visually-hidden--desktop")
+                let parent = $(this).closest("#table-sort")
                 let column_index = Number(parent.find('.mobile_sort_dropdown').val())
                 let sort_direction = parent.find('.ascending_descending_sort').val()
 

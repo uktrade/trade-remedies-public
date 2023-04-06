@@ -461,7 +461,7 @@ class DashboardView(
                 [1 for invite in invitations if "waiting_tra_review" in invite.status]
             )
 
-        unapproved_rep_invitations_cases = [
+        """unapproved_rep_invitations_cases = [
             invite.case
             for invite in invitations
             if invite.submission and not invite.rejected_at and not invite.approved_at
@@ -471,7 +471,7 @@ class DashboardView(
         for case in unapproved_rep_invitations_cases:
             if case.id not in seen_case_ids:
                 no_duplicate_unapproved_rep_invitations_cases.append(case)
-                seen_case_ids.append(case.id)
+                seen_case_ids.append(case.id)"""
 
         return render(
             request,
@@ -492,7 +492,6 @@ class DashboardView(
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
                 "is_org_owner": is_org_owner,
                 "case_to_roi": case_to_roi,
-                "unapproved_rep_invitations_cases": no_duplicate_unapproved_rep_invitations_cases,
                 "pending_invitation_count": pending_invitation_count,
                 "pending_invitation_deficient_docs_count": pending_invitation_deficient_docs_count,
                 "invitation_waiting_trs_approval_count": invitation_waiting_trs_approval_count,
