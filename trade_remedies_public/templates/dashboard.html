@@ -53,14 +53,16 @@
                     {% endif %}
                 </p>
             </div>
-            {% if unapproved_rep_invitations_cases or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
+            {% if no_duplicate_unapproved_rep_invitations_cases or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
                 {% if user.email_verified_at %}
-                    <h1 class="heading-large">Your cases</h1>
-                    {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
+                    {% if cases %}
+                        <h1 class="heading-large">Your cases</h1>
+                        {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
+                    {% endif %}
                     {# Cases waiting approval #}
-                    {% if unapproved_rep_invitations_cases %}
+                    {% if pending_invited_cases %}
                         <h2 class="heading-medium">Pending TRA Approval</h2>
-                        {% include "partials/widgets/dashboard_caselist.html" with cases=unapproved_rep_invitations_cases show_casenumber=True no_click=True %}
+                        {% include "partials/widgets/dashboard_caselist.html" with cases=pending_invited_cases show_casenumber=True no_click=True %}
                     {% endif %}
                     <!-- Draft applications -->
                     {% if applications %}
