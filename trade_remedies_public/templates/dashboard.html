@@ -99,7 +99,7 @@
                                 <ul class="govuk-list govuk-list--bullet">
                                     {% if pending_invitation_deficient_docs_count %}
                                         <li class="govuk-!-font-weight-bold">{{ pending_invitation_deficient_docs_count }}
-                                            invite{% if pending_invitation_deficient_docs_count > 1 %}s{% endif %}
+                                            {% if pending_invitation_deficient_docs_count > 1 %}invites{% else %}invite{% endif %}
                                             with deficient documentation
                                         </li>
                                     {% endif %}
