@@ -1,15 +1,14 @@
 {% extends "v2/govuk/base.html" %}
 {% load get_item %}
 
-{% block page_title %}Change account status{% endblock page_title %}
+{% block page_title %}Select the user’s status{% endblock page_title %}
 
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
             {% csrf_token %}
-            {% include 'v2/component_macros/two_radio_buttons.html' with value=user.is_active value_one=True value_two=False label_size='xl' label="Select the user’s status" id_one="active" label_one="User is active and has access to your organisation’s cases." id_two="not_active" label_two="User is inactive and does not have access to any of your organisation’s cases." name="is_active" %}
+            {% include 'v2/component_macros/two_radio_buttons.html' with value=user.is_active value_one=True value_two=False label_size='xl' label="Select the user’s status" id_one="active" label_one="User is active and has access to your organisation’s cases." id_two="not_active" label_two="User is inactive and does not have access to any of your organisation’s cases." name="is_active" heading=True %}
             {% include "v2/component_macros/form_button_group.html" with forward_button_text="Submit" %}
         </form>
-
     </div>
 {% endblock row_content %}

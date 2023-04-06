@@ -404,42 +404,44 @@ class DashboardView(
             )
             invite_submissions = client.get_organisation_invite_submissions(organisation["id"])
 
-            if contact_id := self.request.user.contact.get("organisation", {}).get("id"):
+            if contact_organisation_id := self.request.user.contact.get("organisation", {}).get(
+                "id"
+            ):
                 roi_submissions = v2_client.submissions(
                     type_id=SUBMISSION_TYPE_REGISTER_INTEREST,
                     case_id__in=[
                         each.case.id for each in v2_organisation["organisationcaserole_set"]
                     ],
-                    organisation_id=contact_id,
+                    organisation_id=contact_organisation_id,
                     fields=["case", "status"],
                 )
                 case_to_roi = {each.case.id: each for each in roi_submissions}
 
+        # let's get a list of all the invitations sent by this organisation so we can display them
+        # on their dashboard along with their status.
+        # only required if the user is an organisation owner so don't bother making the API calls
+        # if not.
         pending_invitation_count = 0
         pending_invitation_deficient_docs_count = 0
         invitation_waiting_trs_approval_count = 0
-
-        # Let's get the cases where the user is awaiting approval
-        invitations = v2_client.invitations(
-            organisation_id=self.request.user.contact["organisation"]["id"],
-            contact_id__isnull=False,  # we need at least the name and email of the contact
-            fields=[
-                "submission",
-                "case",
-                "status",
-                "invitation_type",
-                "rejected_at",
-                "accepted_at",
-                "approved_at",
-            ],
-        )
-
-        # only required if the user is an organisation owner
         if is_org_owner:
+            sent_invitations = v2_client.invitations(
+                organisation_id=self.request.user.contact["organisation"]["id"],
+                contact_id__isnull=False,  # we need at least the name and email of the contact
+                fields=[
+                    "submission",
+                    "case",
+                    "status",
+                    "invitation_type",
+                    "rejected_at",
+                    "accepted_at",
+                    "approved_at",
+                ],
+            )
             pending_invitation_count = sum(
                 [
                     1
-                    for invite in invitations
+                    for invite in sent_invitations
                     if "invite_sent" in invite.status
                     or (
                         invite.invitation_type == 2
@@ -452,26 +454,31 @@ class DashboardView(
             pending_invitation_deficient_docs_count = sum(
                 [
                     1
-                    for invite in invitations
+                    for invite in sent_invitations
                     if "deficient" in invite.status and not invite.submission.archived
                 ]
             )
 
             invitation_waiting_trs_approval_count = sum(
-                [1 for invite in invitations if "waiting_tra_review" in invite.status]
+                [1 for invite in sent_invitations if "waiting_tra_review" in invite.status]
             )
 
-        unapproved_rep_invitations_cases = [
-            invite.case
-            for invite in invitations
-            if invite.submission and not invite.rejected_at and not invite.approved_at
-        ]
+        # now let's get rep invitations sent to this user, so we can show them cases which are
+        # pending on TRA approval.
+        received_rep_invitations = v2_client.invitations(
+            contact_id=self.request.user.contact["id"],
+            invitation_type=2,
+            approved_at__isnull=True,
+            rejected_at__isnull=True,
+            email_sent=True,
+            fields=["case"],
+        )
         seen_case_ids = []
-        no_duplicate_unapproved_rep_invitations_cases = []
-        for case in unapproved_rep_invitations_cases:
-            if case.id not in seen_case_ids:
-                no_duplicate_unapproved_rep_invitations_cases.append(case)
-                seen_case_ids.append(case.id)
+        pending_invited_cases = []
+        for invitation in received_rep_invitations:
+            if invitation.case.id not in seen_case_ids:
+                pending_invited_cases.append(invitation.case)
+                seen_case_ids.append(invitation.case.id)
 
         return render(
             request,
@@ -492,10 +499,10 @@ class DashboardView(
                 "pre_register_interest": client.get_system_boolean("PRE_REGISTER_INTEREST"),
                 "is_org_owner": is_org_owner,
                 "case_to_roi": case_to_roi,
-                "unapproved_rep_invitations_cases": no_duplicate_unapproved_rep_invitations_cases,
                 "pending_invitation_count": pending_invitation_count,
                 "pending_invitation_deficient_docs_count": pending_invitation_deficient_docs_count,
                 "invitation_waiting_trs_approval_count": invitation_waiting_trs_approval_count,
+                "pending_invited_cases": pending_invited_cases,
             },
         )
 

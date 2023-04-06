@@ -1,6 +1,6 @@
 {% extends "v2/govuk/base.html" %}
 
-{% block page_title %}Create an account{% endblock page_title %}
+{% block page_title %}Your account details{% endblock page_title %}
 
 {% block row_content %}
 
@@ -13,7 +13,7 @@
             </h1>
             {% include 'v2/component_macros/text_input.html' with value=invitation.contact.name strong=True label="Enter your name" id="name" name="name" type="text" width="20" %}
             {% include 'v2/component_macros/text_input.html' with value=invitation.contact.email strong=True label="Your email address" id="email" name="email" type="email" width="20" readonly=True input_class="govuk-input--readonly" %}
-            {% include 'v2/component_macros/checkbox.html' with heading="Terms of Use and Privacy Notice" label="I have read and understood the <a href='/termsofuse-privacypolicy/' target='_blank'> Terms of Use and Privacy Notice</a> (opens in a new window)" id="terms_and_conditions_accept" name="terms_and_conditions_accept" %}
+            {% include 'v2/component_macros/checkbox.html' with heading="Terms of Use and Privacy Notice" label="I have read and understood the <a href='/termsofuse-privacypolicy/' class='govuk-link' rel='noreferrer noopener' target='_blank'>Terms of Use and Privacy Notice (opens in new tab)</a>" id="terms_and_conditions_accept" name="terms_and_conditions_accept" %}
             {% include "v2/component_macros/form_button_group.html" %}
         </form>
     </div>

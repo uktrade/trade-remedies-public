@@ -10110,7 +10110,7 @@ p + .govuk-heading-s,
 /* Password condition check */
 /*check: Add a green text color and a checkmark when the requirements are right */
 .valid {
-    color: green;
+    color: #216334;
 }
 
 ul li.invalid {
@@ -10358,11 +10358,6 @@ table.sortable th:not([aria-sort]) button:hover span::after {
 /* For the hiddlen select for sorting on mobile or the visible one used in caseworker caes*/
 .table-filter {
     display: inline-block;
-}
-
-.table-sort-select {
-    float: left;
-    padding-right: 20px;
 }
 
 #table-sort .govuk-button--secondary, #table-filter .govuk-button--secondary {
@@ -10828,4 +10823,17 @@ progress {
     -ms-word-break: break-all;
     /* Non standard for webkit */
     word-break: break-word;
+}
+
+/* For sorting on mobile*/  
+.table-sort-select {     
+    display: inline-block;     
+    padding-right: 10px;   
+}
+
+/* For the hiding the select boxes on desktop that are used for sorting on mobile */   
+@media (min-width: 40.0625em) {
+    .table-sort-select {
+       display: none;
+    }
 }

@@ -3,13 +3,6 @@
 {% load feedback_form %}
 {% load organisation_name %}
 {% load organisation_initialism %}
-<script>
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-        'event': 'user_login',
-        'user_id': '{{request.user.id}}'
-    });
-</script>
 
 {% block page_title %}Dashboard{% endblock %}
 
@@ -60,14 +53,16 @@
                     {% endif %}
                 </p>
             </div>
-            {% if unapproved_rep_invitations_cases or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
+            {% if pending_invited_cases or cases or applications or interest_cases or interest_cases_draft or invite_submissions %}
                 {% if user.email_verified_at %}
-                    <h1 class="heading-large">Your cases</h1>
-                    {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
+                    {% if cases %}
+                        <h1 class="heading-large">Your cases</h1>
+                        {% include "partials/widgets/dashboard_caselist.html" with cases=cases show_casenumber=True %}
+                    {% endif %}
                     {# Cases waiting approval #}
-                    {% if unapproved_rep_invitations_cases %}
+                    {% if pending_invited_cases %}
                         <h2 class="heading-medium">Pending TRA Approval</h2>
-                        {% include "partials/widgets/dashboard_caselist.html" with cases=unapproved_rep_invitations_cases show_casenumber=True no_click=True %}
+                        {% include "partials/widgets/dashboard_caselist.html" with cases=pending_invited_cases show_casenumber=True no_click=True %}
                     {% endif %}
                     <!-- Draft applications -->
                     {% if applications %}
@@ -90,7 +85,7 @@
                     <!-- 3rd party invites -->
                     <div class="margin-top-2">
                         {% if is_org_owner %}
-                            {% if pending_invitation_count or pending_invitation_deficient_docs_count or pending_invitation_waiting_trs_approval_count %}
+                            {% if pending_invitation_count or pending_invitation_deficient_docs_count or invitation_waiting_trs_approval_count %}
                                 <h2 class="govuk-heading-m">
                                     User invites
                                     {% if pre_manage_team and is_org_owner %}
@@ -104,7 +99,7 @@
                                 <ul class="govuk-list govuk-list--bullet">
                                     {% if pending_invitation_deficient_docs_count %}
                                         <li class="govuk-!-font-weight-bold">{{ pending_invitation_deficient_docs_count }}
-                                            invite{% if pending_invitation_deficient_docs_count > 1 %}s{% endif %}
+                                            {% if pending_invitation_deficient_docs_count > 1 %}invites{% else %}invite{% endif %}
                                             with deficient documentation
                                         </li>
                                     {% endif %}
@@ -114,8 +109,8 @@
                                         </li>
                                     {% endif %}
                                     {% if invitation_waiting_trs_approval_count %}
-                                        <li>{{ invitation_waiting_trs_approval_count }} invite
-                                            {% if invitation_waiting_trs_approval_count > 1 %}s{% endif %} waiting
+                                        <li>{{ invitation_waiting_trs_approval_count }}
+                                            {% if invitation_waiting_trs_approval_count > 1 %}invites{% else %}invite{% endif %} waiting
                                             for TRA review
                                         </li>
                                     {% endif %}

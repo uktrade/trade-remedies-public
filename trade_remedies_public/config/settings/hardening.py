@@ -69,6 +69,7 @@ CSP_FONT_SRC = (
     "'self'",
     "fonts.gstatic.com",
     "https:",
+    "data:",
 )
 
 CSP_INCLUDE_NONCE_IN = ("script-src",)

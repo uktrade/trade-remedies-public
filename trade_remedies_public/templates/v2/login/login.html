@@ -4,11 +4,11 @@
 {% block back_button %}{% endblock back_button %}
 
 {% block page_title %}
-    Sign in or create account
+    Sign in to Trade Remedies Service
 {% endblock %}
 
 {% block heading %}
-    Sign in to Trade Remedies
+    Sign in to Trade Remedies Service
 {% endblock heading %}
 
 {% block extra_css %}
@@ -17,6 +17,11 @@
 
 {% block form_content %}
     <p aria-live="polite" id="password-text" class="sr-only">Password hidden.</p>
+    {% if request.GET.logged_out_by_other_session %}
+        <div class="govuk-inset-text">
+            You have been signed out due to activity on another device.
+        </div>
+    {% endif %}
     <p class="govuk-body">
         Sign in to request a new investigation or participate in an existing case.
     </p>
@@ -30,7 +35,8 @@
         Sign in
     </button>
     <p class="govuk-body">
-        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'v2_register_start' %}">Create an account</a>
+        <a class="govuk-link govuk-link--no-visited-state" href="{% url 'v2_confirm_existing_org' %}">Create an
+            account</a>
     </p>
 {% endblock form_content %}
 

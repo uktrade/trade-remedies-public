@@ -23,9 +23,10 @@
                         <br>
                         <strong>Email the case team</strong>
                         <a class="govuk-link govuk-link--no-visited-state"
-                            href="">{{ case_reference }}@traderemedies.gov.uk</a> {# /PS-IGNORE #}
-
-
+                            href="mailto:{{ case.reference }}@traderemedies.gov.uk" {# /PS-IGNORE #}
+                        >
+                            {{ case_reference }}@traderemedies.gov.uk {# /PS-IGNORE #}
+                        </a>
                     </li>
                 {% endif %}
             </ul>
