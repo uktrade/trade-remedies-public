@@ -1,3 +1,28 @@
+MAX FILE
+ExtractMetadataFileUploadHandler
+XLSX
+TITLE
+AWS
+" Django settings for
+Django 2.0.1
+https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
+SessionMiddleware
+django.middleware.common
+CommonMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+BACKEND
+VCAP_SERVICES
+RedisCache
+DefaultClient
+http://localhost:8000
+PUB-ENV
+boto3
+ClamAVFileUploadHandler
+ExtractDocumentMetadata
+django_chunk_upload_handlers.s3.S3FileUploadHandler
+ROOT_LOG_LEVEL
+AutoField
 request.session["user"]["email
 request.session["user"]["email
 pending_invitation_deficient_docs_count or invitation_waiting_trs_approval_count %
