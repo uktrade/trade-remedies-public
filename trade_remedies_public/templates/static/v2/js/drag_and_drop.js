@@ -18,7 +18,7 @@ function file_upload(upload_container, files, submission_id) {
     form_data.append('type', upload_container.data("type"));
     form_data.append('submission_id', submission_id);
     form_data.append('unique_id', upload_container.attr('id'));
-    if (upload_container.attr('data-replace-document-id')){
+    if (upload_container.attr('data-replace-document-id')) {
         form_data.append('replace_document_id', upload_container.attr('data-replace-document-id'));
     }
     if (upload_container.attr('data-parent-document')) {
@@ -76,6 +76,7 @@ function file_upload(upload_container, files, submission_id) {
             upload_container.find('.delete_document_link').data('document-id', uploaded_file['id']).attr('data-document-id', uploaded_file['id']);
             upload_container.find('.deficient_document_warning').remove()
             upload_container.find('.delete_document_link').html('Remove <span class="govuk-visually-hidden">file</span>')
+            upload_container.attr('data-current-document', uploaded_file['id'])
 
             const part_of_pair = upload_container.closest('.confidential_and_non_confidential_file_row')
             if (part_of_pair) {
@@ -116,28 +117,28 @@ $(document).on('change', 'input[type="file"]', function () {
 })
 
 $(document).on('drop dragdrop', '.upload_container', function (e) {
-    if ($(this).attr("data-current-document") || $(this).find('input[type="file"]').val()){
+    e.preventDefault()
+    e.stopPropagation()
+    if ($(this).attr("data-current-document") || $(this).find('input[type="file"]').val()) {
         // If there is already a file uploaded, then we ignore the drop event
         return false
     }
-    let upload_card  = $(this).closest('.upload-card')
+    let upload_card = $(this).closest('.upload-card')
     upload_card.removeClass('upload-card-hover')
     const submission_id = $(this).data("submission-id")
     const original_event = e.originalEvent
-    e.preventDefault()
-    e.stopPropagation()
 
     file_upload($(this), original_event.dataTransfer.files, submission_id)
 })
 
 $(document).on('dragover', '.upload_container', function (e) {
-    if ($(this).attr("data-current-document") || $(this).find('input[type="file"]').val()){
+    e.preventDefault()
+    e.stopPropagation()
+    if ($(this).attr("data-current-document") || $(this).find('input[type="file"]').val()) {
         // If there is already a file uploaded, then we ignore the dragover event
         return false
     }
-    e.preventDefault()
-    e.stopPropagation()
-    let upload_card  = $(this).closest('.upload-card')
+    let upload_card = $(this).closest('.upload-card')
     upload_card.addClass('upload-card-hover')
 })
 

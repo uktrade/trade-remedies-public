@@ -13,6 +13,8 @@ asgiref==3.5.0
     # via django
 asttokens==2.2.1
     # via stack-data
+async-timeout==4.0.2
+    # via redis
 attrs==21.2.0
     # via pytest
 backcall==0.2.0
@@ -169,7 +171,6 @@ libsass==0.21.0
 lxml==4.9.2
     # via
     #   pikepdf
-    #   python-docx
     #   v2-api-client
 markupsafe==2.1.2
     # via werkzeug
@@ -286,8 +287,6 @@ python-dateutil==2.8.2
     #   botocore
     #   matplotlib
     #   v2-api-client
-python-docx==0.8.11
-    # via v2-api-client
 pytz==2021.1
     # via
     #   -r requirements.in/base.in
@@ -297,7 +296,7 @@ pyyaml==6.0
     # via pre-commit
 rcssmin==1.0.6
     # via django-compressor
-redis==3.2.0
+redis==4.4.4
     # via
     #   -r requirements.in/base.in
     #   django-redis
@@ -338,7 +337,6 @@ tenacity==8.0.1
     # via api-client
 toml==0.10.2
     # via
-    #   pre-commit
     #   pytest
     #   pytest-cov
 tomli==1.2.1
@@ -361,7 +359,7 @@ urllib3==1.26.11
     #   requests
     #   selenium
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 virtualenv==20.14.0
     # via pre-commit

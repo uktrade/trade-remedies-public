@@ -1,6 +1,7 @@
 import time
 from urllib.parse import urlparse
 
+
 from core.models import TransientUser
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -99,6 +100,15 @@ class APIUserMiddleware:
             request.session["back_link_url"] = back_link_url
             if resolve(request.path_info).url_name in NON_2FA_URLS:
                 request.session["back_link_url"] = reverse("logout")
+
+            # Checking if the user has been logged out by another session, if the session key
+            # stored in the cache is different from the one in the current session, then it has
+            # been replaced by another login
+            """if cache.get(
+                request.session["user"]["email"]
+            ) != request.session.session_key and not request.path == reverse("logout"):
+                request.session["logged_out_by_other_session"] = True
+                return redirect(reverse("logout"))"""
 
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)

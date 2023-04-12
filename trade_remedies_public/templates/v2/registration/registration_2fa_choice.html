@@ -19,13 +19,10 @@
         <script>
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({
-                'event':
-                {% if invitation.invitation_type == 1 %}
-                    'accept_own_org_invite'
-                {% elif invitation.invitation_type == 2 %}
-                    'accept_representative_invite'
-                {% endif %}
-                "invitation_id": "{{invitation_id}}",
+                'event': {% if invitation.invitation_type == 1 %}'accept_own_org_invite'
+                {% elif invitation.invitation_type == 2 %}'accept_representative_invite'
+                {% endif %},
+                "invitation_id": "{{invitation.id}}",
             });
         </script>
     {% endif %}

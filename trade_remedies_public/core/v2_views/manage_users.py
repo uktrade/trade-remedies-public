@@ -358,11 +358,8 @@ class AssignToCaseView(BaseEditUserView):
         # then let's get the cases the org is enrolled in as a representative
         org = self.client.organisations(
             self.organisation_user.organisation,
-            fields=[
-                "representative_cases",
-            ],
-        )
-        for each in org.representative_cases:
+        ).organisation_card_data()
+        for each in org["representative_cases"]:
             if each.case.id not in cases_already_enrolled_in_as_representative:
                 assignable_cases.append(
                     {
