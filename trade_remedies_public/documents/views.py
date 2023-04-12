@@ -8,7 +8,8 @@ from django_chunk_upload_handlers import clam_av
 from v2_api_client.encoders import TRSObjectJsonEncoder
 from v2_api_client.mixins import APIClientMixin
 
-from config.settings.base import FILE_MAX_SIZE_BYTES_ERROR, DEFAULT_CHUNK_SIZE
+from v2_api_client.shared.upload_handler.django_upload_handler import FILE_MAX_SIZE_BYTES_ERROR
+from config.settings.base import DEFAULT_CHUNK_SIZE
 from config.utils import add_form_error_to_session
 from core.decorators import catch_form_errors
 from documents.forms import DocumentForm
