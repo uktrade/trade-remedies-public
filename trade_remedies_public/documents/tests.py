@@ -6,7 +6,9 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 from openpyxl.workbook import Workbook
 
-from documents.upload_handler import ExtractMetadataFileUploadHandler
+from v2_api_client.shared.upload_handler.django_upload_handler import (
+    ExtractMetadataFileUploadHandler,
+)
 
 
 @override_settings(
