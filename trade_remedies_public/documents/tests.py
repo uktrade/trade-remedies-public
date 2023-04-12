@@ -12,7 +12,9 @@ from v2_api_client.shared.upload_handler.django_upload_handler import (
 
 
 @override_settings(
-    FILE_UPLOAD_HANDLERS=["documents.upload_handler.ExtractMetadataFileUploadHandler"]
+    FILE_UPLOAD_HANDLERS=[
+        "v2_api_client.shared.upload_handler.django_upload_handler.ExtractMetadataFileUploadHandler"
+    ]
 )
 class ExtractDocumentMetadataTestCase(TestCase):
     def setUp(self):
