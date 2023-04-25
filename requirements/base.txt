@@ -165,8 +165,10 @@ six==1.16.0
     #   django-extensions
     #   libsass
     #   python-dateutil
-sqlparse==0.4.2
-    # via django
+sqlparse==0.4.4
+    # via
+    #   -r requirements.in/base.in
+    #   django
 tenacity==8.0.1
     # via api-client
 trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
