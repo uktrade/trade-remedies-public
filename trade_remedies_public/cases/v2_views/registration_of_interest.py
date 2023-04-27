@@ -118,7 +118,9 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
             # Associate this contact with the organisation if there is no error
             self.client.contacts(contact_id).update({"organisation": organisation_id})
             # Add the contact as the invited contact to the submission
-            self.client.submissions(submission_id, slim=True).update({"primary_contact": contact_id})
+            self.client.submissions(submission_id, slim=True).update(
+                {"primary_contact": contact_id}
+            )
 
             return redirect(
                 reverse("roi_submission_exists", kwargs={"submission_id": submission["id"]})
