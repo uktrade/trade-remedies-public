@@ -6,6 +6,7 @@ from django.views.generic.base import View
 from v2_api_client.mixins import APIClientMixin
 
 from config.base_views import FormInvalidMixin
+from config.utils import get_item_default_if_empty_or_none
 from core.v2_forms.feedback import FeedbackForm
 
 
@@ -64,9 +65,15 @@ class CollectFeedbackView(APIClientMixin, FormInvalidMixin):
             feedback_dictionary.update(
                 {
                     "logged_in": self.request.user.is_authenticated,
-                    "url": self.request.GET.get("previous_url", "N/A"),
-                    "url_name": self.request.GET.get("previous_url_name", "N/A"),
-                    "journey": self.request.GET.get("journey", "N/A"),
+                    "url": get_item_default_if_empty_or_none(
+                        self.request.GET, "previous_url", "N/A"
+                    ),
+                    "url_name": get_item_default_if_empty_or_none(
+                        self.request.GET, "previous_url_name", "N/A"
+                    ),
+                    "journey": get_item_default_if_empty_or_none(
+                        self.request.GET, "journey", "N/A"
+                    ),
                 }
             )
             feedback_object = self.client.feedback(feedback_dictionary)
