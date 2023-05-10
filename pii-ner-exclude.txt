@@ -1,3 +1,4 @@
+-1
 " Returns the default if the value in the dict is empty, None
 MAX FILE
 ExtractMetadataFileUploadHandler
