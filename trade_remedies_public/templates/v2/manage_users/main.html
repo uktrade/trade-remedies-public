@@ -141,7 +141,7 @@
                                     {# we dont want to show reps with no cases #}
                                 {% else %}
                                     <tr class="govuk-table__row no-border">
-                                        <td class="govuk-table__cell text-overflow">
+                                        <td class="govuk-table__cell">
                                             <span class="govuk-visually-hidden--desktop">User: </span>
                                             <a class="govuk-link--no-visited-state"
                                                 href="{% url 'view_user' organisation_user_id=org_user.id %}">
@@ -248,7 +248,7 @@
                         <tbody class="govuk-table__body">
                             {% for invite in pending_invitations %}
                                 <tr class="govuk-table__row no-border">
-                                    <td class="govuk-table__cell text-overflow">
+                                    <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">User: </span>{{ invite.contact.name }}
                                     </td>
                                     <td class="govuk-table__cell text-overflow">
@@ -349,7 +349,7 @@
                             <!--All status-->
                             {% for invite in rejected_invitations %}
                                 <tr class="govuk-table__row no-border">
-                                    <td class="govuk-table__cell text-overflow">
+                                    <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">User: </span>{{ invite.contact.name }}
                                     </td>
                                     <td class="govuk-table__cell text-overflow">
