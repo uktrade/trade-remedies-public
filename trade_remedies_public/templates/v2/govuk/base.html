@@ -275,8 +275,11 @@
                 window.GOVUKFrontend.initAll()
 
                 // Feedback stars if JS is enabled
-                $('.star-rating3__label').click(function () {
+                $('.star-rating3__label').on("click", function () {
                     $('#js_selected_rating').text($(this).find("span").text())
+                })
+                $('input[name="rating"]').change(function(){
+                    $('#js_selected_rating').text($(this).next().text())
                 })
                 {# sorry about this #}
                 {% if feedback_object %}
