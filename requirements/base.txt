@@ -27,7 +27,7 @@ chardet==4.0.0
     # via requests
 deprecation==2.1.0
     # via pikepdf
-django==3.2.18
+django==3.2.19
     # via
     #   -r requirements.in/base.in
     #   django-appconf
