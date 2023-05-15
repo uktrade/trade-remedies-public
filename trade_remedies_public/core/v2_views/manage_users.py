@@ -365,7 +365,7 @@ class AssignToCaseView(BaseEditUserView):
             self.organisation_user.organisation,
         ).organisation_card_data()
         for each in org["representative_cases"]:
-            if each.case.id not in cases_already_enrolled_in_as_representative:
+            if each["case"]["id"] not in cases_already_enrolled_in_as_representative:
                 assignable_cases.append(
                     {
                         "case": each.case,
