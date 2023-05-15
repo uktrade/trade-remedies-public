@@ -113,8 +113,8 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
                     )
                     # self.organisation_id = self.submission['organisation']['id']
             if self.organisation_id:
-                if self.organisation_id not in [
-                    each["id"] for each in self.request.user.organisations
+                if str(self.organisation_id) not in [
+                    str(each["id"]) for each in self.request.user.organisations
                 ]:
                     # the user is trying to access an organisation's view that they should not
                     # have access to
