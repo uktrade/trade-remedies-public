@@ -115,7 +115,7 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
             if self.organisation_id:
                 if str(self.organisation_id) not in [
                     str(each["id"]) for each in self.request.user.organisations
-                ]:
+                ] + [str(each["id"]) for each in self.request.user.representing]:
                     # the user is trying to access an organisation's view that they should not
                     # have access to
                     raise SentryPermissionDenied(
