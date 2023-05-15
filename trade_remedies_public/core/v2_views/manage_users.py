@@ -368,9 +368,9 @@ class AssignToCaseView(BaseEditUserView):
             if each["case"]["id"] not in cases_already_enrolled_in_as_representative:
                 assignable_cases.append(
                     {
-                        "case": each.case,
-                        "organisation": each.on_behalf_of_id,
-                        "organisation_name": each.on_behalf_of,
+                        "case": each["case"],
+                        "organisation": each["on_behalf_of_id"],
+                        "organisation_name": each["on_behalf_of"],
                     }
                 )
 

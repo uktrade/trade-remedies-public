@@ -2,6 +2,7 @@ import logging
 
 import json
 
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -10,6 +11,7 @@ from django.utils import timezone
 from django.urls import reverse
 
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
+from v2_api_client.client import TRSAPIClient
 
 from core.base import GroupRequiredMixin, BasePublicView
 from cases.constants import (
@@ -145,6 +147,14 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
             ref = dpath.util.get(uoc, "case/id") + ":" + dpath.util.get(uoc, "representing/id")
             org_cases.setdefault(ref, []).append(uoc)
 
+        not_involved_case_keys = []
+        for key, user_cases in org_cases.items():
+            if self.request.user.id not in [each["user"]["id"] for each in user_cases]:
+                # the requesting user does not have access to this case
+                not_involved_case_keys.append(key)
+        for key in not_involved_case_keys:
+            del org_cases[key]
+
         return render(
             request,
             self.template_name,
@@ -164,23 +174,35 @@ class CaseSummaryView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     template_name = "cases/case_summary.html"
 
     def get(self, request, case_id, organisation_id, *args, **kwargs):
-        # all_cases = request.user.has_perm('can_view_all_org_cases')
+        context = {}
         user_org_cases = self._client.get_user_cases(archived=False, outer=True)
-        # all_interests = self._client.get_registration_of_interest(all_interests=True)
         case_id = str(case_id)
         organisation_id = str(organisation_id)
-        filtered_uoc = []
         orgs = {}
         for uoc in user_org_cases:
             org_id = uoc.get("representing").get("id")
             if uoc.get("case").get("id") == case_id and org_id == organisation_id:
                 orgs.setdefault(org_id, [])
                 orgs[org_id].append(uoc)
-        case = self._client.get_case(case_id=case_id, organisation_id=organisation_id)
+        context["orgs"] = orgs
+        context["case"] = self._client.get_case(case_id=case_id, organisation_id=organisation_id)
+
+        v2_client = TRSAPIClient(token=request.user.token)
+        if v2_client.user_cases(
+            case_id=case_id, organisation_id=organisation_id, user_id=request.user.id
+        ):
+            context["has_access"] = True
+        else:
+            context["has_access"] = False
+            context["organisation_user_id"] = v2_client.organisation_users(
+                organisation_id=self.request.user.contact["organisation"]["id"],
+                user_id=request.user.id,
+            )[0].id
+
         return render(
             request,
             self.template_name,
-            {"case": case, "orgs": orgs, "user_org_cases": list(filtered_uoc)},
+            context,
         )
 
 
@@ -308,6 +330,12 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 return redirect(f"/case/{case_id}/organisation/select/?next=/case/{case_id}/")
             else:
                 return redirect(f"/dashboard/{case_id}")
+
+        v2_client = TRSAPIClient(token=request.user.token)
+        if not v2_client.user_cases(
+            case_id=case_id, organisation_id=organisation_id, user_id=request.user.id
+        ):
+            raise PermissionDenied("You do not have permission to view this case")
         tab = request.GET.get("tab") or "your_file"
         case_users = None
         submissions = None
