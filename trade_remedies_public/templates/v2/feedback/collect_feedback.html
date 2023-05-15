@@ -16,7 +16,7 @@
                 <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--s"><h2
-                                class="govuk-fieldset__heading">
+                            class="govuk-fieldset__heading">
                             Overall, how would you rate your experience with the Trade Remedies Service today?
                         </h2>
                         </legend>
@@ -29,28 +29,28 @@
                         {% endif %}
                         <div class="govuk-radios star-rating3__stars" id="rating" data-module="govuk-radios">
                             <input class="star-rating3__input" type="radio" name="rating" value="1" id="rating-1"
-                                   {% if feedback_object.rating == 1 %}checked{% endif %}>
+                                {% if feedback_object.rating == 1 %}checked{% endif %}>
                             <label class="star-rating3__label" for="rating-1" aria-label="Very dissatisfied"
-                                   role="radio"><span
+                                role="radio"><span
                                     class="govuk-label text">Very dissatisfied</span></label>
                             <input class="star-rating3__input" type="radio" name="rating" value="2" id="rating-2"
-                                   {% if feedback_object.rating == 2 %}checked{% endif %}>
+                                {% if feedback_object.rating == 2 %}checked{% endif %}>
                             <label class="star-rating3__label" for="rating-2" aria-label="Dissatisfied"
-                                   role="radio"><span
+                                role="radio"><span
                                     class="govuk-label text">Dissatisfied</span></label>
                             <input class="star-rating3__input" type="radio" name="rating" value="3" id="rating-3"
-                                   {% if feedback_object.rating == 3 %}checked{% endif %}>
+                                {% if feedback_object.rating == 3 %}checked{% endif %}>
                             <label class="star-rating3__label" for="rating-3"
-                                   aria-label="Neither satisfied or dissatisfied" role="radio"><span
+                                aria-label="Neither satisfied or dissatisfied" role="radio"><span
                                     class="govuk-label text">Neither satisfied or dissatisfied</span></label>
                             <input class="star-rating3__input" type="radio" name="rating" value="4" id="rating-4"
-                                   {% if feedback_object.rating == 4 %}checked{% endif %}>
+                                {% if feedback_object.rating == 4 %}checked{% endif %}>
                             <label class="star-rating3__label" for="rating-4" aria-label="Satisfied" role="radio"><span
-                                    class="govuk-label text">Satisfied</span></label>
+                                class="govuk-label text">Satisfied</span></label>
                             <input class="star-rating3__input" type="radio" name="rating" value="5" id="rating-5"
-                                   {% if feedback_object.rating == 5 %}checked{% endif %}>
+                                {% if feedback_object.rating == 5 %}checked{% endif %}>
                             <label class="star-rating3__label" for="rating-5" aria-label="Very satisfied"
-                                   role="radio"><span
+                                role="radio"><span
                                     class="govuk-label text">Very satisfied</span></label>
                             <div class="star-rating3__focus"></div>
                             <span id="js_selected_rating" class="govuk-label js-hidden selected_rating"></span>
@@ -69,76 +69,76 @@
                     <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="what_didnt_work_so_well-1"
-                                   name="what_didnt_work_so_well"
-                                   type="checkbox"
-                                   value="process_not_clear">
+                                name="what_didnt_work_so_well"
+                                type="checkbox"
+                                value="process_not_clear">
                             <label class="govuk-label govuk-checkboxes__label" for="what_didnt_work_so_well-1">
                                 Process is not clear
                             </label>
                         </div>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="what_didnt_work_so_well-2"
-                                   name="what_didnt_work_so_well"
-                                   type="checkbox"
-                                   value="not_enough_guidance">
+                                name="what_didnt_work_so_well"
+                                type="checkbox"
+                                value="not_enough_guidance">
                             <label class="govuk-label govuk-checkboxes__label" for="what_didnt_work_so_well-2">
                                 Not enough guidance
                             </label>
                         </div>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="what_didnt_work_so_well-3"
-                                   name="what_didnt_work_so_well"
-                                   type="checkbox"
-                                   value="asked_for_info_didnt_have">
+                                name="what_didnt_work_so_well"
+                                type="checkbox"
+                                value="asked_for_info_didnt_have">
                             <label class="govuk-label govuk-checkboxes__label" for="what_didnt_work_so_well-3">
                                 I was asked for information I don’t have
                             </label>
                         </div>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="what_didnt_work_so_well-5"
-                                   name="what_didnt_work_so_well"
-                                   type="checkbox"
-                                   value="didnt_get_information_i_expected">
+                                name="what_didnt_work_so_well"
+                                type="checkbox"
+                                value="didnt_get_information_i_expected">
                             <label class="govuk-label govuk-checkboxes__label" for="what_didnt_work_so_well-5">
                                 I couldn’t find the information I wanted
                             </label>
                         </div>
                         <div class="govuk-checkboxes__item">
                             <input class="govuk-checkboxes__input" id="what_didnt_work_so_well-4"
-                                   name="what_didnt_work_so_well"
-                                   type="checkbox"
-                                   value="other_issue" aria-controls="conditional-what_didnt_work_so_well-4"
-                                   aria-expanded="false">
+                                name="what_didnt_work_so_well"
+                                type="checkbox"
+                                value="other_issue" aria-controls="conditional-what_didnt_work_so_well-4"
+                                aria-expanded="false">
                             <label class="govuk-label govuk-checkboxes__label" for="what_didnt_work_so_well-4">
                                 Other issue
                             </label>
                         </div>
                         <div class="govuk-checkboxes__conditional govuk-checkboxes__conditional--hidden"
-                             id="conditional-what_didnt_work_so_well-4">
+                            id="conditional-what_didnt_work_so_well-4">
                             <div class="govuk-character-count" data-module="govuk-character-count"
-                                 data-maxlength="1200">
+                                data-maxlength="1200">
                                 <div class="govuk-form-group">
                                     <label class="govuk-label" for="what_didnt_work_so_well_other">
                                         What other issues did you have?
                                     </label>
                                     <textarea maxlength="1200"
-                                              class="govuk-textarea govuk-!-width-two-third govuk-js-character-count"
-                                              id="what_didnt_work_so_well_other"
-                                              name="what_didnt_work_so_well_other" rows="5"
-                                              spellcheck="true"></textarea>
+                                        class="govuk-textarea govuk-!-width-two-third govuk-js-character-count"
+                                        id="what_didnt_work_so_well_other"
+                                        name="what_didnt_work_so_well_other" rows="5"
+                                        spellcheck="true"></textarea>
                                     <div id="what_didnt_work_so_well_other-info"
-                                         class="govuk-hint govuk-character-count__message govuk-visually-hidden">
+                                        class="govuk-hint govuk-character-count__message govuk-visually-hidden">
                                         You can enter up to 1200 characters
                                     </div>
                                     <div class="govuk-hint govuk-character-count__message govuk-character-count__status"
-                                         aria-hidden="true">You
+                                        aria-hidden="true">You
                                         have <span class="characters_remaining">1200</span> characters remaining
                                     </div>
                                     <div class="govuk-character-count__sr-status govuk-visually-hidden"
-                                         aria-live="polite">You
+                                        aria-live="polite">You
                                         have
                                         <span
-                                                class="characters_remaining">1200</span>
+                                            class="characters_remaining">1200</span>
                                         characters remaining
                                     </div>
                                 </div>
@@ -158,20 +158,20 @@
                         details.
                     </div>
                     <textarea maxlength="1200" class="govuk-textarea govuk-js-character-count"
-                              id="how_could_we_improve_service"
-                              name="how_could_we_improve_service" rows="5"
-                              aria-describedby="how_could_we_improve_service-info how_could_we_improve_service-hint"></textarea>
+                        id="how_could_we_improve_service"
+                        name="how_could_we_improve_service" rows="5"
+                        aria-describedby="how_could_we_improve_service-info how_could_we_improve_service-hint"></textarea>
                     <div id="how_could_we_improve_service-info"
-                         class="govuk-hint govuk-character-count__message govuk-visually-hidden">
+                        class="govuk-hint govuk-character-count__message govuk-visually-hidden">
                         You can enter up to 1200 characters
                     </div>
                     <div class="govuk-hint govuk-character-count__message govuk-character-count__status"
-                         aria-hidden="true">You
+                        aria-hidden="true">You
                         have <span class="characters_remaining">1200</span> characters remaining
                     </div>
                     <div class="govuk-character-count__sr-status govuk-visually-hidden" aria-live="polite">You have
                         <span
-                                class="characters_remaining">1200</span>
+                            class="characters_remaining">1200</span>
                         characters remaining
                     </div>
                 </div>

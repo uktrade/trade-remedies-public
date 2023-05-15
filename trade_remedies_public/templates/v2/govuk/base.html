@@ -286,6 +286,12 @@
                     $('label[for="rating-{{ feedback_object.rating }}"]').trigger("click")
                 {% endif %}
 
+                $('[name="rating"]').keyup(function (e) {
+                    if (e.keyCode === 9) {
+                        $(this).trigger("change")
+                    }
+                })
+
                 {# file download checks #}
                 $(document).on("click", ".download_file_check_link", function(){
                     if ($(this).attr("data-check-id")){
