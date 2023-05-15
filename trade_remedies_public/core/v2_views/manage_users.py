@@ -201,6 +201,11 @@ class ChangeOrganisationUserPermissionsView(BaseEditUserView):
                 "security_group": form.cleaned_data["type_of_user"],
             }
         )
+        # deleting the user from the old Groups
+        user = self.client.users(self.organisation_user.user.id)
+        user.delete_group(SECURITY_GROUP_ORGANISATION_OWNER)
+        user.delete_group(SECURITY_GROUP_ORGANISATION_USER)
+
         # adding the user to the actual Group
         self.client.users(self.organisation_user.user.id).add_group(
             form.cleaned_data["type_of_user"]
