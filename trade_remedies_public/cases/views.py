@@ -328,7 +328,7 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             elif user_orgs:
                 return redirect(f"/case/{case_id}/organisation/select/?next=/case/{case_id}/")
             else:
-                return redirect(f"/dashboard/{case_id}")
+                raise PermissionDenied("You do not have permission to view this case")
 
         v2_client = TRSAPIClient(token=request.user.token)
         if not organisation_id:
