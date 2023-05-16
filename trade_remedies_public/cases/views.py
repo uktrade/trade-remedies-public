@@ -152,8 +152,6 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
             if self.request.user.id not in [each["user"]["id"] for each in user_cases]:
                 # the requesting user does not have access to this case
                 not_involved_case_keys.append(key)
-        for key in not_involved_case_keys:
-            del org_cases[key]
 
         return render(
             request,
@@ -165,6 +163,7 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
                     org_cases.keys(),
                     key=lambda oc_key: org_cases.get(oc_key)[0].get("case").get("reference"),
                 ),
+                "not_involved_case_keys": not_involved_case_keys,
             },
         )
 
@@ -332,6 +331,8 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 return redirect(f"/dashboard/{case_id}")
 
         v2_client = TRSAPIClient(token=request.user.token)
+        if not organisation_id:
+            organisation_id = self.organisation_id
         if not v2_client.user_cases(
             case_id=case_id, organisation_id=organisation_id, user_id=request.user.id
         ):

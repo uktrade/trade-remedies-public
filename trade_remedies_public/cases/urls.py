@@ -229,12 +229,6 @@ urlpatterns = [
         case_views.TaskListView.as_view(),
         name="sub_tasklist_type",
     ),
-    # Admin summary
-    path(
-        "<uuid:case_id>/organisation/<uuid:organisation_id>/summary/",
-        case_views.CaseSummaryView.as_view(),
-        name="case_summary",
-    ),
 ]
 
 urlpatterns += [
