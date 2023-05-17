@@ -2,7 +2,6 @@ import logging
 
 import json
 
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -33,6 +32,7 @@ from cases.utils import (
     validate_hs_code,
     structure_documents,
 )
+from core.exceptions import SentryPermissionDenied
 from core.utils import (
     deep_index_items_by,
     proxy_stream_file_download,
@@ -328,7 +328,11 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             elif user_orgs:
                 return redirect(f"/case/{case_id}/organisation/select/?next=/case/{case_id}/")
             else:
-                raise PermissionDenied("You do not have permission to view this case")
+                raise SentryPermissionDenied(
+                    f"User {self.request.user.id} tried to access case {case_id} "
+                    f"that they do not have access to - "
+                    f"{self.request.path} - {self.request.GET}"
+                )
 
         v2_client = TRSAPIClient(token=request.user.token)
         if not organisation_id:
@@ -336,7 +340,11 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         if not v2_client.user_cases(
             case_id=case_id, organisation_id=organisation_id, user_id=request.user.id
         ):
-            raise PermissionDenied("You do not have permission to view this case")
+            raise SentryPermissionDenied(
+                f"User {self.request.user.id} tried to access case {case_id} "
+                f"that they do not have access to - "
+                f"{self.request.path} - {self.request.GET}"
+            )
         tab = request.GET.get("tab") or "your_file"
         case_users = None
         submissions = None
