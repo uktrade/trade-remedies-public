@@ -47,7 +47,7 @@ click==8.0.1
     # via
     #   black
     #   pip-tools
-codecov==2.1.12
+codecov==2.1.13
     # via -r requirements.in/dev.in
 coverage==5.5
     # via
@@ -358,7 +358,7 @@ urllib3==1.26.11
     #   requests
     #   selenium
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 virtualenv==20.14.0
     # via pre-commit
