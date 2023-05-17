@@ -10,6 +10,7 @@ from django.utils import timezone
 from django.urls import reverse
 
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
+from v2_api_client.client import TRSAPIClient
 
 from core.base import GroupRequiredMixin, BasePublicView
 from cases.constants import (
@@ -31,6 +32,7 @@ from cases.utils import (
     validate_hs_code,
     structure_documents,
 )
+from core.exceptions import SentryPermissionDenied
 from core.utils import (
     deep_index_items_by,
     proxy_stream_file_download,
@@ -145,6 +147,12 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
             ref = dpath.util.get(uoc, "case/id") + ":" + dpath.util.get(uoc, "representing/id")
             org_cases.setdefault(ref, []).append(uoc)
 
+        not_involved_case_keys = []
+        for key, user_cases in org_cases.items():
+            if self.request.user.id not in [each["user"]["id"] for each in user_cases]:
+                # the requesting user does not have access to this case
+                not_involved_case_keys.append(key)
+
         return render(
             request,
             self.template_name,
@@ -155,6 +163,7 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
                     org_cases.keys(),
                     key=lambda oc_key: org_cases.get(oc_key)[0].get("case").get("reference"),
                 ),
+                "not_involved_case_keys": not_involved_case_keys,
             },
         )
 
@@ -164,23 +173,35 @@ class CaseSummaryView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     template_name = "cases/case_summary.html"
 
     def get(self, request, case_id, organisation_id, *args, **kwargs):
-        # all_cases = request.user.has_perm('can_view_all_org_cases')
+        context = {}
         user_org_cases = self._client.get_user_cases(archived=False, outer=True)
-        # all_interests = self._client.get_registration_of_interest(all_interests=True)
         case_id = str(case_id)
         organisation_id = str(organisation_id)
-        filtered_uoc = []
         orgs = {}
         for uoc in user_org_cases:
             org_id = uoc.get("representing").get("id")
             if uoc.get("case").get("id") == case_id and org_id == organisation_id:
                 orgs.setdefault(org_id, [])
                 orgs[org_id].append(uoc)
-        case = self._client.get_case(case_id=case_id, organisation_id=organisation_id)
+        context["orgs"] = orgs
+        context["case"] = self._client.get_case(case_id=case_id, organisation_id=organisation_id)
+
+        v2_client = TRSAPIClient(token=request.user.token)
+        if v2_client.user_cases(
+            case_id=case_id, organisation_id=organisation_id, user_id=request.user.id
+        ):
+            context["has_access"] = True
+        else:
+            context["has_access"] = False
+            context["organisation_user_id"] = v2_client.organisation_users(
+                organisation_id=self.request.user.contact["organisation"]["id"],
+                user_id=request.user.id,
+            )[0].id
+
         return render(
             request,
             self.template_name,
-            {"case": case, "orgs": orgs, "user_org_cases": list(filtered_uoc)},
+            context,
         )
 
 
@@ -307,7 +328,23 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             elif user_orgs:
                 return redirect(f"/case/{case_id}/organisation/select/?next=/case/{case_id}/")
             else:
-                return redirect(f"/dashboard/{case_id}")
+                raise SentryPermissionDenied(
+                    f"User {self.request.user.id} tried to access case {case_id} "
+                    f"that they do not have access to - "
+                    f"{self.request.path} - {self.request.GET}"
+                )
+
+        v2_client = TRSAPIClient(token=request.user.token)
+        if not organisation_id:
+            organisation_id = self.organisation_id
+        if not v2_client.user_cases(
+            case_id=case_id, organisation_id=organisation_id, user_id=request.user.id
+        ):
+            raise SentryPermissionDenied(
+                f"User {self.request.user.id} tried to access case {case_id} "
+                f"that they do not have access to - "
+                f"{self.request.path} - {self.request.GET}"
+            )
         tab = request.GET.get("tab") or "your_file"
         case_users = None
         submissions = None
