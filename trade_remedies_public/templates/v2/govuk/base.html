@@ -275,13 +275,22 @@
                 window.GOVUKFrontend.initAll()
 
                 // Feedback stars if JS is enabled
-                $('.star-rating3__label').click(function () {
+                $('.star-rating3__label').on("click", function () {
                     $('#js_selected_rating').text($(this).find("span").text())
+                })
+                $('input[name="rating"]').change(function(){
+                    $('#js_selected_rating').text($(this).next().text())
                 })
                 {# sorry about this #}
                 {% if feedback_object %}
                     $('label[for="rating-{{ feedback_object.rating }}"]').trigger("click")
                 {% endif %}
+
+                $('[name="rating"]').keyup(function (e) {
+                    if (e.keyCode === 9) {
+                        $(this).trigger("change")
+                    }
+                })
 
                 {# file download checks #}
                 $(document).on("click", ".download_file_check_link", function(){
