@@ -165,43 +165,6 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
         )
 
 
-class CaseSummaryView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER]
-    template_name = "cases/case_summary.html"
-
-    def get(self, request, case_id, organisation_id, *args, **kwargs):
-        context = {}
-        user_org_cases = self._client.get_user_cases(archived=False, outer=True)
-        case_id = str(case_id)
-        organisation_id = str(organisation_id)
-        orgs = {}
-        for uoc in user_org_cases:
-            org_id = uoc.get("representing").get("id")
-            if uoc.get("case").get("id") == case_id and org_id == organisation_id:
-                orgs.setdefault(org_id, [])
-                orgs[org_id].append(uoc)
-        context["orgs"] = orgs
-        context["case"] = self._client.get_case(case_id=case_id, organisation_id=organisation_id)
-
-        v2_client = TRSAPIClient(token=request.user.token)
-        if v2_client.user_cases(
-            case_id=case_id, organisation_id=organisation_id, user_id=request.user.id
-        ):
-            context["has_access"] = True
-        else:
-            context["has_access"] = False
-            context["organisation_user_id"] = v2_client.organisation_users(
-                organisation_id=self.request.user.contact["organisation"]["id"],
-                user_id=request.user.id,
-            )[0].id
-
-        return render(
-            request,
-            self.template_name,
-            context,
-        )
-
-
 class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
     """
     Task list view of a case submission
