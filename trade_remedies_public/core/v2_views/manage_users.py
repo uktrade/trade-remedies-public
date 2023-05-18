@@ -201,6 +201,11 @@ class ChangeOrganisationUserPermissionsView(BaseEditUserView):
                 "security_group": form.cleaned_data["type_of_user"],
             }
         )
+        # deleting the user from the old Groups
+        user = self.client.users(self.organisation_user.user.id)
+        user.delete_group(SECURITY_GROUP_ORGANISATION_OWNER)
+        user.delete_group(SECURITY_GROUP_ORGANISATION_USER)
+
         # adding the user to the actual Group
         self.client.users(self.organisation_user.user.id).add_group(
             form.cleaned_data["type_of_user"]
@@ -360,12 +365,12 @@ class AssignToCaseView(BaseEditUserView):
             self.organisation_user.organisation,
         ).organisation_card_data()
         for each in org["representative_cases"]:
-            if each.case.id not in cases_already_enrolled_in_as_representative:
+            if each["case"]["id"] not in cases_already_enrolled_in_as_representative:
                 assignable_cases.append(
                     {
-                        "case": each.case,
-                        "organisation": each.on_behalf_of_id,
-                        "organisation_name": each.on_behalf_of,
+                        "case": each["case"],
+                        "organisation": each["on_behalf_of_id"],
+                        "organisation_name": each["on_behalf_of"],
                     }
                 )
 
