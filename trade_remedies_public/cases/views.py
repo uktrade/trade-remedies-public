@@ -13,11 +13,22 @@ from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.client import TRSAPIClient
 
-from cases.constants import (ALL_COUNTRY_CASE_TYPES, DIRECTION_BOTH, DIRECTION_PUBLIC_TO_TRA,
-                             SUBMISSION_TYPE_ADHOC, SUBMISSION_TYPE_ALL_ORGANISATIONS,
-                             SUBMISSION_TYPE_EX_OFFICIO, SUBMISSION_TYPE_INVITE_3RD_PARTY)
-from cases.utils import (decorate_due_status, decorate_submission_updated, get_org_parties,
-                         structure_documents, validate_hs_code)
+from cases.constants import (
+    ALL_COUNTRY_CASE_TYPES,
+    DIRECTION_BOTH,
+    DIRECTION_PUBLIC_TO_TRA,
+    SUBMISSION_TYPE_ADHOC,
+    SUBMISSION_TYPE_ALL_ORGANISATIONS,
+    SUBMISSION_TYPE_EX_OFFICIO,
+    SUBMISSION_TYPE_INVITE_3RD_PARTY,
+)
+from cases.utils import (
+    decorate_due_status,
+    decorate_submission_updated,
+    get_org_parties,
+    structure_documents,
+    validate_hs_code,
+)
 from config.constants import (
     ROLE_APPLICANT,
     SECURITY_GROUP_ORGANISATION_OWNER,
@@ -27,11 +38,23 @@ from config.constants import (
 from core.base import BasePublicView, GroupRequiredMixin
 from core.constants import ALERT_MAP
 from core.exceptions import SentryPermissionDenied
-from core.utils import (deep_index_items_by, first, get, internal_redirect, parse_redirect_params,
-                        pluck, proxy_stream_file_download, validate)
-from core.validators import (company_form_validators, review_form_validators,
-                             third_party_validators_base, third_party_validators_non_uk,
-                             third_party_validators_uk)
+from core.utils import (
+    deep_index_items_by,
+    first,
+    get,
+    internal_redirect,
+    parse_redirect_params,
+    pluck,
+    proxy_stream_file_download,
+    validate,
+)
+from core.validators import (
+    company_form_validators,
+    review_form_validators,
+    third_party_validators_base,
+    third_party_validators_non_uk,
+    third_party_validators_uk,
+)
 
 logger = logging.getLogger(__name__)
 
