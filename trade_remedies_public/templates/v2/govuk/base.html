@@ -143,7 +143,7 @@
                                     {{ request.user.name }}
                                 </li>
                                 <li class="login-nav__list-item">
-                                    <a href="{% url 'account_info' %}"
+                                    <a href="{% url 'view_user_organisation_user' user_id=request.user.id organisation_id=request.user.organisation.id %}#user_details"
                                         class="govuk-link govuk-link govuk-link--inverse login-nav__link">
                                         Manage account
                                     </a>|

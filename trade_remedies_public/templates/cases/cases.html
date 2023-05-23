@@ -45,7 +45,7 @@
                             <td>
                                 <div>
                                     {% for oc_user in oc %}
-                                        <a href="/accounts/team/{{oc_user.organisation.id}}/user/{{oc_user.user.id}}/" class="nobreak">{{oc_user.user.name}}</a><br>
+                                        <a href="{% url 'view_user_organisation_user' organisation_id=oc_user.organisation.id user_id=oc_user.user.id %}" class="nobreak">{{oc_user.user.name}}</a><br>
                                     {% endfor %}
                                 </div>
                             </td>
