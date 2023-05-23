@@ -621,6 +621,7 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
                 reverse("roi_submission_exists", kwargs={"submission_id": self.submission["id"]})
             )
 
+
         elif orphaned_documents := self.submission["orphaned_documents"]:
             for orphan in orphaned_documents:
                 missing = "confidential" if orphan["non_confidential"] else "non-confidential"
