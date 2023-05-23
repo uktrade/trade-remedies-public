@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import AccessMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.views.generic import TemplateView
+from v2_api_client.shared.logging import audit_logger
+
 from core.constants import (
     ORG_INDICATOR_TYPE_LARGE,
     ORG_INDICATOR_TYPE_SMALL,
@@ -129,6 +131,16 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
             self.case_page_counter(self.request)
             self.alert_message = self.request.GET.get("alert")
             self.error_message = self.request.GET.get("error")
+
+        audit_logger.info(
+            f"{self.__class__.__name__} accessed",
+            extra={
+                "user": self.request.user.id,
+                "organisation": organisation_id,
+                "url": self.request.path,
+                **kwargs,
+            },
+        )
         return super().dispatch(*args, **kwargs)
 
     # helpers to call methods from the submission helper

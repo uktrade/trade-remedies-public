@@ -1,13 +1,15 @@
+from v2_api_client.shared.logging import PRODUCTION_LOGGING
+
 from .base import *  # noqa
 from .hardening import *  # noqa
 
-LOGGING = ENVIRONMENT_LOGGING  # noqa: F405
+LOGGING = PRODUCTION_LOGGING
 
-INSTALLED_APPS += [  # noqa: F405
+INSTALLED_APPS += [
     "django_audit_log_middleware",
 ]
 
-MIDDLEWARE += [  # noqa: F405
+MIDDLEWARE += [
     "config.middleware.CustomAuditLogMiddleware",
     "csp.middleware.CSPMiddleware",
 ]
