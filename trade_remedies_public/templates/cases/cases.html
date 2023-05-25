@@ -45,11 +45,11 @@
                             <td>
                                 <div>
                                     {% for oc_user in oc %}
-                                        {% if "Organisation Owner" in request.user.groups and oc_user.organisation.id == request.user.organisation.id %}
+                                        {% if "Organisation Owner" in request.user.groups and oc_user.part_of_organisation %}
                                             {# The user is an Org Owner and is part of the organisation that this oc_user is representing  #}
-                                            <a href="{% url 'view_user_organisation_user' organisation_id=oc_user.organisation.id user_id=oc_user.user.id %}" class="nobreak">{{oc_user.user.name}}</a><br>
+                                            <a href="{% url 'view_user' organisation_user_id=oc_user.part_of_organisation.0.id %}" class="nobreak">{{oc_user.user.name}}</a><br>
                                         {% else %}
-                                            <a href="#" class="nobreak">{{oc_user.user.name}}</a><br>
+                                            {{oc_user.user.name}}<br>
                                         {% endif %}
                                     {% endfor %}
                                 </div>
