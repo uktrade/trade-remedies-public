@@ -23,7 +23,7 @@ certifi==2022.12.7
     #   -r requirements.in/base.in
     #   requests
     #   sentry-sdk
-chardet==4.0.0
+charset-normalizer==3.1.0
     # via requests
 deprecation==2.1.0
     # via pikepdf
@@ -147,7 +147,7 @@ redis==4.4.4
     # via
     #   -r requirements.in/base.in
     #   django-redis
-requests==2.25.1
+requests==2.31.0
     # via
     #   -r requirements.in/base.in
     #   api-client

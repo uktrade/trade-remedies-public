@@ -41,7 +41,7 @@ certifi==2022.12.7
     #   sentry-sdk
 cfgv==3.3.1
     # via pre-commit
-chardet==4.0.0
+charset-normalizer==3.1.0
     # via requests
 click==8.0.1
     # via
@@ -301,7 +301,7 @@ redis==4.4.4
     #   django-redis
 regex==2021.8.28
     # via black
-requests==2.25.1
+requests==2.31.0
     # via
     #   -r requirements.in/base.in
     #   api-client
