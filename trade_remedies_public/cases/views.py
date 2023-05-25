@@ -353,6 +353,7 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             }.get(self.user.name)
             if invite_to_case_submission:
                 inviting_organisation_name = invite_to_case_submission.get("organisation_name")
+
         return render(
             request,
             self.template_name,
