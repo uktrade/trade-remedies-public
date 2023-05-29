@@ -128,6 +128,7 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
         client = self.client(request.user)
         user_org_cases = client.get_user_cases(archived=archived, outer=True)
         all_interests = client.get_registration_of_interest(all_interests=all_cases)
+        v2_client = TRSAPIClient(token=request.user.token)
         # splice inerests onto cases
         for interest in all_interests:
             user_org_cases.append(
@@ -139,8 +140,15 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
                     "roi_sent": (interest.get("status") or {}).get("sent"),
                 }
             )
+
         org_cases = {}
         for uoc in user_org_cases:
+            uoc["part_of_organisation"] = v2_client.organisation_users(
+                organisation_id=request.user.organisation["id"],
+                user_id=uoc["user"]["id"],
+                fields=["id"],
+            )
+
             ref = dpath.util.get(uoc, "case/id") + ":" + dpath.util.get(uoc, "representing/id")
             org_cases.setdefault(ref, []).append(uoc)
 
@@ -149,6 +157,9 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
             if self.request.user.id not in [each["user"]["id"] for each in user_cases]:
                 # the requesting user does not have access to this case
                 not_involved_case_keys.append(key)
+
+        for key in not_involved_case_keys:
+            del org_cases[key]
 
         return render(
             request,
@@ -311,6 +322,12 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
 
         if tab == "case_members":
             case_users = self._client.get_organisation_users(self.organisation_id, case_id)
+            for case_user in case_users:
+                case_user["part_of_organisation"] = v2_client.organisation_users(
+                    organisation_id=request.user.organisation["id"],
+                    user_id=case_user["user"]["id"],
+                    fields=["id"],
+                )
             case_users.sort(key=lambda cu: cu.get("name") or "", reverse=True)
         else:
             private = tab == "your_file"
