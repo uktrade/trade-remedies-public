@@ -1,6 +1,10 @@
 # Views to handle the login and logout functionality
+import logging
+
 from django.conf import settings
 from django.core.cache import cache
+from v2_api_client.shared.logging import audit_logger
+
 from core.decorators import catch_form_errors
 from core.utils import internal_redirect
 from django.contrib.auth import logout
@@ -12,6 +16,8 @@ from django.views.generic import TemplateView
 from registration.views.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+
+logger = logging.getLogger(__name__)
 
 
 class LandingView(TemplateView):
@@ -78,6 +84,7 @@ class TwoFactorView(TemplateView, LoginRequiredMixin, TradeRemediesAPIClientMixi
             user_agent=request.META["HTTP_USER_AGENT"],
             ip_address=request.META["REMOTE_ADDR"],
         )
+        audit_logger.info("User logged in", extra={"user": response["id"]})
         request.session["user"] = response
         request.session.pop("force_2fa", None)
         request.session.modified = True
@@ -89,6 +96,7 @@ def logout_view(request):
 
     # we want to pick this up from the session here before it gets deleted
     logged_out_by_other_session = request.session.get("logged_out_by_other_session", False)
+    audit_logger.info("User logged out", extra={"user": request.user.id})
     if "token" in request.session:
         del request.session["token"]
     if "user" in request.session:
