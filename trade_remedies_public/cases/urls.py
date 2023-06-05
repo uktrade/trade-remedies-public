@@ -231,6 +231,7 @@ urlpatterns = [
     ),
 ]
 
+
 urlpatterns += [
     path(
         "interest/start",

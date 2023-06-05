@@ -1,47 +1,33 @@
+import json
 import logging
 
-import json
-
-from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
+import dpath
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django_countries import countries
-from django.utils import timezone
+from django.shortcuts import redirect, render
 from django.urls import reverse
-
+from django.utils import timezone
+from django.views.generic import TemplateView
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
+from django_countries import countries
+from trade_remedies_client.exceptions import APIException
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.client import TRSAPIClient
 
-from core.base import GroupRequiredMixin, BasePublicView
 from cases.constants import (
-    SUBMISSION_TYPE_EX_OFFICIO,
-    SUBMISSION_TYPE_ALL_ORGANISATIONS,
-    SUBMISSION_TYPE_ADHOC,
+    ALL_COUNTRY_CASE_TYPES,
     DIRECTION_BOTH,
     DIRECTION_PUBLIC_TO_TRA,
-    ALL_COUNTRY_CASE_TYPES,
+    SUBMISSION_TYPE_ADHOC,
+    SUBMISSION_TYPE_ALL_ORGANISATIONS,
+    SUBMISSION_TYPE_EX_OFFICIO,
     SUBMISSION_TYPE_INVITE_3RD_PARTY,
 )
-from core.constants import ALERT_MAP
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from trade_remedies_client.exceptions import APIException
 from cases.utils import (
     decorate_due_status,
-    get_org_parties,
     decorate_submission_updated,
-    validate_hs_code,
+    get_org_parties,
     structure_documents,
-)
-from core.exceptions import SentryPermissionDenied
-from core.utils import (
-    deep_index_items_by,
-    proxy_stream_file_download,
-    pluck,
-    first,
-    get,
-    validate,
-    parse_redirect_params,
-    internal_redirect,
+    validate_hs_code,
 )
 from config.constants import (
     ROLE_APPLICANT,
@@ -49,15 +35,26 @@ from config.constants import (
     SECURITY_GROUP_ORGANISATION_USER,
     SECURITY_GROUP_THIRD_PARTY_USER,
 )
-
+from core.base import BasePublicView, GroupRequiredMixin
+from core.constants import ALERT_MAP
+from core.exceptions import SentryPermissionDenied
+from core.utils import (
+    deep_index_items_by,
+    first,
+    get,
+    internal_redirect,
+    parse_redirect_params,
+    pluck,
+    proxy_stream_file_download,
+    validate,
+)
 from core.validators import (
     company_form_validators,
     review_form_validators,
     third_party_validators_base,
-    third_party_validators_uk,
     third_party_validators_non_uk,
+    third_party_validators_uk,
 )
-import dpath
 
 logger = logging.getLogger(__name__)
 
@@ -165,43 +162,6 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
                 ),
                 "not_involved_case_keys": not_involved_case_keys,
             },
-        )
-
-
-class CaseSummaryView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER]
-    template_name = "cases/case_summary.html"
-
-    def get(self, request, case_id, organisation_id, *args, **kwargs):
-        context = {}
-        user_org_cases = self._client.get_user_cases(archived=False, outer=True)
-        case_id = str(case_id)
-        organisation_id = str(organisation_id)
-        orgs = {}
-        for uoc in user_org_cases:
-            org_id = uoc.get("representing").get("id")
-            if uoc.get("case").get("id") == case_id and org_id == organisation_id:
-                orgs.setdefault(org_id, [])
-                orgs[org_id].append(uoc)
-        context["orgs"] = orgs
-        context["case"] = self._client.get_case(case_id=case_id, organisation_id=organisation_id)
-
-        v2_client = TRSAPIClient(token=request.user.token)
-        if v2_client.user_cases(
-            case_id=case_id, organisation_id=organisation_id, user_id=request.user.id
-        ):
-            context["has_access"] = True
-        else:
-            context["has_access"] = False
-            context["organisation_user_id"] = v2_client.organisation_users(
-                organisation_id=self.request.user.contact["organisation"]["id"],
-                user_id=request.user.id,
-            )[0].id
-
-        return render(
-            request,
-            self.template_name,
-            context,
         )
 
 

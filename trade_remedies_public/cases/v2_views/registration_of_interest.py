@@ -45,7 +45,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         self.submission = {}
         if request.user.is_authenticated and self.kwargs.get("submission_id"):
             submission_id = self.kwargs.get("submission_id")
-            self.submission = self.call_client(timeout=30).submissions(
+            self.submission = self.call_client(timeout=40).submissions(
                 submission_id,
                 fields=[
                     "contact",
@@ -118,7 +118,9 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
             # Associate this contact with the organisation if there is no error
             self.client.contacts(contact_id).update({"organisation": organisation_id})
             # Add the contact as the invited contact to the submission
-            self.client.submissions(submission_id).update({"primary_contact": contact_id})
+            self.client.submissions(submission_id).update(
+                {"primary_contact": contact_id}, fields=["id"]
+            )
 
             return redirect(
                 reverse("roi_submission_exists", kwargs={"submission_id": submission["id"]})

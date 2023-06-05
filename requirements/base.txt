@@ -27,7 +27,7 @@ chardet==4.0.0
     # via requests
 deprecation==2.1.0
     # via pikepdf
-django==3.2.18
+django==3.2.19
     # via
     #   -r requirements.in/base.in
     #   django-appconf
@@ -165,8 +165,10 @@ six==1.16.0
     #   django-extensions
     #   libsass
     #   python-dateutil
-sqlparse==0.4.2
-    # via django
+sqlparse==0.4.4
+    # via
+    #   -r requirements.in/base.in
+    #   django
 tenacity==8.0.1
     # via api-client
 trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
@@ -177,7 +179,7 @@ urllib3==1.26.11
     #   botocore
     #   requests
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 werkzeug==2.2.3
     # via -r requirements.in/base.in

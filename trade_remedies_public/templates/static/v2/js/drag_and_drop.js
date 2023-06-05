@@ -196,12 +196,7 @@ $(document).on('click', '.deficient_document_replace_link', function (e) {
     upload_container.find(".file_upload_indicator").hide()
     upload_container.find('.waiting_for_upload').show()
     upload_container.attr("data-replace-document-id", $(this).attr("data-document-id")).data("replace-document-id", $(this).attr("data-document-id"))
-    // Now we need to set the parent of this to the other document if it's been uploaded.
-    let other_uploaded_document_id = upload_container.closest(".confidential_and_non_confidential_file_row").find(".upload_container").not(upload_container).attr("data-current-document")
-    if (other_uploaded_document_id) {
-        // The other document in this pair has been uploaded, replace the parent_id on this one with the already-uploaded one
-        upload_container.data('parent-document', other_uploaded_document_id).attr('data-parent-document', other_uploaded_document_id)
-    }
+
     $(this).closest(".upload_container").find(".inputfile").click()
 })
 
