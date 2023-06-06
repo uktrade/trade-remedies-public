@@ -45,7 +45,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         self.submission = {}
         if request.user.is_authenticated and self.kwargs.get("submission_id"):
             submission_id = self.kwargs.get("submission_id")
-            self.submission = self.call_client(timeout=40).submissions(
+            self.submission = self.call_client(timeout=70).submissions(
                 submission_id,
                 fields=[
                     "contact",

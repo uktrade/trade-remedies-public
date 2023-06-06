@@ -485,13 +485,13 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
     form_class = SelectOrganisationForm
 
     def dispatch(self, request, *args, **kwargs):
-        organisation = self.client.organisations(
-            self.request.user.contact["organisation"]["id"], fields=["invitations"]
+        invitations = self.call_client(timeout=50).invitations(
+            organisation_id=self.request.user.contact["organisation"]["id"]
         )
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
         invitations_sent = []
-        for sent_invitation in organisation["invitations"]:
+        for sent_invitation in invitations:
             if invited_contact := sent_invitation.get("contact", None):
                 # Thn checking if there is an organisation associated with the invitation
                 if invited_organisation := invited_contact.get("organisation", None):
