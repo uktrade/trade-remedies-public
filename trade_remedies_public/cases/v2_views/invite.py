@@ -1,6 +1,5 @@
 import logging
 
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -23,6 +22,7 @@ from config.utils import (
     get_loa_document_bundle,
     get_uploaded_loa_document,
 )
+from core.exceptions import SentryPermissionDenied
 
 logger = logging.getLogger(__name__)
 
@@ -33,21 +33,19 @@ class BaseInviteView(BasePublicView, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             if SECURITY_GROUP_ORGANISATION_OWNER not in request.user.groups:
-                logger.info(
+                raise SentryPermissionDenied(
                     f"User {request.user.id} requested access to Invitation without Org User rights"
                 )
-                raise PermissionDenied()
             if invitation_id := kwargs.get("invitation_id"):
                 self.invitation = self.client.invitations(invitation_id)
                 if inviting_organisation := self.invitation["organisation"]:
                     if inviting_organisation["id"] != request.user.contact["organisation"]["id"]:
                         # The user should not have access to this invitation,
                         # raise a 403 permission DENIED
-                        logger.info(
+                        raise SentryPermissionDenied(
                             f"User {request.user.id} requested access to Invitation "
                             f"{invitation_id}. Permission denied."
                         )
-                        raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -487,13 +485,13 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
     form_class = SelectOrganisationForm
 
     def dispatch(self, request, *args, **kwargs):
-        invitations = self.client.invitations(
-            organisation_id=self.request.user.contact["organisation"]["id"]
+        organisation = self.client.organisations(
+            self.request.user.contact["organisation"]["id"], fields=["invitations"]
         )
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
         invitations_sent = []
-        for sent_invitation in invitations:
+        for sent_invitation in organisation["invitations"]:
             if invited_contact := sent_invitation.get("contact", None):
                 # Thn checking if there is an organisation associated with the invitation
                 if invited_organisation := invited_contact.get("organisation", None):

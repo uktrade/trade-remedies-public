@@ -334,6 +334,11 @@ urlpatterns += [
         "view_user/<uuid:organisation_user_id>/", manage_users.ViewUser.as_view(), name="view_user"
     ),
     path(
+        "view_user/<uuid:user_id>/<uuid:organisation_id>/",
+        manage_users.ViewUser.as_view(),
+        name="view_user_organisation_user",
+    ),
+    path(
         "edit_user/<uuid:organisation_user_id>/", manage_users.EditUser.as_view(), name="edit_user"
     ),
     path(
