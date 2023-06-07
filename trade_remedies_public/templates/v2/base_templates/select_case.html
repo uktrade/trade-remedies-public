@@ -36,7 +36,7 @@
             </div>
             <button class="govuk-button govuk-button--secondary table-sort-select" data-module="govuk-button" >
                 Sort
-            </button>            
+            </button>
         </form>
         <form method="post">
             <div class="govuk-form-group {% if not cases %}govuk-form-group--error{% endif %}">
@@ -106,7 +106,7 @@
                                     <span class="govuk-visually-hidden--desktop td-header">Type: </span>{{ case.type.name }}
                                 </td>
                                 <td class="govuk-table__cell">
-                                    <span class="govuk-visually-hidden--desktop td-header">Status: </span>{{ case.case_status.stage }}
+                                    <span class="govuk-visually-hidden--desktop td-header">Status: </span>{{ case.get_status.stage }}
                                 </td>
                                 <td class="govuk-table__cell" data-order="{{ case.initiated_at|date:'U' }}">
                                     <span class="govuk-visually-hidden--desktop td-header">Date Initiated: </span>{{ case.initiated_at|date:'d M Y' }}
