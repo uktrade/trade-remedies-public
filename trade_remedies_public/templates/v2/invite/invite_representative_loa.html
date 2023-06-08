@@ -41,7 +41,7 @@
                                 download>
                                 <img src="{% static 'v2/assets/images/file_icons/'|add:loa_document.extension|add:'.png' %}"
                                     onerror="this.src='{% static 'v2/assets/images/file_icons/doc.png' %}';"
-                                    alt="File icon"
+                                    alt=""
                                     width="24px">
                                 {{ loa_document.name }}
                                 ({{ loa_document.size|filesizeformat }})

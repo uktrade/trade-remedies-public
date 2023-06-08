@@ -48,7 +48,7 @@
                                     class="govuk-link--no-visited-state" download>
                                     <img src="{% static 'v2/assets/images/file_icons/'|add:document.extension|add:'.png' %}"
                                         onerror="this.src='{% static 'v2/assets/images/file_icons/doc.png' %}';"
-                                        alt="File icon"
+                                        alt=""
                                         width="24px">
                                     {{ document.name }}
                                     ({{ document.size|filesizeformat }})
@@ -85,7 +85,7 @@
                 {% csrf_token %}
                 <div id="registration_documents">
                     {% for document_pair in uploaded_documents %}
-                        {% include "v2/component_macros/confidental_and_non_confidential_file_upload.html" with document_pair=document_pair label="Upload document" %}
+                        {% include "v2/component_macros/confidental_and_non_confidential_file_upload.html" with document_pair=document_pair label="Upload document" loop_counter=forloop.counter %}
                     {% endfor %}
                     {% if not uploaded_documents %}
                         {# we only want to show an empty row if there are no uploaded documents already, users can just click the 'add another document' button #}

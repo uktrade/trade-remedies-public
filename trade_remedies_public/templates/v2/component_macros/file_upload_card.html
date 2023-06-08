@@ -89,7 +89,13 @@
                 <p><img src="{% static 'v2/assets/images/download.png' %}" alt="Upload icon"><br>
                     <input type="file" id="file-{{ unique_id }}" data-type="{{ type }}"
                         name="file-{{ type }}-{{ unique_row_id }}" class="inputfile">
-                    <label for="file-{{ unique_id }}" class="govuk-link">Choose a file</label> or drag it here</p>
+                    <label for="file-{{ unique_id }}" class="govuk-link">Choose a <span class="visuallyhidden">
+                        {% if confidential %}
+                            confidential
+                        {% else %}
+                            non-confidential
+                        {% endif %}
+                         </span> file</label> or drag it here</p>
             </div>
 
             <div class="uploading_file file_upload_indicator" style="display:none">
@@ -129,7 +135,14 @@
                         {% else %}
                             Remove
                         {% endif %}
-                        <span class="govuk-visually-hidden">file</span>
+                        <span class="visually-hidden">
+                            {% if confidential %}
+                                confidential
+                            {% else %}
+                                non-confidential
+                            {% endif %}
+                            file
+                        </span>
                     </a>
                 </p>
             </div>
