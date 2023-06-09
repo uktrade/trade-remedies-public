@@ -1,17 +1,16 @@
 from django.core.exceptions import PermissionDenied
-from v2_api_client.shared.logging import audit_logger
+from sentry_sdk import capture_exception, configure_scope
 
 
-class SentryPermissionDenied(PermissionDenied):
-    """Raises a 503 PermissionDenied error but also logs to sentry"""
+class LogToSentryError(Exception):
+    """Base class for suspicious operations which should be logged to sentry and alert the team"""
 
     def __init__(self, message=None, *args, **kwargs):
         super().__init__(message, *args, **kwargs)
+        with configure_scope() as scope:
+            scope.set_tag("alert_team", True)
+            capture_exception(self)
 
-        # first we send to sentry
-        from sentry_sdk import capture_exception
 
-        capture_exception(self)
-
-        # then we log to the django logger
-        audit_logger.warning(message)
+class SentryPermissionDenied(PermissionDenied, LogToSentryError):
+    """Raises a 403 PermissionDenied error but also logs to sentry"""
