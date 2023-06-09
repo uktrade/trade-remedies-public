@@ -3,7 +3,6 @@ import logging
 
 from apiclient.exceptions import ClientError
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -34,6 +33,7 @@ from config.utils import (
     get_uploaded_loa_document,
 )
 from core.base import GroupRequiredMixin
+from core.exceptions import SentryPermissionDenied
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         self.submission = {}
         if request.user.is_authenticated and self.kwargs.get("submission_id"):
             submission_id = self.kwargs.get("submission_id")
-            self.submission = self.call_client(timeout=40).submissions(
+            self.submission = self.call_client(timeout=70).submissions(
                 submission_id,
                 fields=[
                     "contact",
@@ -69,11 +69,10 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
             ):
                 # This user did not create this ROI, raise a 403 permission DENIED
                 # However we can make an exception if they've tyring to create a duplicate ROI
-                logger.info(
+                raise SentryPermissionDenied(
                     f"User {request.user.id} requested access to ROI {submission_id}. "
                     f"Permission denied."
                 )
-                raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form):

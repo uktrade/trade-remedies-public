@@ -146,7 +146,7 @@
                     <tbody>
                         {% for uc in case_users %}
                             <tr>
-                                <td>{% if is_org_owner and this_user.organisation.id == uc.user.organisation.id %}<a href="/accounts/team/{{current_organisation.id}}/user/{{uc.user.id}}/edit/">{{ uc.user.name }}</a>{% else %}{{ uc.user.name }}{% endif %}</td>
+                                <td>{% if is_org_owner and uc.part_of_organisation %}<a href="{% url 'view_user' organisation_user_id=uc.part_of_organisation.0.id %}">{{ uc.user.name }}</a>{% else %}{{ uc.user.name }}{% endif %}</td>
                                 <td>{{ uc.user.organisation.name }}</td>
                                 <td>{{ uc.created_at|format_date:'%d %b %Y' }}</td>
                                 <td>{% if uc.primary %}Primary contact{% else %}<button class="link" name="contact_id" value="{{uc.user.contact_id}}">Assign primary contact</button>{% endif %}</td>

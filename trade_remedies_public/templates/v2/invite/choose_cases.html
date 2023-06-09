@@ -7,7 +7,7 @@
     <div class="govuk-grid-column-two-thirds">
         <form method="post">
             {% csrf_token %}
-            {% with form_errors|get_item:"which_case" as error %}
+            {% with form_errors|get_item:"which_user_case" as error %}
                 <div class="govuk-form-group {% if error %}govuk-form-group--error{% endif %}">
                     <fieldset class="govuk-fieldset" aria-describedby="invite-case-hint">
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
@@ -28,7 +28,7 @@
                         <div class="govuk-checkboxes" data-module="govuk-checkboxes">
                             {% for user_case in user_cases %}
                                 <div class="govuk-checkboxes__item">
-                                    <input class="govuk-checkboxes__input" id="{{ user_case.id }}"
+                                    <input class="govuk-checkboxes__input" id="which_user_case"
                                         name="which_user_case"
                                         type="checkbox"
                                         value="{{ user_case.id }}"
