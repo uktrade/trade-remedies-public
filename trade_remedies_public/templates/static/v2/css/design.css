@@ -10436,7 +10436,8 @@ https://css-tricks.com/drag-and-drop-file-uploading/  */
 /* /* "hand" cursor */
 .inputfile + label {
     cursor: pointer;
-}
+    color: #1d70b8;
+  }
 
 .inputfile + label * {
     pointer-events: none;
@@ -10444,9 +10445,12 @@ https://css-tricks.com/drag-and-drop-file-uploading/  */
 
 /* Hiding the input itself in a correct manner was one thing, the other is indicating when the element is focused, i.e. rendering .inputfile:focus on the label:*/
 .inputfile:focus + label {
-    outline: 1px dotted #000;
-    outline: -webkit-focus-ring-color auto 5px;
-}
+    outline: 3px solid transparent;
+    background: #ffdd00;
+    color: #0b0c0c;
+    box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+    text-decoration: none;
+  }
 
 input.upload-button {
     display: initial;

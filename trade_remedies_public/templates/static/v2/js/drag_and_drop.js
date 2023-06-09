@@ -208,6 +208,15 @@ $('#add_document_button').click(function (e) {
     new_document_field.find(".govuk-form-group--error").removeClass("govuk-form-group--error")
     new_document_field.find(".file_error_message").html("")
 
+    // incremtent upload document number, first extract the document heading text ('Upload document n')
+    const existing_document_heading = new_document_field.find(".govuk-heading-m").text()
+    // increment n within that text
+    const new_document_heading = existing_document_heading.replace(/(\d+)+/g, function(match, number) {
+        return parseInt(number)+1;
+    });
+    // update the html heading text
+    new_document_field.find(".govuk-heading-m").html(new_document_heading);
+
     $.each(new_document_field.find('.upload_container'), function () {
         // For each of the upload containers in the new row, we want to change the ID and clear any previously
         // set attributes
