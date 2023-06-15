@@ -1,0 +1,314 @@
+{% extends "v2/govuk/base.html" %}
+
+{% block page_title %}TRA Investigations{% endblock page_title %}
+
+{% block breadcrumbs %}
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
+            </li>
+            <li class="govuk-breadcrumbs__list-item">
+                TRA Investigations
+            </li>
+        </ol>
+    </div>
+{% endblock breadcrumbs %}
+
+{% block back_button %}{% endblock back_button %}
+
+{% block row_content %}
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">Trade Remedies Authority</span>
+        <h1 class="govuk-heading-xl">
+            Active investigations
+        </h1>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p>Review the public file of our active investigations. For your organisation to take part in an
+                investigation, <a href="{% url 'v2_confirm_existing_org' %}"
+                                  class="govuk-link--no-visited-state">create an account</a> or <a
+                        href="{% url 'login' %}" class="govuk-link--no-visited-state">sign in</a> to register
+                interest.</p>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <aside class="app-related-items" role="complementary">
+                <h2 class="govuk-heading-s" id="subsection-title">
+                    Useful links
+                </h2>
+                <nav role="navigation" aria-labelledby="subsection-title">
+                    <ul class="govuk-list govuk-!-font-size-16">
+                        <li>
+                            <a class="link" href="https://www.gov.uk/trade-tariff" target="_blank">Check your tariff
+                                (opens in a new window or tab)</a>
+                        </li>
+                        <li>
+                            <a class="link" href="https://www.gov.uk/government/collections/trade-remedies-notices"
+                               target="_blank">Current trade remedies (opens in a new window or tab)</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        </div>
+    </div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <div class="govuk-tabs" data-module="govuk-tabs">
+                <h2 class="govuk-tabs__title">
+                    Contents
+                </h2>
+                <ul class="govuk-tabs__list" role="tablist">
+                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+                        <a class="govuk-tabs__tab" href="#active-cases" id="tab_active-cases" role="tab"
+                           aria-controls="active-cases" aria-selected="true" tabindex="0">
+                            Active investigations
+                        </a>
+                    </li>
+                    <li class="govuk-tabs__list-item" role="presentation">
+                        <a class="govuk-tabs__tab" href="#completed-cases" id="tab_completed-cases" role="tab"
+                           aria-controls="completed-cases" aria-selected="false" tabindex="-1">
+                            Completed investigations
+                        </a>
+                    </li>
+                </ul>
+                <div class="govuk-tabs__panel" id="active-cases" role="tabpanel" aria-labelledby="tab_active-cases">
+                    <h2 class="govuk-heading-m">Active investigations</h2>
+                    <form>
+                        <div class="govuk-form-group table-sort">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-cases">
+                                Sort by
+                            </label>
+                            <select class="govuk-select" id="sort-cases" name="sort-cases">
+                                <option value="Case no." selected="">Case No.</option>
+                                <option value="Case">Case</option>
+                                <option value="Type">Type</option>
+                                <option value="Initiated">Commodity</option>
+                                <option value="Status">Initiated</option>
+                                <option value="Updated">Updated</option>
+                            </select>
+                        </div>
+                        <div class="govuk-form-group table-sort">
+                            <label class="govuk-label govuk-visually-hidden" for="direction-cases">
+                                Direction
+                            </label>
+                            <select class="govuk-select" id="direction-cases" name="direction-cases">
+                                <option value="Decending" selected="">Decending</option>
+                                <option value="Ascending ">Ascending</option>
+                            </select>
+                        </div>
+                        <button class="govuk-button govuk-button--secondary table-sort" data-module="govuk-button">
+                            Sort
+                        </button>
+                    </form>
+                    <table class="govuk-table sortable mobile-table-border" id="table-header">
+                        <caption
+                                class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
+                            A table listing all of the active trade remedies investigations
+                        </caption>
+                        <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header" aria-sort="descending">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>No.
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Case
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Commodity
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Country
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="4">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Type
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="5">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Initiated
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                            <th class="govuk-table__header">
+                                <button class="govuk-button govuk-button--secondary" data-column-index="6">
+                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Updated
+                                    <span class="indicator" aria-hidden="true"></span>
+                                </button>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                        {% for case in active_investigations %}
+                            <tr class="govuk-table__row no-border">
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop">Case No.: </span>
+                                    <a href="{% url 'active_investigations_single_case' case_id=case.id %}" class="govuk-link--no-visited-state">{{ case.reference }}</a>
+                                </td>
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Case: </span>
+                                    <a href="{% url 'active_investigations_single_case' case_id=case.id %}" class="govuk-link--no-visited-state">
+                                        {{ case.name }}
+                                    </a>
+                                </td>
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Commodity: </span>{{ case.product_set.0.name }}
+                                </td>
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Country: </span>People's Republic of
+                                    China
+                                </td>
+                                <td class="govuk-table__cell">
+                                    <span class="govuk-visually-hidden--desktop">Type: </span>{{ case.type.name }}
+                                </td>
+                                <td class="govuk-table__cell" data-order="{{ case.initiated_at|date:'U' }}">
+                                    <span class="govuk-visually-hidden--desktop">Initiated: </span>{{ case.initiated_at|date:'d M Y' }}
+                                </td>
+                                <td class="govuk-table__cell" data-order="{{ case.last_modified|date:'U' }}">
+                                    <span class="govuk-visually-hidden--desktop">Updated: </span>{{ case.last_modified|date:'d M Y' }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="completed-cases" role="tabpanel"
+                     aria-labelledby="tab_completed-cases">
+
+
+                    <h2 class="govuk-heading-m">Completed investigations</h2>
+                    <form>
+                        <div class="govuk-form-group table-sort">
+                            <label class="govuk-label govuk-!-display-inline" for="sort-closed-cases">
+                                Sort complete investigations by
+                            </label>
+                            <select class="govuk-select" id="sort-closed-cases" name="sort-closed-cases">
+                                <option value="Case No." selected="">Case No.</option>
+                                <option value="Case">Case</option>
+                                <option calue="Commodity">Commodity</option>
+                                <option value="Country">Country</option>
+                                <option value="Type">Type</option>
+                                <option value="Initiated">Initiated</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                        <div class="govuk-form-group table-sort">
+                            <label class="govuk-label govuk-visually-hidden" for="direction-closed-cases">
+                                Direction
+                            </label>
+                            <select class="govuk-select" id="direction-closed-cases" name="direction-closed-cases">
+                                <option value="Decending" selected="">Decending</option>
+                                <option value="Ascending ">Ascending</option>
+                            </select>
+                        </div>
+
+
+                        <button class="govuk-button govuk-button--secondary table-sort" data-module="govuk-button">
+                            Sort
+                        </button>
+
+
+                        <table class="govuk-table sortable mobile-table-border" id="table-header">
+                            <caption
+                                    class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
+                                A table listing all of the complete trade remedies investigations
+                            </caption>
+                            <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header" aria-sort="ascending">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>No.
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Case
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Commodity
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Country
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="4">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Type
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="5">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Initiated
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="6">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Closed
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+
+                            <tr class="govuk-table__row no-border">
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Case no. </span><a href="#"
+                                                                                                    class="govuk-link--no-visited-state">TS0002</a>
+                                </td>
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Case: </span><a href="#"
+                                                                                                 class="govuk-link--no-visited-state">Rainbow
+                                    Trout from Republic of Turkey</a>
+                                </td>
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Commodity: </span>Rainbow Trout
+                                </td>
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Country: </span>Turkey
+                                </td>
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Type: </span>Transition anti-subsidy
+                                    review
+                                </td>
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Register by: </span>01 Feb 2019
+                                </td>
+                                <td class="govuk-table__cell ">
+                                    <span class="govuk-visually-hidden--desktop">Closed: </span>30 July 2019
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock row_content %}
