@@ -1,3 +1,4 @@
+case.product_set %
 DataTable
 mobile_sort_button
 'active_investigations_home' %

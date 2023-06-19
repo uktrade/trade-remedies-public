@@ -24,7 +24,7 @@
 
 {% block back_button %}{% endblock back_button %}
 
-{% block row_content %}
+{% block main_content %}
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <h1 class="govuk-heading-xl">
@@ -34,10 +34,11 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-m">Anti-dumping</h2>
+            <h2 class="govuk-heading-m">{{ case.type.name }}</h2>
             <p>The goods that are the subject of the investigation are:</p>
-            <p>Stainless steel bars and rods, not further worked than cold-formed or cold-finished, other than bars and
-                rods of circular cross-section of a diameter of 80 mm or more.</p>
+            {% for product in case.product_set %}
+                <p>{{ product.description }}</p>
+            {% endfor %}
         </div>
         <div class="govuk-grid-column-one-third">
             <aside class="app-related-items" role="complementary">
@@ -79,13 +80,13 @@
                     aria-labelledby="tab_Submission-details">
                     <h2 class="govuk-heading-m">Case details</h2>
                     {% if request.user.is_authenticated %}
-                        <p>To take part in the investigation, you need to <a href="{% url 'roi' %}">register
+                        <p>To take part in the investigation, you need to <a class="govuk-link--no-visited-state" href="{% url 'roi' %}">register
                             interest.</a></p>
                     {% else %}
                         <p>To take part in the investigation, <a
-                            href="/public-site/create-account/createaccount-your-account"
+                            href="{% url 'v2_confirm_existing_org' %}"
                             class="govuk-link--no-visited-state">create an account</a> or <a
-                                href="/public-site/signin"
+                                href="{% url 'login' %}"
                                 class="govuk-link--no-visited-state">sign
                                 in</a> to register interest.</p>
                     {% endif %}
@@ -235,7 +236,7 @@
                                     <td class="govuk-table__cell ">
                                         <span class="govuk-visually-hidden--desktop">Submission: </span><a
                                             href="{% url 'active_investigations_single_submission' submission_id=submission.submission_id %}"
-                                            class="govuk-link--no-visited-state">{{ submission.submission_name }}</a>
+                                        >{{ submission.submission_name }}</a>
                                     </td>
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Party: </span>{{ submission.organisation_name }}
@@ -257,7 +258,7 @@
             </div>
         </div>
     </div>
-{% endblock row_content %}
+{% endblock main_content %}
 
 {% block scripts %}
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>

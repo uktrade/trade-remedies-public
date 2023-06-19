@@ -23,6 +23,7 @@ class SingleCaseView(BaseAnonymousPublicTemplateView):
         case = self.client.cases(self.kwargs["case_id"])
         context["case"] = case
         context["public_file"] = case.get_public_file()
+
         return context
 
 
