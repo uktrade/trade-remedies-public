@@ -1,5 +1,9 @@
 {% extends "v2/govuk/base.html" %}
 
+{% load static %}
+
+{% load format_date %}
+
 {% block page_title %}{{ case.name }}{% endblock page_title %}
 
 {% block breadcrumbs %}
@@ -9,8 +13,7 @@
                 <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="{% url 'active_investigations_home' %}">TRA active
-                    investigations</a>
+                <a class="govuk-breadcrumbs__link" href="{% url 'active_investigations_home' %}">TRA investigations</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
                 {{ case.reference }}
@@ -45,7 +48,7 @@
                     <ul class="govuk-list govuk-!-font-size-16">
                         <li>
                             <a class="govuk-link govuk-link--no-visited-state"
-                               href="mailto:{{ case.reference }}@traderemedies.gov.uk">{{ case.reference }}@traderemedies.gov.uk</a>
+                                href="mailto:{{ case.reference }}@traderemedies.gov.uk">{{ case.reference }}@traderemedies.gov.uk</a>{# /PS-IGNORE #}
                         </li>
                     </ul>
                 </nav>
@@ -59,37 +62,33 @@
                     Contents
                 </h2>
                 <ul class="govuk-tabs__list" role="tablist">
-
-
                     <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
                         <a class="govuk-tabs__tab" href="#Submission-details" id="tab_Submission-details" role="tab"
-                           aria-controls="Submission-details" aria-selected="true" tabindex="0">
+                            aria-controls="Submission-details" aria-selected="true" tabindex="0">
                             Case details
                         </a>
                     </li>
-
-
                     <li class="govuk-tabs__list-item" role="presentation">
                         <a class="govuk-tabs__tab" href="#public-file" id="tab_public-file" role="tab"
-                           aria-controls="public-file" aria-selected="false" tabindex="-1">
+                            aria-controls="public-file" aria-selected="false" tabindex="-1">
                             Public file
                         </a>
                     </li>
-
-
                 </ul>
                 <div class="govuk-tabs__panel" id="Submission-details" role="tabpanel"
-                     aria-labelledby="tab_Submission-details">
-
-
+                    aria-labelledby="tab_Submission-details">
                     <h2 class="govuk-heading-m">Case details</h2>
-
-                    <p>To take part in the investigation, <a
+                    {% if request.user.is_authenticated %}
+                        <p>To take part in the investigation, you need to <a href="{% url 'roi' %}">register
+                            interest.</a></p>
+                    {% else %}
+                        <p>To take part in the investigation, <a
                             href="/public-site/create-account/createaccount-your-account"
-                            class="govuk-link--no-visited-state">create an account</a> or <a href="/public-site/signin"
-                                                                                             class="govuk-link--no-visited-state">sign
-                        in</a> to register interest.</p>
-
+                            class="govuk-link--no-visited-state">create an account</a> or <a
+                                href="/public-site/signin"
+                                class="govuk-link--no-visited-state">sign
+                                in</a> to register interest.</p>
+                    {% endif %}
                     <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
@@ -112,7 +111,9 @@
                                 Country
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                Russian Federation
+                                {% for export_source in case.exportsource_set %}
+                                    {{ export_source.country }}{% if not forloop.last %} / {% endif %}
+                                {% endfor %}
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -128,7 +129,7 @@
                                 Registration due by
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                21 Sept 2022
+                                {{ case.registration_deadline|date:'d M Y' }}
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
@@ -156,7 +157,7 @@
 
                 </div>
                 <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="public-file" role="tabpanel"
-                     aria-labelledby="tab_public-file">
+                    aria-labelledby="tab_public-file">
                     <h2 class="govuk-heading-m">Public file</h2>
                     <p>The public file contains non-confidential versions of documents submitted by registered
                         participants in the case. It also contains non-confidential versions of reports or other
@@ -180,75 +181,76 @@
                                 Direction
                             </label>
                             <select class="govuk-select" id="direction-Submissions" name="direction-Submissions">
-                                <option value="Decending" selected="">Decending</option>
-                                <option value="Ascending ">Ascending</option>
+                                <option value="desc" selected="">Descending</option>
+                                <option value="asc ">Ascending</option>
                             </select>
                         </div>
-                        <button class="govuk-button govuk-button--secondary table-sort" data-module="govuk-button">
+                        <button class="govuk-button govuk-button--secondary table-sort mobile_sort_button" type="button"
+                            data-module="govuk-button">
                             Sort
                         </button>
                     </form>
-                    <table class="govuk-table sortable mobile-table-border" id="table-header">
+                    <table class="govuk-table sortable mobile-table-border" id="public_file_table">
                         <caption
-                                class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
+                            class="govuk-table__caption govuk-body govuk-!-font-weight-regular govuk-visually-hidden--desktop">
                             A table listing all of Public File submissions for this investigation
                         </caption>
                         <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th class="govuk-table__header">
-                                <button class="govuk-button govuk-button--secondary" data-column-index="0">
-                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Submission
-                                    <span class="indicator" aria-hidden="true"></span>
-                                </button>
-                            </th>
-                            <th class="govuk-table__header">
-                                <button class="govuk-button govuk-button--secondary" data-column-index="1">
-                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Party
-                                    <span class="indicator" aria-hidden="true"></span>
-                                </button>
-                            </th>
-                            <th class="govuk-table__header">
-                                <button class="govuk-button govuk-button--secondary" data-column-index="2">
-                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Type
-                                    <span class="indicator" aria-hidden="true"></span>
-                                </button>
-                            </th>
-                            <th class="govuk-table__header" aria-sort="ascending">
-                                <button class="govuk-button govuk-button--secondary" data-column-index="3">
-                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Published
-                                    <span class="indicator" aria-hidden="true"></span>
-                                </button>
-                            </th>
-                            <th class="govuk-table__header">
-                                <button class="govuk-button govuk-button--secondary" data-column-index="4">
-                                    <span class="govuk-visually-hidden--desktop">Sort by: </span>Files
-                                    <span class="indicator" aria-hidden="true"></span>
-                                </button>
-                            </th>
-                        </tr>
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="0">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Submission
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="1">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Party
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="2">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Type
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header" aria-sort="ascending">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="3">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Published
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                                <th class="govuk-table__header">
+                                    <button class="govuk-button govuk-button--secondary" data-column-index="4">
+                                        <span class="govuk-visually-hidden--desktop">Sort by: </span>Files
+                                        <span class="indicator" aria-hidden="true"></span>
+                                    </button>
+                                </th>
+                            </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                        {% for submission in public_file %}
-                            <tr class="govuk-table__row no-border">
-                                <td class="govuk-table__cell ">
-                                    <span class="govuk-visually-hidden--desktop">Submission: </span><a
-                                        href="case-submission?party=VIRAJ PROFILES PRIVATE LIMITED&amp;submission=Questionnaire&amp;type=Exporter"
-                                        class="govuk-link--no-visited-state">{{ submission.submission_name }}</a>
-                                </td>
-                                <td class="govuk-table__cell">
-                                    <span class="govuk-visually-hidden--desktop">Party: </span>{{ submission.organisation_name }}
-                                </td>
-                                <td class="govuk-table__cell ">
-                                    <span class="govuk-visually-hidden--desktop">Type: </span>{{ submission.organisation_case_role }}
-                                </td>
-                                <td class="govuk-table__cell">
-                                    <span class="govuk-visually-hidden--desktop">Published: </span>{{ submission.published_date|date:'d M Y' }}
-                                </td>
-                                <td class="govuk-table__cell ">
-                                    <span class="govuk-visually-hidden--desktop">No. of files: </span>{{ submission.no_of_files }}
-                                </td>
-                            </tr>
-                        {% endfor %}
+                            {% for submission in public_file %}
+                                <tr class="govuk-table__row no-border">
+                                    <td class="govuk-table__cell ">
+                                        <span class="govuk-visually-hidden--desktop">Submission: </span><a
+                                            href="{% url 'active_investigations_single_submission' submission_id=submission.submission_id %}"
+                                            class="govuk-link--no-visited-state">{{ submission.submission_name }}</a>
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Party: </span>{{ submission.organisation_name }}
+                                    </td>
+                                    <td class="govuk-table__cell ">
+                                        <span class="govuk-visually-hidden--desktop">Type: </span>{{ submission.organisation_case_role }}
+                                    </td>
+                                    <td class="govuk-table__cell">
+                                        <span class="govuk-visually-hidden--desktop">Published: </span>{{ submission.issued_at|format_date:'%d %b %Y' }}
+                                    </td>
+                                    <td class="govuk-table__cell ">
+                                        <span class="govuk-visually-hidden--desktop">No. of files: </span>{{ submission.no_of_files }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
@@ -256,3 +258,13 @@
         </div>
     </div>
 {% endblock row_content %}
+
+{% block scripts %}
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="{% static 'v2/js/interactive_sortable_table.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            lazy_table_setup($('#public_file_table'))
+        });
+    </script>
+{% endblock scripts %}

@@ -7,7 +7,7 @@ from cases.v2_views import (
     accept_representative_invitation,
     invite,
     registration_of_interest,
-    active_investigations
+    active_investigations,
 )
 
 urlpatterns = [
@@ -496,5 +496,10 @@ urlpatterns += [
         "active_investigations/<uuid:case_id>/",
         active_investigations.SingleCaseView.as_view(),
         name="active_investigations_single_case",
+    ),
+    path(
+        "active_investigations/view_submission/<uuid:submission_id>/",
+        active_investigations.SingleSubmissionView.as_view(),
+        name="active_investigations_single_submission",
     ),
 ]

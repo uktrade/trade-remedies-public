@@ -1,3 +1,23 @@
+DataTable
+mobile_sort_button
+'active_investigations_home' %
+80 mm
+@traderemedies.gov.uk
+aria-controls="public-file
+aria-labelledby="tab_Submission-details
+{{ case.get_status.stage }
+{{ case.registration_deadline|date:'d M Y'
+hs_code
+{{ hs_code }
+aria-labelledby="tab_public-file
+Public File
+class="grey">&lt;Untitled&gt;</span>'}}</a></td
+KB
+aria-controls="active
+{{ case.name }
+{{ submission.organisation_case_role.type.name }
+aria-controls="TRA-docs
+aria-labelledby="tab_TRA-docs
 Raises a
 {{ service_settings.localised_name
 jQuery v3.7.0
