@@ -498,8 +498,8 @@ urlpatterns += [
         name="active_investigations_single_case",
     ),
     path(
-        "active_investigations/view_submission/<uuid:submission_id>/",
+        "active_investigations/view_public_submission/<uuid:submission_id>/",
         active_investigations.SingleSubmissionView.as_view(),
-        name="active_investigations_single_submission",
+        name="active_investigations_single_public_submission",
     ),
 ]

@@ -1,12 +1,12 @@
 {% load static %}
+{% load get_file_icon %}
 
 <a
     href="{{ document.file }}"
-    class="govuk-link download_file_check_link"
+    class="download_file_check_link govuk-link"
     data-check-id="{{ document.id }}">
     <img
-        width="24px"
-        src="{% static 'v2/assets/images/file_icons/'|add:document.extension|add:'.png' %}"
+        src="{% get_file_icon document.extension %}"
         class="doc-icon">
     {{ document.name }}
     ({{ document.size_in_kb }}KB)

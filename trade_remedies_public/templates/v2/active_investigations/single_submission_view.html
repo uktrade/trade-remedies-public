@@ -37,6 +37,11 @@
     </div>
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
+            {% if submission.type.key in "public, questionnaire" and submission.name %}
+                <h2 class="govuk-heading-m">
+                    {{ submission.name }}
+                </h2>
+            {% endif %}
             <dl class="govuk-summary-list govuk-summary-list--no-border">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
@@ -46,7 +51,7 @@
                         {{ submission.organisation.name }}
                     </dd>
                 </div>
-                {% if submission.organisation_case_role.type.name %}
+                {% if not submission.is_tra %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
                             Party type
@@ -73,53 +78,68 @@
                     </dd>
                 </div>
             </dl>
-
-            <div class="govuk-tabs" data-module="govuk-tabs">
-                <h2 class="govuk-tabs__title">
-                    Contents
-                </h2>
-                <ul class="govuk-tabs__list" role="tablist">
-                    <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
-                        <a class="govuk-tabs__tab" href="#submitted-docs" id="tab_submitted-docs" role="tab"
-                            aria-controls="submitted-docs" aria-selected="true" tabindex="0">
-                            Interested party submissions
-                        </a>
-                    </li>
-                    <li class="govuk-tabs__list-item" role="presentation">
-                        <a class="govuk-tabs__tab" href="#TRA-docs" id="tab_TRA-docs" role="tab"
-                            aria-controls="TRA-docs" aria-selected="false" tabindex="-1">
-                            TRA documents
-                        </a>
-                    </li>
+            {% if submission.is_tra %}
+                <h2 class="govuk-heading-m">TRA documents</h2>
+                <ul class="govuk-list">
+                    {% for submission_document in submission.submission_documents %}
+                        {% if submission_document.type.key == "caseworker" %}
+                            {# this is a TRA document #}
+                            <li>
+                                {% include "v2/partials/file_download_with_tick.html" with document=submission_document.document %}
+                            </li>
+                        {% endif %}
+                    {% endfor %}
                 </ul>
-                <div class="govuk-tabs__panel" id="submitted-docs" role="tabpanel" aria-labelledby="tab_submitted-docs">
-                    <h2 class="govuk-heading-m">Interested party submissions</h2>
-                    <ul class="govuk-list">
-                        {% for submission_document in submission.submission_documents %}
-                            {% if submission_document.type.key == "respondent" %}
-                                {# this is a customer document #}
-                                <li>
-                                    {% include "v2/partials/file_download_with_tick.html" with document=submission_document.document %}
-                                </li>
-                            {% endif %}
-                        {% endfor %}
+            {% else %}
+                <div class="govuk-tabs" data-module="govuk-tabs">
+                    <h2 class="govuk-tabs__title">
+                        Contents
+                    </h2>
+                    <ul class="govuk-tabs__list" role="tablist">
+                        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected" role="presentation">
+                            <a class="govuk-tabs__tab" href="#submitted-docs" id="tab_submitted-docs" role="tab"
+                                aria-controls="submitted-docs" aria-selected="true" tabindex="0">
+                                Interested party submissions
+                            </a>
+                        </li>
+                        <li class="govuk-tabs__list-item" role="presentation">
+                            <a class="govuk-tabs__tab" href="#TRA-docs" id="tab_TRA-docs" role="tab"
+                                aria-controls="TRA-docs" aria-selected="false" tabindex="-1">
+                                TRA documents
+                            </a>
+                        </li>
                     </ul>
+                    <div class="govuk-tabs__panel" id="submitted-docs" role="tabpanel"
+                        aria-labelledby="tab_submitted-docs">
+                        <h2 class="govuk-heading-m">Interested party submissions</h2>
+                        <ul class="govuk-list">
+                            {% for submission_document in submission.submission_documents %}
+                                {% if submission_document.type.key == "respondent" %}
+                                    {# this is a customer document #}
+                                    <li>
+                                        {% include "v2/partials/file_download_with_tick.html" with document=submission_document.document %}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="TRA-docs" role="tabpanel"
+                        aria-labelledby="tab_TRA-docs">
+                        <h2 class="govuk-heading-m">TRA documents</h2>
+                        <ul class="govuk-list">
+                            {% for submission_document in submission.submission_documents %}
+                                {% if submission_document.type.key == "caseworker" %}
+                                    {# this is a TRA document #}
+                                    <li>
+                                        {% include "v2/partials/file_download_with_tick.html" with document=submission_document.document %}
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
-                <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="TRA-docs" role="tabpanel"
-                    aria-labelledby="tab_TRA-docs">
-                    <h2 class="govuk-heading-m">TRA documents</h2>
-                    <ul class="govuk-list">
-                        {% for submission_document in submission.submission_documents %}
-                            {% if submission_document.type.key == "caseworker" %}
-                                {# this is a TRA document #}
-                                <li>
-                                    {% include "v2/partials/file_download_with_tick.html" with document=submission_document.document %}
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
+            {% endif %}
         </div>
+
     </div>
 {% endblock main_content %}

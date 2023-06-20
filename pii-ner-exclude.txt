@@ -1,3 +1,5 @@
+"Returns the icon
+aria-labelledby="tab_submitted-docs
 case.product_set %
 DataTable
 mobile_sort_button
