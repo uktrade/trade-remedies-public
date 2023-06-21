@@ -480,7 +480,12 @@ class V2RegistrationView2FAChoice(V2BaseRegisterView, TradeRemediesAPIClientMixi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["user_email"] = self.request.session["registration"]["email"]
+        try:
+            context["user_email"] = self.request.session["registration"]["email"]
+        except KeyError:
+            # if there was an issue with the session, redirect to the
+            # start of the registration journey
+            return redirect(reverse("v2_register_start"))
         return context
 
 
