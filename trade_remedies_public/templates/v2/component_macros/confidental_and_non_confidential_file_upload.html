@@ -7,7 +7,7 @@
 
 <div class="document_field">
     <h2 class="govuk-heading-m govuk-!-margin-bottom-2">
-        {{ header }} {{ loop_counter }}
+        {{ label }} {{ loop_counter }}
     </h2>
 
     <div class="row-colour confidential_and_non_confidential_file_row">
@@ -31,7 +31,7 @@
         <div class="remove_document_panel remove-doc-panel" style="display: none;">
             <a href alt="Delete panel" title="Delete panel"
                 class="govuk-link govuk-link--no-visited-state remove_document_link">
-                Remove documents
+                Remove document
             </a>
         </div>
         {% if document_pair.confidential and document_pair.non_confidential %}
@@ -40,7 +40,7 @@
                     href="{% url 'remove_documents_without_js' %}?document_ids={{ document_pair.confidential.id }},{{ document_pair.non_confidential.id }}"
                     title="Delete panel"
                 >
-                    Remove documents
+                    Remove document
                 </a>
             </div>
         {% endif %}

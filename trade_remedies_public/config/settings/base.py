@@ -15,7 +15,6 @@ import sys
 
 import environ
 import sentry_sdk
-from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # We use django-environ but do not read a `.env` file. Locally we feed
@@ -25,6 +24,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 # NB: Some settings acquired using `env()` deliberately *do not* have defaults
 # as we want to get an `ImproperlyConfigured` exception to avoid a badly
 # configured deployment.
+
 root = environ.Path(__file__) - 4
 env = environ.Env(
     DEBUG=(bool, False),
@@ -232,6 +232,7 @@ FILE_UPLOAD_HANDLERS = [
 
 if USE_CLAM_AV:
     FILE_UPLOAD_HANDLERS.insert(0, "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler")
+    CHUNK_UPLOADER_RAISE_EXCEPTION_ON_VIRUS_FOUND = True
 
 if basic_auth_user:
     BASICAUTH_USERS = json.loads(basic_auth_user)
@@ -307,54 +308,6 @@ LOGGING = {
         },
     },
 }
-
-ENVIRONMENT_LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "ecs_formatter": {
-            "()": ECSFormatter,
-        },
-        "simple": {"format": "%(levelname)s %(message)s"},
-    },
-    "handlers": {
-        "ecs": {
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-            "formatter": "ecs_formatter",
-        },
-    },
-    "root": {
-        "handlers": [
-            "ecs",
-        ],
-        "level": env("ROOT_LOG_LEVEL", default="INFO"),
-    },
-    "loggers": {
-        "django": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
-            "propagate": False,
-        },
-        "django.server": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": env("DJANGO_SERVER_LOG_LEVEL", default="ERROR"),
-            "propagate": False,
-        },
-        "django.request": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": env("DJANGO_REQUEST_LOG_LEVEL", default="ERROR"),
-            "propagate": False,
-        },
-    },
-}
-
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 COUNTRIES_FIRST = ["GB"]
