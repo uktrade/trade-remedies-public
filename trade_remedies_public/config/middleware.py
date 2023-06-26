@@ -1,6 +1,7 @@
 import time
 from urllib.parse import urlparse
 
+from django.core.cache import cache
 
 from core.models import TransientUser
 from django.conf import settings
@@ -104,11 +105,11 @@ class APIUserMiddleware:
             # Checking if the user has been logged out by another session, if the session key
             # stored in the cache is different from the one in the current session, then it has
             # been replaced by another login
-            """if cache.get(
-                request.session["user"]["email"]
-            ) != request.session.session_key and not request.path == reverse("logout"):
+            if cache.get(request.session["user"]["email"]) != request.session[
+                "random_key"
+            ] and not request.path == reverse("logout"):
                 request.session["logged_out_by_other_session"] = True
-                return redirect(reverse("logout"))"""
+                return redirect(reverse("logout"))
 
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)
