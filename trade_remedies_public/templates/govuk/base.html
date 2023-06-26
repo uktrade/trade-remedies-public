@@ -46,7 +46,7 @@
 
     </head>
 
-    <body class="{% block body_classes %}{% endblock %}">
+    <body class="{% block body_classes %}{% endblock %} invest-nav">
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
         {% block body_start %}
@@ -128,7 +128,7 @@
                                 Home
                             </a>
                         </li>
-                        <li class="app-navigation__list-item app-navigation__list-item--invest">
+                        <li class="app-navigation__list-item {% if "active_investigations" in request.resolver_match.url_name %}app-navigation__list-item--invest{% endif %}">
                             <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link" href="{% url 'active_investigations_home' %}">
                                 TRA investigations
                             </a>

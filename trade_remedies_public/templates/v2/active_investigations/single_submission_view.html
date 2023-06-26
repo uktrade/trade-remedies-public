@@ -66,12 +66,20 @@
                         Submitted
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        {{ submission.received_at|date:"d M Y" }}
+                        {% if submission.received_at %}
+                            {{ submission.received_at|date:"d M Y" }}
+                        {% elif submission.sent_at %}
+                            {{ submission.sent_at|date:"d M Y" }}
+                        {% endif %}
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
+                        {% if submission.is_tra %}
+                            Issued
+                        {% else %}
                         Published
+                        {% endif %}
                     </dt>
                     <dd class="govuk-summary-list__value">
                         {{ submission.issued_at|date:"d M Y" }}

@@ -42,9 +42,10 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
                 "submission_documents",
                 "received_at",
                 "issued_at",
-                "organisation_case_role",
                 "is_tra",
                 "name",
+                "sent_at",
+                "organisation_case_role_name",
             ],
         )
         assert submission.issued_at
