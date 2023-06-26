@@ -1,3 +1,5 @@
+alt="Delete
+alt="Delete
 Raises a
 {{ service_settings.localised_name
 jQuery v3.7.0
