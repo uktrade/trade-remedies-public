@@ -36,6 +36,7 @@
         <!--[if !IE 8]><!-->
         <link href="{% static 'v2/css/design.css' %}" rel="stylesheet">
         <!--<![endif]-->
+        <link href="{% static 'v2/css/custom.css' %}" rel="stylesheet">
 
         <!--[if IE 8]>
         <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.5.0.min.css' %}" rel="stylesheet">
@@ -120,21 +121,7 @@
                         {% endif %}
                     </ul>
                 </div>
-                <nav class="govuk-header__nav" id="app-navigation" role="navigation" aria-labelledby="app-navigation-heading">
-                    <h2 class="govuk-visually-hidden--desktop" id="app-navigation-heading">Menu</h2>
-                    <ul class="govuk-list main-nav__list" id="main-nav">
-                        <li class="app-navigation__list-item app-navigation__list-item--dash">
-                            <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link" href="{% url 'landing' %}">
-                                Home
-                            </a>
-                        </li>
-                        <li class="app-navigation__list-item {% if "active_investigations" in request.resolver_match.url_name %}app-navigation__list-item--invest{% endif %}">
-                            <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link" href="{% url 'active_investigations_home' %}">
-                                TRA investigations
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                {% include "v2/partials/sub_navbar.html" %}
             </div>
         </header>
         <div class="govuk-width-container app-width-container">
