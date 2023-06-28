@@ -36,6 +36,7 @@
         <!--[if !IE 8]><!-->
         <link href="{% static 'v2/css/design.css' %}" rel="stylesheet">
         <!--<![endif]-->
+        <link href="{% static 'v2/css/custom.css' %}" rel="stylesheet">
 
         <!--[if IE 8]>
         <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.5.0.min.css' %}" rel="stylesheet">
@@ -46,7 +47,7 @@
 
     </head>
 
-    <body class="{% block body_classes %}{% endblock %}">
+    <body class="{% block body_classes %}{% endblock %} invest-nav">
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
         {% block body_start %}
@@ -120,6 +121,7 @@
                         {% endif %}
                     </ul>
                 </div>
+                {% include "v2/partials/sub_navbar.html" %}
             </div>
         </header>
         <div class="govuk-width-container app-width-container">

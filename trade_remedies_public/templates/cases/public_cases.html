@@ -52,19 +52,6 @@
     <div class="grid-row">
         <div class="column-full margin-top-1">
             <h1 class="heading-medium">Active cases</h1>
-            {% comment %}
-      This section shows a key for case types to potentially save space in the case list
-      <ul>
-        {% set 'typelist' '' %}
-        {% for case in cases %}
-          {% if not case.type.acronym in typelist|_aslist %}
-            {% set 'typelist' typelist|addstr:case.type.acronym|addstr:',' %}
-            <li>{{case.type.acronym}}:{{case.type.name}}</li>
-          {% endif %}
-        {% endfor %}
-      </ul>
-      {% endcomment %}
-
             <table data-attach="TableSort" class="align-top">
                 <thead>
                     <tr>
