@@ -23,7 +23,7 @@ let proposed_names = {};
 accessibleAutocomplete({
   element: document.querySelector('#company_search_container'),
   placeholder: "Enter a registered company name or number",
-  id: 'my-autocomplete',
+  id: 'company_data',
   autoselect: true,
   minLength: 3,
   confirmOnBlur: false,

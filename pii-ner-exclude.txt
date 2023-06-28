@@ -25,6 +25,8 @@ aria-controls="active
 {{ submission.organisation_case_role.type.name }
 aria-controls="TRA-docs
 aria-labelledby="tab_TRA-docs
+alt="Delete
+alt="Delete
 Raises a
 {{ service_settings.localised_name
 jQuery v3.7.0

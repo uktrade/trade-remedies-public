@@ -233,6 +233,7 @@ FILE_UPLOAD_HANDLERS = [
 
 if USE_CLAM_AV:
     FILE_UPLOAD_HANDLERS.insert(0, "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler")
+    CHUNK_UPLOADER_RAISE_EXCEPTION_ON_VIRUS_FOUND = True
 
 if basic_auth_user:
     BASICAUTH_USERS = json.loads(basic_auth_user)
