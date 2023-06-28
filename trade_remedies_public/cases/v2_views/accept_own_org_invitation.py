@@ -5,7 +5,7 @@ from v2_api_client.exceptions import NotFoundError
 from v2_api_client.mixins import APIClientMixin
 
 from config.base_views import FormInvalidMixin
-from registration.forms.forms import PasswordForm, RegistrationStartForm, TwoFactorChoiceForm
+from registration.forms import PasswordForm, RegistrationStartForm, TwoFactorChoiceForm
 
 
 class BaseAcceptInviteView(APIClientMixin, TemplateView):

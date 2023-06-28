@@ -29,6 +29,7 @@ from registration.forms import (
     TwoFactorChoiceForm,
     UkEmployerForm,
     YourEmployerForm,
+    V2RegistrationViewConfirmExistingOrganisationForm,
 )
 
 
@@ -437,6 +438,25 @@ class V2BaseRegisterView(FormView):
         return reverse(self.next_url_resolver)
 
 
+class V2RegistrationViewConfirmExistingOrganisation(
+    V2BaseRegisterView, TradeRemediesAPIClientMixin
+):
+    template_name = "v2/registration/registration_check_existing_organisation.html"
+    form_class = V2RegistrationViewConfirmExistingOrganisationForm
+
+    def get(self, request, *args, **kwargs):
+        self.reset_session(request)
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        if form.cleaned_data["organisation_already_setup"] == "no":
+            # organisation is not already setup, allow user to continue to register
+            return redirect(reverse("v2_register_start"))
+        else:
+            # organisation is already setup, inform user how to register
+            return redirect(reverse("v2_how_to_get_account"))
+
+
 class V2RegistrationViewStart(V2BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "v2/registration/registration_start.html"
     form_class = RegistrationStartForm
@@ -460,7 +480,12 @@ class V2RegistrationView2FAChoice(V2BaseRegisterView, TradeRemediesAPIClientMixi
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["user_email"] = self.request.session["registration"]["email"]
+        try:
+            context["user_email"] = self.request.session["registration"]["email"]
+        except KeyError:
+            # if there was an issue with the session, redirect to the
+            # start of the registration journey
+            return redirect(reverse("v2_register_start"))
         return context
 
 

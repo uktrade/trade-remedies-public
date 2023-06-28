@@ -1,5 +1,6 @@
 # Views to handle the login and logout functionality
 import logging
+import secrets
 
 from django.conf import settings
 from django.core.cache import cache
@@ -13,7 +14,7 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
-from registration.views.views import BaseRegisterView
+from registration.views import BaseRegisterView
 from trade_remedies_client.client import Client
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
@@ -60,7 +61,14 @@ class LoginView(BaseRegisterView, TradeRemediesAPIClientMixin):
                 ]
             request.session.modified = True
             request.session.cycle_key()
-            cache.set(email, request.session.session_key)
+
+            # setting a random key to both the request.session and the django cache. This is checked
+            # in middleware every request and if it doesn't match, the user is logged out.
+            # this is to stop concurrent logins, when the user logs in from another browser, a new
+            # secret is set and suddenly the old one doesn't equal the one in the cache.
+            random_key = secrets.token_urlsafe(16)
+            cache.set(email, random_key)
+            request.session["random_key"] = random_key
             return internal_redirect(redirection_url, reverse("dashboard"))
 
 
