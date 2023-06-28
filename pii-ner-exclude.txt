@@ -1,3 +1,5 @@
+href="/case/{{ case.id }}
+method='post'><button
 "Pops the form errors
 cases</span
 "Returns the icon
