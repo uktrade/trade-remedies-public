@@ -171,6 +171,8 @@ if "redis" in _VCAP_SERVICES:
 else:
     REDIS_BASE_URL = env("REDIS_BASE_URL", default="redis://redis:6379")
 
+CONCURRENT_LOGIN_REDIS_DATABASE_NUMBER = REDIS_DATABASE_NUMBER + 1
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
@@ -179,6 +181,15 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
     },
+    "concurrent_logins": {
+        "BACKEND":  "django_redis.cache.RedisCache",
+        "LOCATION": f"{REDIS_BASE_URL}/{CONCURRENT_LOGIN_REDIS_DATABASE_NUMBER}",
+        "TIMEOUT": None,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    }
+
 }
 
 # Session configuration
