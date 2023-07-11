@@ -1,7 +1,7 @@
 import time
 from urllib.parse import urlparse
 
-
+from django.core.cache import caches
 from core.models import TransientUser
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
@@ -65,10 +65,10 @@ class APIUserMiddleware:
         is_public = self.public_request(request)
         should_two_factor = request.session.get("force_2fa")
         return (
-            settings.USE_2FA
-            and not is_public
-            and should_two_factor
-            and resolve(request.path_info).url_name not in NON_2FA_URLS
+                settings.USE_2FA
+                and not is_public
+                and should_two_factor
+                and resolve(request.path_info).url_name not in NON_2FA_URLS
         )
 
     def should_verify_email(self, request):
@@ -82,10 +82,10 @@ class APIUserMiddleware:
         """
         is_public = self.public_request(request)
         return (
-            settings.VERIFY_EMAIL
-            and not is_public
-            and not request.user.email_verified_at
-            and resolve(request.path_info).url_name not in NON_EMAIL_VERIFY_URLS
+                settings.VERIFY_EMAIL
+                and not is_public
+                and not request.user.email_verified_at
+                and resolve(request.path_info).url_name not in NON_EMAIL_VERIFY_URLS
         )
 
     def public_request(self, request):
@@ -104,11 +104,12 @@ class APIUserMiddleware:
             # Checking if the user has been logged out by another session, if the session key
             # stored in the cache is different from the one in the current session, then it has
             # been replaced by another login
-            """if cache.get(
-                request.session["user"]["email"]
-            ) != request.session.session_key and not request.path == reverse("logout"):
+            concurrent_logins_caches = caches["concurrent_logins"]
+            if concurrent_logins_caches.get(request.session["user"]["email"]) != request.session[
+                "random_key"
+            ] and not request.path == reverse("logout"):
                 request.session["logged_out_by_other_session"] = True
-                return redirect(reverse("logout"))"""
+                return redirect(reverse("logout"))
 
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)

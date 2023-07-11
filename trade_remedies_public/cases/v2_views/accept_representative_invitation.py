@@ -10,7 +10,7 @@ from cases.v2_views.accept_own_org_invitation import (
 )
 from config.base_views import FormInvalidMixin
 from config.constants import SECURITY_GROUP_ORGANISATION_OWNER
-from registration.forms.forms import NonUkEmployerForm, OrganisationFurtherDetailsForm
+from registration.forms import NonUkEmployerForm, OrganisationFurtherDetailsForm
 
 
 class BaseAcceptInviteView(NormalBaseAcceptInviteView):

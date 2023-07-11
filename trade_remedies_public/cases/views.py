@@ -158,9 +158,6 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
                 # the requesting user does not have access to this case
                 not_involved_case_keys.append(key)
 
-        for key in not_involved_case_keys:
-            del org_cases[key]
-
         return render(
             request,
             self.template_name,

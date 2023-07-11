@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
+from django.http.response import Http404
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.decorators import method_decorator
@@ -40,7 +41,7 @@ from core.utils import (
     validate,
 )
 from core.validators import user_create_validators
-from registration.views.views import BaseRegisterView
+from registration.views import BaseRegisterView
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
@@ -214,7 +215,10 @@ class PublicCaseView(TemplateView, TradeRemediesAPIClientMixin):
     template_name = "cases/public_case.html"
 
     def get(self, request, case_number, submission_id=None, *args, **kwargs):
-        case = self.trusted_client.get_public_case_record(case_number)
+        try:
+            case = self.trusted_client.get_public_case_record(case_number)
+        except APIException:
+            raise Http404()
         if case:
             case_submissions = self.trusted_client.get_submissions_public(
                 case_id=case.get("id"), private=False, get_global=True
