@@ -41,7 +41,7 @@ from core.utils import (
     validate,
 )
 from core.validators import user_create_validators
-from registration.views.views import BaseRegisterView
+from registration.views import BaseRegisterView
 
 health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 

@@ -26,7 +26,7 @@ from core import views as core_views
 from core.v2_views import feedback, manage_users
 from login import views as login_views
 from password import views as password_views
-from registration.views import views as register_views
+from registration import views as register_views
 
 # todo - config/urls.py should not contain anything, put these URLs in their relevant apps
 urlpatterns = [
