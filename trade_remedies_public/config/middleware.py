@@ -1,6 +1,8 @@
 import time
 from urllib.parse import urlparse
 
+from django.core.cache import caches
+from core.models import TransientUser
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import redirect
@@ -9,8 +11,6 @@ from django.utils.deprecation import MiddlewareMixin
 from django_audit_log_middleware import AuditLogMiddleware
 from sentry_sdk import set_user
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-
-from core.models import TransientUser
 
 SESSION_TIMEOUT_KEY = "_session_init_timestamp_"
 
@@ -104,11 +104,12 @@ class APIUserMiddleware:
             # Checking if the user has been logged out by another session, if the session key
             # stored in the cache is different from the one in the current session, then it has
             # been replaced by another login
-            """if cache.get(request.session["user"]["email"]) != request.session[
+            concurrent_logins_caches = caches["concurrent_logins"]
+            if concurrent_logins_caches.get(request.session["user"]["email"]) != request.session[
                 "random_key"
             ] and not request.path == reverse("logout"):
                 request.session["logged_out_by_other_session"] = True
-                return redirect(reverse("logout"))"""
+                return redirect(reverse("logout"))
 
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)
