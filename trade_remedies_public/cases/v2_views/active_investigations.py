@@ -47,6 +47,7 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
                 "sent_at",
                 "organisation_case_role_name",
             ],
+            params={"non_confidential_only": True},
         )
         assert submission.issued_at
         context["submission"] = submission
