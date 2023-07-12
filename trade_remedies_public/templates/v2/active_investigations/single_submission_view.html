@@ -122,7 +122,7 @@
                         <h2 class="govuk-heading-m">Interested party submissions</h2>
                         <ul class="govuk-list">
                             {% for submission_document in submission.submission_documents %}
-                                {% if submission_document.type.key == "respondent" %}
+                                {% if submission_document.type.key == "respondent" and not submission_document.document.confidential %}
                                     {# this is a customer document #}
                                     <li>
                                         {% include "v2/partials/file_download_with_tick.html" with document=submission_document.document %}
@@ -136,7 +136,7 @@
                         <h2 class="govuk-heading-m">TRA documents</h2>
                         <ul class="govuk-list">
                             {% for submission_document in submission.submission_documents %}
-                                {% if submission_document.type.key == "caseworker" %}
+                                {% if submission_document.type.key == "caseworker" and not submission_document.document.confidential %}
                                     {# this is a TRA document #}
                                     <li>
                                         {% include "v2/partials/file_download_with_tick.html" with document=submission_document.document %}
