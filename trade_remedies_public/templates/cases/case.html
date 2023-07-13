@@ -8,12 +8,14 @@
     <div class="govuk-breadcrumbs">
         <ol class="govuk-breadcrumbs__list">
             <li class="govuk-breadcrumbs__list-item">
-                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link" aria-current="false"
-                    href="/dashboard/">Home</a>
+                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link"
+                   aria-current="false"
+                   href="/dashboard/">Home</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link" aria-current="false"
-                    href="/cases/">Manage cases</a>
+                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link"
+                   aria-current="false"
+                   href="/cases/">Manage cases</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
                 {{ case.reference }}
@@ -38,58 +40,63 @@
             {% if tab == 'your_file' %}
                 <table class="my-case sortable" data-attach="TableSort">
                     <thead>
-                        <tr>
-                            <th class="sort-active" scope="col">Updated</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Type</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Due</th>
-                        </tr>
+                    <tr>
+                        <th class="sort-active" scope="col">Updated</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Due</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {% for submission in submissions %}
+                    {% for submission in submissions %}
 
-                            {% if submission.type.id != ex_officio_submission_type %}
-                                <tr>
-                                    <td sortVal="{{ submission.updated_at }} ">{{ submission.updated_at|format_date:'%d %b %Y' }}</td>
-                                    <td>{{ submission.name }}</td>
-                                    <td>
-                                        {% if submission.type.key == "interest" and submission.status.version %}
-                                            {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
-                                            <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">{{ submission.type.name }}</a>
+                        {% if submission.type.id != ex_officio_submission_type %}
+                            <tr>
+                                <td sortVal="{{ submission.updated_at }} ">{{ submission.updated_at|format_date:'%d %b %Y' }}</td>
+                                <td>{{ submission.name }}</td>
+                                <td>
+                                    {% if submission.type.key == "interest" and submission.status.version %}
+                                        {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
+                                        <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">{{ submission.type.name }}</a>
+                                    {% else %}
+                                        {% if submission.invitations.0|length > 0 %}
+                                            <a href="{% url 'review_sent_invitation' invitation_id=submission.invitations.0.id %}">{{ submission.type.name }}</a>
                                         {% else %}
-                                            {% if submission.invitations.0|length > 0 %}
-                                                <a href="{% url 'review_sent_invitation' invitation_id=submission.invitations.0.id %}">{{ submission.type.name }}</a>
+                                            {% if submission.type.key == "public" %}
+                                                <a href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/public/">{{ submission.type.name }}</a>
                                             {% else %}
                                                 <a href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/">{{ submission.type.name }}</a>
                                             {% endif %}
                                         {% endif %}
+                                    {% endif %}
 
-                                    </td>
-                                    <td>
-                                        <div class="lozenge {{ submission.status_class }}">
-                                            {% if submission.type.key == "interest" and submission.status.version %}
-                                                {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
-                                                <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">
+                                </td>
+                                <td>
+                                    <div class="lozenge {{ submission.status_class }}">
+                                        {% if submission.type.key == "interest" and submission.status.version %}
+                                            {# if it's an ROI and it's deficient, take them to the ROI tasklist #}
+                                            <a href="{% url 'roi_submission_exists' submission_id=submission.id %}">
+                                        {% else %}
+                                            {% if submission.invitations.0|length > 0 %}
+                                                <a href="{% url 'review_sent_invitation' invitation_id=submission.invitations.0.id %}">
                                             {% else %}
-                                                {% if submission.invitations.0|length > 0 %}
-                                                    <a href="{% url 'review_sent_invitation' invitation_id=submission.invitations.0.id %}">
-                                                {% else %}
-                                                    <a href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/">
-                                                {% endif %}
+                                                <a href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/">
                                             {% endif %}
-                                            {% if submission.status %}
-                                                {{ submission.status.public_name|default:submission.status.name }}{% else %}
-                                                -{% endif %}
+                                        {% endif %}
+                                        {% if submission.status %}
+                                            {{ submission.status.public_name|default:submission.status.name }}{% else %}
+                                            -{% endif %}
                                         </a>
-                                    </td>
-                                    <td sortVal="
+                                </td>
+                                <td sortVal="
+
                                         {% if submission.due_at and not submission.status.locking %}{{ submission.due_at }}{% endif %}z">
-                                        <div class="due-date">
-                                            {% include "partials/widgets/due_date_status.html" with state=submission show_na=True %}
-                                        </div>
-                                    </td>
-                                    <!--
+                                    <div class="due-date">
+                                        {% include "partials/widgets/due_date_status.html" with state=submission show_na=True %}
+                                    </div>
+                                </td>
+                                <!--
                 this is a cancel button to delete the submission from the case page if required.
               <td>{% if submission.status.default %}
                   <form action="/case/{{submission.case.id}}/submission/{{submission.id}}
@@ -97,29 +104,29 @@
                   {% endif %}
               </td>
               -->
-                                </tr>
-                            {% endif %}
-                        {% endfor %}
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
                     </tbody>
                 </table>
                 <ul class="margin-top-1">
                     <li>
                         <a class="link"
-                            href="/case/{{ case.id }}/organisation/{{ current_organisation.id }}/submission/create/">Submit
+                           href="/case/{{ case.id }}/organisation/{{ current_organisation.id }}/submission/create/">Submit
                             evidence</a>
                     </li>
                 </ul>
             {% elif tab == 'case_record' %}
                 <table class="public-case" data-attach="TableSort">
                     <thead>
-                        <tr>
-                            <th scope="col">Date</a></th>
+                    <tr>
+                        <th scope="col">Date</a></th>
                         <th scope="col">Type</th>
                         <th scope="col">Party</th>
                         <th scope="col">Party Type</th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     {% for submission in submissions %}
                         {% if submission.type.id != ex_officio_submission_type %}
                             <tr>
@@ -143,22 +150,22 @@
                             </tr>
                         {% endif %}
                     {% endfor %}
-                </tbody>
+                    </tbody>
                 </table>
             {% elif tab == 'case_members' %}
                 <form action="/case/{{ case_id }}/organisation/{{ current_organisation.id }}/set/primary/"
-                    method="post">
+                      method="post">
                     {% csrf_token %}
                     <table class="public-case" data-attach="TableSort">
                         <thead>
-                            <tr>
-                                <th scope="col">Name</a></th>
+                        <tr>
+                            <th scope="col">Name</a></th>
                             <th scope="col">Organisation</th>
                             <th scope="col">Date joined</th>
                             <th scope="col">Primary contact</th>
                         </tr>
-                    </thead>
-                    <tbody>
+                        </thead>
+                        <tbody>
                         {% for uc in case_users %}
                             <tr>
                                 <td>{% if is_org_owner and uc.part_of_organisation %}
@@ -172,8 +179,8 @@
                                     </button>{% endif %}</td>
                             </tr>
                         {% endfor %}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
                 </form>
             {% endif %}
         </div>
