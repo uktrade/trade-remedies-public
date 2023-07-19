@@ -486,7 +486,8 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
 
     def dispatch(self, request, *args, **kwargs):
         invitations = self.call_client(timeout=50).invitations(
-            organisation_id=self.request.user.contact["organisation"]["id"]
+            organisation_id=self.request.user.contact["organisation"]["id"],
+            fields=["contact", "submission"],
         )
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
@@ -525,7 +526,9 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["invitations_sent"] = self.invitations_sent
-        original_invitation = self.client.invitations(self.kwargs["invitation_id"])
+        original_invitation = self.client.invitations(
+            self.kwargs["invitation_id"], fields=["contact"]
+        )
         context["original_invitation"] = original_invitation
 
         return context
