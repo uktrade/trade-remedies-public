@@ -65,10 +65,10 @@ class APIUserMiddleware:
         is_public = self.public_request(request)
         should_two_factor = request.session.get("force_2fa")
         return (
-                settings.USE_2FA
-                and not is_public
-                and should_two_factor
-                and resolve(request.path_info).url_name not in NON_2FA_URLS
+            settings.USE_2FA
+            and not is_public
+            and should_two_factor
+            and resolve(request.path_info).url_name not in NON_2FA_URLS
         )
 
     def should_verify_email(self, request):
@@ -82,10 +82,10 @@ class APIUserMiddleware:
         """
         is_public = self.public_request(request)
         return (
-                settings.VERIFY_EMAIL
-                and not is_public
-                and not request.user.email_verified_at
-                and resolve(request.path_info).url_name not in NON_EMAIL_VERIFY_URLS
+            settings.VERIFY_EMAIL
+            and not is_public
+            and not request.user.email_verified_at
+            and resolve(request.path_info).url_name not in NON_EMAIL_VERIFY_URLS
         )
 
     def public_request(self, request):
