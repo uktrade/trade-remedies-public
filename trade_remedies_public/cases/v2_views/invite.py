@@ -527,8 +527,7 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
         context = super().get_context_data(**kwargs)
         context["invitations_sent"] = self.invitations_sent
         original_invitation = self.client.invitations(
-            self.kwargs["invitation_id"],
-            fields=["contact"]
+            self.kwargs["invitation_id"], fields=["contact"]
         )
         context["original_invitation"] = original_invitation
 
