@@ -30,6 +30,8 @@ logger = logging.getLogger(__name__)
 
 
 class BaseInviteView(BasePublicView, TemplateView):
+    invitation_fields = []
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             if SECURITY_GROUP_ORGANISATION_OWNER not in request.user.groups:
@@ -37,7 +39,12 @@ class BaseInviteView(BasePublicView, TemplateView):
                     f"User {request.user.id} requested access to Invitation without Org User rights"
                 )
             if invitation_id := kwargs.get("invitation_id"):
-                self.invitation = self.client.invitations(invitation_id)
+                if self.invitation_fields:
+                    self.invitation = self.client.invitations(
+                        invitation_id, fields=self.invitation_fields
+                    )
+                else:
+                    self.invitation = self.client.invitations(invitation_id)
                 if inviting_organisation := self.invitation["organisation"]:
                     if inviting_organisation["id"] != request.user.contact["organisation"]["id"]:
                         # The user should not have access to this invitation,
@@ -54,7 +61,12 @@ class BaseInviteView(BasePublicView, TemplateView):
             if hasattr(self, "invitation") and self.invitation:
                 context["invitation"] = self.invitation
             else:
-                context["invitation"] = self.client.invitations(invitation_id)
+                if self.invitation_fields:
+                    context["invitation"] = self.client.invitations(
+                        invitation_id, fields=self.invitation_fields
+                    )
+                else:
+                    context["invitation"] = self.client.invitations(invitation_id)
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
         context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
         return context
@@ -657,6 +669,7 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
 class InviteExistingRepresentativeDetails(BaseInviteFormView):
     template_name = "v2/invite/invite_representative_existing_details.html"
     form_class = InviteExistingRepresentativeDetailsForm
+    invitation_fields = ["submission", "contact"]
 
     def form_valid(self, form):
         organisation_id = self.kwargs["organisation_id"]
@@ -705,6 +718,7 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
 
 class InviteRepresentativeLoa(BaseInviteView):
     template_name = "v2/invite/invite_representative_loa.html"
+    invitation_fields = ["submission"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -734,6 +748,7 @@ class InviteRepresentativeLoa(BaseInviteView):
 
 class InviteRepresentativeCheckAndSubmit(BaseInviteView):
     template_name = "v2/invite/invite_representative_check_and_submit.html"
+    invitation_fields = ["submission", "contact"]
 
     def post(self, request, *args, **kwargs):
         self.client.invitations(kwargs["invitation_id"]).send()
