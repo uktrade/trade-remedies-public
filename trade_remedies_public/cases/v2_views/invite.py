@@ -41,8 +41,7 @@ class BaseInviteView(BasePublicView, TemplateView):
             if invitation_id := kwargs.get("invitation_id"):
                 if self.invitation_fields:
                     self.invitation = self.client.invitations(
-                        invitation_id,
-                        fields=self.invitation_fields
+                        invitation_id, fields=self.invitation_fields
                     )
                 else:
                     self.invitation = self.client.invitations(invitation_id)
@@ -64,8 +63,7 @@ class BaseInviteView(BasePublicView, TemplateView):
             else:
                 if self.invitation_fields:
                     context["invitation"] = self.client.invitations(
-                        invitation_id,
-                        fields=self.invitation_fields
+                        invitation_id, fields=self.invitation_fields
                     )
                 else:
                     context["invitation"] = self.client.invitations(invitation_id)
