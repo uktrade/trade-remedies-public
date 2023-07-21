@@ -228,9 +228,9 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
         if (
             submission
             and submission.organisation
-            and submission.organisation.id != self.request.user.contact["organisation"].get(
-                    "id",
-                    self.request.user.contact["user"]["organisation"]["id"]
+            and submission.organisation.id
+            != self.request.user.contact["organisation"].get(
+                "id", self.request.user.contact["user"]["organisation"]["id"]
             )
         ):
             # THe user is representing someone else, we should show the letter of authority
@@ -374,11 +374,10 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
             # it's not a third party invite
             return self.add_organisation_to_registration_of_interest(
                 organisation_id=self.request.user.contact["organisation"].get(
-                    "id",
-                    self.request.user.contact["user"]["organisation"]["id"]
-            ),
-            submission_id=submission_id,
-            contact_id=self.request.user.contact["id"],
+                    "id", self.request.user.contact["user"]["organisation"]["id"]
+                ),
+                submission_id=submission_id,
+                contact_id=self.request.user.contact["id"],
             )
         elif form.cleaned_data.get("org") == "representative":
             # third-party invite
@@ -547,9 +546,9 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         return [
             (each["id"], each["name"])
             for each in org_parties
-            if each["id"] != self.request.user.contact["organisation"].get(
-                    "id",
-                    self.request.user.contact["user"]["organisation"]["id"]
+            if each["id"]
+            != self.request.user.contact["organisation"].get(
+                "id", self.request.user.contact["user"]["organisation"]["id"]
             )
         ]
 
