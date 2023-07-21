@@ -45,7 +45,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         self.submission = {}
         if request.user.is_authenticated and self.kwargs.get("submission_id"):
             submission_id = self.kwargs.get("submission_id")
-            self.submission = self.call_client(timeout=70).submissions(
+            self.submission = self.call_client(timeout=100).submissions(
                 submission_id,
                 fields=[
                     "contact",
@@ -228,7 +228,10 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
         if (
             submission
             and submission.organisation
-            and submission.organisation.id != self.request.user.contact["organisation"]["id"]
+            and submission.organisation.id != self.request.user.contact["organisation"].get(
+                    "id",
+                    self.request.user.contact["user"]["organisation"]["id"]
+            )
         ):
             # THe user is representing someone else, we should show the letter of authority
             uploaded_loa_document = get_uploaded_loa_document(self.submission)
@@ -370,9 +373,12 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
             # If it's your own org, you act as both the contact and the organisation,
             # it's not a third party invite
             return self.add_organisation_to_registration_of_interest(
-                organisation_id=self.request.user.contact["organisation"]["id"],
-                submission_id=submission_id,
-                contact_id=self.request.user.contact["id"],
+                organisation_id=self.request.user.contact["organisation"].get(
+                    "id",
+                    self.request.user.contact["user"]["organisation"]["id"]
+            ),
+            submission_id=submission_id,
+            contact_id=self.request.user.contact["id"],
             )
         elif form.cleaned_data.get("org") == "representative":
             # third-party invite
@@ -541,7 +547,10 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         return [
             (each["id"], each["name"])
             for each in org_parties
-            if each["id"] != self.request.user.contact["organisation"].get("id")
+            if each["id"] != self.request.user.contact["organisation"].get(
+                    "id",
+                    self.request.user.contact["user"]["organisation"]["id"]
+            )
         ]
 
     def get_context_data(self, **kwargs):
