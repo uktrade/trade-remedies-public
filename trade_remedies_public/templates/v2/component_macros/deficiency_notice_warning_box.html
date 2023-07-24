@@ -15,17 +15,7 @@
         <ul class="govuk-list govuk-warning-text__text-p">
             {% for deficiency_notice in submission.deficiency_notices %}
                 <li>
-                    <a href="{{ deficiency_notice.document.file }}" download=""
-                        class="govuk-link--no-visited-state download_file_check_link" data-check-id="{{ deficiency_notice.document.id }}"><img
-                            src="{% static 'v2/assets/images/file_icons/'|add:deficiency_notice.document.extension|add:'.png' %}"
-                            onerror="this.src='{% static 'v2/assets/images/file_icons/doc.png' %}';"
-                            alt=""
-                            width="24px">
-                        {{ deficiency_notice.document.name }}</a>
-                    <span id="{{ deficiency_notice.document.id }}"
-                        style="display:{% if deficiency_notice.document.id in request.session.downloaded_files %}block{% else %}none{% endif %};">
-                        ✓
-                    </span>
+                    {% include "v2/partials/file_download_with_tick.html" with document=deficiency_notice.document %}
                 </li>
             {% endfor %}
         </ul>

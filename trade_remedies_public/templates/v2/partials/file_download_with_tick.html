@@ -1,0 +1,18 @@
+{% load static %}
+{% load get_file_icon %}
+
+<a
+    href="{{ document.file }}"
+    class="download_file_check_link govuk-link"
+    data-check-id="{{ document.id }}">
+    <img
+        src="{% get_file_icon document.extension %}"
+        class="doc-icon">
+    {{ document.name }}
+    ({{ document.size_in_kb }}KB)
+</a>
+<span
+    id="{{ document.id }}"
+    style="display:{% if document.id in request.session.downloaded_files %}block{% else %}none{% endif %};">
+    ✓
+</span>
