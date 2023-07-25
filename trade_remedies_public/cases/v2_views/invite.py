@@ -40,7 +40,9 @@ class BaseInviteView(BasePublicView, TemplateView):
                 )
             if invitation_id := kwargs.get("invitation_id"):
                 if self.invitation_fields:
-                    self.invitation = self.client.invitations(
+                    if "organisation" not in self.invitation_fields:
+                        self.invitation_fields.append("organisation")
+                    self.invitation = self.call_client(timeout=70).invitations(
                         invitation_id, fields=self.invitation_fields
                     )
                 else:
@@ -309,7 +311,10 @@ class InviteRepresentativeTaskList(TaskListView):
     def get_task_list(self):
         invitation = {}
         if invitation_id := self.kwargs.get("invitation_id", None):
-            invitation = self.client.invitations(invitation_id)
+            invitation = self.client.invitations(invitation_id, fields=[
+                "contact",
+                "submission",
+        ])
 
         steps = [
             {
