@@ -45,7 +45,7 @@ click==8.0.1
     # via
     #   black
     #   pip-tools
-codecov==2.1.12
+codecov==2.1.13
     # via -r requirements.in/dev.in
 coverage==5.5
     # via
@@ -56,6 +56,8 @@ cycler==0.11.0
     # via matplotlib
 decorator==5.1.0
     # via ipython
+deprecation==2.1.0
+    # via pikepdf
 distlib==0.3.4
     # via virtualenv
 django==3.2.18
@@ -106,7 +108,9 @@ django-ipware==3.0.7
     #   django-audit-log-middleware
     #   django-log-formatter-ecs
 django-log-formatter-ecs==0.0.5
-    # via -r requirements.in/base.in
+    # via
+    #   -r requirements.in/base.in
+    #   v2-api-client
 django-redis==5.2.0
     # via -r requirements.in/base.in
 django-sass-processor==1.0.1
@@ -125,6 +129,8 @@ dotwiz==0.3.1
     # via v2-api-client
 dpath==1.4.2
     # via -r requirements.in/base.in
+et-xmlfile==1.1.0
+    # via openpyxl
 execnet==1.9.0
     # via pytest-xdist
 executing==1.2.0
@@ -161,6 +167,10 @@ kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
 libsass==0.21.0
     # via -r requirements.in/base.in
+lxml==4.9.3
+    # via
+    #   pikepdf
+    #   v2-api-client
 markupsafe==2.1.2
     # via werkzeug
 marshmallow==3.6.1
@@ -179,9 +189,13 @@ nodeenv==1.6.0
     # via pre-commit
 numpy==1.22.3
     # via matplotlib
+openpyxl==3.1.2
+    # via v2-api-client
 packaging==21.0
     # via
+    #   deprecation
     #   matplotlib
+    #   pikepdf
     #   pytest
 parse==1.19.0
     # via
@@ -203,10 +217,13 @@ phonenumbers==8.12.50
     #   v2-api-client
 pickleshare==0.7.5
     # via ipython
+pikepdf==8.3.2
+    # via v2-api-client
 pillow==9.3.0
     # via
     #   -r requirements.in/dev.in
     #   matplotlib
+    #   pikepdf
 pip-tools==6.5.1
     # via -r requirements.in/dev.in
 platformdirs==2.3.0
@@ -234,7 +251,7 @@ pycodestyle==2.9.1
     # via flake8
 pyflakes==2.5.0
     # via flake8
-pygments==2.8.1
+pygments==2.15.0
     # via
     #   -r requirements.in/dev.in
     #   ipython
@@ -319,7 +336,6 @@ tenacity==8.0.1
     # via api-client
 toml==0.10.2
     # via
-    #   pre-commit
     #   pytest
     #   pytest-cov
 tomli==1.2.1
@@ -342,7 +358,7 @@ urllib3==1.26.5
     #   requests
     #   selenium
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 virtualenv==20.14.0
     # via pre-commit

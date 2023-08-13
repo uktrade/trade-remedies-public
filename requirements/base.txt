@@ -23,6 +23,8 @@ certifi==2022.12.7
     #   sentry-sdk
 chardet==4.0.0
     # via requests
+deprecation==2.1.0
+    # via pikepdf
 django==3.2.18
     # via
     #   -r requirements.in/base.in
@@ -71,7 +73,9 @@ django-ipware==3.0.7
     #   django-audit-log-middleware
     #   django-log-formatter-ecs
 django-log-formatter-ecs==0.0.5
-    # via -r requirements.in/base.in
+    # via
+    #   -r requirements.in/base.in
+    #   v2-api-client
 django-redis==5.2.0
     # via -r requirements.in/base.in
 django-sass-processor==1.0.1
@@ -88,6 +92,8 @@ dotwiz==0.3.1
     # via v2-api-client
 dpath==1.4.2
     # via -r requirements.in/base.in
+et-xmlfile==1.1.0
+    # via openpyxl
 feed-gov-back==0.4
     # via -r requirements.in/base.in
 idna==2.10
@@ -100,14 +106,28 @@ kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
 libsass==0.21.0
     # via -r requirements.in/base.in
+lxml==4.9.3
+    # via
+    #   pikepdf
+    #   v2-api-client
 markupsafe==2.1.2
     # via werkzeug
 marshmallow==3.6.1
     # via kubi-ecs-logger
+openpyxl==3.1.2
+    # via v2-api-client
+packaging==23.1
+    # via
+    #   deprecation
+    #   pikepdf
 phonenumbers==8.12.50
     # via
     #   -r requirements.in/base.in
     #   v2-api-client
+pikepdf==8.3.2
+    # via v2-api-client
+pillow==10.0.0
+    # via pikepdf
 psycopg2-binary==2.9.1
     # via feed-gov-back
 py==1.10.0
@@ -159,7 +179,7 @@ urllib3==1.26.5
     #   botocore
     #   requests
     #   sentry-sdk
-v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 werkzeug==2.2.3
     # via -r requirements.in/base.in
