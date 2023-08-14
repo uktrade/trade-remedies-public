@@ -245,7 +245,7 @@
                                         <span class="govuk-visually-hidden--desktop">Type: </span>{{ submission.organisation_case_role_name }}
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Published: </span>{{ submission.issued_at|format_date:'%d %b %Y' }}
+                                        <span class="govuk-visually-hidden--desktop" data-order="{{ submission.issued_at|date:'U' }}">Published: </span>{{ submission.issued_at|format_date:'%d %b %Y' }}
                                     </td>
                                     <td class="govuk-table__cell ">
                                         <span class="govuk-visually-hidden--desktop">No. of files: </span>{{ submission.no_of_files }}
