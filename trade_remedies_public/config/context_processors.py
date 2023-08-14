@@ -8,6 +8,8 @@ import json
 from django.urls import reverse
 from django.http import HttpRequest
 from trade_remedies_client.client import Client
+
+from config.constants import SECURITY_GROUP_ORGANISATION_OWNER
 from config.version import __version__
 
 
@@ -78,3 +80,11 @@ def add_form_errors(request: HttpRequest):
     component_macros/text_input.html
     """
     return {"form_errors": request.session.pop("form_errors", None)}
+
+
+def is_org_owner(request: HttpRequest):
+    """Checks if the current user is an owner of their organisation."""
+    return {
+        "is_org_owner": request.user.is_authenticated
+        and SECURITY_GROUP_ORGANISATION_OWNER in request.user.organisation_groups
+    }

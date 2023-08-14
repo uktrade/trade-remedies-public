@@ -1,0 +1,34 @@
+<nav class="govuk-header__nav" id="app-navigation" role="navigation" aria-labelledby="app-navigation-heading">
+    <h2 class="govuk-visually-hidden--desktop" id="app-navigation-heading">Menu</h2>
+    <ul class="govuk-list main-nav__list" id="main-nav">
+        <li class="app-navigation__list-item {% if request.resolver_match.url_name in "landing,dashboard" %}app-navigation__list-item--underline{% endif %}">
+            <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link"
+                href="{% url 'landing' %}">
+                Home
+            </a>
+        </li>
+        {% if request.user.is_authenticated and is_org_owner %}
+            <li class="app-navigation__list-item app-navigation__list-item--cases {% if request.resolver_match.url_name in "cases,case" %}app-navigation__list-item--underline{% endif %}">
+                <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link"
+                    href="/cases/">
+                    Manage cases
+                </a>
+            </li>
+            <li class="app-navigation__list-item app-navigation__list-item--user {% if request.resolver_match.url_name in "manage_users_home,view_user" %}app-navigation__list-item--underline{% endif %}">
+                <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link"
+                    href="{% url 'manage_users_home' %}">
+                    Manage users
+                </a>
+            </li>
+            <li class="app-navigation__list-item govuk-visually-hidden--mobile">
+                <span class="govuk-link govuk-link--no-underline app-navigation__link">| </span>
+            </li>
+        {% endif %}
+        <li class="app-navigation__list-item {% if "active_investigations" in request.resolver_match.url_name %}app-navigation__list-item--underline{% endif %}">
+            <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link"
+                href="{% url 'active_investigations_home' %}">
+                TRA investigations
+            </a>
+        </li>
+    </ul>
+</nav>

@@ -26,6 +26,7 @@
             <link href="{% static 'v2/css/design.css' %}" rel="stylesheet">
             <link href="{% static 'v2/css/feedback.css' %}" rel="stylesheet">
             <link href="{% static 'v2/css/with-and-without-javascript.css' %}" rel="stylesheet">
+            <link href="{% static 'v2/css/custom.css' %}" rel="stylesheet">
             <!--<![endif]-->
 
             <!--[if IE 8]>
@@ -168,6 +169,7 @@
                         {% endif %}
                     </ul>
                 </div>
+                {% include "v2/partials/sub_navbar.html" %}
             </div>
         </header>
 
@@ -295,7 +297,7 @@
                     if ($(this).attr("data-check-id")){
                         let document_id = $(this).attr("data-check-id")
                         document.cookie = `${document_id}=downloaded; max-age=${3600*24}; path=/`
-                        $(`#${check_id}`).show()
+                        $(`#${$(this).attr("data-check-id")}`).show()
                     }
                 })
 

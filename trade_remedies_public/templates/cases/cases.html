@@ -2,20 +2,21 @@
 {% load format_date %}
 
 {% block row_content %}
-    <div class="breadcrumbs" data-module="track-click">
-        <ol>
-            <li class="">
-                <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link" aria-current="false"
+                    href="/dashboard/">Home</a>
             </li>
-            <li class="">
-                <span>Your organisation's cases</span>
+            <li class="govuk-breadcrumbs__list-item">
+                Manage cases
             </li>
         </ol>
     </div>
     <div class="grid-row">
         <div class="column-two-thirds">
             <h1 class="heading-xlarge">
-                Your organisation's cases
+                Manage cases
             </h1>
         </div>
         <div class="column-one-third">
