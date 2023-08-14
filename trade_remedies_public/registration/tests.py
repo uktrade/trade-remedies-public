@@ -3,7 +3,7 @@ import json
 from django.test import TestCase, SimpleTestCase
 from django.urls import reverse
 
-from .forms.forms import (
+from .forms import (
     RegistrationStartForm,
     TwoFactorChoiceForm,
     UkEmployerForm,

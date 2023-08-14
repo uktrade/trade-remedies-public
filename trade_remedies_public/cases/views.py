@@ -1,45 +1,33 @@
+import json
 import logging
 
-import json
-
-from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
+import dpath
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django_countries import countries
-from django.utils import timezone
+from django.shortcuts import redirect, render
 from django.urls import reverse
-
+from django.utils import timezone
+from django.views.generic import TemplateView
 from django_chunk_upload_handlers.clam_av import VirusFoundInFileException
+from django_countries import countries
+from trade_remedies_client.exceptions import APIException
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
+from v2_api_client.client import TRSAPIClient
 
-from core.base import GroupRequiredMixin, BasePublicView
 from cases.constants import (
-    SUBMISSION_TYPE_EX_OFFICIO,
-    SUBMISSION_TYPE_ALL_ORGANISATIONS,
-    SUBMISSION_TYPE_ADHOC,
+    ALL_COUNTRY_CASE_TYPES,
     DIRECTION_BOTH,
     DIRECTION_PUBLIC_TO_TRA,
-    ALL_COUNTRY_CASE_TYPES,
+    SUBMISSION_TYPE_ADHOC,
+    SUBMISSION_TYPE_ALL_ORGANISATIONS,
+    SUBMISSION_TYPE_EX_OFFICIO,
     SUBMISSION_TYPE_INVITE_3RD_PARTY,
 )
-from core.constants import ALERT_MAP
-from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
-from trade_remedies_client.exceptions import APIException
 from cases.utils import (
     decorate_due_status,
-    get_org_parties,
     decorate_submission_updated,
-    validate_hs_code,
+    get_org_parties,
     structure_documents,
-)
-from core.utils import (
-    deep_index_items_by,
-    proxy_stream_file_download,
-    pluck,
-    first,
-    get,
-    validate,
-    parse_redirect_params,
-    internal_redirect,
+    validate_hs_code,
 )
 from config.constants import (
     ROLE_APPLICANT,
@@ -47,15 +35,26 @@ from config.constants import (
     SECURITY_GROUP_ORGANISATION_USER,
     SECURITY_GROUP_THIRD_PARTY_USER,
 )
-
+from core.base import BasePublicView, GroupRequiredMixin
+from core.constants import ALERT_MAP
+from core.exceptions import SentryPermissionDenied
+from core.utils import (
+    deep_index_items_by,
+    first,
+    get,
+    internal_redirect,
+    parse_redirect_params,
+    pluck,
+    proxy_stream_file_download,
+    validate,
+)
 from core.validators import (
     company_form_validators,
     review_form_validators,
     third_party_validators_base,
-    third_party_validators_uk,
     third_party_validators_non_uk,
+    third_party_validators_uk,
 )
-import dpath
 
 logger = logging.getLogger(__name__)
 
@@ -129,6 +128,7 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
         client = self.client(request.user)
         user_org_cases = client.get_user_cases(archived=archived, outer=True)
         all_interests = client.get_registration_of_interest(all_interests=all_cases)
+        v2_client = TRSAPIClient(token=request.user.token)
         # splice inerests onto cases
         for interest in all_interests:
             user_org_cases.append(
@@ -140,10 +140,23 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
                     "roi_sent": (interest.get("status") or {}).get("sent"),
                 }
             )
+
         org_cases = {}
         for uoc in user_org_cases:
+            uoc["part_of_organisation"] = v2_client.organisation_users(
+                organisation_id=request.user.organisation["id"],
+                user_id=uoc["user"]["id"],
+                fields=["id"],
+            )
+
             ref = dpath.util.get(uoc, "case/id") + ":" + dpath.util.get(uoc, "representing/id")
             org_cases.setdefault(ref, []).append(uoc)
+
+        not_involved_case_keys = []
+        for key, user_cases in org_cases.items():
+            if self.request.user.id not in [each["user"]["id"] for each in user_cases]:
+                # the requesting user does not have access to this case
+                not_involved_case_keys.append(key)
 
         return render(
             request,
@@ -155,32 +168,8 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
                     org_cases.keys(),
                     key=lambda oc_key: org_cases.get(oc_key)[0].get("case").get("reference"),
                 ),
+                "not_involved_case_keys": not_involved_case_keys,
             },
-        )
-
-
-class CaseSummaryView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
-    groups_required = [SECURITY_GROUP_ORGANISATION_OWNER]
-    template_name = "cases/case_summary.html"
-
-    def get(self, request, case_id, organisation_id, *args, **kwargs):
-        # all_cases = request.user.has_perm('can_view_all_org_cases')
-        user_org_cases = self._client.get_user_cases(archived=False, outer=True)
-        # all_interests = self._client.get_registration_of_interest(all_interests=True)
-        case_id = str(case_id)
-        organisation_id = str(organisation_id)
-        filtered_uoc = []
-        orgs = {}
-        for uoc in user_org_cases:
-            org_id = uoc.get("representing").get("id")
-            if uoc.get("case").get("id") == case_id and org_id == organisation_id:
-                orgs.setdefault(org_id, [])
-                orgs[org_id].append(uoc)
-        case = self._client.get_case(case_id=case_id, organisation_id=organisation_id)
-        return render(
-            request,
-            self.template_name,
-            {"case": case, "orgs": orgs, "user_org_cases": list(filtered_uoc)},
         )
 
 
@@ -307,13 +296,35 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             elif user_orgs:
                 return redirect(f"/case/{case_id}/organisation/select/?next=/case/{case_id}/")
             else:
-                return redirect(f"/dashboard/{case_id}")
+                raise SentryPermissionDenied(
+                    f"User {self.request.user.id} tried to access case {case_id} "
+                    f"that they do not have access to - "
+                    f"{self.request.path} - {self.request.GET}"
+                )
+
+        v2_client = TRSAPIClient(token=request.user.token)
+        if not organisation_id:
+            organisation_id = self.organisation_id
+        if not v2_client.user_cases(
+            case_id=case_id, organisation_id=organisation_id, user_id=request.user.id
+        ):
+            raise SentryPermissionDenied(
+                f"User {self.request.user.id} tried to access case {case_id} "
+                f"that they do not have access to - "
+                f"{self.request.path} - {self.request.GET}"
+            )
         tab = request.GET.get("tab") or "your_file"
         case_users = None
         submissions = None
 
         if tab == "case_members":
             case_users = self._client.get_organisation_users(self.organisation_id, case_id)
+            for case_user in case_users:
+                case_user["part_of_organisation"] = v2_client.organisation_users(
+                    organisation_id=request.user.organisation["id"],
+                    user_id=case_user["user"]["id"],
+                    fields=["id"],
+                )
             case_users.sort(key=lambda cu: cu.get("name") or "", reverse=True)
         else:
             private = tab == "your_file"
@@ -356,6 +367,7 @@ class CaseView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             }.get(self.user.name)
             if invite_to_case_submission:
                 inviting_organisation_name = invite_to_case_submission.get("organisation_name")
+
         return render(
             request,
             self.template_name,

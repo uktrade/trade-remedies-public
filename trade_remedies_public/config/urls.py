@@ -26,7 +26,7 @@ from core import views as core_views
 from core.v2_views import feedback, manage_users
 from login import views as login_views
 from password import views as password_views
-from registration.views import views as register_views
+from registration import views as register_views
 
 # todo - config/urls.py should not contain anything, put these URLs in their relevant apps
 urlpatterns = [
@@ -332,6 +332,11 @@ urlpatterns += [
     path("manage_users_home", manage_users.ManageUsersView.as_view(), name="manage_users_home"),
     path(
         "view_user/<uuid:organisation_user_id>/", manage_users.ViewUser.as_view(), name="view_user"
+    ),
+    path(
+        "view_user/<uuid:user_id>/<uuid:organisation_id>/",
+        manage_users.ViewUser.as_view(),
+        name="view_user_organisation_user",
     ),
     path(
         "edit_user/<uuid:organisation_user_id>/", manage_users.EditUser.as_view(), name="edit_user"

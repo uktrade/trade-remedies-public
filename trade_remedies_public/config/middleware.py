@@ -100,6 +100,16 @@ class APIUserMiddleware:
             if resolve(request.path_info).url_name in NON_2FA_URLS:
                 request.session["back_link_url"] = reverse("logout")
 
+            """# Checking if the user has been logged out by another session, if the session key
+            # stored in the cache is different from the one in the current session, then it has
+            # been replaced by another login
+            concurrent_logins_caches = caches["concurrent_logins"]
+            if concurrent_logins_caches.get(request.session["user"]["email"]) != request.session[
+                "random_key"
+            ] and not request.path == reverse("logout"):
+                request.session["logged_out_by_other_session"] = True
+                return redirect(reverse("logout"))"""
+
             user = request.session["user"]
             request.user = TransientUser(token=request.session.get("token"), **user)
             request.args = args

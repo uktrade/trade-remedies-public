@@ -2,7 +2,7 @@
 {% block feedback_link %}{% endblock %}
 {% block back_button %}{% endblock back_button %}
 
-{% block page_title %}Feedback complete{% endblock page_title %}
+{% block page_title %}Feedback sent{% endblock page_title %}
 
 {% block row_content %}
     <div class="govuk-grid-column-two-thirds">
@@ -20,7 +20,7 @@
                     Go to my dashboard
                 </a>
             {% else %}
-                <a href="{{ previous_url|safe }}" role="button" draggable="false" class="govuk-button"
+                <a href="{{ previous_url }}" role="button" draggable="false" class="govuk-button"
                     data-module="govuk-button">
                     Back
                 </a>

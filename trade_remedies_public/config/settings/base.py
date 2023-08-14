@@ -15,7 +15,6 @@ import sys
 
 import environ
 import sentry_sdk
-from django_log_formatter_ecs import ECSFormatter
 from sentry_sdk.integrations.django import DjangoIntegration
 
 # We use django-environ but do not read a `.env` file. Locally we feed
@@ -25,6 +24,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 # NB: Some settings acquired using `env()` deliberately *do not* have defaults
 # as we want to get an `ImproperlyConfigured` exception to avoid a badly
 # configured deployment.
+
 root = environ.Path(__file__) - 4
 env = environ.Env(
     DEBUG=(bool, False),
@@ -82,7 +82,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    # "config.middleware.PublicRequestMiddleware",
     "config.middleware.APIUserMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -117,6 +116,7 @@ TEMPLATES = [
                 "config.context_processors.motd_context",
                 "config.context_processors.cookie_management",
                 "config.context_processors.add_form_errors",
+                "config.context_processors.is_org_owner",
             ],
         },
     },
@@ -172,10 +172,20 @@ if "redis" in _VCAP_SERVICES:
 else:
     REDIS_BASE_URL = env("REDIS_BASE_URL", default="redis://redis:6379")
 
+CONCURRENT_LOGIN_REDIS_DATABASE_NUMBER = REDIS_DATABASE_NUMBER + 1
+
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": f"{REDIS_BASE_URL}/{REDIS_DATABASE_NUMBER}",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+    },
+    "concurrent_logins": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"{REDIS_BASE_URL}/{CONCURRENT_LOGIN_REDIS_DATABASE_NUMBER}",
+        "TIMEOUT": None,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
@@ -225,12 +235,15 @@ CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
 CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
 CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 USE_CLAM_AV = env.bool("USE_CLAM_AV", default=True)
-FILE_UPLOAD_HANDLERS = []
+
+FILE_UPLOAD_HANDLERS = [
+    "v2_api_client.shared.upload_handler.django_upload_handler.ExtractMetadataFileUploadHandler",
+    "django_chunk_upload_handlers.s3.S3FileUploadHandler",
+]
 
 if USE_CLAM_AV:
-    FILE_UPLOAD_HANDLERS.append("django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler")
-
-FILE_UPLOAD_HANDLERS.append("django_chunk_upload_handlers.s3.S3FileUploadHandler")
+    FILE_UPLOAD_HANDLERS.insert(0, "django_chunk_upload_handlers.clam_av.ClamAVFileUploadHandler")
+    CHUNK_UPLOADER_RAISE_EXCEPTION_ON_VIRUS_FOUND = True
 
 if basic_auth_user:
     BASICAUTH_USERS = json.loads(basic_auth_user)
@@ -306,60 +319,15 @@ LOGGING = {
         },
     },
 }
-
-ENVIRONMENT_LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "ecs_formatter": {
-            "()": ECSFormatter,
-        },
-        "simple": {"format": "%(levelname)s %(message)s"},
-    },
-    "handlers": {
-        "ecs": {
-            "class": "logging.StreamHandler",
-            "stream": sys.stdout,
-            "formatter": "ecs_formatter",
-        },
-    },
-    "root": {
-        "handlers": [
-            "ecs",
-        ],
-        "level": env("ROOT_LOG_LEVEL", default="INFO"),
-    },
-    "loggers": {
-        "django": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
-            "propagate": False,
-        },
-        "django.server": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": env("DJANGO_SERVER_LOG_LEVEL", default="ERROR"),
-            "propagate": False,
-        },
-        "django.request": {
-            "handlers": [
-                "ecs",
-            ],
-            "level": env("DJANGO_REQUEST_LOG_LEVEL", default="ERROR"),
-            "propagate": False,
-        },
-    },
-}
-
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 COUNTRIES_FIRST = ["GB"]
 COUNTRIES_FIRST_BREAK = "------"
 
-FILE_MAX_SIZE_BYTES = 30000000
+# DEFAULT CHUNK SIZE OF 32 MB
+DEFAULT_CHUNK_SIZE = env.int("DEFAULT_CHUNK_SIZE", default=33554432)
+# MAX FILE SIZE OF 30 MB
+FILE_MAX_SIZE_BYTES = env.int("FILE_MAX_SIZE_BYTES", default=31457280)
 FILE_DISALLOWED_EXTENSIONS = [
     "com",
     "exe",

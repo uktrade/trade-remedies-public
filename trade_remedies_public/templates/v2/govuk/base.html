@@ -8,8 +8,7 @@
         {% block head %}
             {% analytics %}
             <meta charset="utf-8">
-            <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - GOV.UK Trade
-                Remedies Service</title>
+            <title>{% if form_errors %}Error: {% endif %}{% block page_title %}{% endblock page_title %} - Trade Remedies Service - GOV.UK</title>
             <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
             <meta name="theme-color" content="blue">
 
@@ -27,6 +26,7 @@
             <link href="{% static 'v2/css/design.css' %}" rel="stylesheet">
             <link href="{% static 'v2/css/feedback.css' %}" rel="stylesheet">
             <link href="{% static 'v2/css/with-and-without-javascript.css' %}" rel="stylesheet">
+            <link href="{% static 'v2/css/custom.css' %}" rel="stylesheet">
             <!--<![endif]-->
 
             <!--[if IE 8]>
@@ -98,7 +98,7 @@
                             </div>
                         </div>
                         <div class="govuk-button-group">
-                            <a href="#" onclick="$('#cookies_accepted_banner').hide()" role="button" draggable="false"
+                            <a id="hide_cookie_button" href="#" role="button" draggable="false"
                                 class="govuk-button" data-module="govuk-button">
                                 Hide cookie message
                             </a>
@@ -130,7 +130,9 @@
                     </a>
                 </div>
                 <div class="govuk-header__content">
-                    <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--service-name">Trade Remedies Authority</a>
+                    <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--service-name">
+                        Trade Remedies Service
+                    </a>
                 </div>
 
                 <div class="govuk-header__account">
@@ -142,7 +144,7 @@
                                     {{ request.user.name }}
                                 </li>
                                 <li class="login-nav__list-item">
-                                    <a href="{% url 'account_info' %}"
+                                    <a href="/accounts/info/"
                                         class="govuk-link govuk-link govuk-link--inverse login-nav__link">
                                         Manage account
                                     </a>|
@@ -167,6 +169,7 @@
                         {% endif %}
                     </ul>
                 </div>
+                {% include "v2/partials/sub_navbar.html" %}
             </div>
         </header>
 
@@ -221,7 +224,7 @@
                             </li>
                             <li class="govuk-footer__inline-list-item">
                                 <a class="govuk-footer__link" href="{% url 'accessibility_statement' %}">
-                                    Accessibility
+                                    Accessibility statement
                                 </a>
                             </li>
                         </ul>
@@ -247,11 +250,13 @@
         </footer>
 
         <script src="{% static 'v2/js/govuk-frontend-4.5.0.min.js' %}"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="  {# /PS-IGNORE #}
-            crossorigin="anonymous"></script>
+        <script src="{% static 'v2/js/jquery-3.7.0.min.js' %}"></script>
 
         <script type="text/javascript">
+            $("#hide_cookie_button").click(function(){
+                $('#cookies_accepted_banner').hide()
+            })
+
             $(document).ready(function () {
                 {% block hash_replace %}
                     // Remove the # from the hash, as different browsers may or may not include it
@@ -270,20 +275,29 @@
                 window.GOVUKFrontend.initAll()
 
                 // Feedback stars if JS is enabled
-                $('.star-rating3__label').click(function () {
+                $('.star-rating3__label').on("click", function () {
                     $('#js_selected_rating').text($(this).find("span").text())
+                })
+                $('input[name="rating"]').change(function(){
+                    $('#js_selected_rating').text($(this).next().text())
                 })
                 {# sorry about this #}
                 {% if feedback_object %}
                     $('label[for="rating-{{ feedback_object.rating }}"]').trigger("click")
                 {% endif %}
 
+                $('[name="rating"]').keyup(function (e) {
+                    if (e.keyCode === 9) {
+                        $(this).trigger("change")
+                    }
+                })
+
                 {# file download checks #}
                 $(document).on("click", ".download_file_check_link", function(){
                     if ($(this).attr("data-check-id")){
                         let document_id = $(this).attr("data-check-id")
                         document.cookie = `${document_id}=downloaded; max-age=${3600*24}; path=/`
-                        $(`#${check_id}`).show()
+                        $(`#${$(this).attr("data-check-id")}`).show()
                     }
                 })
 

@@ -6,10 +6,10 @@
     <div class="govuk-grid-column-full">
         <span class="govuk-caption-xl">{% block header %}{% endblock header %}</span>
         <h1 class="govuk-heading-xl">Select a Trade Remedies case</h1>
-        <p class="govuk-body">{% block sub_heading %}Select the case you would like to participate in.{% endblock sub_heading %}</p>
+        <p>{% block sub_heading %}Select the case you would like to participate in.{% endblock sub_heading %}</p>
     </div>
     <div class="govuk-grid-column-full">
-        <div id="table-sort" class="govuk-visually-hidden--desktop">
+        <form>
             <div class="govuk-form-group table-sort-select">
                 <label class="govuk-label govuk-!-display-inline" for="mobile_sort_cases">
                     Sort by
@@ -23,7 +23,8 @@
                     <option value="5">Status</option>
                     <option value="6">Reg due</option>
                 </select>
-
+            </div>
+            <div class="govuk-form-group table-sort-select">
                 <label class="govuk-label govuk-visually-hidden" for="mobile_sort_direction">
                     Direction
                 </label>
@@ -32,14 +33,11 @@
                     <option value="asc">Ascending</option>
                 </select>
 
-
-                <button class="govuk-button govuk-button--secondary" data-module="govuk-button" type="button"
-                    id="mobile_sort_button">
-                    Sort
-                </button>
-
             </div>
-        </div>
+            <button class="govuk-button govuk-button--secondary table-sort-select" data-module="govuk-button" >
+                Sort
+            </button>
+        </form>
         <form method="post">
             <div class="govuk-form-group {% if not cases %}govuk-form-group--error{% endif %}">
                 {% if not cases %}
@@ -108,7 +106,7 @@
                                     <span class="govuk-visually-hidden--desktop td-header">Type: </span>{{ case.type.name }}
                                 </td>
                                 <td class="govuk-table__cell">
-                                    <span class="govuk-visually-hidden--desktop td-header">Status: </span>{{ case.case_status.stage }}
+                                    <span class="govuk-visually-hidden--desktop td-header">Status: </span>{{ case.get_status.stage }}
                                 </td>
                                 <td class="govuk-table__cell" data-order="{{ case.initiated_at|date:'U' }}">
                                     <span class="govuk-visually-hidden--desktop td-header">Date Initiated: </span>{{ case.initiated_at|date:'d M Y' }}
@@ -158,6 +156,7 @@
                 ],
                 order: [[5, 'desc']],
                 responsive: true,
+                tabIndex: -1,
             });
 
             $("#mobile_sort_button").click(function () {

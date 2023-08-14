@@ -3,7 +3,6 @@ import logging
 
 from apiclient.exceptions import ClientError
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -34,6 +33,7 @@ from config.utils import (
     get_uploaded_loa_document,
 )
 from core.base import GroupRequiredMixin
+from core.exceptions import SentryPermissionDenied
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
         self.submission = {}
         if request.user.is_authenticated and self.kwargs.get("submission_id"):
             submission_id = self.kwargs.get("submission_id")
-            self.submission = self.call_client(timeout=30).submissions(
+            self.submission = self.call_client(timeout=100).submissions(
                 submission_id,
                 fields=[
                     "contact",
@@ -69,11 +69,10 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
             ):
                 # This user did not create this ROI, raise a 403 permission DENIED
                 # However we can make an exception if they've tyring to create a duplicate ROI
-                logger.info(
+                raise SentryPermissionDenied(
                     f"User {request.user.id} requested access to ROI {submission_id}. "
                     f"Permission denied."
                 )
-                raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
     def form_invalid(self, form):
@@ -118,7 +117,9 @@ class RegistrationOfInterestBase(LoginRequiredMixin, GroupRequiredMixin, APIClie
             # Associate this contact with the organisation if there is no error
             self.client.contacts(contact_id).update({"organisation": organisation_id})
             # Add the contact as the invited contact to the submission
-            self.client.submissions(submission_id).update({"primary_contact": contact_id})
+            self.client.submissions(submission_id).update(
+                {"primary_contact": contact_id}, fields=["id"]
+            )
 
             return redirect(
                 reverse("roi_submission_exists", kwargs={"submission_id": submission["id"]})
@@ -227,7 +228,10 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
         if (
             submission
             and submission.organisation
-            and submission.organisation.id != self.request.user.contact["organisation"]["id"]
+            and submission.organisation.id
+            != self.request.user.contact["organisation"].get(
+                "id", self.request.user.contact["user"]["organisation"]["id"]
+            )
         ):
             # THe user is representing someone else, we should show the letter of authority
             uploaded_loa_document = get_uploaded_loa_document(self.submission)
@@ -369,7 +373,9 @@ class InterestClientTypeStep2(RegistrationOfInterestBase, FormView):
             # If it's your own org, you act as both the contact and the organisation,
             # it's not a third party invite
             return self.add_organisation_to_registration_of_interest(
-                organisation_id=self.request.user.contact["organisation"]["id"],
+                organisation_id=self.request.user.contact["organisation"].get(
+                    "id", self.request.user.contact["user"]["organisation"]["id"]
+                ),
                 submission_id=submission_id,
                 contact_id=self.request.user.contact["id"],
             )
@@ -540,7 +546,10 @@ class InterestExistingClientStep2(RegistrationOfInterestBase, FormView):
         return [
             (each["id"], each["name"])
             for each in org_parties
-            if each["id"] != self.request.user.contact["organisation"].get("id")
+            if each["id"]
+            != self.request.user.contact["organisation"].get(
+                "id", self.request.user.contact["user"]["organisation"]["id"]
+            )
         ]
 
     def get_context_data(self, **kwargs):

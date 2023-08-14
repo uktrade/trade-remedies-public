@@ -1,10 +1,13 @@
 from django.contrib.auth.mixins import AccessMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.views.generic import TemplateView
+from v2_api_client.shared.logging import audit_logger
+
 from core.constants import (
     ORG_INDICATOR_TYPE_LARGE,
     ORG_INDICATOR_TYPE_SMALL,
 )
+from core.exceptions import SentryPermissionDenied
 from core.utils import to_word
 from core.utils import deep_index_items_by
 from cases.submissions import SUBMISSION_TYPE_HELPERS
@@ -112,12 +115,32 @@ class BasePublicView(TemplateView, TradeRemediesAPIClientMixin):
                     )
                     # self.organisation_id = self.submission['organisation']['id']
             if self.organisation_id:
+                if str(self.organisation_id) not in [
+                    str(each["id"]) for each in self.request.user.organisations
+                ] + [str(each["id"]) for each in self.request.user.representing]:
+                    # the user is trying to access an organisation's view that they should not
+                    # have access to
+                    raise SentryPermissionDenied(
+                        f"User {self.user.id} tried to access organisation {self.organisation_id} "
+                        f"that they do not have access to - "
+                        f"{self.request.path} - {self.request.GET}"
+                    )
                 self.organisation = self._client.get_organisation(
                     organisation_id=self.organisation_id, case_id=self.case_id
                 )
             self.case_page_counter(self.request)
             self.alert_message = self.request.GET.get("alert")
             self.error_message = self.request.GET.get("error")
+
+        audit_logger.info(
+            f"{self.__class__.__name__} accessed",
+            extra={
+                "user": self.request.user.id,
+                "organisation": organisation_id,
+                "url": self.request.path,
+                **kwargs,
+            },
+        )
         return super().dispatch(*args, **kwargs)
 
     # helpers to call methods from the submission helper

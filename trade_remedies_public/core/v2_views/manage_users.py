@@ -1,6 +1,7 @@
 import logging
 
 from django.core.exceptions import PermissionDenied
+from django.http.response import Http404
 from django.urls import reverse
 from django.views.generic import TemplateView
 from v2_api_client.shared.data.country_dialing_codes import country_dialing_codes_without_uk
@@ -88,7 +89,21 @@ class BaseSingleUserView(BasePublicView):
     groups_required = SECURITY_GROUP_ORGANISATION_OWNER
 
     def dispatch(self, request, *args, **kwargs):
-        self.organisation_user = self.client.organisation_users(self.kwargs["organisation_user_id"])
+        if organisation_user_id := self.kwargs.get("organisation_user_id"):
+            self.organisation_user = self.client.organisation_users(organisation_user_id)
+        elif "organisation_id" in self.kwargs and "user_id" in self.kwargs:
+            # We are passed an org_id and a user_id, we can pull the OrganisationUser ID ourselves
+            organisation_users = self.client.organisation_users(
+                organisation_id=self.kwargs["organisation_id"],
+                user_id=self.kwargs["user_id"],
+            )
+            if organisation_users:
+                self.organisation_user = organisation_users[0]
+            else:
+                raise Http404()
+        else:
+            raise Http404()
+
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -201,6 +216,11 @@ class ChangeOrganisationUserPermissionsView(BaseEditUserView):
                 "security_group": form.cleaned_data["type_of_user"],
             }
         )
+        # deleting the user from the old Groups
+        user = self.client.users(self.organisation_user.user.id)
+        user.delete_group(SECURITY_GROUP_ORGANISATION_OWNER)
+        user.delete_group(SECURITY_GROUP_ORGANISATION_USER)
+
         # adding the user to the actual Group
         self.client.users(self.organisation_user.user.id).add_group(
             form.cleaned_data["type_of_user"]
@@ -358,17 +378,14 @@ class AssignToCaseView(BaseEditUserView):
         # then let's get the cases the org is enrolled in as a representative
         org = self.client.organisations(
             self.organisation_user.organisation,
-            fields=[
-                "representative_cases",
-            ],
-        )
-        for each in org.representative_cases:
-            if each.case.id not in cases_already_enrolled_in_as_representative:
+        ).organisation_card_data()
+        for each in org["representative_cases"]:
+            if each["case"]["id"] not in cases_already_enrolled_in_as_representative:
                 assignable_cases.append(
                     {
-                        "case": each.case,
-                        "organisation": each.on_behalf_of_id,
-                        "organisation_name": each.on_behalf_of,
+                        "case": each["case"],
+                        "organisation": each["on_behalf_of_id"],
+                        "organisation_name": each["on_behalf_of"],
                     }
                 )
 

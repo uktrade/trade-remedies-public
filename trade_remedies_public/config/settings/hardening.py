@@ -24,9 +24,6 @@ SESSION_COOKIE_HTTPONLY = True
 # Set content to no sniff
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
-# Set anti XSS header
-SECURE_BROWSER_XSS_FILTER = True
-
 # Audit log middleware user field
 AUDIT_LOG_USER_FIELD = "username"
 
@@ -69,6 +66,7 @@ CSP_FONT_SRC = (
     "'self'",
     "fonts.gstatic.com",
     "https:",
+    "data:",
 )
 
 CSP_INCLUDE_NONCE_IN = ("script-src",)

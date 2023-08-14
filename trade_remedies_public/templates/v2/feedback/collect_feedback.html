@@ -1,7 +1,7 @@
 {% extends 'v2/govuk/base.html' %}
 {% load get_item %}
 
-{% block page_title %}Give feedback{% endblock page_title %}
+{% block page_title %}Give feedback on the Trade Remedies Service{% endblock page_title %}
 {% block feedback_link %}{% endblock %}
 
 
@@ -30,24 +30,28 @@
                         <div class="govuk-radios star-rating3__stars" id="rating" data-module="govuk-radios">
                             <input class="star-rating3__input" type="radio" name="rating" value="1" id="rating-1"
                                 {% if feedback_object.rating == 1 %}checked{% endif %}>
-                            <label class="star-rating3__label" for="rating-1" aria-label="Very dissatisfied"><span
-                                class="govuk-label text">Very dissatisfied</span></label>
+                            <label class="star-rating3__label" for="rating-1" aria-label="Very dissatisfied"
+                                role="radio"><span
+                                    class="govuk-label text">Very dissatisfied</span></label>
                             <input class="star-rating3__input" type="radio" name="rating" value="2" id="rating-2"
                                 {% if feedback_object.rating == 2 %}checked{% endif %}>
-                            <label class="star-rating3__label" for="rating-2" aria-label="Dissatisfied"><span
-                                class="govuk-label text">Dissatisfied</span></label>
+                            <label class="star-rating3__label" for="rating-2" aria-label="Dissatisfied"
+                                role="radio"><span
+                                    class="govuk-label text">Dissatisfied</span></label>
                             <input class="star-rating3__input" type="radio" name="rating" value="3" id="rating-3"
                                 {% if feedback_object.rating == 3 %}checked{% endif %}>
                             <label class="star-rating3__label" for="rating-3"
-                                aria-label="Neither satisfied or dissatisfied"><span class="govuk-label text">Neither satisfied or dissatisfied</span></label>
+                                aria-label="Neither satisfied or dissatisfied" role="radio"><span
+                                    class="govuk-label text">Neither satisfied or dissatisfied</span></label>
                             <input class="star-rating3__input" type="radio" name="rating" value="4" id="rating-4"
                                 {% if feedback_object.rating == 4 %}checked{% endif %}>
-                            <label class="star-rating3__label" for="rating-4" aria-label="Satisfied"><span
+                            <label class="star-rating3__label" for="rating-4" aria-label="Satisfied" role="radio"><span
                                 class="govuk-label text">Satisfied</span></label>
                             <input class="star-rating3__input" type="radio" name="rating" value="5" id="rating-5"
                                 {% if feedback_object.rating == 5 %}checked{% endif %}>
-                            <label class="star-rating3__label" for="rating-5" aria-label="Very satisfied"><span
-                                class="govuk-label text">Very satisfied</span></label>
+                            <label class="star-rating3__label" for="rating-5" aria-label="Very satisfied"
+                                role="radio"><span
+                                    class="govuk-label text">Very satisfied</span></label>
                             <div class="star-rating3__focus"></div>
                             <span id="js_selected_rating" class="govuk-label js-hidden selected_rating"></span>
                         </div>
@@ -172,17 +176,13 @@
                     </div>
                 </div>
             </div>
-            <p class="govuk-body">We use feedback to help us improve the service and cannot respond to any requests for support you make on
+            <p class="govuk-body">We use feedback to help us improve the service and cannot respond to any requests for
+                support you make on
                 this form.</p>
             <button class="govuk-button" data-module="govuk-button">
                 Submit
             </button>
             <input type="hidden" name="existing_feedback_id" value="{{ feedback_object.id }}">
-            <input type="hidden" name="journey" value="{{ journey }}">
-            <input type="hidden" name="url" value="
-                {% if request.GET.previous_url %}{{ request.GET.previous_url }}{% else %}{{ url }}{% endif %}">
-            <input type="hidden" name="previous_url_name" value="
-                {% if request.GET.previous_url_name %}{{ request.GET.previous_url_name }}{% else %}{{ previous_url_name }}{% endif %}">
         </form>
     </div>
 {% endblock row_content %}
@@ -197,6 +197,8 @@
                 } else {
                     $('.what_didnt_work_so_well').show()
                 }
+
+
             })
 
             $("#how_could_we_improve_service, #what_didnt_work_so_well_other").keyup(function () {
@@ -206,6 +208,9 @@
             })
 
             $("[name='rating']:checked").trigger("change").trigger("click")
+
+
+
         }, false);
 
 

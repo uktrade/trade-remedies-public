@@ -36,6 +36,7 @@
         <!--[if !IE 8]><!-->
         <link href="{% static 'v2/css/design.css' %}" rel="stylesheet">
         <!--<![endif]-->
+        <link href="{% static 'v2/css/custom.css' %}" rel="stylesheet">
 
         <!--[if IE 8]>
         <link href="{% static 'v2/css/govuk/govuk-frontend-ie8-4.5.0.min.css' %}" rel="stylesheet">
@@ -46,7 +47,7 @@
 
     </head>
 
-    <body class="{% block body_classes %}{% endblock %}">
+    <body class="{% block body_classes %}{% endblock %} invest-nav">
         <script>document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 
         {% block body_start %}
@@ -80,8 +81,9 @@
                     </a>
                 </div>
                 <div class="govuk-header__content">
-                    <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--service-name">Trade Remedies
-                        Authority</a>
+                    <a href="{% url 'landing' %}" class="govuk-header__link govuk-header__link--service-name">
+                        Trade Remedies Service
+                    </a>
                 </div>
 
                 <div class="govuk-header__account">
@@ -93,7 +95,7 @@
                                     {{ user.name }}
                                 </li>
                                 <li class="login-nav__list-item">
-                                    <a href="{% url 'account_info' %}"
+                                    <a href="/accounts/info/"
                                         class="govuk-link govuk-link govuk-link--inverse login-nav__link">
                                         Manage account
                                     </a>|
@@ -119,6 +121,7 @@
                         {% endif %}
                     </ul>
                 </div>
+                {% include "v2/partials/sub_navbar.html" %}
             </div>
         </header>
         <div class="govuk-width-container app-width-container">

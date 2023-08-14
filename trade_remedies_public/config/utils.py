@@ -110,3 +110,18 @@ def remove_duplicates_from_list_by_key(
                 raise
             pass
     return no_duplicates
+
+
+def get_item_default_if_empty_or_none(dictionary: dict, item: str, default: str):
+    """
+    Returns the default if the value in the dict is empty, None, or the key doesn't exist
+    Parameters
+    ----------
+    dictionary: the dictionary to search
+    item : the key to check
+    default : the default to return if the item is empty or None or doesn't exist
+    """
+    value = dictionary.get(item, default)
+    if not value:
+        return default
+    return value

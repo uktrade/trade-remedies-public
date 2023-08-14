@@ -1,6 +1,5 @@
 import logging
 
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -23,6 +22,7 @@ from config.utils import (
     get_loa_document_bundle,
     get_uploaded_loa_document,
 )
+from core.exceptions import SentryPermissionDenied
 
 logger = logging.getLogger(__name__)
 
@@ -30,24 +30,31 @@ logger = logging.getLogger(__name__)
 
 
 class BaseInviteView(BasePublicView, TemplateView):
+    invitation_fields = []
+
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             if SECURITY_GROUP_ORGANISATION_OWNER not in request.user.groups:
-                logger.info(
+                raise SentryPermissionDenied(
                     f"User {request.user.id} requested access to Invitation without Org User rights"
                 )
-                raise PermissionDenied()
             if invitation_id := kwargs.get("invitation_id"):
-                self.invitation = self.client.invitations(invitation_id)
+                if self.invitation_fields:
+                    if "organisation" not in self.invitation_fields:
+                        self.invitation_fields.append("organisation")
+                    self.invitation = self.call_client(timeout=70).invitations(
+                        invitation_id, fields=self.invitation_fields
+                    )
+                else:
+                    self.invitation = self.client.invitations(invitation_id)
                 if inviting_organisation := self.invitation["organisation"]:
                     if inviting_organisation["id"] != request.user.contact["organisation"]["id"]:
                         # The user should not have access to this invitation,
                         # raise a 403 permission DENIED
-                        logger.info(
+                        raise SentryPermissionDenied(
                             f"User {request.user.id} requested access to Invitation "
                             f"{invitation_id}. Permission denied."
                         )
-                        raise PermissionDenied()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -56,7 +63,12 @@ class BaseInviteView(BasePublicView, TemplateView):
             if hasattr(self, "invitation") and self.invitation:
                 context["invitation"] = self.invitation
             else:
-                context["invitation"] = self.client.invitations(invitation_id)
+                if self.invitation_fields:
+                    context["invitation"] = self.client.invitations(
+                        invitation_id, fields=self.invitation_fields
+                    )
+                else:
+                    context["invitation"] = self.client.invitations(invitation_id)
         context["group_owner"] = SECURITY_GROUP_ORGANISATION_OWNER
         context["group_regular"] = SECURITY_GROUP_ORGANISATION_USER
         return context
@@ -299,7 +311,13 @@ class InviteRepresentativeTaskList(TaskListView):
     def get_task_list(self):
         invitation = {}
         if invitation_id := self.kwargs.get("invitation_id", None):
-            invitation = self.client.invitations(invitation_id)
+            invitation = self.client.invitations(
+                invitation_id,
+                fields=[
+                    "contact",
+                    "submission",
+                ],
+            )
 
         steps = [
             {
@@ -487,13 +505,14 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
     form_class = SelectOrganisationForm
 
     def dispatch(self, request, *args, **kwargs):
-        organisation = self.client.organisations(
-            self.request.user.contact["organisation"]["id"], fields=["invitations"]
+        invitations = self.call_client(timeout=50).invitations(
+            organisation_id=self.request.user.contact["organisation"]["id"],
+            fields=["contact", "submission"],
         )
         # Now we need to get all the distinct organisations this organisation has sent invitations
         # to
         invitations_sent = []
-        for sent_invitation in organisation["invitations"]:
+        for sent_invitation in invitations:
             if invited_contact := sent_invitation.get("contact", None):
                 # Thn checking if there is an organisation associated with the invitation
                 if invited_organisation := invited_contact.get("organisation", None):
@@ -527,7 +546,9 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["invitations_sent"] = self.invitations_sent
-        original_invitation = self.client.invitations(self.kwargs["invitation_id"])
+        original_invitation = self.client.invitations(
+            self.kwargs["invitation_id"], fields=["contact"]
+        )
         context["original_invitation"] = original_invitation
 
         return context
@@ -656,6 +677,7 @@ class InviteNewRepresentativeDetails(BaseInviteFormView):
 class InviteExistingRepresentativeDetails(BaseInviteFormView):
     template_name = "v2/invite/invite_representative_existing_details.html"
     form_class = InviteExistingRepresentativeDetailsForm
+    invitation_fields = ["submission", "contact"]
 
     def form_valid(self, form):
         organisation_id = self.kwargs["organisation_id"]
@@ -704,6 +726,7 @@ class InviteExistingRepresentativeDetails(BaseInviteFormView):
 
 class InviteRepresentativeLoa(BaseInviteView):
     template_name = "v2/invite/invite_representative_loa.html"
+    invitation_fields = ["submission"]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -733,6 +756,7 @@ class InviteRepresentativeLoa(BaseInviteView):
 
 class InviteRepresentativeCheckAndSubmit(BaseInviteView):
     template_name = "v2/invite/invite_representative_check_and_submit.html"
+    invitation_fields = ["submission", "contact"]
 
     def post(self, request, *args, **kwargs):
         self.client.invitations(kwargs["invitation_id"]).send()

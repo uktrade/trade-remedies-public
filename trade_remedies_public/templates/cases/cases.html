@@ -2,20 +2,21 @@
 {% load format_date %}
 
 {% block row_content %}
-    <div class="breadcrumbs" data-module="track-click">
-        <ol>
-            <li class="">
-                <a data-track-category="breadcrumbClicked" data-track-action="1"   class="" aria-current="false" href="/dashboard">Dashboard</a>
+    <div class="govuk-breadcrumbs">
+        <ol class="govuk-breadcrumbs__list">
+            <li class="govuk-breadcrumbs__list-item">
+                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link" aria-current="false"
+                    href="/dashboard/">Home</a>
             </li>
-            <li class="">
-                <span>Your organisation's cases</span>
+            <li class="govuk-breadcrumbs__list-item">
+                Manage cases
             </li>
         </ol>
     </div>
     <div class="grid-row">
         <div class="column-two-thirds">
             <h1 class="heading-xlarge">
-                Your organisation's cases
+                Manage cases
             </h1>
         </div>
         <div class="column-one-third">
@@ -38,14 +39,19 @@
                     {% for key in order %}
                         {% set 'oc' org_cases|_get:key %}
                         <tr>
-                            <td><a href="/case/{{oc.0.case.id}}/organisation/{{oc.0.representing.id}}/summary/">{{oc.0.case.reference}}:&nbsp;{{oc.0.case.name |default:'<span class="grey">&lt;Untitled&gt;</span>'}}</a></td>
+                            <td>{% if key in not_involved_case_keys %}<p>{% else %}<a href="/case/{{oc.0.case.id}}/">{% endif %}{{oc.0.case.reference}}:&nbsp;{{oc.0.case.name |default:'<span class="grey">&lt;Untitled&gt;</span>'}}{% if key in not_involved_case_keys %}</p>{% else %}</a>{% endif %}</td>
                             <td>{% if oc.0.roi_sent != None %}TBC{% else %}{{oc.0.role.name}}{% endif %}</td>
                             <td><span class="nobreak">{{oc.0.case.initiated_at|format_date:'%d %b %Y'}}</span></td>
                             <td>{{oc.0.representing.name}}</td>
                             <td>
                                 <div>
                                     {% for oc_user in oc %}
-                                        <a href="/accounts/team/{{oc_user.organisation.id}}/user/{{oc_user.user.id}}/" class="nobreak">{{oc_user.user.name}}</a><br>
+                                        {% if "Organisation Owner" in request.user.groups and oc_user.part_of_organisation %}
+                                            {# The user is an Org Owner and is part of the organisation that this oc_user is representing  #}
+                                            <a href="{% url 'view_user' organisation_user_id=oc_user.part_of_organisation.0.id %}" class="nobreak">{{oc_user.user.name}}</a><br>
+                                        {% else %}
+                                            {{oc_user.user.name}}<br>
+                                        {% endif %}
                                     {% endfor %}
                                 </div>
                             </td>

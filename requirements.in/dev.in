@@ -3,7 +3,7 @@
 behave-django==1.4.0
 black
 coverage
-codecov
+codecov==2.1.13
 djhtml
 flake8
 ipython>=8.10

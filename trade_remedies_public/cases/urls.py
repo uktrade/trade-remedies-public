@@ -7,6 +7,7 @@ from cases.v2_views import (
     accept_representative_invitation,
     invite,
     registration_of_interest,
+    active_investigations,
 )
 
 urlpatterns = [
@@ -228,12 +229,6 @@ urlpatterns = [
         "<uuid:case_id>/submission/<uuid:submission_id>/<str:public_str>/",
         case_views.TaskListView.as_view(),
         name="sub_tasklist_type",
-    ),
-    # Admin summary
-    path(
-        "<uuid:case_id>/organisation/<uuid:organisation_id>/summary/",
-        case_views.CaseSummaryView.as_view(),
-        name="case_summary",
     ),
 ]
 
@@ -487,5 +482,24 @@ urlpatterns += [
         "accept_representative_invite/organisation_further_details/<uuid:invitation_id>/",
         accept_representative_invitation.OrganisationFurtherDetails.as_view(),
         name="accept_representative_invitation_organisation_further_details",
+    ),
+]
+
+# public active investigations page
+urlpatterns += [
+    path(
+        "active_investigations/",
+        active_investigations.ActiveInvestigationsView.as_view(),
+        name="active_investigations_home",
+    ),
+    path(
+        "active_investigations/<uuid:case_id>/",
+        active_investigations.SingleCaseView.as_view(),
+        name="active_investigations_single_case",
+    ),
+    path(
+        "active_investigations/view_public_submission/<uuid:submission_id>/",
+        active_investigations.SingleSubmissionView.as_view(),
+        name="active_investigations_single_public_submission",
     ),
 ]
