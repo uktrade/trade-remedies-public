@@ -311,10 +311,13 @@ class InviteRepresentativeTaskList(TaskListView):
     def get_task_list(self):
         invitation = {}
         if invitation_id := self.kwargs.get("invitation_id", None):
-            invitation = self.client.invitations(invitation_id, fields=[
-                "contact",
-                "submission",
-        ])
+            invitation = self.client.invitations(
+                invitation_id,
+                fields=[
+                    "contact",
+                    "submission",
+                ],
+            )
 
         steps = [
             {
