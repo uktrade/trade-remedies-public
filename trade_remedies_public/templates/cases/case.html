@@ -8,11 +8,13 @@
     <div class="govuk-breadcrumbs">
         <ol class="govuk-breadcrumbs__list">
             <li class="govuk-breadcrumbs__list-item">
-                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link" aria-current="false"
+                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link"
+                    aria-current="false"
                     href="/dashboard/">Home</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link" aria-current="false"
+                <a data-track-category="breadcrumbClicked" data-track-action="1" class="govuk-breadcrumbs__link"
+                    aria-current="false"
                     href="/cases/">Manage cases</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
@@ -61,7 +63,11 @@
                                             {% if submission.invitations.0|length > 0 %}
                                                 <a href="{% url 'review_sent_invitation' invitation_id=submission.invitations.0.id %}">{{ submission.type.name }}</a>
                                             {% else %}
-                                                <a href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/">{{ submission.type.name }}</a>
+                                                {% if submission.type.key == "public" %}
+                                                    <a href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/public/">{{ submission.type.name }}</a>
+                                                {% else %}
+                                                    <a href="/case/{{ submission.case.id }}/submission/{{ submission.id }}/">{{ submission.type.name }}</a>
+                                                {% endif %}
                                             {% endif %}
                                         {% endif %}
 
@@ -84,6 +90,7 @@
                                         </a>
                                     </td>
                                     <td sortVal="
+
                                         {% if submission.due_at and not submission.status.locking %}{{ submission.due_at }}{% endif %}z">
                                         <div class="due-date">
                                             {% include "partials/widgets/due_date_status.html" with state=submission show_na=True %}
