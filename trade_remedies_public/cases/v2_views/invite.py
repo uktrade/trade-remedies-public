@@ -42,7 +42,7 @@ class BaseInviteView(BasePublicView, TemplateView):
                 if self.invitation_fields:
                     if "organisation" not in self.invitation_fields:
                         self.invitation_fields.append("organisation")
-                    self.invitation = self.client.invitations(
+                    self.invitation = self.call_client(timeout=70).invitations(
                         invitation_id, fields=self.invitation_fields
                     )
                 else:

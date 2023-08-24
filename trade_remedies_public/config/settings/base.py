@@ -116,6 +116,7 @@ TEMPLATES = [
                 "config.context_processors.motd_context",
                 "config.context_processors.cookie_management",
                 "config.context_processors.add_form_errors",
+                "config.context_processors.is_org_owner",
             ],
         },
     },

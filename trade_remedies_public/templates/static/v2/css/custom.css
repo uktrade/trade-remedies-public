@@ -1,0 +1,10 @@
+.doc-icon {
+    margin: 0px 0px -5px 0px;
+    width: 42px;
+}
+
+.app-navigation__list-item--underline {
+    border-bottom: 2px solid #fff;
+    border-left: 0px;
+    padding: 0;
+}

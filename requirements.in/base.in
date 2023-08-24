@@ -1,9 +1,9 @@
 git+https://github.com/uktrade/trade-remedies-client.git@master#egg=trade-remedies-client
 git+https://github.com/uktrade/trs_v2_api_client.git@master#egg=v2_api_client
 
-Django==3.2.19
+Django==3.2.20
 boto3==1.17.89
-certifi>=2022.12.07
+certifi>=2023.07.22
 django-audit-log-middleware==0.0.4
 django-basicauth==0.5.2
 django-chunk-upload-handlers==0.0.11
