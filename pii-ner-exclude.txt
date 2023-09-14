@@ -1,3 +1,5 @@
+HEALTH_CHECK_TOKEN=AUTH-TOKEN-FOR-TRUSTED-USER
+ORGANISATION_NAME="Trade Remedies Authority
 href="/case/{{ case.id }}
 method='post'><button
 "Pops the form errors
