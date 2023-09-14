@@ -58,6 +58,7 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
         context["submission"] = submission
         return context
 
+
 class LegacyPublicFileRedirectView(APIClientMixin, View):
     def get(self, request, *args, **kwargs):
         case = self.client.cases.get_case_by_number(self.kwargs["case_number"], fields=["id"])
