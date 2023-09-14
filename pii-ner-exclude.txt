@@ -9,7 +9,7 @@ aria-labelledby="tab_submitted-docs
 case.product_set %
 DataTable
 mobile_sort_button
-'active_investigations_home' %
+'public_cases' %
 80 mm
 @traderemedies.gov.uk
 aria-controls="public-file

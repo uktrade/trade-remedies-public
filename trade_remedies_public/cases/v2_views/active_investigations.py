@@ -1,3 +1,8 @@
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.views import View
+from v2_api_client.mixins import APIClientMixin
+
 from config.base_views import BaseAnonymousPublicTemplateView
 
 
@@ -20,7 +25,7 @@ class SingleCaseView(BaseAnonymousPublicTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        case = self.client.cases(self.kwargs["case_id"])
+        case = self.client.cases.get_case_by_number(self.kwargs["case_number"])
         context["case"] = case
         context["public_file"] = case.get_public_file()
 
@@ -52,3 +57,8 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
         assert submission.issued_at
         context["submission"] = submission
         return context
+
+class LegacyPublicFileRedirectView(APIClientMixin, View):
+    def get(self, request, *args, **kwargs):
+        case = self.client.cases.get_case_by_number(self.kwargs["case_number"], fields=["id"])
+        return redirect(reverse("public_case", kwargs={"case_id": case.id}))

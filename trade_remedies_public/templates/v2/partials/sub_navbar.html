@@ -26,7 +26,7 @@
         {% endif %}
         <li class="app-navigation__list-item {% if "active_investigations" in request.resolver_match.url_name %}app-navigation__list-item--underline{% endif %}">
             <a class="govuk-link govuk-link--no-visited-state govuk-link--no-underline app-navigation__link"
-                href="{% url 'active_investigations_home' %}">
+                href="{% url 'public_cases' %}">
                 TRA investigations
             </a>
         </li>
