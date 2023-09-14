@@ -10,6 +10,7 @@ case.product_set %
 DataTable
 mobile_sort_button
 'public_cases' %
+'active_investigations_home' %
 80 mm
 @traderemedies.gov.uk
 aria-controls="public-file
