@@ -57,9 +57,3 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
         assert submission.issued_at
         context["submission"] = submission
         return context
-
-
-class LegacyPublicFileRedirectView(APIClientMixin, View):
-    def get(self, request, *args, **kwargs):
-        case = self.client.cases.get_case_by_number(self.kwargs["case_number"], fields=["id"])
-        return redirect(reverse("public_case", kwargs={"case_id": case.id}))
