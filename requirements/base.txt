@@ -119,9 +119,7 @@ marshmallow==3.6.1
 openpyxl==3.1.2
     # via v2-api-client
 packaging==23.1
-    # via
-    #   deprecation
-    #   pikepdf
+    # via pikepdf
 phonenumbers==8.12.50
     # via
     #   -r requirements.in/base.in
@@ -183,7 +181,7 @@ urllib3==1.26.11
     #   botocore
     #   requests
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 werkzeug==2.2.3
     # via -r requirements.in/base.in
