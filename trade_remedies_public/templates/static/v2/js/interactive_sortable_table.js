@@ -17,12 +17,12 @@ $("document").on("resize", function () {
     redraw_table($("table:visible").dataTable())
 })
 
-function lazy_table_setup(table_element) {
+function lazy_table_setup(table_element, sort_column, sort_direction) {
     let data_table = table_element.DataTable({
         paging: false,
         searching: false,
         info: false,
-        order: [[0, 'asc']],
+        order: [[sort_column, sort_direction]],
         responsive: true,
         tabIndex: -1,
         autoWidth: false,
