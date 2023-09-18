@@ -1,8 +1,3 @@
-from django.shortcuts import redirect
-from django.urls import reverse
-from django.views import View
-from v2_api_client.mixins import APIClientMixin
-
 from config.base_views import BaseAnonymousPublicTemplateView
 
 
