@@ -1,4 +1,5 @@
 from config.base_views import BaseAnonymousPublicTemplateView
+from datetime import datetime
 
 
 class ActiveInvestigationsView(BaseAnonymousPublicTemplateView):
@@ -23,6 +24,11 @@ class SingleCaseView(BaseAnonymousPublicTemplateView):
         case = self.client.cases(self.kwargs["case_id"])
         context["case"] = case
         context["public_file"] = case.get_public_file()
+
+        # Convert public file issue date from string to datetime
+        for file in context["public_file"]:
+            date_string = file["issued_at"].replace("T", " ")
+            file["issued_at"] = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S%z")
 
         return context
 

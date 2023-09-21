@@ -336,8 +336,8 @@
     <script type="text/javascript" src="{% static 'v2/js/interactive_sortable_table.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            lazy_table_setup($('#active_investigations_table'))
-            lazy_table_setup($('#completed_investigations_table'))
+            lazy_table_setup($('#active_investigations_table'), 5, 'desc')
+            lazy_table_setup($('#completed_investigations_table'), 5, 'desc')
         });
     </script>
 {% endblock scripts %}
