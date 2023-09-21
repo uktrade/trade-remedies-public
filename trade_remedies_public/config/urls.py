@@ -27,6 +27,7 @@ from core.v2_views import feedback, manage_users
 from login import views as login_views
 from password import views as password_views
 from registration import views as register_views
+from cases.v2_views import active_investigations
 
 # todo - config/urls.py should not contain anything, put these URLs in their relevant apps
 urlpatterns = [
@@ -41,26 +42,6 @@ urlpatterns = [
         name="request_new_two_factor",
     ),
     path("email/verify/", core_views.EmailVerifyView.as_view(), name="email_verify"),
-    path(
-        "public/cases/", core_views.PublicCaseListView.as_view(archive=False), name="public_cases"
-    ),
-    path(
-        "public/archive/",
-        core_views.PublicCaseListView.as_view(archive=True),
-        name="public_cases_archive",
-    ),
-    path("public/case/<str:case_number>/", core_views.PublicCaseView.as_view(), name="public_case"),
-    path(
-        "public/case/<str:case_number>/submission/<uuid:submission_id>/",
-        core_views.PublicSubmissionView.as_view(),
-        name="public_submission",
-    ),
-    path(
-        "public/case/<str:case_number>/submission/<uuid:submission_id>"
-        "/document/<uuid:document_id>/",
-        core_views.PublicDownloadView.as_view(),
-        name="public_document_download",
-    ),
     path("organisation/set/", core_views.SetOrganisationView.as_view()),
     path("organisation/set/<uuid:organisation_id>/", core_views.SetOrganisationView.as_view()),
     path("case/", include("cases.urls")),
@@ -365,5 +346,30 @@ urlpatterns += [
         "edit_user/<uuid:organisation_user_id>/assign_to_case/",
         manage_users.AssignToCaseView.as_view(),
         name="assign_to_case",
+    ),
+]
+
+# public active investigations page
+urlpatterns += [
+    path(
+        "public/case/<str:case_number>/submission/<uuid:submission_id>"
+        "/document/<uuid:document_id>/",
+        core_views.PublicDownloadView.as_view(),
+        name="legacy_public_case_submission_document",
+    ),
+    path(
+        "public/cases/",
+        active_investigations.ActiveInvestigationsView.as_view(),
+        name="public_cases",
+    ),
+    path(
+        "public/case/<str:case_number>/",
+        active_investigations.SingleCaseView.as_view(),
+        name="public_case",
+    ),
+    path(
+        "public/case/<str:case_number>/submission/<uuid:submission_id>/",
+        active_investigations.SingleSubmissionView.as_view(),
+        name="public_submission",
     ),
 ]

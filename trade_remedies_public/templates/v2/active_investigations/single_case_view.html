@@ -13,7 +13,7 @@
                 <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="{% url 'active_investigations_home' %}">TRA investigations</a>
+                <a class="govuk-breadcrumbs__link" href="{% url 'public_cases' %}">TRA investigations</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
                 {{ case.reference }}
@@ -235,7 +235,7 @@
                                 <tr class="govuk-table__row no-border">
                                     <td class="govuk-table__cell ">
                                         <span class="govuk-visually-hidden--desktop">Submission: </span><a
-                                            href="{% url 'active_investigations_single_public_submission' submission_id=submission.submission_id %}"
+                                            href="{% url 'public_submission' case_number=case_number submission_id=submission.submission_id %}"
                                         >{{ submission.submission_name }}</a>
                                     </td>
                                     <td class="govuk-table__cell">
@@ -244,8 +244,8 @@
                                     <td class="govuk-table__cell ">
                                         <span class="govuk-visually-hidden--desktop">Type: </span>{{ submission.organisation_case_role_name }}
                                     </td>
-                                    <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop" data-order="{{ submission.issued_at|date:'U' }}">Published: </span>{{ submission.issued_at|format_date:'%d %b %Y' }}
+                                    <td class="govuk-table__cell" data-order="{{ submission.issued_at|date:'U' }}">
+                                        <span class="govuk-visually-hidden--desktop">Published: </span>{{ submission.issued_at|date:'d M Y' }}
                                     </td>
                                     <td class="govuk-table__cell ">
                                         <span class="govuk-visually-hidden--desktop">No. of files: </span>{{ submission.no_of_files }}
@@ -265,7 +265,7 @@
     <script type="text/javascript" src="{% static 'v2/js/interactive_sortable_table.js' %}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            lazy_table_setup($('#public_file_table'))
+            lazy_table_setup($('#public_file_table'), 3, 'asc')
         });
     </script>
 {% endblock scripts %}
