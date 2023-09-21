@@ -11,11 +11,11 @@
                 <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="{% url 'active_investigations_home' %}">TRA investigations</a>
+                <a class="govuk-breadcrumbs__link" href="{% url 'public_cases' %}">TRA investigations</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
                 <a class="govuk-breadcrumbs__link"
-                    href="{% url 'active_investigations_single_case' case_id=submission.case.id %}">{{ submission.case.reference }}</a>
+                    href="{% url 'public_case' case_number=submission.case.reference %}">{{ submission.case.reference }}</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
                 {{ submission.type.name }}

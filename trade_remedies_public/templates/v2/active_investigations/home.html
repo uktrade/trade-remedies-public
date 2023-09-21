@@ -164,12 +164,12 @@
                                 <tr class="govuk-table__row no-border">
                                     <td class="govuk-table__cell">
                                         <span class="govuk-visually-hidden--desktop">Case No.: </span>
-                                        <a href="{% url 'active_investigations_single_case' case_id=case.id %}"
+                                        <a href="{% url 'public_case' case_number=case.reference %}"
                                             class="govuk-link--no-visited-state">{{ case.reference }}</a>
                                     </td>
                                     <td class="govuk-table__cell ">
                                         <span class="govuk-visually-hidden--desktop">Case: </span>
-                                        <a href="{% url 'active_investigations_single_case' case_id=case.id %}"
+                                        <a href="{% url 'public_case' case_number=case.reference %}"
                                             class="govuk-link--no-visited-state">
                                             {{ case.name }}
                                         </a>
@@ -289,12 +289,12 @@
                                     <tr class="govuk-table__row no-border">
                                         <td class="govuk-table__cell">
                                             <span class="govuk-visually-hidden--desktop">Case No.: </span>
-                                            <a href="{% url 'active_investigations_single_case' case_id=case.id %}"
+                                            <a href="{% url 'public_case' case_number=case.reference %}"
                                                 class="govuk-link--no-visited-state">{{ case.reference }}</a>
                                         </td>
                                         <td class="govuk-table__cell ">
                                             <span class="govuk-visually-hidden--desktop">Case: </span>
-                                            <a href="{% url 'active_investigations_single_case' case_id=case.id %}"
+                                            <a href="{% url 'public_case' case_number=case.reference %}"
                                                 class="govuk-link--no-visited-state">
                                                 {{ case.name }}
                                             </a>

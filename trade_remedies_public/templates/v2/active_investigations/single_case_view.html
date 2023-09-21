@@ -13,7 +13,7 @@
                 <a class="govuk-breadcrumbs__link" href="{% url 'dashboard' %}">Home</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="{% url 'active_investigations_home' %}">TRA investigations</a>
+                <a class="govuk-breadcrumbs__link" href="{% url 'public_cases' %}">TRA investigations</a>
             </li>
             <li class="govuk-breadcrumbs__list-item">
                 {{ case.reference }}
@@ -235,7 +235,7 @@
                                 <tr class="govuk-table__row no-border">
                                     <td class="govuk-table__cell ">
                                         <span class="govuk-visually-hidden--desktop">Submission: </span><a
-                                            href="{% url 'active_investigations_single_public_submission' submission_id=submission.submission_id %}"
+                                            href="{% url 'public_submission' case_number=case_number submission_id=submission.submission_id %}"
                                         >{{ submission.submission_name }}</a>
                                     </td>
                                     <td class="govuk-table__cell">
