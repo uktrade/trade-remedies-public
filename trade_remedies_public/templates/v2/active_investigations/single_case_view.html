@@ -147,8 +147,8 @@
                             </dt>
                             <dd class="govuk-summary-list__value">
                                 <ul class="govuk-list">
-                                    {% for hs_code in case.product_set.0.hs_codes %}
-                                        <li>{{ hs_code }}</li>
+                                    {% for commodity in public_file.split_commodities %}
+                                        <li>{{ commodity }}</li>
                                     {% endfor %}
                                 </ul>
                             </dd>
@@ -231,7 +231,7 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            {% for submission in public_file %}
+                            {% for submission in public_file.submissions %}
                                 <tr class="govuk-table__row no-border">
                                     <td class="govuk-table__cell ">
                                         <span class="govuk-visually-hidden--desktop">Submission: </span><a
