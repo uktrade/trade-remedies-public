@@ -26,7 +26,7 @@ class SingleCaseView(BaseAnonymousPublicTemplateView):
         context["public_file"] = case.get_public_file()
 
         # Convert public file issue date from string to datetime
-        for file in context["public_file"]:
+        for file in context["public_file"]["submissions"]:
             date_string = file["issued_at"].replace("T", " ")
             file["issued_at"] = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S%z")
 
