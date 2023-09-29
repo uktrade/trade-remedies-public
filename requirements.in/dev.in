@@ -20,7 +20,7 @@ selenium==3.141.0
 wheel>=0.38.1
 
 # ipython dep - for CVE-2021-27291
-pygments==2.8.1
+pygments==2.15.0
 
 git+https://github.com/uktrade/modification-pre-commit
 git+https://github.com/uktrade/fitness-functions
