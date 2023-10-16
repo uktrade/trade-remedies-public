@@ -1,4 +1,7 @@
+import sentry_sdk
+
 from config.base_views import BaseAnonymousPublicTemplateView
+from datetime import datetime
 
 
 class ActiveInvestigationsView(BaseAnonymousPublicTemplateView):
@@ -20,9 +23,14 @@ class SingleCaseView(BaseAnonymousPublicTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        case = self.client.cases(self.kwargs["case_id"])
+        case = self.client.cases.get_case_by_number(self.kwargs["case_number"])
         context["case"] = case
         context["public_file"] = case.get_public_file()
+
+        # Convert public file issue date from string to datetime
+        for file in context["public_file"]["submissions"]:
+            date_string = file["issued_at"].replace("T", " ")
+            file["issued_at"] = datetime.strptime(date_string, "%Y-%m-%d %H:%M:%S%z")
 
         return context
 
@@ -49,6 +57,14 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
             ],
             params={"non_confidential_only": True},
         )
+        sentry_sdk.set_context(
+            "referer",
+            {
+                "META_HTTP_REFERER": self.request.META.get("HTTP_REFERER"),
+                "NORMAL_HTTP_REFERER": self.request.headers.get("Referer"),
+            },
+        )
         assert submission.issued_at
+        sentry_sdk.set_context("referer", None)
         context["submission"] = submission
         return context

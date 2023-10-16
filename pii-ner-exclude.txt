@@ -1,5 +1,10 @@
+NORMAL_HTTP_REFERER
+NORMAL_HTTP_REFERER
+%Y-%m-%d %H:%M:%S%z
+%Y-%m-%d %H:%M:%S%z
 HEALTH_CHECK_TOKEN=AUTH-TOKEN-FOR-TRUSTED-USER
 ORGANISATION_NAME="Trade Remedies Authority
+gevent==21.12.0
 href="/case/{{ case.id }}
 method='post'><button
 "Pops the form errors
@@ -9,6 +14,7 @@ aria-labelledby="tab_submitted-docs
 case.product_set %
 DataTable
 mobile_sort_button
+'public_cases' %
 'active_investigations_home' %
 80 mm
 @traderemedies.gov.uk

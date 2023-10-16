@@ -108,7 +108,7 @@ kubi-ecs-logger==0.1.0
     # via django-log-formatter-ecs
 libsass==0.21.0
     # via -r requirements.in/base.in
-lxml==4.9.2
+lxml==4.9.3
     # via
     #   pikepdf
     #   v2-api-client
@@ -118,15 +118,15 @@ marshmallow==3.6.1
     # via kubi-ecs-logger
 openpyxl==3.1.2
     # via v2-api-client
-packaging==23.0
+packaging==23.1
     # via pikepdf
 phonenumbers==8.12.50
     # via
     #   -r requirements.in/base.in
     #   v2-api-client
-pikepdf==7.1.1
+pikepdf==8.3.2
     # via v2-api-client
-pillow==9.4.0
+pillow==10.0.0
     # via pikepdf
 psycopg2-binary==2.9.1
     # via feed-gov-back
@@ -181,7 +181,7 @@ urllib3==1.26.11
     #   botocore
     #   requests
     #   sentry-sdk
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
+v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
 werkzeug==2.2.3
     # via -r requirements.in/base.in
