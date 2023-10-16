@@ -1,3 +1,5 @@
+import sentry_sdk
+
 from config.base_views import BaseAnonymousPublicTemplateView
 from datetime import datetime
 
@@ -55,6 +57,14 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
             ],
             params={"non_confidential_only": True},
         )
+        sentry_sdk.set_context(
+            "referer",
+            {
+                "META_HTTP_REFERER": self.request.META.get("HTTP_REFERER"),
+                "NORMAL_HTTP_REFERER": self.request.headers.get("Referer"),
+            },
+        )
         assert submission.issued_at
+        sentry_sdk.set_context("referer", None)
         context["submission"] = submission
         return context
