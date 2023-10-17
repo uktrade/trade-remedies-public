@@ -32,3 +32,4 @@ sqlparse==0.4.4
 urllib3==1.26.17
 werkzeug>=2.2.3
 whitenoise==5.3.0
+pillow>=10.0.1
