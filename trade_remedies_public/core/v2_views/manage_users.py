@@ -290,7 +290,8 @@ class BaseCaseRoleEditView(BaseSingleUserView, FormInvalidMixin):
         )
 
         if (
-            len(context["case_contacts_on_case_for_org"]) == 1
+            self.user_case.case_contact
+            and len(context["case_contacts_on_case_for_org"]) == 1
             and self.user_case.case_contact.primary
         ):
             context["is_user_the_only_case_contact_for_case"] = True
