@@ -1,5 +1,4 @@
 pillow>=10.0.1
-pillow>=10.0.1
 NORMAL_HTTP_REFERER
 NORMAL_HTTP_REFERER
 %Y-%m-%d %H:%M:%S%z

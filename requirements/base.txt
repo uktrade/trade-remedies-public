@@ -27,7 +27,7 @@ charset-normalizer==3.1.0
     # via requests
 deprecation==2.1.0
     # via pikepdf
-django==3.2.20
+django==3.2.23
     # via
     #   -r requirements.in/base.in
     #   django-appconf
@@ -177,7 +177,7 @@ tenacity==8.0.1
     # via api-client
 trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git@master
     # via -r requirements.in/base.in
-urllib3==1.26.17
+urllib3==1.26.18
     # via
     #   -r requirements.in/base.in
     #   botocore
@@ -185,7 +185,7 @@ urllib3==1.26.17
     #   sentry-sdk
 v2_api_client @ git+https://github.com/uktrade/trs_v2_api_client.git@master
     # via -r requirements.in/base.in
-werkzeug==2.2.3
+werkzeug==3.0.1
     # via -r requirements.in/base.in
 whitenoise==5.3.0
     # via -r requirements.in/base.in
