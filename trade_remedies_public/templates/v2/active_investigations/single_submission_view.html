@@ -48,7 +48,11 @@
                         Party
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        {{ submission.organisation.name }}
+                        {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
+                            Withheld by request
+                        {% else %}
+                            {{ submission.organisation.name }}
+                        {% endif %}
                     </dd>
                 </div>
                 {% if not submission.is_tra %}
@@ -57,7 +61,11 @@
                             Party type
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            {{ submission.organisation_case_role_name }}
+                            {% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}
+                                N/A
+                            {% else %}
+                                {{ submission.organisation_case_role_name }}
+                            {% endif %}
                         </dd>
                     </div>
                 {% endif %}

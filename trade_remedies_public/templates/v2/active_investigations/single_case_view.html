@@ -239,10 +239,10 @@
                                         >{{ submission.submission_name }}</a>
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Party: </span>{{ submission.organisation_name }}
+                                        <span class="govuk-visually-hidden--desktop">Party: </span>{% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}Withheld by request{% else %}{{ submission.organisation_name }}{% endif %}
                                     </td>
                                     <td class="govuk-table__cell ">
-                                        <span class="govuk-visually-hidden--desktop">Type: </span>{{ submission.organisation_case_role_name }}
+                                        <span class="govuk-visually-hidden--desktop">Type: </span>{% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}N/A{% else %}{{ submission.organisation_case_role_name }}{% endif %}
                                     </td>
                                     <td class="govuk-table__cell" data-order="{{ submission.issued_at|date:'U' }}">
                                         <span class="govuk-visually-hidden--desktop">Published: </span>{{ submission.issued_at|date:'d M Y' }}
