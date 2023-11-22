@@ -59,14 +59,13 @@ class ManageUsersView(BasePublicView, TemplateView):
             for invite in invitations
             if invite.invitation_type == 2 and not invite.approved_at and invite.rejected_at
         ]
-
-        organisation = self.client.organisations(
-            self.request.user.contact["organisation"]["id"], fields=["organisationuser_set"]
+        organisation_users = self.client.organisation_users(
+            organisation_id=self.request.user.contact["organisation"]["id"]
         )
 
         context.update(
             {
-                "organisation": organisation,
+                "organisation_users": organisation_users,
                 "pending_invitations": pending_invitations,
                 "rejected_invitations": rejected_invitations,
                 "pending_invitations_deficient_docs_count": sum(
