@@ -54,6 +54,7 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
                 "name",
                 "sent_at",
                 "organisation_case_role_name",
+                "deficiency_notice_params",
             ],
             params={"non_confidential_only": True},
         )
