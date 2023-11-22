@@ -235,7 +235,6 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         else:
             template_name = f"cases/submissions/{tasklist_template}/tasklist.html"
 
-
         # trsd-216 debugging
         if self.submission.get("type", {}).get("id") == 2 and isinstance(documents, dict):
             # this is a questionnaire
