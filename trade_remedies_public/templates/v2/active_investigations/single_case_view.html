@@ -37,7 +37,7 @@
             <h2 class="govuk-heading-m">{{ case.type.name }}</h2>
             <p>The goods that are the subject of the investigation are:</p>
             {% for product in case.product_set %}
-                <p>{{ product.description }}</p>
+                <p>{{ product.description|default_if_none:product.name }}</p>
             {% endfor %}
         </div>
         <div class="govuk-grid-column-one-third">
@@ -239,10 +239,10 @@
                                         >{{ submission.submission_name }}</a>
                                     </td>
                                     <td class="govuk-table__cell">
-                                        <span class="govuk-visually-hidden--desktop">Party: </span>{{ submission.organisation_name }}
+                                        <span class="govuk-visually-hidden--desktop">Party: </span>{% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}Withheld by request{% else %}{{ submission.organisation_name }}{% endif %}
                                     </td>
                                     <td class="govuk-table__cell ">
-                                        <span class="govuk-visually-hidden--desktop">Type: </span>{{ submission.organisation_case_role_name }}
+                                        <span class="govuk-visually-hidden--desktop">Type: </span>{% if submission.deficiency_notice_params.issue_anonymously == 'yes' %}N/A{% else %}{{ submission.organisation_case_role_name }}{% endif %}
                                     </td>
                                     <td class="govuk-table__cell" data-order="{{ submission.issued_at|date:'U' }}">
                                         <span class="govuk-visually-hidden--desktop">Published: </span>{{ submission.issued_at|date:'d M Y' }}

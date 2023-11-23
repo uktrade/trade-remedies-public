@@ -140,7 +140,7 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            {% for org_user in organisation.organisationuser_set %}
+                            {% for org_user in organisation_users %}
                                 {% if org_user.security_group == group_third_party and org_user.user.user_cases|length == 0 %}
                                     {# we dont want to show reps with no cases #}
                                 {% else %}

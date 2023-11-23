@@ -2,6 +2,7 @@ import json
 import logging
 
 import dpath
+import sentry_sdk
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -233,6 +234,24 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 template_name = f"cases/submissions/{tasklist_template}/view.html"
         else:
             template_name = f"cases/submissions/{tasklist_template}/tasklist.html"
+
+        # trsd-216 debugging
+        if self.submission.get("type", {}).get("id") == 2 and isinstance(documents, dict):
+            # this is a questionnaire
+            with sentry_sdk.push_scope() as scope:
+                debug_log = {
+                    "submission_id": submission_id,
+                    "count_conf": len(documents["confidential"]),
+                    "count_non": len(documents["non_confidential"]),
+                    "count_loa": len(documents["loa"]),
+                }
+                for k, v in debug_log.items():
+                    scope.set_extra(k, v)
+
+                sentry_sdk.capture_message(
+                    f"trsd-216 debug: {self.submission.get('type', {}).get('id')}",
+                )
+
         _context = {
             "all_organisations": True
             if not self.organisation
