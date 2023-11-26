@@ -7,7 +7,6 @@ from core.validators import (
 
 
 class TestPasswordValidation(TestCase):
-
     password_validation_test_cases = [
         # (password, is_valid, description)
         ("MyR£4lly$ecure_Pa$sw0rD", True, "Good password"),

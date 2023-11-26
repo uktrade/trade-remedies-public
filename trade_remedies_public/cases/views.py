@@ -235,7 +235,6 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
         else:
             template_name = f"cases/submissions/{tasklist_template}/tasklist.html"
 
-
         # trsd-216 debugging
         if self.submission.get("type", {}).get("id") == 2 and isinstance(documents, dict):
             # this is a questionnaire
@@ -249,7 +248,9 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 for k, v in debug_log.items():
                     scope.set_extra(k, v)
 
-                sentry_sdk.capture_message(f"trsd-216 debug: {self.submission.get('type', {}).get('id')}",)
+                sentry_sdk.capture_message(
+                    f"trsd-216 debug: {self.submission.get('type', {}).get('id')}",
+                )
 
         _context = {
             "all_organisations": True
