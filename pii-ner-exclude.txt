@@ -1,3 +1,10 @@
+parts/
+Installer
+htmlcov/
+.cache
+celery
+macOS FS
+NER
 deprecation==2.1.0
 django-environ==0.4.5
 dotwiz==0.4.0
