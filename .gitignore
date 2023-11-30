@@ -129,3 +129,5 @@ ner_output_file.txt
 
 # sqlite
 db.sqlite3
+
+requirements-dev.txt
