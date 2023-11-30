@@ -225,16 +225,6 @@ urlpatterns = [
     path("dashboard/", core_views.DashboardView.as_view(), name="dashboard"),
     path("stub/", core_views.StubView.as_view(), name="stub"),
     path(
-        "feedback/<str:form_id>/placement/<str:placement_id>/",
-        core_views.FeedbackView.as_view(),
-        name="feedback_form",
-    ),
-    path(
-        "feedback/<str:form_id>/placement/<str:placement_id>/inner/",
-        core_views.FeedbackView.as_view(inner=True),
-        name="feedback_form",
-    ),
-    path(
         "companieshouse/search/", core_views.CompaniesHouseSearch.as_view(), name="companieshouse"
     ),
     path(

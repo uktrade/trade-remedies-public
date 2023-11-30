@@ -1047,28 +1047,6 @@ class AccountEditInfo(LoginRequiredMixin, TemplateView):
         )
 
 
-class FeedbackView(TemplateView, TradeRemediesAPIClientMixin):
-    inner = False
-
-    def get(self, request, form_id, placement_id, *args, **kwargs):
-        feedback_form = self.trusted_client.get_feedback_form(form_id)
-        template = "feedback_form_inner.html" if self.inner else "feedback_form.html"
-        return render(request, template, {"form": feedback_form, "placement_id": placement_id})
-
-    def post(self, request, form_id, placement_id):
-        client = self.trusted_client
-        feedback_form = client.get_feedback_form(form_id)
-        response = client.submit_feedback(
-            form_key=form_id, placement_id=placement_id, data=request.POST
-        )
-        template = (
-            "feedback_complete_inner.html"
-            if request.POST.get("inner", False)
-            else "feedback_complete.html"
-        )
-        return render(request, template, {"form": feedback_form})
-
-
 class EmailVerifyView(TemplateView, TradeRemediesAPIClientMixin):
     def get(self, request, *args, **kwargs):
         code = request.GET.get("code")
