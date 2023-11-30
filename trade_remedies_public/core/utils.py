@@ -34,7 +34,7 @@ def deep_index_items_by(items, key):
     index = {}
     for item in items or []:
         try:
-            _key = dpath.util.get(item, key)
+            _key = dpath.get(item, key)
             index_key = str((_key if _key is not None else "")).lower()
         except KeyError:
             # NOTE: on key missing, this indexes as '', same as a None value.
@@ -68,7 +68,7 @@ def get(item, key, default=None):
     """
     val = default
     try:
-        val = dpath.util.get(item, key)
+        val = dpath.get(item, key)
     except KeyError:
         pass
     return val
