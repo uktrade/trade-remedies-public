@@ -29,7 +29,7 @@ django-timezone-field==4.2.3 ; python_version >= "3.8" and python_version < "4.0
 django==4.2.7 ; python_version >= "3.8" and python_version < "4.0"
 djangorestframework==3.14.0 ; python_version >= "3.8" and python_version < "4.0"
 dotwiz==0.4.0 ; python_version >= "3.8" and python_version < "4.0"
-dpath==1.4.2 ; python_version >= "3.8" and python_version < "4.0"
+dpath==2.1.6 ; python_version >= "3.8" and python_version < "4.0"
 et-xmlfile==1.1.0 ; python_version >= "3.8" and python_version < "4.0"
 feed-gov-back==0.4 ; python_version >= "3.8" and python_version < "4.0"
 gevent==23.9.1 ; python_version >= "3.8" and python_version < "4.0"

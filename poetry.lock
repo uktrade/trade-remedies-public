@@ -1072,12 +1072,13 @@ pyheck = "0.1.5"
 
 [[package]]
 name = "dpath"
-version = "1.4.2"
+version = "2.1.6"
 description = "Filesystem-like pathing and searching for dictionaries"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 files = [
-    {file = "dpath-1.4.2.tar.gz", hash = "sha256:0f635f49e88843a4a519aca1c599faee271730f818a81860827e7d7b4d40273f"},
+    {file = "dpath-2.1.6-py3-none-any.whl", hash = "sha256:31407395b177ab63ef72e2f6ae268c15e938f2990a8ecf6510f5686c02b6db73"},
+    {file = "dpath-2.1.6.tar.gz", hash = "sha256:f1e07c72e8605c6a9e80b64bc8f42714de08a789c7de417e49c3f87a19692e47"},
 ]
 
 [[package]]
@@ -2965,18 +2966,18 @@ resolved_reference = "56fb4dfdac8c56ec3bc525762ca8527321034553"
 
 [[package]]
 name = "traitlets"
-version = "5.13.0"
+version = "5.14.0"
 description = "Traitlets Python configuration system"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "traitlets-5.13.0-py3-none-any.whl", hash = "sha256:baf991e61542da48fe8aef8b779a9ea0aa38d8a54166ee250d5af5ecf4486619"},
-    {file = "traitlets-5.13.0.tar.gz", hash = "sha256:9b232b9430c8f57288c1024b34a8f0251ddcc47268927367a0dd3eeaca40deb5"},
+    {file = "traitlets-5.14.0-py3-none-any.whl", hash = "sha256:f14949d23829023013c47df20b4a76ccd1a85effb786dc060f34de7948361b33"},
+    {file = "traitlets-5.14.0.tar.gz", hash = "sha256:fcdaa8ac49c04dfa0ed3ee3384ef6dfdb5d6f3741502be247279407679296772"},
 ]
 
 [package.extras]
 docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
-test = ["argcomplete (>=3.0.3)", "mypy (>=1.6.0)", "pre-commit", "pytest (>=7.0,<7.5)", "pytest-mock", "pytest-mypy-testing"]
+test = ["argcomplete (>=3.0.3)", "mypy (>=1.7.0)", "pre-commit", "pytest (>=7.0,<7.5)", "pytest-mock", "pytest-mypy-testing"]
 
 [[package]]
 name = "typing-extensions"
