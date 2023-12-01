@@ -350,13 +350,13 @@ class InvitationConfirmOrganisation(BaseRegisterView, TradeRemediesAPIClientMixi
             raise e
 
 
+@method_decorator(never_cache, name="get")
 class DashboardView(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
 ):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "dashboard.html"
 
-    @never_cache
     def get(self, request, *args, **kwargs):
         request.session["organisation_id"] = None
         request.session["_case"] = None

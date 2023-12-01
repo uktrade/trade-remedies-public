@@ -1,3 +1,4 @@
+div class="rh-box
 " Redirect to the specified URL
 parts/
 Installer
