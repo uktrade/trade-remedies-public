@@ -11,19 +11,21 @@ commands:
             echo ". venv/bin/activate" >> $BASH_ENV
             . venv/bin/activate  # 
             pip install --upgrade pip
-            pip install -r requirements/dev.txt
+            pip install poetry==1.6.1
+            poetry export --dev --without-hashes -f requirements.txt -o requirements-dev.txt
+            pip install -r requirements-dev.txt
 
   restore_dependency_cache:
     description: "Restore dependency cache."
     steps:
       - restore_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps2-{{ .Branch }}-{{ checksum "requirements-dev.txt" }}
 
   save_dependency_cache:
     description: "Save dependency cache."
     steps:
       - save_cache:
-          key: deps2-{{ .Branch }}-{{ checksum "requirements/dev.txt" }}
+          key: deps2-{{ .Branch }}-{{ checksum "requirements-dev.txt" }}
           paths:
             - "venv"
 

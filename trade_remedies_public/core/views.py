@@ -350,13 +350,13 @@ class InvitationConfirmOrganisation(BaseRegisterView, TradeRemediesAPIClientMixi
             raise e
 
 
+@method_decorator(never_cache, name="get")
 class DashboardView(
     LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
 ):
     groups_required = [SECURITY_GROUP_ORGANISATION_OWNER, SECURITY_GROUP_ORGANISATION_USER]
     template_name = "dashboard.html"
 
-    @never_cache
     def get(self, request, *args, **kwargs):
         request.session["organisation_id"] = None
         request.session["_case"] = None
@@ -1045,28 +1045,6 @@ class AccountEditInfo(LoginRequiredMixin, TemplateView):
                 "organisation_id": organisation_id,
             },
         )
-
-
-class FeedbackView(TemplateView, TradeRemediesAPIClientMixin):
-    inner = False
-
-    def get(self, request, form_id, placement_id, *args, **kwargs):
-        feedback_form = self.trusted_client.get_feedback_form(form_id)
-        template = "feedback_form_inner.html" if self.inner else "feedback_form.html"
-        return render(request, template, {"form": feedback_form, "placement_id": placement_id})
-
-    def post(self, request, form_id, placement_id):
-        client = self.trusted_client
-        feedback_form = client.get_feedback_form(form_id)
-        response = client.submit_feedback(
-            form_key=form_id, placement_id=placement_id, data=request.POST
-        )
-        template = (
-            "feedback_complete_inner.html"
-            if request.POST.get("inner", False)
-            else "feedback_complete.html"
-        )
-        return render(request, template, {"form": feedback_form})
 
 
 class EmailVerifyView(TemplateView, TradeRemediesAPIClientMixin):

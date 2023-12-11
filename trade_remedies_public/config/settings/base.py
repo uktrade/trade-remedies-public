@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     "django_chunk_upload_handlers",
     "core",
     "registration",
-    "feedback",
     "sass_processor",
     "django_countries",
 ]

@@ -2,7 +2,11 @@
 {% load link_lookup %}
 {% load set %}
 {% if case %}
-    {% set 'case_email' case.reference|add:"@traderemedies.gov.uk" %}
+    {% if case.initiated_at %}
+        {% set 'case_email' case.reference|add:"@traderemedies.gov.uk" %}
+    {% else %}
+        {% set 'case_email' "contact@traderemedies.gov.uk" %}  {# /PS-IGNORE #}
+    {% endif %}
 {% endif %}
 <div class="rh-box">
     <p class="bold margin-bottom-1">Do you need help?</p>
