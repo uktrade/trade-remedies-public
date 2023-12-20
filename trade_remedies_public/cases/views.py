@@ -150,7 +150,7 @@ class CasesView(LoginRequiredMixin, GroupRequiredMixin, TemplateView, TradeRemed
                 fields=["id"],
             )
 
-            ref = dpath.util.get(uoc, "case/id") + ":" + dpath.util.get(uoc, "representing/id")
+            ref = dpath.get(uoc, "case/id") + ":" + dpath.get(uoc, "representing/id")
             org_cases.setdefault(ref, []).append(uoc)
 
         not_involved_case_keys = []

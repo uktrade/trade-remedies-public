@@ -17,9 +17,9 @@ from django.urls import (
     include,
     path,
 )
-
 from django.views.generic import TemplateView
 
+from cases.v2_views import active_investigations
 from cases.views import CasesView
 from cookies import views as cookie_views
 from core import views as core_views
@@ -27,7 +27,6 @@ from core.v2_views import feedback, manage_users
 from login import views as login_views
 from password import views as password_views
 from registration import views as register_views
-from cases.v2_views import active_investigations
 
 # todo - config/urls.py should not contain anything, put these URLs in their relevant apps
 urlpatterns = [
@@ -224,16 +223,6 @@ urlpatterns = [
     ),
     path("dashboard/", core_views.DashboardView.as_view(), name="dashboard"),
     path("stub/", core_views.StubView.as_view(), name="stub"),
-    path(
-        "feedback/<str:form_id>/placement/<str:placement_id>/",
-        core_views.FeedbackView.as_view(),
-        name="feedback_form",
-    ),
-    path(
-        "feedback/<str:form_id>/placement/<str:placement_id>/inner/",
-        core_views.FeedbackView.as_view(inner=True),
-        name="feedback_form",
-    ),
     path(
         "companieshouse/search/", core_views.CompaniesHouseSearch.as_view(), name="companieshouse"
     ),

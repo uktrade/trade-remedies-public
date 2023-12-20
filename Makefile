@@ -18,22 +18,5 @@ help:
 	@echo -e "$(COLOUR_YELLOW)make prod-requirements$(COLOUR_NONE) : Generate prod requirements (requires local pip-compile)"
 
 all-requirements:
-	docker-compose run --rm public pip-compile --output-file requirements/base.txt requirements.in/base.in
-	docker-compose run --rm public pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-	docker-compose run --rm public pip-compile --output-file requirements/prod.txt requirements.in/prod.in
-
-dev-requirements:
-	pip-compile --output-file requirements/base.txt requirements.in/base.in
-	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-
-prod-requirements:
-	pip-compile --output-file requirements/base.txt requirements.in/base.in
-	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
-
-make compilescss:
-	docker-compose run --rm public python manage.py compilescss
-
-local-all-requirements:
-	pip-compile --output-file requirements/base.txt requirements.in/base.in
-	pip-compile --output-file requirements/dev.txt requirements.in/dev.in
-	pip-compile --output-file requirements/prod.txt requirements.in/prod.in
+	poetry export --without-hashes -f requirements.txt -o requirements.txt
+	poetry export --dev --without-hashes -f requirements.txt -o requirements-dev.txt

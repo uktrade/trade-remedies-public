@@ -101,7 +101,7 @@ def remove_duplicates_from_list_by_key(
 
     for element in list_object:
         try:
-            value = dpath.util.get(element, key)
+            value = dpath.get(element, key)
             if value not in seen_elements:
                 seen_elements.append(value)
                 no_duplicates.append(element)

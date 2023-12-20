@@ -36,8 +36,8 @@
         <div class="govuk-grid-column-two-thirds">
             <h2 class="govuk-heading-m">{{ case.type.name }}</h2>
             <p>The goods that are the subject of the investigation are:</p>
-            {% for product in case.product_set %}
-                <p>{{ product.description|default_if_none:product.name }}</p>
+            {% for product in public_file.product_description %}
+                <p>{{ product }}</p>
             {% endfor %}
         </div>
         <div class="govuk-grid-column-one-third">

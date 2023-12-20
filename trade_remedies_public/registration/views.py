@@ -1,6 +1,7 @@
 # Views to handle the registration functionality and legal pages
 import json
 
+from django.utils.decorators import method_decorator
 from v2_api_client.exceptions import NotFoundError
 from v2_api_client.mixins import APIClientMixin
 
@@ -72,10 +73,10 @@ class BaseRegisterView(TemplateView):
         return request.session
 
 
+@method_decorator(never_cache, name="get")
 class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "registration/register.html"
 
-    @never_cache
     def get(self, request, errors=None, code=None, case_id=None, *args, **kwargs):
         self.default_session(request)
         confirm_invited_org = request.session["registration"].get("confirm_invited_org")
@@ -167,13 +168,13 @@ class RegisterView(BaseRegisterView, TradeRemediesAPIClientMixin):
         return redirect(f"/accounts/register/{redirect_postfix}?error")
 
 
+@method_decorator(never_cache, name="get")
 class RegisterOrganisationCountryView(BaseRegisterView):
     template_name = "registration/register_organisation_country.html"
     validators = [
         {"key": "uk_company", "message": "You must make a selection", "re": "(?:yes)|(?:no)"}
     ]
 
-    @never_cache
     def get(self, request, code=None, case_id=None, *args, **kwargs):
         return render(request, self.template_name, request.session["registration"])
 
@@ -187,6 +188,7 @@ class RegisterOrganisationCountryView(BaseRegisterView):
             return redirect(f"/accounts/register/2/{redirect_postfix}")
 
 
+@method_decorator(never_cache, name="get")
 class RegisterOrganisationView(BaseRegisterView):
     template_name = "registration/register_organisation.html"
     validators = [
@@ -200,7 +202,6 @@ class RegisterOrganisationView(BaseRegisterView):
         {"key": "organisation_country", "message": "You must select a country", "re": ".+"}
     ]
 
-    @never_cache
     def get(self, request, code=None, case_id=None, errors=None, *args, **kwargs):
         return render(
             request, self.template_name, {"countries": countries, **request.session["registration"]}
@@ -228,12 +229,12 @@ class RegisterOrganisationView(BaseRegisterView):
             return redirect(f"/accounts/register/3/{redirect_postfix}")
 
 
+@method_decorator(never_cache, name="get")
 class RegisterContactAddressView(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "registration/register_contact_address.html"
 
     validators = [{"key": "contact_address", "message": "Contact address is mandatory", "re": ".+"}]
 
-    @never_cache
     def get(self, request, errors=None, code=None, case_id=None, *args, **kwargs):
         return render(
             request, self.template_name, {"countries": countries, **request.session["registration"]}
@@ -254,6 +255,7 @@ class RegisterContactAddressView(BaseRegisterView, TradeRemediesAPIClientMixin):
             return redirect(f"/accounts/register/4/{redirect_postfix}")
 
 
+@method_decorator(never_cache, name="get")
 class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
     template_name = "registration/register_organisation_extras.html"
     required_fields = [
@@ -281,7 +283,6 @@ class RegisterIdsView(BaseRegisterView, TradeRemediesAPIClientMixin):
         },
     ]
 
-    @never_cache
     def get(self, request, errors=None, code=None, case_id=None, *args, **kwargs):
         return render(
             request, self.template_name, {"countries": countries, **request.session["registration"]}
