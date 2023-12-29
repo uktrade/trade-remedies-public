@@ -60,7 +60,8 @@ class ManageUsersView(BasePublicView, TemplateView):
             if invite.invitation_type == 2 and not invite.approved_at and invite.rejected_at
         ]
         organisation_users = self.client.organisation_users(
-            organisation_id=self.request.user.contact["organisation"]["id"]
+            organisation_id=self.request.user.contact["organisation"]["id"],
+            fields=["security_group", "user", "id"],
         )
 
         context.update(
