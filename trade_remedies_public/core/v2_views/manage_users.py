@@ -59,7 +59,7 @@ class ManageUsersView(BasePublicView, TemplateView):
             for invite in invitations
             if invite.invitation_type == 2 and not invite.approved_at and invite.rejected_at
         ]
-        organisation_users = self.client.organisation_users(
+        organisation_users = self.call_client(timeout=50).organisation_users(
             organisation_id=self.request.user.contact["organisation"]["id"],
             fields=["security_group", "user", "id"]
         )
