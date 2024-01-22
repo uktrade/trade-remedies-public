@@ -61,7 +61,7 @@ class ManageUsersView(BasePublicView, TemplateView):
         ]
         organisation_users = self.call_client(timeout=50).organisation_users(
             organisation_id=self.request.user.contact["organisation"]["id"],
-            fields=["security_group", "user", "id"]
+            fields=["security_group", "user", "id"],
         )
 
         context.update(
