@@ -59,7 +59,7 @@ class ManageUsersView(BasePublicView, TemplateView):
             for invite in invitations
             if invite.invitation_type == 2 and not invite.approved_at and invite.rejected_at
         ]
-        organisation_users = self.client.organisation_users(
+        organisation_users = self.call_client(timeout=50).organisation_users(
             organisation_id=self.request.user.contact["organisation"]["id"],
             fields=["security_group", "user", "id"],
         )
@@ -381,14 +381,13 @@ class AssignToCaseView(BaseEditUserView):
             self.organisation_user.organisation,
         ).organisation_card_data()
         for each in org["representative_cases"]:
-            if each["case"]["id"] not in cases_already_enrolled_in_as_representative:
-                assignable_cases.append(
-                    {
-                        "case": each["case"],
-                        "organisation": each["on_behalf_of_id"],
-                        "organisation_name": each["on_behalf_of"],
-                    }
-                )
+            assignable_cases.append(
+                {
+                    "case": each["case"],
+                    "organisation": each["on_behalf_of_id"],
+                    "organisation_name": each["on_behalf_of"],
+                }
+            )
 
         context["assignable_cases"] = assignable_cases
         return context

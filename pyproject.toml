@@ -56,7 +56,10 @@ djhtml = "*"
 flake8 = "*"
 ipython = "^8.10"
 matplotlib = "*"
+<<<<<<< Updated upstream
 pillow = "^10.2.0"
+=======
+>>>>>>> Stashed changes
 pip-tools = "^6.5.0"
 pyproject-flake8 = "5.0.4.post1"
 pytest = "*"
