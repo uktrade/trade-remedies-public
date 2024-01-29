@@ -93,14 +93,6 @@
                     <dl class="govuk-summary-list">
                         <div class="govuk-summary-list__row">
                             <dt class="govuk-summary-list__key">
-                                Status
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ case.get_status.stage }}
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
                                 Applicant
                             </dt>
                             <dd class="govuk-summary-list__value">
@@ -122,15 +114,7 @@
                                 Last updated
                             </dt>
                             <dd class="govuk-summary-list__value">
-                                {{ case.last_modified|date:'d M Y' }}
-                            </dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">
-                                Registration due by
-                            </dt>
-                            <dd class="govuk-summary-list__value">
-                                {{ case.registration_deadline|date:'d M Y' }}
+                                {{ case.date_last_submission_made_public|date:'d M Y' }}
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
