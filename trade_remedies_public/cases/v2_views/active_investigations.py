@@ -3,6 +3,8 @@ import sentry_sdk
 from config.base_views import BaseAnonymousPublicTemplateView
 from datetime import datetime
 
+from core.exceptions import SentryPermissionDenied
+
 
 class ActiveInvestigationsView(BaseAnonymousPublicTemplateView):
     template_name = "v2/active_investigations/home.html"
@@ -24,6 +26,8 @@ class SingleCaseView(BaseAnonymousPublicTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         case = self.client.cases.get_case_by_number(self.kwargs["case_number"])
+        if not case.initiated_at:
+            raise SentryPermissionDenied("Case not initiated")
         context["case"] = case
         context["public_file"] = case.get_public_file()
 
