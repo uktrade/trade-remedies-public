@@ -40,7 +40,7 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        submission = self.client.submissions(
+        submission = self.call_client(timeout=70).submissions(
             self.kwargs["submission_id"],
             fields=[
                 "case",
