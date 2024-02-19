@@ -189,8 +189,8 @@
                                     <td class="govuk-table__cell" data-order="{{ case.initiated_at|date:'U' }}">
                                         <span class="govuk-visually-hidden--desktop">Initiated: </span>{{ case.initiated_at|date:'d M Y' }}
                                     </td>
-                                    <td class="govuk-table__cell" data-order="{{ case.last_modified|date:'U' }}">
-                                        <span class="govuk-visually-hidden--desktop">Updated: </span>{{ case.last_modified|date:'d M Y' }}
+                                    <td class="govuk-table__cell" data-order="{{ case.date_last_submission_made_public|date:'U' }}">
+                                        <span class="govuk-visually-hidden--desktop">Updated: </span>{{ case.date_last_submission_made_public|date:'d M Y' }}
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -314,8 +314,8 @@
                                         <td class="govuk-table__cell" data-order="{{ case.initiated_at|date:'U' }}">
                                             <span class="govuk-visually-hidden--desktop">Initiated: </span>{{ case.initiated_at|date:'d M Y' }}
                                         </td>
-                                        <td class="govuk-table__cell" data-order="{{ case.last_modified|date:'U' }}">
-                                            <span class="govuk-visually-hidden--desktop">Updated: </span>{{ case.last_modified|date:'d M Y' }}
+                                        <td class="govuk-table__cell" data-order="{{ case.date_last_submission_made_public|date:'U' }}">
+                                            <span class="govuk-visually-hidden--desktop">Updated: </span>{{ case.date_last_submission_made_public|date:'d M Y' }}
                                         </td>
                                     </tr>
                                 {% endfor %}
