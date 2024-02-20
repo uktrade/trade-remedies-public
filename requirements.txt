@@ -73,3 +73,4 @@ whitenoise==6.6.0 ; python_version >= "3.8" and python_version < "4.0"
 wrapt==1.16.0 ; python_version >= "3.8" and python_version < "4.0"
 zope-event==5.0 ; python_version >= "3.8" and python_version < "4.0"
 zope-interface==6.1 ; python_version >= "3.8" and python_version < "4.0"
+
