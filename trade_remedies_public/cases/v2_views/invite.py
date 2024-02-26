@@ -518,11 +518,16 @@ class InviteRepresentativeOrganisationDetails(BaseInviteFormView):
                 if invited_organisation := invited_contact.get("organisation", None):
                     # If the invited contact doesn't belong to the user's organisation
                     if invited_organisation != self.request.user.contact["organisation"]["id"]:
-                        if sent_invitation.submission.status.review_ok:
-                            # We only want to include organisations which have been validated
-                            # by the TRA in the past By having the
-                            # invite 3rd party submission marked as sufficient.
-                            invitations_sent.append(sent_invitation)
+                        try:
+                            if sent_invitation.submission.status.review_ok:
+                                # We only want to include organisations which have been validated
+                                # by the TRA in the past By having the
+                                # invite 3rd party submission marked as sufficient.
+                                invitations_sent.append(sent_invitation)
+                        except AttributeError:
+                            # some legacy invitations do not have submissions
+                            # https://sentry.ci.uktrade.digital/organizations/dit/issues/107241/
+                            pass
         organisations_seen = []
         no_dupe_orgs_sent_invitations = []
         for sent_invitation in invitations_sent:
