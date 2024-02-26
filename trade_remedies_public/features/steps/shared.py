@@ -1,4 +1,5 @@
 """Shared step logic."""
+
 from behave import given, then, when
 
 import features.steps.utils as utils

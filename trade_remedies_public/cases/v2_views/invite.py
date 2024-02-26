@@ -335,12 +335,14 @@ class InviteRepresentativeTaskList(TaskListView):
                 "heading": "About your representative",
                 "sub_steps": [
                     {
-                        "link": reverse(
-                            "invite_representative_organisation_details",
-                            kwargs={"invitation_id": invitation["id"]},
-                        )
-                        if invitation
-                        else "",
+                        "link": (
+                            reverse(
+                                "invite_representative_organisation_details",
+                                kwargs={"invitation_id": invitation["id"]},
+                            )
+                            if invitation
+                            else ""
+                        ),
                         "link_text": "Organisation details",
                         "status": "Complete" if invitation.get("contact") else "Not Started",
                     }
@@ -350,40 +352,55 @@ class InviteRepresentativeTaskList(TaskListView):
                 "heading": "Upload forms",
                 "sub_steps": [
                     {
-                        "link": reverse(
-                            "invite_representative_loa", kwargs={"invitation_id": invitation["id"]}
-                        )
-                        if invitation
-                        else "",
+                        "link": (
+                            reverse(
+                                "invite_representative_loa",
+                                kwargs={"invitation_id": invitation["id"]},
+                            )
+                            if invitation
+                            else ""
+                        ),
                         "link_text": "Letter of Authority",
-                        "status": "Complete"
-                        if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
-                            and not get_uploaded_loa_document(
-                                invitation.get("submission")
-                            ).deficient
-                        )
-                        else "Incomplete"
-                        if "submission" in invitation
-                        and get_uploaded_loa_document(invitation.get("submission"))
-                        and get_uploaded_loa_document(invitation.get("submission")).deficient
-                        else "Not Started",
-                        "status_text": "Complete"
-                        if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
-                            and not get_uploaded_loa_document(
-                                invitation.get("submission")
-                            ).deficient
-                        )
-                        else "Deficient document"
-                        if "submission" in invitation
-                        and get_uploaded_loa_document(invitation.get("submission"))
-                        and get_uploaded_loa_document(invitation.get("submission")).deficient
-                        else "",
+                        "status": (
+                            "Complete"
+                            if (
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
+                                and not get_uploaded_loa_document(
+                                    invitation.get("submission")
+                                ).deficient
+                            )
+                            else (
+                                "Incomplete"
+                                if "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
+                                and get_uploaded_loa_document(
+                                    invitation.get("submission")
+                                ).deficient
+                                else "Not Started"
+                            )
+                        ),
+                        "status_text": (
+                            "Complete"
+                            if (
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
+                                and not get_uploaded_loa_document(
+                                    invitation.get("submission")
+                                ).deficient
+                            )
+                            else (
+                                "Deficient document"
+                                if "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
+                                and get_uploaded_loa_document(
+                                    invitation.get("submission")
+                                ).deficient
+                                else ""
+                            )
+                        ),
                     },
                 ],
             },
@@ -391,20 +408,24 @@ class InviteRepresentativeTaskList(TaskListView):
                 "heading": "Invite representative",
                 "sub_steps": [
                     {
-                        "link": reverse(
-                            "invite_representative_check_and_submit",
-                            kwargs={"invitation_id": invitation["id"]},
-                        )
-                        if invitation
-                        else "",
+                        "link": (
+                            reverse(
+                                "invite_representative_check_and_submit",
+                                kwargs={"invitation_id": invitation["id"]},
+                            )
+                            if invitation
+                            else ""
+                        ),
                         "link_text": "Review and submit",
-                        "status": "Not Started"
-                        if (
-                            invitation
-                            and "submission" in invitation
-                            and get_uploaded_loa_document(invitation.get("submission"))
-                        )
-                        else "Not Started",
+                        "status": (
+                            "Not Started"
+                            if (
+                                invitation
+                                and "submission" in invitation
+                                and get_uploaded_loa_document(invitation.get("submission"))
+                            )
+                            else "Not Started"
+                        ),
                     }
                 ],
             },
