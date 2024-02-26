@@ -11,7 +11,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.dependencies]
 python = "^3.8"
 boto3 = "1.29.6"
-Django = "4.2.7"
+Django = "4.2.10"
 certifi = "^2023.07.22"
 django-audit-log-middleware = "0.0.4"
 django-basicauth = "0.5.2"
@@ -46,7 +46,7 @@ trade-remedies-client = {git = "https://github.com/uktrade/trade-remedies-client
 v2-api-client = {git = "https://github.com/uktrade/trs_v2_api_client.git", rev = "master"}
 gunicorn = "20.0.4"
 gevent = "23.9.1"
-lxml = "4.8.0"
+lxml = "4.9.1"
 
 [tool.poetry.dev-dependencies]
 behave-django = "1.4.0"
