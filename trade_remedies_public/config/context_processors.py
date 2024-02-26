@@ -4,6 +4,7 @@ templates which contains the current user's token and basic info.
 If the request contains relevant case,  submission or organisation ids
 those will be preloaded and ready for the request processing.
 """
+
 import json
 from django.urls import reverse
 from django.http import HttpRequest

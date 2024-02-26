@@ -40,7 +40,7 @@ registration_validators = [
     {
         "key": "password",
         "message": "Password must include at least one special character (!\"$%&'()*+,-./:;<=>?@[\\]^_`{|}~])",  # noqa: E501
-        "re": "(?=.*[!\"$%&'#()*+,-./:;<=>?@[\\\\\\]^_`{|}~])"
+        "re": "(?=.*[!\"$%&'#()*+,-./:;<=>?@[\\\\\\]^_`{|}~])",
         # 're': '(?=.*[^a-zA-Z0-9\\s])'
     },
     {"key": "password_confirm", "message": "You must provide a password confirmation", "re": ".+"},

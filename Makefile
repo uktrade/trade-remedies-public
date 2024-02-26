@@ -19,4 +19,4 @@ help:
 
 all-requirements:
 	poetry export --without-hashes -f requirements.txt -o requirements.txt
-	poetry export --dev --without-hashes -f requirements.txt -o requirements-dev.txt
+	poetry export --with dev --without-hashes -f requirements.txt -o requirements-dev.txt

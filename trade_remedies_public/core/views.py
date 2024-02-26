@@ -740,9 +740,9 @@ class TeamUserView(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin
                 "create_mode": create_mode,
                 "page_title": "Invite colleague" if not user.get("id") else user.get("name"),
                 "section": section,
-                "alert_message": "Colleague invited"
-                if request.GET.get("alert") == "added-employee"
-                else None,
+                "alert_message": (
+                    "Colleague invited" if request.GET.get("alert") == "added-employee" else None
+                ),
                 "errors": kwargs.get("errors"),
             },
         )
@@ -1022,9 +1022,9 @@ class AccountInfo(LoginRequiredMixin, TemplateView, TradeRemediesAPIClientMixin)
                 "organisation_id": organisation_id,
                 "alert_message": ALERT_MAP.get(request.GET.get("alert")),
                 "pre_manage_team": client.get_system_boolean("PRE_MANAGE_TEAM"),
-                "organisation": client.get_organisation(organisation_id)
-                if organisation_id
-                else None,
+                "organisation": (
+                    client.get_organisation(organisation_id) if organisation_id else None
+                ),
             },
         )
 

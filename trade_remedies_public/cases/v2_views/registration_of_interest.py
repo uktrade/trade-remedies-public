@@ -160,15 +160,20 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
                 "heading": "About you",
                 "sub_steps": [
                     {
-                        "link": reverse(
-                            "interest_client_type", kwargs={"submission_id": submission["id"]}
-                        )
-                        if submission
-                        else None,
+                        "link": (
+                            reverse(
+                                "interest_client_type", kwargs={"submission_id": submission["id"]}
+                            )
+                            if submission
+                            else None
+                        ),
                         "link_text": "Organisation details",
-                        "status": "Complete"
-                        if submission.get("contact") and submission["contact"].get("organisation")
-                        else "Not Started",
+                        "status": (
+                            "Complete"
+                            if submission.get("contact")
+                            and submission["contact"].get("organisation")
+                            else "Not Started"
+                        ),
                     }
                 ],
             },
@@ -214,11 +219,14 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
                     self.deficient_documents = True
         documentation_sub_steps = [
             {
-                "link": reverse(
-                    "roi_3_registration_documentation", kwargs={"submission_id": submission["id"]}
-                )
-                if submission
-                else None,
+                "link": (
+                    reverse(
+                        "roi_3_registration_documentation",
+                        kwargs={"submission_id": submission["id"]},
+                    )
+                    if submission
+                    else None
+                ),
                 "link_text": "Registration documentation",
                 "status": registration_documentation_status,
                 "status_text": registration_documentation_status_text,
@@ -259,13 +267,17 @@ class RegistrationOfInterestTaskList(RegistrationOfInterestBase, TaskListView):
                 "heading": "Register interest",
                 "sub_steps": [
                     {
-                        "link": reverse("roi_4", kwargs={"submission_id": submission["id"]})
-                        if submission
-                        else None,
+                        "link": (
+                            reverse("roi_4", kwargs={"submission_id": submission["id"]})
+                            if submission
+                            else None
+                        ),
                         "link_text": "Review and submit",
-                        "status": "Complete"
-                        if submission.get("status", {}).get("locking") is True
-                        else "Not Started",
+                        "status": (
+                            "Complete"
+                            if submission.get("status", {}).get("locking") is True
+                            else "Not Started"
+                        ),
                     }
                 ],
             }
@@ -604,12 +616,16 @@ class RegistrationOfInterestRegistrationDocumentation(RegistrationOfInterestBase
         sorted_uploaded_documents = sorted(
             uploaded_documents,
             key=lambda x: (
-                x.non_confidential.created_at
-                if x.get("non_confidential", {}).get("created_at", None)
-                else long_time_ago,
-                x.confidential.created_at
-                if x.get("confidential", {}).get("created_at", None)
-                else long_time_ago,
+                (
+                    x.non_confidential.created_at
+                    if x.get("non_confidential", {}).get("created_at", None)
+                    else long_time_ago
+                ),
+                (
+                    x.confidential.created_at
+                    if x.get("confidential", {}).get("created_at", None)
+                    else long_time_ago
+                ),
             ),
         )
         context["uploaded_documents"] = sorted_uploaded_documents
