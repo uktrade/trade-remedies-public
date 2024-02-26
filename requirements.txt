@@ -67,7 +67,7 @@ trade-remedies-client @ git+https://github.com/uktrade/trade-remedies-client.git
 typing-extensions==4.9.0 ; python_version >= "3.8" and python_version < "3.11"
 tzdata==2024.1 ; python_version >= "3.8" and python_version < "4.0" and sys_platform == "win32"
 urllib3==1.26.18 ; python_version >= "3.8" and python_version < "4.0"
-v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@75f66b28f9e295a2435a5760c24234a2bcf94ae9 ; python_version >= "3.8" and python_version < "4.0"
+v2-api-client @ git+https://github.com/uktrade/trs_v2_api_client.git@4ed3c9d79829ac536ce377177231307a2eca4cbb ; python_version >= "3.8" and python_version < "4.0"
 werkzeug==2.3.8 ; python_version >= "3.8" and python_version < "4.0"
 whitenoise==6.6.0 ; python_version >= "3.8" and python_version < "4.0"
 wrapt==1.16.0 ; python_version >= "3.8" and python_version < "4.0"
