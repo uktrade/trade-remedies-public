@@ -50,7 +50,7 @@ lxml = "4.9.1"
 
 [tool.poetry.dev-dependencies]
 behave-django = "1.4.0"
-black = "23.11.0"
+black = "24.3.0"
 coverage = "*"
 codecov = "2.1.13"
 djhtml = "*"
