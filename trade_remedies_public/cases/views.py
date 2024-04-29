@@ -253,9 +253,9 @@ class TaskListView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
                 )
 
         _context = {
-            "all_organisations": True
-            if not self.organisation
-            else False,  # tasklist_template in SUBMISSION_TYPE_ALL_ORGANISATIONS,
+            "all_organisations": (
+                True if not self.organisation else False
+            ),  # tasklist_template in SUBMISSION_TYPE_ALL_ORGANISATIONS,
             "ROLE_APPLICANT": ROLE_APPLICANT,
             "case_id": case_id,
             "case": self.case,
@@ -518,9 +518,9 @@ class ProductView(LoginRequiredMixin, GroupRequiredMixin, BasePublicView):
             product.update(
                 {
                     "sector": {
-                        "id": int(request.POST.get("sector"))
-                        if request.POST.get("sector")
-                        else None
+                        "id": (
+                            int(request.POST.get("sector")) if request.POST.get("sector") else None
+                        )
                     },
                     "description": request.POST.get("description"),
                     "name": request.POST.get("product_name"),
@@ -866,9 +866,9 @@ class ApplicationFormsView(LoginRequiredMixin, GroupRequiredMixin, BasePublicVie
                 "case": case,
                 "organisation_id": organisation_id,
                 "submission_id": submission_id,
-                "submission": submission["previous_version"]
-                if document_type == "deficiency"
-                else submission,
+                "submission": (
+                    submission["previous_version"] if document_type == "deficiency" else submission
+                ),
                 "download_template": f"{template_grp}/download.html",
                 "documents": documents,
                 "org_indicator_type": self.org_indicator_type,
