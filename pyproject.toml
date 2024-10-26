@@ -39,7 +39,7 @@ requests = "2.32.2"
 sentry-sdk = "2.8.0"
 sqlparse = "0.5.0"
 urllib3 = "1.26.19"
-werkzeug = "^3.0.3"
+werkzeug = "^3.0.6"
 whitenoise = "6.6.0"
 pillow = "^10.3.0"
 trade-remedies-client = {git = "https://github.com/uktrade/trade-remedies-client.git", rev = "master"}
