@@ -19,6 +19,8 @@ from requests.exceptions import HTTPError
 from trade_remedies_client.exceptions import APIException
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 from v2_api_client.client import TRSAPIClient
+from v2_api_client.mixins import APIClientMixin
+
 
 from cases.constants import (
     CASE_TYPE_REPAYMENT,
@@ -43,7 +45,6 @@ from core.utils import (
 from core.validators import user_create_validators
 from registration.views import BaseRegisterView
 
-health_check_token = os.environ.get("HEALTH_CHECK_TOKEN")
 
 logger = logging.getLogger(__name__)
 
@@ -1094,3 +1095,17 @@ class CompaniesHouseSearch(TemplateView, TradeRemediesAPIClientMixin):
         query = request.GET.get("term")
         results = self.trusted_client.companies_house_search(query)
         return HttpResponse(json.dumps(results), content_type="application/json")
+
+
+class PingdomHealthCheckView(View, APIClientMixin):
+    def get(self, request):
+        response = self.client.healthcheck()
+
+        if "OK" in response:
+            response = HttpResponse(response, content_type="text/xml", status=200)
+        else:
+            response = HttpResponse(response, content_type="text/xml", status=503)
+
+        response["Cache-Control"] = "no-cache, no-store, must-revalidate"
+
+        return response

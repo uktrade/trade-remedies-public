@@ -32,7 +32,7 @@ from registration import views as register_views
 # todo - config/urls.py should not contain anything, put these URLs in their relevant apps
 urlpatterns = [
     path("", login_views.LandingView.as_view(), name="landing"),
-    path("health/", core_views.HealthCheckView.as_view(), name="healthcheck"),
+    path("healthcheck/", core_views.PingdomHealthCheckView.as_view(), name="pingdom_healthcheck"),
     path("holding_page/", core_views.HoldingView.as_view(), name="holdingpage"),
     # path('start/', core_views.StartView.as_view(), name='start'),
     path("twofactor/", login_views.TwoFactorView.as_view(), name="two_factor"),
