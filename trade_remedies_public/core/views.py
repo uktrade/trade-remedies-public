@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 
 import pytz
 from django.conf import settings
