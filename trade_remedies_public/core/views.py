@@ -62,15 +62,6 @@ class TradeRemediesBaseView(TemplateView):
         return errors
 
 
-class HealthCheckView(View, TradeRemediesAPIClientMixin):
-    def get(self, request):
-        response = self.trusted_client.health_check()
-        if all([response[k] == "OK" for k in response]):
-            return HttpResponse("OK")
-        else:
-            return HttpResponse(f"ERROR: {response}")
-
-
 class HomeView(TemplateView):
     def get(self, request, *args, **kwargs):
         return redirect("/dashboard/")
