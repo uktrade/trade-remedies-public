@@ -31,9 +31,7 @@ from config.env import env
 root = environ.Path(__file__) - 4
 
 sentry_sdk.init(
-    dsn=env.SENTRY_DSN,
-    integrations=[DjangoIntegration()],
-    environment=env.SENTRY_ENVIRONMENT
+    dsn=env.SENTRY_DSN, integrations=[DjangoIntegration()], environment=env.SENTRY_ENVIRONMENT
 )
 
 SITE_ROOT = root()

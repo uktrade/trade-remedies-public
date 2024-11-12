@@ -14,15 +14,10 @@ class Settings(CloudFoundrySettings):
 
     def get_allowed_hosts(self) -> list[str]:
         return setup_allowed_hosts(self.ALLOWED_HOSTS)
-    
+
     def get_s3_bucket_config(self) -> dict:
         if self.build_step:
-            return {
-                "aws_region": "",
-                "bucket_name": "",
-                "storage_secret": "",
-                "storage_key": ""
-            }
+            return {"aws_region": "", "bucket_name": "", "storage_secret": "", "storage_key": ""}
         return super().get_s3_bucket_config()
 
 
