@@ -18,6 +18,8 @@ import environ
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from config.env import env
+
 # We use django-environ but do not read a `.env` file. Locally we feed
 # docker-compose an environment from a local.env file in the project root.
 # In our PaaS the service's environment is supplied from Vault.
@@ -27,14 +29,9 @@ from sentry_sdk.integrations.django import DjangoIntegration
 # configured deployment.
 
 root = environ.Path(__file__) - 4
-env = environ.Env(
-    DEBUG=(bool, False),
-)
 
 sentry_sdk.init(
-    dsn=env("SENTRY_DSN", default=""),
-    integrations=[DjangoIntegration()],
-    environment=env("SENTRY_ENVIRONMENT", default="local"),
+    dsn=env.SENTRY_DSN, integrations=[DjangoIntegration()], environment=env.SENTRY_ENVIRONMENT
 )
 
 SITE_ROOT = root()
@@ -46,16 +43,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("DJANGO_SECRET_KEY")
+SECRET_KEY = env.DJANGO_SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!!!
-DEBUG = env("DEBUG")
+DEBUG = env.DEBUG
 
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost"])
+ALLOWED_HOSTS = env.get_allowed_hosts()
 
-ORGANISATION_NAME = env("ORGANISATION_NAME", default="Organisation name placeholder")
+ORGANISATION_NAME = env.ORGANISATION_NAME
 
-ORGANISATION_INITIALISM = env("ORGANISATION_INITIALISM", default="PLACEHOLDER")
+ORGANISATION_INITIALISM = env.ORGANISATION_INITIALISM
 
 # Application definition
 INSTALLED_APPS = [
@@ -91,7 +88,7 @@ MIDDLEWARE = [
 ]
 
 # Add basic authentication if configured
-basic_auth_user = env("BASIC_AUTH_USER", default=False)
+basic_auth_user = env.BASIC_AUTH_USER
 if basic_auth_user:
     MIDDLEWARE.append("basicauth.middleware.BasicAuthMiddleware")
 
@@ -160,17 +157,17 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-_VCAP_SERVICES = env.json("VCAP_SERVICES", default={})
+_VCAP_SERVICES = env.VCAP_SERVICES
 
 # Redis - Trade remedies uses different redis database numbers for the Django Cache
 # API:        0
 # Caseworker: 1
 # Public:     2
-REDIS_DATABASE_NUMBER = env("REDIS_DATABASE_NUMBER", default=2)
+REDIS_DATABASE_NUMBER = env.REDIS_DATABASE_NUMBER
 if "redis" in _VCAP_SERVICES:
     REDIS_BASE_URL = _VCAP_SERVICES["redis"][0]["credentials"]["uri"]
 else:
-    REDIS_BASE_URL = env("REDIS_BASE_URL", default="redis://redis:6379")
+    REDIS_BASE_URL = env.REDIS_BASE_URL
 
 CONCURRENT_LOGIN_REDIS_DATABASE_NUMBER = REDIS_DATABASE_NUMBER + 1
 
@@ -195,15 +192,15 @@ CACHES = {
 # Session configuration
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-SESSION_COOKIE_SECURE = env("SECURE_COOKIE", default=False)
-SESSION_EXPIRE_SECONDS = env("SESSION_LENGTH_MINUTES", default=30) * 60
+SESSION_COOKIE_SECURE = env.SECURE_COOKIE
+SESSION_EXPIRE_SECONDS = env.SESSION_LENGTH_MINUTES
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-CSRF_COOKIE_SECURE = env("SECURE_CSRF_COOKIE", default=False)
-CSRF_COOKIE_HTTPONLY = env("CSRF_COOKIE_HTTPONLY", default=False)
-USE_2FA = os.environ.get("USE_2FA", "TRUE").upper() == "TRUE"
-VERIFY_EMAIL = os.environ.get("VERIFY_EMAIL", "TRUE").upper() == "TRUE"
+CSRF_COOKIE_SECURE = env.SECURE_CSRF_COOKIE
+CSRF_COOKIE_HTTPONLY = env.CSRF_COOKIE_HTTPONLY
+USE_2FA = env.USE_2FA
+VERIFY_EMAIL = env.VERIFY_EMAIL
 MANAGED_FEEDBACK_MODELS = False
-GOOGLE_ANALYTICS_TAG_MANAGER_ID = os.environ.get("GA_TAG_MANAGER_ID", "GTM-XXXXXX")
+GOOGLE_ANALYTICS_TAG_MANAGER_ID = env.GA_TAG_MANAGER_ID
 PUBLIC_FILE_CACHE_MINUTES = 10
 
 LOGIN_URL = "/accounts/login/"
@@ -212,17 +209,19 @@ LOGOUT_URL = "/accounts/logout/"
 LOGOUT_REDIRECT_URL = "/"
 AUTO_LOGIN = True
 
-API_BASE_URL = env("API_BASE_URL", default="http://localhost:8000")
+API_BASE_URL = env.API_BASE_URL
 API_PREFIX = "api/v1"
 API_URL = f"{API_BASE_URL}/{API_PREFIX}"
-HEALTH_CHECK_TOKEN = env("HEALTH_CHECK_TOKEN")
-ENVIRONMENT_KEY = env("ENVIRONMENT_KEY", default="PUB-ENV")
+HEALTH_CHECK_TOKEN = env.HEALTH_CHECK_TOKEN
+ENVIRONMENT_KEY = env.ENVIRONMENT_KEY
 APPEND_SLASH = True
 
-AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = env("S3_STORAGE_KEY", default=None)
-AWS_SECRET_ACCESS_KEY = AWS_S3_SECRET_ACCESS_KEY = env("S3_STORAGE_SECRET", default=None)
-AWS_STORAGE_BUCKET_NAME = env("S3_BUCKET_NAME", default=None)
-AWS_S3_REGION_NAME = AWS_REGION = env("AWS_REGION", default="eu-west-1")
+app_bucket_creds = env.get_s3_bucket_config()
+
+AWS_ACCESS_KEY_ID = AWS_S3_ACCESS_KEY_ID = app_bucket_creds.get("storage_key")
+AWS_SECRET_ACCESS_KEY = app_bucket_creds.get("storage_secret")
+AWS_STORAGE_BUCKET_NAME = app_bucket_creds.get("bucket_name")
+AWS_S3_REGION_NAME = AWS_REGION = app_bucket_creds.get("aws_region")
 AWS_S3_SIGNATURE_VERSION = "s3v4"
 AWS_S3_ENCRYPTION = True
 AWS_DEFAULT_ACL = None
@@ -231,10 +230,10 @@ S3_CLIENT = "boto3"
 # S3 Root directory name
 S3_DOCUMENT_ROOT_DIRECTORY = "documents"
 
-CLAM_AV_USERNAME = env("CLAM_AV_USERNAME", default=None)
-CLAM_AV_PASSWORD = env("CLAM_AV_PASSWORD", default=None)
-CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
-USE_CLAM_AV = env.bool("USE_CLAM_AV", default=True)
+CLAM_AV_USERNAME = env.CLAM_AV_USERNAME
+CLAM_AV_PASSWORD = env.CLAM_AV_PASSWORD
+CLAM_AV_DOMAIN = env.CLAM_AV_DOMAIN
+USE_CLAM_AV = env.USE_CLAM_AV
 
 FILE_UPLOAD_HANDLERS = [
     "django_chunk_upload_handlers.s3.S3FileUploadHandler",
@@ -292,28 +291,28 @@ LOGGING = {
     },
     "root": {
         "handlers": ["stdout"],
-        "level": env("ROOT_LOG_LEVEL", default="INFO"),
+        "level": env.ROOT_LOG_LEVEL,
     },
     "loggers": {
         "django": {
             "handlers": [
                 "stdout",
             ],
-            "level": env("DJANGO_LOG_LEVEL", default="INFO"),
+            "level": env.DJANGO_LOG_LEVEL,
             "propagate": False,
         },
         "django.server": {
             "handlers": [
                 "stdout",
             ],
-            "level": env("DJANGO_SERVER_LOG_LEVEL", default="INFO"),
+            "level": env.DJANGO_SERVER_LOG_LEVEL,
             "propagate": False,
         },
         "django.request": {
             "handlers": [
                 "stdout",
             ],
-            "level": env("DJANGO_REQUEST_LOG_LEVEL", default="INFO"),
+            "level": env.DJANGO_REQUEST_LOG_LEVEL,
             "propagate": False,
         },
     },
@@ -324,9 +323,9 @@ COUNTRIES_FIRST = ["GB"]
 COUNTRIES_FIRST_BREAK = "------"
 
 # DEFAULT CHUNK SIZE OF 32 MB
-DEFAULT_CHUNK_SIZE = env.int("DEFAULT_CHUNK_SIZE", default=33554432)
+DEFAULT_CHUNK_SIZE = env.DEFAULT_CHUNK_SIZE
 # MAX FILE SIZE OF 30 MB
-FILE_MAX_SIZE_BYTES = env.int("FILE_MAX_SIZE_BYTES", default=31457280)
+FILE_MAX_SIZE_BYTES = env.FILE_MAX_SIZE_BYTES
 FILE_DISALLOWED_EXTENSIONS = [
     "com",
     "exe",
