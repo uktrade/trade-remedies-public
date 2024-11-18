@@ -1,4 +1,4 @@
-from typing import Optional, Any, Dict
+from typing import Optional, Any
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_settings import BaseSettings
 
@@ -20,7 +20,7 @@ class CloudFoundrySettings(BaseSettings):
     ALLOWED_HOSTS: str = ""
     ORGANISATION_NAME: str = "Organisation name placeholder"
     ORGANISATION_INITIALISM: str = "Organisation initialism placeholder"
-    BASIC_AUTH_USER: Optional[Dict[str, str]] = None
+    BASIC_AUTH_USER: Optional[str] = None
     VCAP_SERVICES: Optional[VCAPServices] = {}
     REDIS_DATABASE_NUMBER: int = 2
     REDIS_BASE_URL: str = "redis://redis:6379"
@@ -49,6 +49,15 @@ class CloudFoundrySettings(BaseSettings):
     DJANGO_REQUEST_LOG_LEVEL: str = "INFO"
     DEFAULT_CHUNK_SIZE: int = 33554432
     FILE_MAX_SIZE_BYTES: int = 31457280
+
+    @validator("BASIC_AUTH_USER", pre=True)
+    def parse_basic_auth_user(cls, value):
+        if isinstance(value, str):
+            try:
+                return json.loads(value)
+            except json.JSONDecodeError:
+                raise ValueError("Invalid JSON for BASIC_AUTH_USER")
+        return value
 
     def get_allowed_hosts(self) -> list[str]:
         return self.ALLOWED_HOSTS.split(",") if self.ALLOWED_HOSTS else ["localhost"]
