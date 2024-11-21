@@ -87,11 +87,6 @@ MIDDLEWARE = [
     "config.middleware.SentryContextMiddleware",
 ]
 
-# Add basic authentication if configured
-basic_auth_user = env.BASIC_AUTH_USER
-if basic_auth_user:
-    MIDDLEWARE.append("basicauth.middleware.BasicAuthMiddleware")
-
 ROOT_URLCONF = "config.urls"
 
 TEMPLATES = [
@@ -164,10 +159,12 @@ _VCAP_SERVICES = env.VCAP_SERVICES
 # Caseworker: 1
 # Public:     2
 REDIS_DATABASE_NUMBER = env.REDIS_DATABASE_NUMBER
-if "redis" in _VCAP_SERVICES:
-    REDIS_BASE_URL = _VCAP_SERVICES["redis"][0]["credentials"]["uri"]
+if redis := getattr(_VCAP_SERVICES, "redis", None):
+    REDIS_BASE_URL = _VCAP_SERVICES.redis[0]["credentials"]["uri"]
+    sentry_sdk.capture_message(f"Using VCAP redis on URL {REDIS_BASE_URL}")
 else:
     REDIS_BASE_URL = env.REDIS_BASE_URL
+    sentry_sdk.capture_message(f"Using local redis on URL {REDIS_BASE_URL}")
 
 CONCURRENT_LOGIN_REDIS_DATABASE_NUMBER = REDIS_DATABASE_NUMBER + 1
 

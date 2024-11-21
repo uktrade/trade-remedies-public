@@ -20,7 +20,6 @@ class CloudFoundrySettings(BaseSettings):
     ALLOWED_HOSTS: str = ""
     ORGANISATION_NAME: str = "Organisation name placeholder"
     ORGANISATION_INITIALISM: str = "Organisation initialism placeholder"
-    BASIC_AUTH_USER: Optional[str] = None
     VCAP_SERVICES: Optional[VCAPServices] = {}
     REDIS_DATABASE_NUMBER: int = 2
     REDIS_BASE_URL: str = "redis://redis:6379"
