@@ -18,5 +18,7 @@ help:
 	@echo -e "$(COLOUR_YELLOW)make prod-requirements$(COLOUR_NONE) : Generate prod requirements (requires local pip-compile)"
 
 all-requirements:
+	poetry lock
 	poetry export --without-hashes -f requirements.txt -o requirements.txt
 	poetry export --with dev --without-hashes -f requirements.txt -o requirements-dev.txt
+	pip install -r requirements-dev.txt
