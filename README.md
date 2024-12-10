@@ -41,6 +41,44 @@ Behavioural testing is provided by [Behave Django](https://github.com/behave/beh
 
 from the Trade Remedies orchestration project directory.
 
+
+#### Running End to End tests using playwright with pytest
+Playwright documentation - https://playwright.dev/python/docs/api/class-playwright
+
+The end-to-end frontend tests reside in the e2e directory and are designed to operate independently of the rest of the application. This autonomy is facilitated through a local pytest.ini configuration file located within the same directory. The pytest.ini file configures specific parameters and settings essential for the execution of these tests, ensuring they can run in a self-contained environment. For detailed customization options and further information on pytest configuration files, refer to the [pytest configuration docs](https://docs.pytest.org/en/7.0.x/reference/customize.html)
+
+If you are running the docker build
+
+1. Ensure the API is running & the frontend service is runing and can be accessed on `http://localhost:{frontend_port}` if runing within the docker container
+
+2. Ensure the frontend server is up and has reached the point where the Django development server is running.
+
+By default the tests DO NOT RUN in headless mode, to activate headless mode the variable --is-headless will be required.
+
+3. Run the tests:
+`make test-end-to-end target_url=<target-url>` e.g target_url: `http://localhost:8002/` or `https://trade-remedies-public-uat.london.cloudapps.digital/`
+
+4. To run a specific suite of frontend tests, specify the desired module:
+`make test-end-to-end target_url=<target-url> target=test_examples.py`
+
+To run headless:
+`make test-end-to-end target_url=http://localhost:8002/ is-headless=true`
+
+#### setup pytest & playwright end to end module
+
+___module structure___
+
+```
+e2e/
+├── .gitignore # Specifies intentionally untracked files to ignore
+├── requirements.txt # Project dependencies
+├── conftest.py # the pytest config file (the most important file to get things going)
+├── README.md # The top-level README for developers using this project
+└── pytest.ini # Configuration file for pytest
+└── test_file.py # one test file for a specific end to end functionality
+...
+```
+
 ## Fitness Functions
 ![Current fitness metrics for TRSV2](fitness/fitness_metrics_graph.png)
 
