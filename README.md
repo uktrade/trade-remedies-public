@@ -42,7 +42,7 @@ Behavioural testing is provided by [Behave Django](https://github.com/behave/beh
 from the Trade Remedies orchestration project directory.
 
 
-#### Running End to End tests using playwright with pytest
+## Running End to End tests using playwright with pytest
 Playwright documentation - https://playwright.dev/python/docs/api/class-playwright
 
 The end-to-end frontend tests reside in the e2e directory and are designed to operate independently of the rest of the application. This autonomy is facilitated through a local pytest.ini configuration file located within the same directory. The pytest.ini file configures specific parameters and settings essential for the execution of these tests, ensuring they can run in a self-contained environment. For detailed customization options and further information on pytest configuration files, refer to the [pytest configuration docs](https://docs.pytest.org/en/7.0.x/reference/customize.html)
