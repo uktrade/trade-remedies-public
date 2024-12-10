@@ -66,7 +66,12 @@ def test_register_user_with_new_org(page):
     page.get_by_label("Organisation registration").click()
     page.get_by_label("Organisation registration").fill("12345678")
     page.get_by_role("button", name="Continue").click()
-    
+    expect(page.get_by_role("heading", name="Further details about your")).to_be_visible()
+    expect(page.get_by_role("button", name="Create my account")).to_be_visible()
+    page.get_by_role("button", name="Create my account").click()
+    page.locator("#main-content").get_by_role("link", name="Sign in").click()
+    expect(page.get_by_role("heading", name="Sign in to Trade Remedies")).to_be_visible()
+
 
 # @retry()
 # def test_login_with_invalid_credentials(page):

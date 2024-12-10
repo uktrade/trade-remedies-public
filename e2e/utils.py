@@ -92,14 +92,14 @@ def generate_test_email():
 
 
 def generate_test_password():
-    """Generate a random sample password."""
+    """Generate a random sample password with at least 8 characters."""
     # password needs to be in the format
     # capital letter, lowercase letter, number, special character
     password = ''.join(random.choices(string.ascii_uppercase, k=1))
     password += ''.join(random.choices(string.ascii_lowercase, k=1))
     password += ''.join(random.choices(string.digits, k=1))
     password += ''.join(random.choices(string.punctuation, k=1))
-    password += ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=8))
+    password += ''.join(random.choices(string.ascii_letters + string.digits + string.punctuation, k=4))
     return password
 
 
