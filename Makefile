@@ -22,3 +22,8 @@ all-requirements:
 	poetry export --without-hashes -f requirements.txt -o requirements.txt
 	poetry export --with dev --without-hashes -f requirements.txt -o requirements-dev.txt
 	pip install -r requirements-dev.txt
+
+.PHONY: test-end-to-end
+is-headless ?= false
+test-end-to-end:
+	./run_e2e_tests.sh target_url=$(target_url) target=$(target) $(if $(filter true,$(is-headless)),--is-headless)
