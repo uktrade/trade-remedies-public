@@ -11,6 +11,8 @@ def session_data():
     """Return a dictionary to store session data."""
     return {
         "cookies": None,
+        "email": None,
+        "password": None,
     }
 
 

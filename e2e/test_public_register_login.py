@@ -1,3 +1,5 @@
+import pytest
+
 from playwright.sync_api import expect
 
 from e2e.utils import get_base_url, retry, generate_test_name, generate_test_email, generate_test_password, generate_test_address, genetrate_test_postcode
@@ -25,7 +27,8 @@ def test_public_register(page):
 
 
 @retry()
-def test_register_user_with_new_org(page):
+@pytest.mark.dependency(name="test_register_user_with_new_org", scope="session")
+def test_register_user_with_new_org(page, session_data):
 
     email = generate_test_email()
     name = generate_test_name()
@@ -72,14 +75,36 @@ def test_register_user_with_new_org(page):
     page.locator("#main-content").get_by_role("link", name="Sign in").click()
     expect(page.get_by_role("heading", name="Sign in to Trade Remedies")).to_be_visible()
 
-
-# @retry()
-# def test_login_with_invalid_credentials(page):
-#     page.goto(BASE_URL)
-#     expect(page.get_by_role("heading", name="Trade Remedies Service: sign")).to_be_visible()
+    # store user name and password for later use in another test
+    session_data["email"] = email
+    session_data["password"] = password
 
 
-# @retry()
-# def test_login_with_valid_credentials(page):
-#     page.goto(BASE_URL)
-#     expect(page.get_by_role("heading", name="Trade Remedies Service: sign")).to_be_visible()
+@retry()
+def test_login_with_invalid_credentials(page):
+    page.goto(BASE_URL)
+    page.get_by_role("button", name="Sign in").click()
+    expect(page.get_by_role("heading", name="Sign in to Trade Remedies")).to_be_visible()
+    page.get_by_label("Email address").click()
+    page.get_by_label("Email address").fill("test@email.com")
+    page.get_by_label("Password").click()
+    page.get_by_label("Password").fill("123456789")
+    page.get_by_role("button", name="Sign in").click()
+    expect(page.get_by_label("There is a problem")).to_be_visible()
+
+
+@retry()
+@pytest.mark.dependency(depends=["test_register_user_with_new_org"], scope="session")
+def test_login_with_valid_credentials(page, session_data):
+    email = session_data["email"]
+    password = session_data["password"]
+    page.goto(BASE_URL)
+    page.get_by_role("button", name="Sign in").click()
+    expect(page.get_by_role("heading", name="Sign in to Trade Remedies")).to_be_visible()
+
+    page.get_by_label("Email address").click()
+    page.get_by_label("Email address").fill(email)
+    page.get_by_label("Password").click()
+    page.get_by_label("Password").fill(password)
+    page.get_by_role("button", name="Sign in").click()
+    expect(page.get_by_text("Verify your email address", exact=True)).to_be_visible()
