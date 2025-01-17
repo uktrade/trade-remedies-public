@@ -11,7 +11,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.dependencies]
 python = "^3.9.20"
 boto3 = "1.29.6"
-Django = "4.2.16"
+Django = "4.2.18"
 certifi = "^2024.07.04"
 django-audit-log-middleware = "0.0.4"
 django-basicauth = "0.5.2"
