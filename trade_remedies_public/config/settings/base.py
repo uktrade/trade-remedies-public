@@ -237,6 +237,7 @@ CLAM_AV_DOMAIN = env("CLAM_AV_DOMAIN", default=None)
 USE_CLAM_AV = env.bool("USE_CLAM_AV", default=True)
 
 FILE_UPLOAD_HANDLERS = [
+    "v2_api_client.shared.upload_handler.django_upload_handler.ExtractMetadataFileUploadHandler",
     "django_chunk_upload_handlers.s3.S3FileUploadHandler",
 ]
 
