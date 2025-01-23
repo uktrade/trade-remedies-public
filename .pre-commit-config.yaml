@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/uktrade/pii-secret-check-hooks
-    rev: 0.0.0.35
+    rev: 0.0.0.36
     hooks:
       - id: pii_secret_filename
         files: ''
@@ -23,7 +23,7 @@ repos:
         verbose: true
         require_serial: true
   - repo: https://github.com/psf/black
-    rev: 23.1.0
+    rev: 24.10.0
     hooks:
       - id: black
   - repo: https://github.com/wieczorek1990/pyproject-flake8
@@ -43,14 +43,14 @@ repos:
         pass_filenames: false
         args: [ '.' ]
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: mixed-line-ending
         name: Replaces line endings with the most commonly used one
       - id: detect-private-key
         name: Detects for the presence of private keys in the code
   - repo: https://github.com/rtts/djhtml
-    rev: v2.0.0
+    rev: 3.0.7
     hooks:
       - id: djhtml
         files: trade_remedies_public/templates/.*\.html$
