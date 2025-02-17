@@ -29,8 +29,19 @@ from config.env import env
 
 root = environ.Path(__file__) - 4
 
+SENTRY_ENABLE_TRACING = env.bool("SENTRY_ENABLE_TRACING", default=False)
+SENTRY_TRACES_SAMPLE_RATE = env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.1)
+
 sentry_sdk.init(
+<<<<<<< HEAD
     dsn=env.SENTRY_DSN, integrations=[DjangoIntegration()], environment=env.SENTRY_ENVIRONMENT
+=======
+    dsn=env("SENTRY_DSN", default=""),
+    integrations=[DjangoIntegration()],
+    environment=env("SENTRY_ENVIRONMENT", default="local"),
+    enable_tracing=SENTRY_ENABLE_TRACING,
+    traces_sample_rate=SENTRY_TRACES_SAMPLE_RATE,
+>>>>>>> master
 )
 
 SITE_ROOT = root()

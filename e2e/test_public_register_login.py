@@ -95,6 +95,7 @@ def test_login_with_invalid_credentials(page):
 
 @retry()
 @pytest.mark.dependency(depends=["test_register_user_with_new_org"], scope="session")
+@pytest.mark.dependency(name="test_login_with_valid_credentials", scope="session")
 def test_login_with_valid_credentials(page, session_data):
     email = session_data["email"]
     password = session_data["password"]
