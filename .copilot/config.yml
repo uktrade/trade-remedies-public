@@ -2,3 +2,5 @@ repository: trade-remedies-public
 builder:
   name: paketobuildpacks/builder-jammy-base
   version: 0.4.378
+packs:
+  - acodeninja/install
