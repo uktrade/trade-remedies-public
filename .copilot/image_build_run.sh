@@ -8,4 +8,5 @@ export CASE_WORKER_ENVIRONMENT_KEY="example"
 export DATABASE_URL=psql://postgres:postgres@localhost:5432/trade_remedies
 
 # Add commands below to run inside the container after all the other buildpacks have been applied
+cd trade_remedies_public
 python manage.py collectstatic --noinput --clear
