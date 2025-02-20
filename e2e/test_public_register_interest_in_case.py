@@ -25,7 +25,7 @@ def test_public_register_interest_in_case(page):
     case_buttons = page.get_by_role("button").filter(has_text="Select case")
     random_case = case_buttons.all()[-1]
     random_case.click()
-    
+
     page.get_by_role("button", name="Continue").click()
     page.get_by_role("link", name="Organisation details").click()
     page.get_by_label("I work for the organisation").check()
@@ -36,16 +36,21 @@ def test_public_register_interest_in_case(page):
     pdf_buffer.write(b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n1 0 obj\n<</Type /Catalog\n/Pages 2 0 R>>\nendobj\n2 0 obj\n<</Type /Pages\n/Kids [3 0 R]\n/Count 1>>\nendobj\n3 0 obj\n<</Type /Page\n/Parent 2 0 R\n/MediaBox [0 0 612 792]\n/Contents 4 0 R>>\nendobj\n4 0 obj\n<</Length 21>>\nstream\nBT /F1 12 Tf 100 700 Td (Test) Tj ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000015 00000 n \n0000000061 00000 n \n0000000114 00000 n \n0000000189 00000 n \ntrailer\n<</Size 5/Root 1 0 R>>\nstartxref\n259\n%%EOF")
     
     # Write PDF to temp file
-    temp_pdf = tempfile.NamedTemporaryFile(suffix='.pdf', delete=False)
-    temp_pdf.write(pdf_buffer.getvalue())
-    temp_pdf.close()
+    with tempfile.NamedTemporaryFile(suffix='.pdf') as temp_pdf:
+        temp_pdf.write(pdf_buffer.getvalue())
+        temp_pdf.flush()
+        
+        # Upload non-confidential version first
+        page.set_input_files("input[data-type='non_confidential']", temp_pdf.name)
 
-     # Upload the PDF
-    page.get_by_text("Choose a confidential file").click()
-    page.get_by_label("Choose a \n                        \n                            confidential\n    ").set_input_files(temp_pdf.name)
-    page.get_by_text("Choose a non-confidential file").click()
-    page.get_by_label("Choose a \n                        \n                            non-confidential\n").set_input_files(temp_pdf.name)
+        page.wait_for_timeout(2000)  # Wait 2 seconds between uploads
+        
+        # Upload confidential version
+        page.set_input_files("input[data-type='confidential']", temp_pdf.name)
 
+    # wait 3secs for input file check before clicking continue
+    page.wait_for_timeout(3000)
+    
     page.get_by_role("button", name="Continue").click()
     page.get_by_role("link", name="Review and submit").click()
     page.get_by_label("I am authorised to provide").check()
