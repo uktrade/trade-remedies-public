@@ -114,3 +114,18 @@ def generate_test_address():
 def genetrate_test_postcode():
     """Generate a random postcode."""
     return ''.join(random.choices(string.ascii_uppercase + string.digits, k=7))
+
+def generate_test_company_name():
+    """Generate a random company name."""
+    company_name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=12))
+    return company_name + " LTD"
+
+def login_user(page, email, password, base_url):
+    """Login a user with the given email and password."""
+    page.goto(base_url)
+    page.get_by_role("button", name="Sign in").click()
+    page.get_by_label("Email address").click()
+    page.get_by_label("Email address").fill(email)
+    page.get_by_label("Password").click()
+    page.get_by_label("Password").fill(password)
+    page.get_by_role("button", name="Sign in").click()
