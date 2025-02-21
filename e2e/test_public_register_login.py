@@ -7,6 +7,7 @@ from e2e.utils import get_base_url, retry, generate_test_name, generate_test_ema
 BASE_URL = get_base_url()
 
 @retry()
+@pytest.mark.order(1)
 def test_public_login(page):
     page.goto(BASE_URL)
     expect(page.get_by_role("heading", name="Trade Remedies Service: sign")).to_be_visible()
@@ -15,6 +16,7 @@ def test_public_login(page):
 
 
 @retry()
+@pytest.mark.order(1)
 def test_public_register(page):
     page.goto(BASE_URL)
     expect(page.get_by_role("heading", name="Trade Remedies Service: sign")).to_be_visible()
@@ -27,6 +29,7 @@ def test_public_register(page):
 
 
 @retry()
+@pytest.mark.order(1)
 @pytest.mark.dependency(name="test_register_user_with_new_org", scope="session")
 def test_register_user_with_new_org(page, session_data):
 
@@ -81,6 +84,7 @@ def test_register_user_with_new_org(page, session_data):
 
 
 @retry()
+@pytest.mark.order(1)
 def test_login_with_invalid_credentials(page):
     page.goto(BASE_URL)
     page.get_by_role("button", name="Sign in").click()
@@ -94,7 +98,9 @@ def test_login_with_invalid_credentials(page):
 
 
 @retry()
+@pytest.mark.order(1)
 @pytest.mark.dependency(depends=["test_register_user_with_new_org"], scope="session")
+@pytest.mark.dependency(name="test_login_with_valid_credentials", scope="session")
 def test_login_with_valid_credentials(page, session_data):
     email = session_data["email"]
     password = session_data["password"]

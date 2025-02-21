@@ -15,6 +15,8 @@ class VCAPServices(BaseModel):
 class CloudFoundrySettings(BaseSettings):
     SENTRY_DSN: str = ""
     SENTRY_ENVIRONMENT: str = "local"
+    SENTRY_ENABLE_TRACING: bool = False
+    SENTRY_TRACES_SAMPLE_RATE: float = 0.1
     DJANGO_SECRET_KEY: str = ""
     DEBUG: bool = True
     ALLOWED_HOSTS: str = ""
