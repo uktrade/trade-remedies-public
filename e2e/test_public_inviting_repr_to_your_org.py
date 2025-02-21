@@ -32,7 +32,7 @@ def test_public_invite_repr_to_your_org(page):
 
     page.get_by_role("link", name="Organisation details").click()
     page.get_by_label("Organisation name").click()
-    page.get_by_label("Organisation name").fill("Representitive 365 LTD")
+    page.get_by_label("Organisation name").fill(f"{generate_test_name()} LTD")
     page.get_by_label("Contact name").click()
     page.get_by_label("Contact name").fill(generate_test_name())
 
