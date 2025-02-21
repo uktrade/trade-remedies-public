@@ -10,3 +10,6 @@ COPY requirements-dev.txt /app/
 WORKDIR /app
 RUN pip install --upgrade pip
 RUN pip install -r requirements-dev.txt
+
+ADD . /app
+WORKDIR /app
