@@ -64,17 +64,12 @@ class TradeRemediesBaseView(TemplateView):
 
 class HealthCheckView(View, TradeRemediesAPIClientMixin):
     def get(self, request):
-        return HttpResponse("OK")
         response = self.trusted_client.health_check()
-        print(f'response is {response}')
         if all([response[k] == "OK" for k in response]):
-            print("health check success")
             return HttpResponse("OK")
         else:
-            print("health check failed")
             return HttpResponse(f"ERROR: {response}")
-            
-        
+             
 
 
 class HomeView(TemplateView):
