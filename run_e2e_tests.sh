@@ -42,6 +42,20 @@ parse_args() {
     done
 }
 
+# Load environment variables for tests requiring credentials
+# This includes variables like:
+# - TEST_USER_EMAIL
+# - TEST_USER_PASSWORD
+# - TEST_REPR_INVITE_CASE_ID
+if [ -f .e2e.env ]; then
+    export $(cat .e2e.env | xargs)
+elif [ -f e2e/.e2e.env ]; then
+    export $(cat e2e/.e2e.env | xargs)
+else
+    echo "Warning: .e2e.env file not found in current directory or e2e/. Some tests may fail."
+    exit 1
+fi
+
 # Parse the input arguments
 parse_args "$@"
 
