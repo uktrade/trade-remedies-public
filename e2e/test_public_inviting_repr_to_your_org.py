@@ -15,7 +15,7 @@ def test_public_invite_repr_to_your_org(page):
 
     email = os.environ.get("TEST_USER_EMAIL")
     password = os.environ.get("TEST_USER_PASSWORD")
-    case_name = os.environ.get("TEST_REPR_INVITE_CASE_NAME")
+    case_id = os.environ.get("TEST_REPR_INVITE_CASE_ID")
 
     login_user(page, email, password, BASE_URL)
 
