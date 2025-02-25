@@ -1,4 +1,4 @@
-repository: trade-remedies-public
+repository: public
 builder:
   name: paketobuildpacks/builder-jammy-base
   version: 0.4.378
