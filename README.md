@@ -55,6 +55,12 @@ If you are running the docker build
 
 By default the tests DO NOT RUN in headless mode, to activate headless mode the variable --is-headless will be required.
 
+*NOTE: Before running the end to end test pipeline we will need setup the below environment variable:*
+```bash
+TEST_USER_EMAIL = "<email-account-used-to-signup-to-public>"
+TEST_USER_PASSWORD = "<password>"
+TEST_REPR_INVITE_CASE_ID = "<case-id>"
+```
 3. Run the tests:
 `make test-end-to-end target_url=<target-url>` e.g target_url: `http://localhost:8002/` or `https://trade-remedies-public-uat.london.cloudapps.digital/`
 
@@ -75,6 +81,7 @@ e2e/
 ├── conftest.py # the pytest config file (the most important file to get things going)
 ├── README.md # The top-level README for developers using this project
 └── pytest.ini # Configuration file for pytest
+└── utils.py # utility functions for the test suite
 └── test_file.py # one test file for a specific end to end functionality
 ...
 ```

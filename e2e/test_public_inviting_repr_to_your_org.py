@@ -15,7 +15,7 @@ def test_public_invite_repr_to_your_org(page):
 
     email = os.environ.get("TEST_USER_EMAIL")
     password = os.environ.get("TEST_USER_PASSWORD")
-    case_name = os.environ.get("TEST_REPR_INVITE_CASE_NAME")
+    case_id = os.environ.get("TEST_REPR_INVITE_CASE_ID")
 
     login_user(page, email, password, BASE_URL)
 
@@ -27,7 +27,7 @@ def test_public_invite_repr_to_your_org(page):
     
 
     # Select a random case
-    page.get_by_label(case_name).check()
+    page.get_by_label(case_id).check()
     page.get_by_role("button", name="Continue").click()
 
     page.get_by_role("link", name="Organisation details").click()
