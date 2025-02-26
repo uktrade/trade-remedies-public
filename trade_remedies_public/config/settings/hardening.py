@@ -39,7 +39,7 @@ SECURE_HSTS_PRELOAD = True
 # SecurityMiddleware redirects all non-HTTPS requests
 # to HTTPS (except for those URLs matching a
 # regular expression listed in SECURE_REDIRECT_EXEMPT
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False
 
 SECURE_HSTS_SECONDS = 60  # 60 secs
 

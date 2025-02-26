@@ -69,6 +69,7 @@ class HealthCheckView(View, TradeRemediesAPIClientMixin):
             return HttpResponse("OK")
         else:
             return HttpResponse(f"ERROR: {response}")
+             
 
 
 class HomeView(TemplateView):
