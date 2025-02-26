@@ -83,6 +83,7 @@ e2e/
 └── pytest.ini # Configuration file for pytest
 └── utils.py # utility functions for the test suite
 └── test_file.py # one test file for a specific end to end functionality
+└── .e2e.env # required for tests that require environment variables
 ...
 ```
 
