@@ -32,6 +32,9 @@ root = environ.Path(__file__) - 4
 SENTRY_ENABLE_TRACING = env.SENTRY_ENABLE_TRACING
 SENTRY_TRACES_SAMPLE_RATE = env.SENTRY_TRACES_SAMPLE_RATE
 
+SENTRY_ENABLE_TRACING = env.bool("SENTRY_ENABLE_TRACING", default=False)
+SENTRY_TRACES_SAMPLE_RATE = env.float("SENTRY_TRACES_SAMPLE_RATE", default=0.1)
+
 sentry_sdk.init(
     dsn=env.SENTRY_DSN,
     integrations=[DjangoIntegration()],
