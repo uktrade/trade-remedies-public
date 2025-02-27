@@ -16,7 +16,7 @@ def test_public_register_interest_in_case(page):
 
     email = os.environ.get("TEST_USER_EMAIL")
     password = os.environ.get("TEST_USER_PASSWORD")
-    case_id = os.environ.get("TEST_REPR_INVITE_CASE_ID")
+    case_id = os.environ.get("TEST_REGISTER_INTEREST_CASE_ID")
 
     login_user(page, email, password, BASE_URL)
 

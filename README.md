@@ -60,6 +60,7 @@ By default the tests DO NOT RUN in headless mode, to activate headless mode the 
 TEST_USER_EMAIL = "<email-account-used-to-signup-to-public>"
 TEST_USER_PASSWORD = "<password>"
 TEST_REPR_INVITE_CASE_ID = "<case-id>"
+TEST_REGISTER_INTEREST_CASE_ID = "<case-id>"
 ```
 3. Run the tests:
 `make test-end-to-end target_url=<target-url>` e.g target_url: `http://localhost:8002/` or `https://trade-remedies-public-uat.london.cloudapps.digital/`
