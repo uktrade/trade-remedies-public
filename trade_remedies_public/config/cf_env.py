@@ -50,6 +50,7 @@ class CloudFoundrySettings(BaseSettings):
     DJANGO_REQUEST_LOG_LEVEL: str = "INFO"
     DEFAULT_CHUNK_SIZE: int = 33554432
     FILE_MAX_SIZE_BYTES: int = 31457280
+    SASS_PROCESSOR_ENABLED:bool = True
 
     def get_allowed_hosts(self) -> list[str]:
         return self.ALLOWED_HOSTS.split(",") if self.ALLOWED_HOSTS else ["localhost"]
