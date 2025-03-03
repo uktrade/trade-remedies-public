@@ -1,5 +1,7 @@
 import os
 
+import dj_database_url
+from dbt_copilot_python.database import database_url_from_env
 from dbt_copilot_python.network import setup_allowed_hosts
 from dbt_copilot_python.utility import is_copilot
 
@@ -14,10 +16,23 @@ class Settings(CloudFoundrySettings):
     def get_allowed_hosts(self) -> list[str]:
         return setup_allowed_hosts(self.ALLOWED_HOSTS)
 
-    def get_s3_bucket_config(self) -> dict:
+    def get_database_config(self) -> dict:
         if self.build_step:
-            return {"aws_region": "", "bucket_name": "", "storage_secret": "", "storage_key": ""}
-        return super().get_s3_bucket_config()
+            # raise Error(f"get_database_config: in build step according to {self.build_step}", file=sys.stderr)
+            return {"default": {}}
+
+        # raise Error(f"get_database_config: NOT in build step according to {self.build_step}", file=sys.stderr)
+        return {
+            "default": dj_database_url.parse(database_url_from_env("DATABASE_CREDENTIALS")),
+        }
+
+    def get_s3_bucket_config(self) -> dict:
+        """Return s3 bucket config that matches keys used in CF"""
+
+        if self.build_step:
+            return {"aws_region": "", "bucket_name": ""}
+
+        return {"aws_region": self.AWS_REGION, "bucket_name": self.AWS_STORAGE_BUCKET_NAME}
 
 
 class CircleCIEnvironment(CloudFoundrySettings):
