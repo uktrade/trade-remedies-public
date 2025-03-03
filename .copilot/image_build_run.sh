@@ -11,4 +11,4 @@ export DJANGO_SETTINGS_MODULE="config.settings.staging"
 # Add commands below to run inside the container after all the other buildpacks have been applied
 cd trade_remedies_public
 python manage.py compilescss
-python manage.py collectstatic --noinput
+python manage.py collectstatic --noinput --ignore=*.scss

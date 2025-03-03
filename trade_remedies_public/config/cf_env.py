@@ -50,6 +50,7 @@ class CloudFoundrySettings(BaseSettings):
     DJANGO_REQUEST_LOG_LEVEL: str = "INFO"
     DEFAULT_CHUNK_SIZE: int = 33554432
     FILE_MAX_SIZE_BYTES: int = 31457280
+    SASS_PROCESSOR_ENABLED:bool = True
 
     def get_allowed_hosts(self) -> list[str]:
         return self.ALLOWED_HOSTS.split(",") if self.ALLOWED_HOSTS else ["localhost"]
@@ -59,7 +60,5 @@ class CloudFoundrySettings(BaseSettings):
 
         return {
             "aws_region": self.AWS_REGION,
-            "bucket_name": self.S3_BUCKET_NAME or self.AWS_STORAGE_BUCKET_NAME or "",
-            "storage_secret": self.S3_STORAGE_SECRET,
-            "storage_key": self.S3_STORAGE_KEY,
+            "bucket_name": self.AWS_STORAGE_BUCKET_NAME
         }
