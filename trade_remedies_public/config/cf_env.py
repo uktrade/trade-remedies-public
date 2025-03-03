@@ -60,7 +60,5 @@ class CloudFoundrySettings(BaseSettings):
 
         return {
             "aws_region": self.AWS_REGION,
-            "bucket_name": self.AWS_STORAGE_BUCKET_NAME,
-            "storage_secret": self.S3_STORAGE_SECRET,
-            "storage_key": self.S3_STORAGE_KEY,
+            "bucket_name": self.AWS_STORAGE_BUCKET_NAME
         }
