@@ -1,6 +1,11 @@
+import dj_database_url
+import environ
+
 from typing import Optional, Any
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_settings import BaseSettings
+
+env_obj = environ.Env()
 
 
 class VCAPServices(BaseModel):
@@ -62,3 +67,21 @@ class CloudFoundrySettings(BaseSettings):
             "aws_region": self.AWS_REGION,
             "bucket_name": self.AWS_STORAGE_BUCKET_NAME
         }
+    
+    def get_database_config(self) -> dict:
+        if "postgresql" in self.VCAP_SERVICES:
+            _database_uri = f"{self.VCAP_SERVICES['postgres'][0]['credentials']['uri']}"
+            return {
+                "default": {
+                    **dj_database_url.parse(
+                        _database_uri,
+                        engine="postgresql",
+                        conn_max_age=0,
+                    ),
+                    "ENGINE": "django_db_geventpool.backends.postgresql_psycopg2",
+                    "OPTIONS": {
+                        "MAX_CONNS": self.DB_MAX_CONNS,
+                    },
+                }
+            }
+        return {"default": env_obj.db()}
