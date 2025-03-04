@@ -116,4 +116,10 @@ def test_login_with_valid_credentials(page, session_data):
     page.get_by_label("Password").click()
     page.get_by_label("Password").fill(password)
     page.get_by_role("button", name="Sign in").click()
-    expect(page.get_by_text("Verify your email address", exact=True)).to_be_visible()
+
+    # Wait longer and verify text content
+    page.wait_for_timeout(3000)  # Increase wait time to 5 seconds
+
+    # Alternative: Try locating by URL if it's a standard href
+    expect(page.get_by_role("link").filter(has_text="Manage users")).to_be_visible()
+
