@@ -64,7 +64,7 @@ opentelemetry-sdk==1.22.0 ; python_full_version >= "3.10.0" and python_version <
 opentelemetry-semantic-conventions==0.43b0 ; python_full_version >= "3.10.0" and python_version < "4.0"
 opentelemetry-util-http==0.43b0 ; python_full_version >= "3.10.0" and python_version < "4.0"
 packaging==24.2 ; python_full_version >= "3.10.0" and python_version < "4"
-phonenumbers==8.13.55 ; python_full_version >= "3.10.0" and python_full_version < "4.0.0"
+phonenumbers==9.0.0 ; python_full_version >= "3.10.0" and python_full_version < "4.0.0"
 pikepdf==9.5.2 ; python_full_version >= "3.10.0" and python_full_version < "4.0.0"
 pillow==10.4.0 ; python_full_version >= "3.10.0" and python_full_version < "4.0.0"
 protobuf==4.25.6 ; python_full_version >= "3.10.0" and python_version < "4.0"
