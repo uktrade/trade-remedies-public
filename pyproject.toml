@@ -44,7 +44,7 @@ whitenoise = "6.6.0"
 pillow = "^10.3.0"
 trade-remedies-client = {git = "https://github.com/uktrade/trade-remedies-client.git", rev = "master"}
 v2-api-client = {git = "https://github.com/uktrade/trs_v2_api_client.git", rev = "master"}
-gunicorn = "22.0.0"
+gunicorn = "23.0.0"
 gevent = "23.9.1"
 lxml = "4.9.1"
 
