@@ -3,18 +3,42 @@ import sentry_sdk
 from config.base_views import BaseAnonymousPublicTemplateView
 from datetime import datetime
 
+from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
-class ActiveInvestigationsView(BaseAnonymousPublicTemplateView):
+import logging
+logger = logging.getLogger(__name__)
+
+class ActiveInvestigationsView(BaseAnonymousPublicTemplateView, TradeRemediesAPIClientMixin):
     template_name = "v2/active_investigations/home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["active_investigations"] = self.client.cases(
+        case_list = self.client.cases(
             archived_at__isnull=True, initiated_at__isnull=False
         )
-        context["completed_investigations"] = self.client.cases(
+        case_list_completed = self.client.cases(
             archived_at__isnull=False, initiated_at__isnull=False
         )
+
+        case_ids = []
+        for case in case_list:
+            case_ids.append(case.get("id"))
+        for case in case_list_completed:
+            case_ids.append(case.get("id"))
+
+        states = self.trusted_client.get_case_state(fields=["COMMODITY_NAME"], case_ids=case_ids)
+        for case in case_list:
+            state = states.get(case.get("id"))
+            if state:
+                case.state = state
+        for case in case_list_completed:
+            state = states.get(case.get("id"))
+            if state:
+                case.state = state
+
+        context["active_investigations"] = case_list
+        context["completed_investigations"] = case_list_completed
+
         return context
 
 
