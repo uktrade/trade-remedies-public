@@ -6,16 +6,16 @@ from datetime import datetime
 from trade_remedies_client.mixins import TradeRemediesAPIClientMixin
 
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 class ActiveInvestigationsView(BaseAnonymousPublicTemplateView, TradeRemediesAPIClientMixin):
     template_name = "v2/active_investigations/home.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        case_list = self.client.cases(
-            archived_at__isnull=True, initiated_at__isnull=False
-        )
+        case_list = self.client.cases(archived_at__isnull=True, initiated_at__isnull=False)
         case_list_completed = self.client.cases(
             archived_at__isnull=False, initiated_at__isnull=False
         )
