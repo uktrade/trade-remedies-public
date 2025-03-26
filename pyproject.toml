@@ -89,7 +89,7 @@ exclude = '''
 '''
 
 [tool.flake8]
-max-line-length = 100
+max-line-length = 120
 max-complexity = 10
 per-file-ignores = '__init__.py: F401'
 import_order_style = 'smarkets'
