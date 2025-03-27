@@ -31,7 +31,7 @@ class ActiveInvestigationsView(BaseAnonymousPublicTemplateView, TradeRemediesAPI
         # changes to the client.
         states = {}
         for i in range(0, len(case_ids), 80):
-            batch_ids = case_ids[i: i + 80]
+            batch_ids = case_ids[i : i + 80] # noqa: E731
             states_items = self.trusted_client.get_case_state(
                 fields=["COMMODITY_NAME"], case_ids=batch_ids
             )
