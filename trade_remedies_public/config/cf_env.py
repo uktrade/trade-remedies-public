@@ -63,11 +63,8 @@ class CloudFoundrySettings(BaseSettings):
     def get_s3_bucket_config(self) -> dict:
         """Return s3 bucket config that matches keys used in CF"""
 
-        return {
-            "aws_region": self.AWS_REGION,
-            "bucket_name": self.AWS_STORAGE_BUCKET_NAME
-        }
-    
+        return {"aws_region": self.AWS_REGION, "bucket_name": self.AWS_STORAGE_BUCKET_NAME}
+
     def get_database_config(self) -> dict:
         if "postgresql" in self.VCAP_SERVICES:
             _database_uri = f"{self.VCAP_SERVICES['postgres'][0]['credentials']['uri']}"
