@@ -28,7 +28,7 @@ class ActiveInvestigationsView(BaseAnonymousPublicTemplateView, TradeRemediesAPI
 
         logger.critical(case_list)
         logger.critical(case_list_completed)
-        logger.critical(case_ids)
+        logger.critical(len(case_ids))
 
         states = {}
         for case_id in case_ids:
