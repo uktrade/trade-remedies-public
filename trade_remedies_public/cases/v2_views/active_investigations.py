@@ -30,7 +30,14 @@ class ActiveInvestigationsView(BaseAnonymousPublicTemplateView, TradeRemediesAPI
         logger.critical(case_list_completed)
         logger.critical(case_ids)
 
-        states = self.trusted_client.get_case_state(fields=["COMMODITY_NAME"], case_ids=case_ids)
+        states = {}
+        for case_id in case_ids:
+            states_next_item = self.trusted_client.get_case_state(fields=["COMMODITY_NAME"], case_ids=[case_id])
+            states = states | states_next_item
+
+        #logger.critical(type(states))
+        #logger.critical(states)
+
         for case in case_list:
             state = states.get(case.get("id"))
             if state:
