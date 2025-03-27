@@ -31,7 +31,7 @@ class ActiveInvestigationsView(BaseAnonymousPublicTemplateView, TradeRemediesAPI
         # changes to the client.
         states = {}
         for i in range(0, len(case_ids), 60):
-            batch_ids = case_ids[i:i+60]
+            batch_ids = case_ids[i : i + 60]
             states_items = self.trusted_client.get_case_state(
                 fields=["COMMODITY_NAME"], case_ids=batch_ids
             )
