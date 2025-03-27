@@ -26,17 +26,16 @@ class ActiveInvestigationsView(BaseAnonymousPublicTemplateView, TradeRemediesAPI
         for case in case_list_completed:
             case_ids.append(case.get("id"))
 
-        logger.critical(case_list)
-        logger.critical(case_list_completed)
-        logger.critical(len(case_ids))
-
+        # Get state data in batches. Long case lists cause errors.
+        # this is a quick and grubby fix, a proper fix would require
+        # changes to the client.
         states = {}
-        for case_id in case_ids:
-            states_next_item = self.trusted_client.get_case_state(fields=["COMMODITY_NAME"], case_ids=[case_id])
-            states = states | states_next_item
-
-        #logger.critical(type(states))
-        #logger.critical(states)
+        for i in range(0, len(case_ids), 50):
+            batch_ids = case_ids[i:i+50]
+            states_items = self.trusted_client.get_case_state(
+                fields=["COMMODITY_NAME"], case_ids=batch_ids
+            )
+            states = states | states_items
 
         for case in case_list:
             state = states.get(case.get("id"))
