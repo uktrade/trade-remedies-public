@@ -26,6 +26,10 @@ class ActiveInvestigationsView(BaseAnonymousPublicTemplateView, TradeRemediesAPI
         for case in case_list_completed:
             case_ids.append(case.get("id"))
 
+        logger.critical(case_list)
+        logger.critical(case_list_completed)
+        logger.critical(case_ids)
+
         states = self.trusted_client.get_case_state(fields=["COMMODITY_NAME"], case_ids=case_ids)
         for case in case_list:
             state = states.get(case.get("id"))
