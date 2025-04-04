@@ -99,7 +99,9 @@ class SingleSubmissionView(BaseAnonymousPublicTemplateView):
                 "NORMAL_HTTP_REFERER": self.request.headers.get("Referer"),
             },
         )
-        assert submission.issued_at
+        if not submission.issued_at:
+            # Handle the case where issued_at is None
+            raise ValueError("Submission must have an issued_at date")
         sentry_sdk.set_context("referer", None)
         context["submission"] = submission
         return context

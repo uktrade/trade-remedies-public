@@ -9,13 +9,13 @@ requires = ["poetry-core^1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10.0"
 boto3 = "1.29.6"
 Django = "4.2.20"
 certifi = "^2024.07.04"
 django-audit-log-middleware = "0.0.4"
 django-basicauth = "0.5.2"
-django-chunk-upload-handlers = "0.0.11"
+django-chunk-upload-handlers = "0.0.15"
 django-compressor = "*"
 django-countries = "7.2.1"
 django-csp = "3.7"
@@ -47,6 +47,10 @@ v2-api-client = {git = "https://github.com/uktrade/trs_v2_api_client.git", rev =
 gunicorn = "23.0.0"
 gevent = "23.9.1"
 lxml = "4.9.1"
+dbt-copilot-python = "0.1.4"
+pydantic-settings = "2.5.2"
+dj-database-url = "0.5.0"
+psycopg2-binary = "^2.9.10"
 
 [tool.poetry.dev-dependencies]
 behave-django = "1.4.0"
@@ -85,7 +89,7 @@ exclude = '''
 '''
 
 [tool.flake8]
-max-line-length = 100
+max-line-length = 120
 max-complexity = 10
 per-file-ignores = '__init__.py: F401'
 import_order_style = 'smarkets'

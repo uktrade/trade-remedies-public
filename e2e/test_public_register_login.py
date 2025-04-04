@@ -122,4 +122,3 @@ def test_login_with_valid_credentials(page, session_data):
 
     # Alternative: Try locating by URL if it's a standard href
     expect(page.get_by_role("link").filter(has_text="Manage users")).to_be_visible()
-
