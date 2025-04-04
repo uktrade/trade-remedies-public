@@ -1,3 +1,4 @@
+import re
 import os
 import io
 import tempfile
@@ -15,16 +16,19 @@ def test_public_register_interest_in_case(page):
 
     email = os.environ.get("TEST_USER_EMAIL")
     password = os.environ.get("TEST_USER_PASSWORD")
+    case_id = os.environ.get("TEST_REGISTER_INTEREST_CASE_ID")
 
     login_user(page, email, password, BASE_URL)
 
     page.get_by_role("link", name="Register interest in a case").first.click()
     page.get_by_role("link", name="Select a Trade Remedies case").click()
 
-    # Select a random case
-    case_buttons = page.get_by_role("button").filter(has_text="Select case")
-    random_case = case_buttons.all()[-1]
-    random_case.click()
+    # get the current case
+    case_row = page.locator("tr", has=page.get_by_text(case_id))
+    
+    # Complete the line that was incomplete - click the Select button for the specific case
+    case_row.get_by_role("button", name=re.compile(f"Select.*{case_id}")).click()
+
 
     page.get_by_role("button", name="Continue").click()
     page.get_by_role("link", name="Organisation details").click()

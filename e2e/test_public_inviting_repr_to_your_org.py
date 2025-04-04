@@ -15,7 +15,7 @@ def test_public_invite_repr_to_your_org(page):
 
     email = os.environ.get("TEST_USER_EMAIL")
     password = os.environ.get("TEST_USER_PASSWORD")
-    case_id = os.environ.get("TEST_REPR_INVITE_CASE_ID")
+    case_id = os.environ.get("TEST_REGISTER_INTEREST_CASE_ID")
 
     login_user(page, email, password, BASE_URL)
 
@@ -25,9 +25,9 @@ def test_public_invite_repr_to_your_org(page):
     page.get_by_role("button", name="Continue").click()
     page.get_by_role("link", name="Select a Trade Remedies case").click()
     
-
-    # Select a random case
-    page.get_by_label(case_id).check()
+    # Select the radio input using the case_id as the input id
+    page.locator(f"input#{case_id}").check()
+    
     page.get_by_role("button", name="Continue").click()
 
     page.get_by_role("link", name="Organisation details").click()
@@ -38,6 +38,7 @@ def test_public_invite_repr_to_your_org(page):
 
     page.wait_for_timeout(200)
     page.get_by_label("Contact email address").click()
+    page.get_by_label("Contact email address").fill(email)
     page.get_by_role("button", name="Continue").click()
     page.get_by_role("link", name="Letter of Authority").click()
 
