@@ -1,9 +1,12 @@
+import os
 import dj_database_url
 import environ
 
 from typing import Optional, Any
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic_settings import BaseSettings
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 env_obj = environ.Env()
 
@@ -81,4 +84,12 @@ class CloudFoundrySettings(BaseSettings):
                     },
                 }
             }
-        return {"default": env_obj.db()}
+        db_settings = env_obj.db()
+        if not db_settings:
+            return {
+                "default": {
+                    "ENGINE": "django.db.backends.sqlite3",
+                    "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+                }
+            }
+        return {"default": db_settings}
